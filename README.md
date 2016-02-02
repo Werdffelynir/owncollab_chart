@@ -1,16 +1,15 @@
-# My App
+# OwnCollab Chart
+
 Place this app in **owncloud/apps/**
 
-## Publish to App Store
+## Application Destination
 
-First get an account for the [App Store](http://apps.owncloud.com/) then run:
+The application is dependent for part of OwnCollab
 
-    make appstore_package
+- owncollab
+- __owncollab_chart__
+- owncollab_tasks
+- owncollab_calendar
 
-The archive is located in build/artifacts/appstore and can then be uploaded to the App Store.
+Destination of application is displaying charts on the basis of the plugin dhtmlxgantt
 
-
-## Running tests
-After [Installing PHPUnit](http://phpunit.de/getting-started.html) run:
-
-    phpunit -c phpunit.xml
