@@ -1,4 +1,4 @@
-<div id="lbox">
+
 
     <div class="lbox_line">
         <p><?php p($l->t('Edit task details'));?><span id="real_id" style="color: #7aba7b; font-size: 10px;"></span></p>
@@ -72,4 +72,3 @@
     </div>
 
 
-</div>

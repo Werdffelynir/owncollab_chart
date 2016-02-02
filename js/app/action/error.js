@@ -12,6 +12,22 @@
 
     o.page = function (text){
 
+        var title = 'Application throw error',
+            wrapper = '#app-content-wrapper',
+            error = '#app-content-error';
+
+        if(text){
+
+            $(wrapper).hide();
+            $(error).html('<h1>' +title+ '</h1><p>' +text+ '</p>').show();
+
+        }else{
+
+            $(error).hide();
+            $(wrapper).show();
+
+        }
+
     };
 
 

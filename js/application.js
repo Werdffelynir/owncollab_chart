@@ -1,10 +1,19 @@
 
-
 var app = app || {
 
+        /*current user*/
         uid: null,
+
+        /*current project*/
         pid: null,
+
+        /*DOM Elements*/
+        elem: {},
+
+        /*application name and folder*/
         name: 'owncollab_chart',
+
+        /*url address to current application*/
 		url: OC.generateUrl('/apps/owncollab_chart'),
 
 		/*dependent controllers*/
@@ -22,16 +31,31 @@ var app = app || {
 		/*dependent actions*/
 		action: {
             chart: {},
+            config: {},
 			error: {},
             lightbox: {},
+            page: {},
             sidebar: {}
 		},
 
-        /*options*/
-        option: {},
+        /*db project data*/
+        data: {
+			access:null,
+			errorInfo:null,
+			uid:null,
+			project:null,
+			tasks:null,
+			links:null,
+			resources:null
+		},
 
-        /*db date*/
-        data: {}
+        /*edit data to save*/
+        edit: {
+			project:null,
+            tasks:null,
+			links:null,
+			resources:null
+		}
 	};
 
 (function ($, OC, app) {
@@ -43,9 +67,11 @@ var app = app || {
 	inc.require(path+'/js/app/controller/main.js');
 	inc.require(path+'/js/app/controller/settings.js');
 
+    inc.require(path+'/js/app/action/chart.js');
+	inc.require(path+'/js/app/action/config.js');
 	inc.require(path+'/js/app/action/error.js');
-	inc.require(path+'/js/app/action/chart.js');
 	inc.require(path+'/js/app/action/sidebar.js');
+	inc.require(path+'/js/app/action/page.js');
 	inc.require(path+'/js/app/action/lightbox.js');
 
 	inc.require(path+'/js/app/module/db.js');
@@ -62,15 +88,27 @@ var app = app || {
 	function onLoaded() {
 		console.log('application loaded...');
 
-        /**
-         * Set application options
-         */
-        app.uid = OC.currentUser;
+        if(typeof gantt === 'object'){
 
-		/**
-		 * Start controller handler
-		 */
-        app.controller.main.construct();
+            /**
+             * Set application options
+             */
+            app.uid = OC.currentUser;
+
+            /**
+             * Start controller handler
+             */
+            app.controller.main.construct();
+
+        }else{
+
+            /**
+             * Show error message on main content
+             */
+            app.action.error.page("JavaScript library dhtmlxGantt not loaded. Object gantt is: " + (typeof gantt));
+
+        }
+
 	}
 
 	/*app methods*/

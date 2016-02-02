@@ -10,11 +10,37 @@
 
     var o = app.action.chart;
 
-    o.elem = null;
+    o.init = function(){
 
-    o.init = function(selector){
-        o.elem = $(selector);
+        gantt.init(app.elem['gantt']);
+
+        /**/
+        gantt.parse({
+            data:   app.data.tasks,
+            links:  app.data.links
+        });
+
+        o.fixedSize();
+/*
+        gantt.attachEvent("onBeforeTaskUpdate", eventBeforeTaskUpdate);
+        gantt.attachEvent("onAfterTaskUpdate", eventAfterTaskUpdate);
+        gantt.attachEvent("onAfterTaskDelete", eventAfterTaskDelete);
+        gantt.attachEvent("onBeforeTaskAdd", eventBeforeTaskAdd);
+        */
+        gantt.attachEvent("onGanttReady", onGanttReady);
+        //gantt.attachEvent("onGanttRender", onGanttReady);
     };
+
+    o.fixedSize = function (){
+        $(app.elem['gantt'])
+            .css('height',(window.innerHeight-100) + 'px')
+            .css('width',(window.innerWidth) + 'px');
+    };
+
+    function onGanttReady(e){
+        o.fixedSize();
+    }
+
 
 
 

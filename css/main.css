@@ -18,7 +18,23 @@ html, body {
 #app-content {
     background-color: #EEEEEE;
 }
-
+#app-content-error{
+    display: none;
+    width: 60%;
+    margin: 0 auto;
+    text-align: center;
+}
+#app-content-error h1{
+    padding-top: 100px;
+    font-size: 125%;
+    font-weight: bold;
+    color: #b10610;
+}
+#app-content-error p{
+    padding-top: 20px;
+    line-height: 25px;
+    color: #71050d;
+}
 #app-content-wrapper {
     overflow: hidden;
 }
@@ -157,7 +173,7 @@ html, body {
     text-align: right;
 }
 
-#lbox {
+#app-lbox {
     display: none;
     position: absolute;
     padding: 10px 15px;
@@ -167,7 +183,7 @@ html, body {
     z-index: 999;
 }
 
-#lbox .close {
+#app-lbox .close {
     text-align: right;
     font-weight: bold;
 }

@@ -11,12 +11,28 @@
      * Construct call first when this controller run
      */
     o.construct = function() {
-        // First loaded all project data on API
-        app.api('getproject', onProjectLoaded);
 
-        // Next step, after loaded DOM elements, get gantt block for manipulation
+        /**
+         * First we need to select all the elements necessary for work.
+         * But after the DOM is loaded
+         */
         $(document).ready(onDocumentLoaded);
     };
+
+    function onDocumentLoaded(){
+
+        /**
+         * Query DOM Elements
+         */
+        app.action.page.init();
+
+        /**
+         * The next step is to load the project data via a special API
+         */
+        app.api('getproject', onProjectLoaded);
+
+    }
+
 
     /**
      * API execute function, load full data project
@@ -33,16 +49,24 @@
     function onProjectLoaded(response){
         if(typeof response === 'object' && response.project && response.tasks && response.links && response.resources){
 
-            console.log(response.access);
-            console.log(response);
+            app.data = response;
+
+
+
+            app.action.chart.init();
+
+            //console.log(response.access);
+            //console.log(app.data.project);
+            //console.log(app.action.page);
+
+        }else{
+
+            /**
+             * Show error message on main content
+             */
+            app.action.error.page("Project database not loaded");
 
         }
-
-
-    }
-
-    function onDocumentLoaded(){
-
 
 
     }
