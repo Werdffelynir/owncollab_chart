@@ -21,6 +21,8 @@ var app = app || {
 
 		/*dependent actions*/
 		action: {
+            chart: {},
+			error: {},
             lightbox: {},
             sidebar: {}
 		},
@@ -41,6 +43,8 @@ var app = app || {
 	inc.require(path+'/js/app/controller/main.js');
 	inc.require(path+'/js/app/controller/settings.js');
 
+	inc.require(path+'/js/app/action/error.js');
+	inc.require(path+'/js/app/action/chart.js');
 	inc.require(path+'/js/app/action/sidebar.js');
 	inc.require(path+'/js/app/action/lightbox.js');
 
@@ -57,13 +61,16 @@ var app = app || {
 
 	function onLoaded() {
 		console.log('application loaded...');
+
         /**
          * Set application options
          */
         app.uid = OC.currentUser;
 
-        if(hash.length > 0)
-		    app.controller.main.construct(hash);
+		/**
+		 * Start controller handler
+		 */
+        app.controller.main.construct();
 	}
 
 	/*app methods*/
@@ -79,5 +86,6 @@ var app = app || {
             }
         });
     };
+
 
 })(jQuery, OC, app);

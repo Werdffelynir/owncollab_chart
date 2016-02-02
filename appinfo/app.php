@@ -30,7 +30,7 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 		'order' => 10,
 		'href' => $urlGenerator->linkToRoute($appName.'.main.index'),
 		'icon' => $urlGenerator->imagePath($appName, 'app.svg'),
-		'name' => $l10n->t('Chart OwnCollab ')
+		'name' => $l10n->t('Chart ')
 	];
 });
 

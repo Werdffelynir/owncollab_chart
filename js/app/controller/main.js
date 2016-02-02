@@ -9,21 +9,35 @@
 
     /**
      * Construct call first when this controller run
-     * @param hash
      */
-    o.construct = function(hash) {
-
+    o.construct = function() {
         // First loaded all project data on API
-        app.api('getproject', onProjectLoaded, {hash:hash});
+        app.api('getproject', onProjectLoaded);
 
-        // Next step, after loaded DOM elements, get gantt block
+        // Next step, after loaded DOM elements, get gantt block for manipulation
         $(document).ready(onDocumentLoaded);
-
     };
 
-    function onProjectLoaded(res){
+    /**
+     * API execute function, load full data project
+     * @param response - is a Object {
+     *                                  access:     "allow|deny",
+     *                                  errorInfo:  "",
+     *                                  uid:        "",
+     *                                  project:    Object,
+     *                                  tasks:      Array,
+     *                                  links:      Array,
+     *                                  resources:  Array
+     *                                }
+     */
+    function onProjectLoaded(response){
+        if(typeof response === 'object' && response.project && response.tasks && response.links && response.resources){
 
-        console.log(res);
+            console.log(response.access);
+            console.log(response);
+
+        }
+
 
     }
 

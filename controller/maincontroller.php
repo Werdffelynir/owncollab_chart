@@ -84,8 +84,8 @@ class MainController extends Controller {
 	 * @return DataResponse
 	 */
 	public function page() {
-        $project = $this->connect->project()->getById(2);
-		return new DataResponse(['echo' => $project]);
+        //$project = $this->connect->project()->getById(2);
+		//return new DataResponse(['echo' => $project]);
 	}
 
 	/**

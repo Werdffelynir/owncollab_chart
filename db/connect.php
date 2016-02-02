@@ -9,15 +9,17 @@ class Connect
 {
     /** @var IDBConnection  */
     public $db;
-    /** @var Project database table */
+
+    /** @var Project model of database table */
     private $project;
-    /** @var Project_Settings  database table */
-    private $projectSettings;
-    /** @var Task  database table */
+
+    /** @var Task model of database table */
     private $task;
-    /** @var Link  database table */
+
+    /** @var Link model of database table */
     private $link;
-    /** @var Resource  database table */
+
+    /** @var \OCA\Owncollab_Chart\Db\Resource model of database table */
     private $resource;
 
     /**
@@ -28,11 +30,10 @@ class Connect
         $this->db = $db;
 
         // Register tables models
-        $this->project = new Project($this, 'collab_projects');
-        $this->projectSettings = new Project_Settings($this, 'collab_project_settings');
-        $this->task = new Task($this, 'collab_gantt_tasks');
-        $this->link = new Link($this, 'collab_gantt_links');
-        $this->resource = new Resource($this, 'collab_task_resources');
+        $this->resource = new Resource($this, 'collab_resources');
+        $this->project = new Project($this, 'collab_project');
+        $this->task = new Task($this, 'collab_tasks');
+        $this->link = new Link($this, 'collab_links');
     }
 
     /**
@@ -120,7 +121,7 @@ class Connect
 
     /**
      * Retry instance of class working with database
-     * Table of collab_projects
+     * Table of collab_project
      * @return Project
      */
     public function project() {
@@ -129,16 +130,7 @@ class Connect
 
     /**
      * Retry instance of class working with database
-     * Table of collab_project_settings
-     * @return Project_Settings
-     */
-    public function projectSettings() {
-        return $this->projectSettings;
-    }
-
-    /**
-     * Retry instance of class working with database
-     * Table of collab_gantt_tasks
+     * Table of collab_tasks
      * @return Task
      */
     public function task() {
@@ -147,7 +139,7 @@ class Connect
 
     /**
      * Retry instance of class working with database
-     * Table of collab_gantt_links
+     * Table of collab_links
      * @return Link
      */
     public function link() {
@@ -156,8 +148,8 @@ class Connect
 
     /**
      * Retry instance of class working with database
-     * Table of collab_task_resources
-     * @return Resource
+     * Table of collab_resources
+     * @return \OCA\Owncollab_Chart\Db\Resource
      */
     public function resource() {
         return $this->resource;

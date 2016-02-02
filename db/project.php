@@ -5,10 +5,10 @@ namespace OCA\Owncollab_Chart\Db;
 
 class Project
 {
-    /** @var  Connect */
+    /** @var Connect $connect object instance working with database */
     private $connect;
 
-    /** @var string table name */
+    /** @var string $tableName table name in database */
     private $tableName;
 
     /**
@@ -22,32 +22,15 @@ class Project
     }
 
     /**
-     * Get one record by id
-     * @param $id
-     * @return mixed
+     * Retrieve all date of project settings
+     *
+     * @return array|null
      */
-    public function getById($id) {
-        $project = $this->connect->select("*", $this->tableName, "id = :id",[':id' => $id]);
-        return $project;
+    public function get(){
+        $sql = "SELECT *, DATE_FORMAT( `share_expire_time`, '%d-%m-%Y %H:%i:%s') as share_expire_time
+                FROM `{$this->tableName}`";
+        return $this->connect->query($sql);
     }
-
-    /**
-     * Get one record by name
-     * @param $name
-     * @return mixed
-     */
-    public function findByName($name){
-        $sql = "SELECT * , DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date
-                FROM `{$this->tableName}` WHERE `name` = ?";
-        return $this->connect->query($sql,[$name]);
-    }
-
-
-    /*public function findByNameWithSettings($name){
-        $sql = "SELECT * , DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date
-                FROM `{$this->tableName}` WHERE `name` = ?";
-        return $this->connect->query($sql,[$name]);
-    }*/
 
 
 }
