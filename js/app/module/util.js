@@ -16,7 +16,7 @@
         };
     }
 
-	var o = app.module.util;
+	var o = app.u = app.module.util;
 
     o.objClone = function(obj){
         if (obj === null || typeof obj !== 'object') return obj;
@@ -77,8 +77,10 @@
     o.toNode = function(data) {
         var parser = new DOMParser();
         var node = parser.parseFromString(data, "text/xml");
+        console.log(node);
         if(typeof node == 'object' && node.firstChild.nodeType == Node.ELEMENT_NODE)
             return node.firstChild;
+        else return false;
     };
     // Removes duplicate values from an array
     o.uniqueArr = function (arr) {
@@ -88,7 +90,19 @@
         }
         return tmp;
     };
-
-    window.Util = o;
+    // Reads entire file into a string
+    // This function uses XmlHttpRequest and cannot retrieve resource from different domain.
+    o.fileGetContents = function(url) {
+        var req = null;
+        try { req = new ActiveXObject("Msxml2.XMLHTTP"); } catch (e) {
+            try { req = new ActiveXObject("Microsoft.XMLHTTP"); } catch (e) {
+                try { req = new XMLHttpRequest(); } catch(e) {}
+            }
+        }
+        if (req == null) throw new Error('XMLHttpRequest not supported');
+        req.open("GET", url, false);
+        req.send(null);
+        return req.responseText;
+    };
 
 })(jQuery, OC, app);

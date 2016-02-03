@@ -2,7 +2,7 @@
 
 namespace OCA\Owncollab_Chart\Controller;
 
-use OCA\Owncollab\Helper;
+use OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Db\Connect;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;

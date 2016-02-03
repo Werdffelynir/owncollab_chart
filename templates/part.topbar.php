@@ -1,3 +1,3 @@
 <div class="topbar">
-    <div class="toggle_sidebar"></div>
+    <div id="sidebar-toggle"></div>
 </div>

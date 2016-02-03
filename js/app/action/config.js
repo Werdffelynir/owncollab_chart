@@ -10,11 +10,35 @@
 
     var o = app.action.config;
 
+
+    /**
+     * Common gantt.config
+     */
     o.init = function(){
+
+        gantt.config.api_date = "%Y-%m-%d %H:%i";
+        gantt.config.task_date = "%Y-%m-%d %H:%i";
+        gantt.config.date_grid = "%Y-%m-%d %H:%i";
+
+    };
+
+
+    /**
+     * Internal gantt.config, for authorized user
+     */
+    o.internal = function(){
 
 
     };
 
 
+
+    /**
+     * External gantt.config, for public
+     */
+    o.external = function(){
+
+
+    };
 
 })(jQuery, OC, app);

@@ -17,10 +17,12 @@ html, body {
 
 #app-content {
     background-color: #EEEEEE;
+    height:100%;
 }
 #app-content-error{
     display: none;
     width: 60%;
+    height:100%;
     margin: 0 auto;
     text-align: center;
 }
@@ -37,9 +39,10 @@ html, body {
 }
 #app-content-wrapper {
     overflow: hidden;
+    height:100%;
 }
 
-#chart_gantt_visual {
+#gantt-chart {
     background-color: #FFF;
     width:100%;
     height:100%;
@@ -110,7 +113,7 @@ html, body {
     height: 30px;
 }
 
-.toggle_sidebar {
+#sidebar-toggle {
     display: inline-block;
     background: url("/core/img/actions/menu.png") no-repeat center center;
     width: 30px;
@@ -127,11 +130,11 @@ html, body {
     font-weight: bold;
 }
 
-#sidebar_tab {
+#sidebar-tab {
     margin-bottom: 5px;
 }
 
-#sidebar_tab span {
+#sidebar-tab span {
     display: inline-block;
     padding: 3px 10px 5px;
     font-size: 110%;
@@ -144,7 +147,7 @@ html, body {
     color: #000 !important;
 }
 
-#sidebar_content > div {
+#sidebar-content > div {
     display: none;
 }
 
@@ -212,7 +215,7 @@ html, body {
     width: 100px;
 }
 
-.lbox_popup {
+.lbox-popup {
     display: none;
     box-shadow: 0 5px 15px -1px rgba(0, 0, 0, 0.65);
     position: absolute;

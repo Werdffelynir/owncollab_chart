@@ -3,7 +3,7 @@
 namespace OCA\Owncollab_Chart\AppInfo;
 
 
-use \OCA\Owncollab\Helper;
+use \OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Controller\ApiController;
 use OCA\Owncollab_Chart\Controller\MainController;
 use OCA\Owncollab_Chart\Db\Connect;

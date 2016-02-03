@@ -25,7 +25,7 @@ var app = app || {
 		/*dependent modules*/
 		module: {
 			db: {},
-			cookie: {}
+			util: {}
 		},
 
 		/*dependent actions*/
@@ -47,6 +47,9 @@ var app = app || {
 			links:null,
 			resources:null
 		},
+
+		/*link of app.module.util object*/
+		u:{},
 
         /*edit data to save*/
         edit: {

@@ -41,7 +41,13 @@
         o.fixedSize();
     }
 
+/*
 
+ //var formatFunc = gantt.date.date_to_str("%d.%m.%Y %H:%i");
+ //var formatFunc = gantt.date.str_to_date("%d.%m.%Y %H:%i");
+
+
+ */
 
 
 })(jQuery, OC, app);

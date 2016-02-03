@@ -11,7 +11,7 @@
 
 namespace OCA\Owncollab_Chart\AppInfo;
 
-use OCA\Owncollab\Helper;
+use OCA\Owncollab_Chart\Helper;
 use OCP\AppFramework\App;
 use OCP\Util;
 

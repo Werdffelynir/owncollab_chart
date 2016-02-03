@@ -4,8 +4,6 @@
  * @var array $_
  */
 
-use \OCA\Owncollab\Helper;
-
 
 ?>
 
