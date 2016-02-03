@@ -16,13 +16,7 @@
      */
     o.init = function(){
 
-        app.elem['app'] = $('#app')[0];
-        app.elem['app-content'] = $('#app-content')[0];
-        app.elem['app-content-error'] = $('#app-content-error')[0];
-        app.elem['app-content-wrapper'] = $('#app-content-wrapper')[0];
-        app.elem['app-sidebar'] = $('#app-sidebar')[0];
-        app.elem['app-lbox'] = $('#app-lbox')[0];
-        app.elem['gantt'] = $('#chart_gantt_visual')[0];
+
 
 
 

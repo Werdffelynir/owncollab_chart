@@ -8,7 +8,7 @@ var app = app || {
         pid: null,
 
         /*DOM Elements*/
-        elem: {},
+        dom: {},
 
         /*application name and folder*/
         name: 'owncollab_chart',
@@ -34,7 +34,6 @@ var app = app || {
             config: {},
 			error: {},
             lightbox: {},
-            page: {},
             sidebar: {}
 		},
 
@@ -71,10 +70,10 @@ var app = app || {
 	inc.require(path+'/js/app/action/config.js');
 	inc.require(path+'/js/app/action/error.js');
 	inc.require(path+'/js/app/action/sidebar.js');
-	inc.require(path+'/js/app/action/page.js');
 	inc.require(path+'/js/app/action/lightbox.js');
 
 	inc.require(path+'/js/app/module/db.js');
+	inc.require(path+'/js/app/module/util.js');
 
 	inc.onerror = onError;
 	inc.onload = onLoaded;
@@ -113,6 +112,12 @@ var app = app || {
 
 	/*app methods*/
 
+    /**
+     * The method requests to the server. The application should use this method for asynchronous requests
+     * @param key
+     * @param func
+     * @param args
+     */
     app.api = function (key, func, args){
         $.ajax({
             url: app.url + '/api',

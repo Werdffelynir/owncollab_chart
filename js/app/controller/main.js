@@ -24,7 +24,7 @@
         /**
          * Query DOM Elements
          */
-        app.action.page.init();
+        queryDomElements();
 
         /**
          * The next step is to load the project data via a special API
@@ -36,22 +36,22 @@
 
     /**
      * API execute function, load full data project
-     * @param response - is a Object {
-     *                                  access:     "allow|deny",
-     *                                  errorInfo:  "",
-     *                                  uid:        "",
-     *                                  project:    Object,
-     *                                  tasks:      Array,
-     *                                  links:      Array,
-     *                                  resources:  Array
-     *                                }
+     *
+     * response is a Object:
+     *   access:     "allow|deny",  // It contains "deny" if execute method not exist or permission deny or uid not send
+     *   errorInfo:  "",            // It contains error message
+     *   uid:        "",            // now auth
+     *   project:    Object,        // project settings
+     *   tasks:      Array,         // gantt tasks data
+     *   links:      Array,         // gantt links data
+     *   resources:  Array          // tasks resources
+     *
+     * @param response
      */
     function onProjectLoaded(response){
         if(typeof response === 'object' && response.project && response.tasks && response.links && response.resources){
 
             app.data = response;
-
-
 
             app.action.chart.init();
 
@@ -68,6 +68,23 @@
 
         }
 
+
+    }
+
+
+    /**
+     * Query DOM Elements
+     * Appointment links DOM Elements necessary for use
+     */
+    function queryDomElements(){
+
+        app.dom['app'] = $('#app')[0];
+        app.dom['app-content'] = $('#app-content')[0];
+        app.dom['app-content-error'] = $('#app-content-error')[0];
+        app.dom['app-content-wrapper'] = $('#app-content-wrapper')[0];
+        app.dom['app-sidebar'] = $('#app-sidebar')[0];
+        app.dom['app-lbox'] = $('#app-lbox')[0];
+        app.dom['gantt'] = $('#chart_gantt_visual')[0];
 
     }
 

@@ -7,7 +7,7 @@
 if(!empty($_['current_user'])):
 ?>
 
-    <div id="chart_gantt_visual" data-id="<?php p($_['current_user'])?>"></div>
+    <div id="chart_gantt_visual" data-id="<?php p($_['current_user'])?>" style="height: 100%"></div>
 
     <div id="chart_gantt_zoom">
         <div class="tbl gantt_zoom_line">

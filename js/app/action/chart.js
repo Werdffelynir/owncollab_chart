@@ -12,7 +12,7 @@
 
     o.init = function(){
 
-        gantt.init(app.elem['gantt']);
+        gantt.init(app.dom['gantt']);
 
         /**/
         gantt.parse({
@@ -32,7 +32,7 @@
     };
 
     o.fixedSize = function (){
-        $(app.elem['gantt'])
+        $(app.dom['gantt'])
             .css('height',(window.innerHeight-100) + 'px')
             .css('width',(window.innerWidth) + 'px');
     };
