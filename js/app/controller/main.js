@@ -12,6 +12,7 @@
      */
     o.construct = function() {
 
+
         /**
          * First we need to select all the elements necessary for work.
          * But after the DOM is loaded
@@ -44,22 +45,65 @@
      *
      * response is a Object:
      *   access:     "allow|deny",  // It contains "deny" if execute method not exist or permission deny or uid not send
-     *   errorInfo:  "",            // It contains error message
+     *   errorinfo:  "",            // It contains error message
      *   uid:        "",            // now auth
+     *   isadmin:    "",            // user is admin
      *   project:    Object,        // project settings
      *   tasks:      Array,         // gantt tasks data
      *   links:      Array,         // gantt links data
      *   resources:  Array          // tasks resources
+     *   groupsusers:Object         // classify users into groups
      *
+     * @type {{access,errorinfo,uid,isadmin,project,tasks,links,resources,groupsusers}} response
      * @param response
      */
     function onProjectLoaded(response){
-        if(typeof response === 'object' && response.project && response.tasks && response.links && response.resources){
+        if(typeof response === 'object' && response.project && response.tasks && response.links && response.resources && response.groupsusers){
 
+            // Response data type errors
+            var error = [],
+                errorString = "";
+
+            // Defined response data per conformity/discrepancy, and throw an errors
+            if(!app.u.isObj(response.project))
+                error.push("Variable the response.project. Object must be of type Array, but returned type the: " + String(typeof response.project));
+
+            if(!app.u.isArr(response.tasks))
+                error.push("Variable the response.tasks. Array must be of type Array, but returned type the: " + typeof response.tasks);
+
+            if(!app.u.isArr(response.links))
+                error.push("Variable the response.links. Array must be of type Array, but returned type the: " + typeof response.links);
+
+            if(!app.u.isArr(response.resources))
+                error.push("Variable the response.resources. Array must be of type Array, but returned type the: " + typeof response.resources);
+
+            if(error.length > 0){
+                error.map(function(item){
+                    errorString += "<p>Response data Error! " + item + "</p>";
+                });
+                app.action.error.page(errorString);
+                return;
+            }
+
+
+            console.log(response);
+            console.log(app.requesttoken);
+
+
+            // appoint response as data
             app.data = response;
 
+            // run action.config
+            app.action.config.init();
+
+            // run action.chart
             app.action.chart.init();
+
+            // run action.sidebar
             app.action.sidebar.init();
+
+            // Put project data settings into fields of sidebar
+            app.action.sidebar.putProjectSettings(app.data.project);
 
         }else{
 

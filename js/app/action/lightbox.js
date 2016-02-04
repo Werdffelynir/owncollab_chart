@@ -7,6 +7,7 @@
     // elimination of dependence this action object
     if(typeof app.action.lightbox !== 'object') app.action.lightbox = {};
 
+    // alias of app.action.lightbox
     var o = app.action.lightbox;
 
     o.init = function(){};

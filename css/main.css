@@ -19,21 +19,23 @@ html, body {
     background-color: #EEEEEE;
     height:100%;
 }
+
 #app-content-error{
     display: none;
     width: 60%;
     height:100%;
+    padding: 10px;
     margin: 0 auto;
     text-align: center;
 }
 #app-content-error h1{
     padding-top: 100px;
+    padding-bottom: 10px;
     font-size: 125%;
     font-weight: bold;
     color: #b10610;
 }
 #app-content-error p{
-    padding-top: 20px;
     line-height: 25px;
     color: #71050d;
 }
@@ -227,6 +229,7 @@ html, body {
 #on_task_add, #on_task_remove, #on_task_edit {
     display: inline-block;
     margin-top: 3px;
+    margin-left: -3px;
     width: 16px;
     height: 16px;
 }
@@ -243,10 +246,7 @@ html, body {
     background: url('/apps/owncollab/img/drafts.png') no-repeat center center;
 }
 
-.gc_default_row {
-    background-color: #1B314D;
-    color: #ffffff;
-}
+.gc_default_row {}
 
 #check_predecessor {
 }

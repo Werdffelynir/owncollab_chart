@@ -9,7 +9,7 @@
  * @copyright Your Name 2016
  */
 
-namespace OCA\MyApp\Controller;
+namespace OCA\OwnCollab_Chart\Controller;
 
 use PHPUnit_Framework_TestCase;
 

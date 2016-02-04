@@ -16,8 +16,10 @@
         };
     }
 
+    // alias of app.u and app.module.util
 	var o = app.u = app.module.util;
 
+    // Clone object
     o.objClone = function(obj){
         if (obj === null || typeof obj !== 'object') return obj;
         var temp = obj.constructor();
@@ -25,17 +27,21 @@
             temp[key] = o.objClone(obj[key]);
         return temp;
     };
+    // Count object length
     o.objLen = function(obj){
         var it = 0;
         for(var k in obj) it ++;
         return it;
     };
+    // Check on typeof is string a param
     o.isStr = function(param) {
         return (typeof param === 'string');
     };
-    o.isArr = function(arr) {
-        return Array.isArray(arr);
+    // Check on typeof is array a param
+    o.isArr = function(param) {
+        return Array.isArray(param);
     };
+    // Check on typeof is object a param
     o.isObj = function(param) {
         return (param !== null && typeof param == 'object');
     };

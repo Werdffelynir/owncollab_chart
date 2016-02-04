@@ -4,6 +4,7 @@ namespace OCA\Owncollab_Chart\Controller;
 
 use OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Db\Connect;
+use OCP\IConfig;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\DataResponse;
@@ -11,7 +12,6 @@ use OCP\AppFramework\Controller;
 use OCP\Template;
 
 class ApiController extends Controller {
-
 
 	/** @var string $userId
 	 * current auth user id */
@@ -33,6 +33,7 @@ class ApiController extends Controller {
 	 * instance working with database */
 	private $connect;
 
+
 	/**
 	 * ApiController constructor.
 	 * @param string $appName
@@ -51,6 +52,7 @@ class ApiController extends Controller {
 		Connect $connect
 	){
 		parent::__construct($appName, $request);
+
 		$this->userId = $userId;
 		$this->isAdmin = $isAdmin;
 		$this->l10n = $l10n;
@@ -71,7 +73,7 @@ class ApiController extends Controller {
         else
             return new DataResponse([
                 'access' => 'deny',
-                'errorInfo' => 'API method not exists',
+                'errorinfo' => 'API method not exists',
             ]);
 	}
 
@@ -88,19 +90,22 @@ class ApiController extends Controller {
 
 		$uid = $this->userIdAPI;
         $params = [
-            'access' => 'deny',
-            'errorInfo' => '',
-            'uid' => $uid
+            'access' 	=> 'deny',
+            'errorinfo' => '',
+            'isadmin' 	=> $this->isAdmin,
+            'uid' 		=> $uid,
+            'isCallRegistered' 		=> (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 
         if($this->isAdmin && $uid){
-            $params['access'] = 'allow';
-            $params['project'] = $this->connect->project()->get();
-            $params['tasks'] = $this->connect->task()->get();
-            $params['links'] = $this->connect->link()->get();
-            $params['resources'] = $this->connect->resource()->get();
+            $params['access'] 		= 'allow';
+            $params['project'] 		= $this->connect->project()->get();
+            $params['tasks'] 		= $this->connect->task()->get();
+            $params['links'] 		= $this->connect->link()->get();
+            $params['resources'] 	= $this->connect->resource()->get();
+            $params['groupsusers'] 	= $this->connect->resource()->getGroupsUsersList();
         }else
-            $params['errorInfo'] = 'API method require - uid and request as admin';
+            $params['errorinfo'] 	= 'API method require - uid and request as admin';
 
         return new DataResponse($params);
 	}

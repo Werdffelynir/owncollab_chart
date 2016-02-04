@@ -8,6 +8,7 @@
     if(typeof app.action.error !== 'object')
         app.action.error = {};
 
+    // alias of app.action.error
     var o = app.action.error;
 
     o.page = function (text){

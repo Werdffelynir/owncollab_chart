@@ -85,6 +85,11 @@ class Application extends App {
 
     }
 
+    /**
+     * Static saved application name,
+     * @param null $name
+     * @return null
+     */
     public static function appName ($name = null){
         static $_appName;
         if (!empty($name)) $_appName = $name;
