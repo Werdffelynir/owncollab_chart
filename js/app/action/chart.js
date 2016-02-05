@@ -62,14 +62,25 @@
     };
 
     /**
-     * Performs resize the HTML Element of gantt chart, establishes the dimensions
-     * of gantt chart to a full page by width and height
+     * Performs resize the HTML Element - gantt chart, establishes the dimensions to a full page by width and height
+     * Use: app.action.chart.ganttFullSize()
      */
     o.ganttFullSize = function (){
         $(app.dom.gantt)
             .css('height',(window.innerHeight-100) + 'px')
             .css('width',(window.innerWidth) + 'px');
     };
+
+    /**
+     * Performs resize the HTMLElement - gantt chart, establishes the dimensions to a size HTMLElement - #content
+     * Use: app.action.chart.ganttInblockSize()
+     */
+    o.ganttInblockSize = function (){
+        $(app.dom.gantt)
+            .css('height',(window.innerHeight-100) + 'px')
+            .css('width',$(app.dom.content).outerHeight() + 'px');
+    };
+
 
     /**
      * Setting up the gantt chart scale

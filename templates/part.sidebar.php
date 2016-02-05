@@ -6,7 +6,7 @@
 
 ?>
 
-<div id="sidebar_wrapper">
+<div id="sidebar-wrapper">
     <div id="sidebar-tab">
         <span id="sidebar_tab_1" class="sidebar_tab_active"><?php p($l->t('Share'));?></span>
         <span id="sidebar_tab_2"><?php p($l->t('Export'));?></span>
@@ -24,6 +24,4 @@
         </div>
     </div>
 </div>
-
-
 

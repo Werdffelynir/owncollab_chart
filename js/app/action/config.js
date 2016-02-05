@@ -59,7 +59,7 @@
         gantt.config.autofit = true;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = false;
+        gantt.config.fit_tasks = true;
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1)

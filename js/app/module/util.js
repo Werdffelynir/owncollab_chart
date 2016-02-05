@@ -5,8 +5,8 @@
 
 (function($, OC, app){
 
-	// elimination of dependence this action object
-	if(typeof app.module.util !== 'object') {
+    // elimination of dependence this action object
+    if(typeof app.module.util !== 'object') {
         app.module.util = {};
     }
 
@@ -17,7 +17,7 @@
     }
 
     // alias of app.u and app.module.util
-	var o = app.u = app.module.util;
+    var o = app.u = app.module.util;
 
     // Clone object
     o.objClone = function(obj){
@@ -27,44 +27,60 @@
             temp[key] = o.objClone(obj[key]);
         return temp;
     };
+
     // Count object length
     o.objLen = function(obj){
         var it = 0;
         for(var k in obj) it ++;
         return it;
     };
+
     // Check on typeof is string a param
     o.isStr = function(param) {
         return (typeof param === 'string');
     };
+
     // Check on typeof is array a param
     o.isArr = function(param) {
         return Array.isArray(param);
     };
+
     // Check on typeof is object a param
     o.isObj = function(param) {
         return (param !== null && typeof param == 'object');
     };
+
     // Finds whether a variable is a number or a numeric string
     o.isNum = function(param) {
         return !isNaN(param);
     };
+
+    // Determine param to undefined type
+    o.defined = function(param) {
+        return typeof(param) != 'undefined';
+    };
+
     // Determine whether a variable is empty
     o.isEmpty = function(param) {
         return (param===""||param===0||param==="0"||param===null||param===undefined||param===false||(o.isArr(param)&&param.length===0));
     };
+
     // Javascript object to JSON data
     o.objToJson = function(data) {
         return JSON.stringify(data);
     };
+
     // JSON data to Javascript object
     o.jsonToObj = function(data) {
         return JSON.parse(data);
     };
+
     // Return type of data as name object "Array", "Object", "String", "Number", "Function"
     o.typeOf = function(data) {
         return Object.prototype.toString.call(data).slice(8, -1);
     };
+
+    // Convert HTML form to encode URI string
     o.formData = function (form, asObject){
         var obj = {}, str = '';
         for(var i=0;i<form.length;i++){
@@ -79,6 +95,7 @@
         }
         return (asObject === true)?obj:str;
     };
+
     // HTML string convert to DOM Elements Object
     o.toNode = function(data) {
         var parser = new DOMParser();
@@ -88,6 +105,7 @@
             return node.firstChild;
         else return false;
     };
+
     // Removes duplicate values from an array
     o.uniqueArr = function (arr) {
         var tmp = [];
@@ -96,6 +114,7 @@
         }
         return tmp;
     };
+
     // Reads entire file into a string
     // This function uses XmlHttpRequest and cannot retrieve resource from different domain.
     o.fileGetContents = function(url) {
@@ -110,5 +129,31 @@
         req.send(null);
         return req.responseText;
     };
+
+    //
+    o.getPosition = function(elem) {
+        var top=0, left=0;
+        if (elem.getBoundingClientRect) {
+            var box = elem.getBoundingClientRect();
+            var body = document.body;
+            var docElem = document.documentElement;
+            var scrollTop = window.pageYOffset || docElem.scrollTop || body.scrollTop;
+            var scrollLeft = window.pageXOffset || docElem.scrollLeft || body.scrollLeft;
+            var clientTop = docElem.clientTop || body.clientTop || 0;
+            var clientLeft = docElem.clientLeft || body.clientLeft || 0;
+            top  = box.top +  scrollTop - clientTop;
+            left = box.left + scrollLeft - clientLeft;
+            return { y: Math.round(top), x: Math.round(left), width:elem.offsetWidth, height:elem.offsetHeight };
+        } else { //fallback to naive approach
+            while(elem) {
+                top = top + parseInt(elem.offsetTop,10);
+                left = left + parseInt(elem.offsetLeft,10);
+                elem = elem.offsetParent;
+            }
+            return { y: top, x: left, width:elem.offsetWidth, height: elem.offsetHeight};
+        }
+    };
+
+
 
 })(jQuery, OC, app);

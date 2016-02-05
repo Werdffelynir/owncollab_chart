@@ -39,6 +39,7 @@ var app = app || {
             chart: {},
 			error: {},
             event: {},
+            export: {},
             config: {},
             sidebar: {},
             lightbox: {}
@@ -70,8 +71,7 @@ var app = app || {
 (function ($, OC, app) {
 
 	var inc = new Inc(),
-        path = '/apps/'+app.name,
-        hash = window.location.hash.slice(1);
+        path = '/apps/' + app.name;
 
 	inc.require(path+'/js/app/controller/main.js');
 	inc.require(path+'/js/app/controller/settings.js');
@@ -79,6 +79,7 @@ var app = app || {
     inc.require(path+'/js/app/action/chart.js');
 	inc.require(path+'/js/app/action/error.js');
     inc.require(path+'/js/app/action/event.js');
+    inc.require(path+'/js/app/action/export.js');
     inc.require(path+'/js/app/action/config.js');
 	inc.require(path+'/js/app/action/sidebar.js');
 	inc.require(path+'/js/app/action/lightbox.js');
@@ -91,10 +92,19 @@ var app = app || {
 
 	inc.init();
 
+    /**
+     * Executed if any errors occur while loading scripts
+     *
+     * @param error
+     */
 	function onError(error) {
-		console.error('Error on loading script', error);
+		console.error('Error on loading script. Message: ' + error);
+        app.action.error.page('Error on loading script');
 	}
 
+    /**
+     * Running when all scripts loaded is successfully
+     */
 	function onLoaded() {
 		console.log('application loaded...');
 
@@ -103,7 +113,7 @@ var app = app || {
             /**
              * Set application options
              */
-            app.uid = OC.currentUser;
+            app.uid = OC.currentUser == app.uid ? app.uid : null;
 
             /**
              * Start controller handler
@@ -125,9 +135,10 @@ var app = app || {
 
     /**
      * The method requests to the server. The application should use this method for asynchronous requests
-     * @param key
-     * @param func
-     * @param args
+     *
+     * @param key  Its execute method on server
+     * @param func After request, a run function
+     * @param args Arguments to key method
      */
     app.api = function (key, func, args){
         $.ajax({
@@ -138,23 +149,14 @@ var app = app || {
             success: function(response){
                 if(typeof func === 'function')
                     func.call(app, response);
+            },
+            error: function(error){
+                console.error("API request error to the key: [" + key + "] Error message: " + error);
+                app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error);
             }
         });
     };
 
-    /*app.api = function (key, func, args){
-        var xhr = new XMLHttpRequest(),
-            data = {key:key, uid:app.uid, pid:app.pid, data:args};
-        if(xhr) {
-            xhr.open('POST', app.url + '/api', true);
-            xhr.setRequestHeader('X-PINGOTHER', 'pingpong');
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.setRequestHeader('requesttoken', app.requesttoken);
-            xhr.onreadystatechange = function(response){func.call(app, response)};
-            xhr.send(data);
-        }
-
-    };*/
 
 
 })(jQuery, OC, app);

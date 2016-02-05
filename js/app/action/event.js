@@ -23,6 +23,7 @@
         var target  = event.target,
             name    = target.name,
             type    = target.type,
+            
             /**
              * Send data
              * @type {{pid: number, uid: string, field: string, value: string}}
@@ -62,7 +63,7 @@
     };
 
     function onUpdateProject (response){
-
+        console.log(response);
     }
 
 

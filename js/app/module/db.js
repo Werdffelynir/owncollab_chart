@@ -4,10 +4,10 @@
 
 (function($, OC, app){
 
-	var o = app.module.db;
+    var o = app.module.db;
 
-	o.connect = function(){};
+    o.connect = function(){};
 
-	o.query = function(){};
+    o.query = function(){};
 
 })(jQuery, OC, app);

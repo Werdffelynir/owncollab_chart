@@ -110,6 +110,9 @@
             // run action.sidebar
             app.action.sidebar.init();
 
+            // run action.export
+            app.action.export.init();
+
             // Put project data settings into fields of sidebar
             app.action.sidebar.putProjectSettings(app.data.project);
 
@@ -129,7 +132,6 @@
      * Applying external handlers libraries and plug-ins
      */
     function enablePlugins(){
-
 
         /**
          * init jq plugin datetimepicker for all elements with class name 'datetimepic'
@@ -157,14 +159,18 @@
      */
     function queryDomElements(){
 
+        app.dom.contentWrap     = o.select('#content-wrapper');
+        app.dom.content         = o.select('#content');
         app.dom.app             = o.select('#app');
-        app.dom.content         = o.select('#app-content');
-        app.dom.contentError    = o.select('#app-content-error');
-        app.dom.contentWrap     = o.select('#app-content-wrapper');
+        app.dom.appContent      = o.select('#app-content');
+        app.dom.appContentError = o.select('#app-content-error');
+        app.dom.appContentWrap  = o.select('#app-content-wrapper');
         app.dom.sidebar         = o.select('#app-sidebar');
-        app.dom.sidebar.tabs    = o.select('#sidebar-tab');
-        app.dom.sidebar.toggle  = o.select('#sidebar-toggle');
-        app.dom.sidebar.content = o.select('#sidebar-content');
+        app.dom.sidebarTabs     = o.select('#sidebar-tab');
+        app.dom.sidebarToggle   = o.select('#sidebar-toggle');
+        app.dom.sidebarContent  = o.select('#sidebar-content');
+        app.dom.sidebarWrap     = o.select('#sidebar-wrapper');
+        app.dom.inlineError     = o.select('#app-content-inline-error');
         app.dom.lbox            = o.select('#app-lbox');
         app.dom.lbox.save       = o.select('#lbox-save');
         app.dom.lbox.cancel     = o.select('#lbox-cancel');
