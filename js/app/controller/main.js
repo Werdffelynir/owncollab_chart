@@ -54,13 +54,15 @@
      *   resources:  Array          // tasks resources
      *   groupsusers:Object         // classify users into groups
      *
-     * @type {{access,errorinfo,uid,isadmin,project,tasks,links,resources,groupsusers}} response
+     * @type {{access,errorinfo,uid,isadmin,project,tasks,links,resources,groupsusers,requesttoken}} response
      * @param response
      */
     function onProjectLoaded(response){
+
         if(typeof response === 'object' && response.project && response.tasks && response.links && response.resources && response.groupsusers){
 
             // Response data type errors
+
             var error = [],
                 errorString = "";
 
@@ -85,10 +87,16 @@
                 return;
             }
 
-
-            console.log(response);
-            console.log(app.requesttoken);
-
+            // check truth of response
+            if(!response.requesttoken.length || response.requesttoken.length < 100){
+                app.requesttoken = response.requesttoken;
+                app.action.error.page('Security at risk. Suspicious response from the server. Possible substitution of data.');
+                return;
+            }
+            if(!response.uid || app.uid !== response.uid){
+                app.action.error.page('Security at risk. Suspicious response from the server.');
+                return;
+            }
 
             // appoint response as data
             app.data = response;

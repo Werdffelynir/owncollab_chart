@@ -7,14 +7,14 @@ var app = app || {
         /*url address to current application*/
         url: OC.generateUrl('/apps/owncollab_chart'),
 
-        /*current user*/
-        uid: null,
-
         /*user is admin*/
         isAdmin: null,
 
         /*public oc_requesttoken*/
         requesttoken: oc_requesttoken ? encodeURIComponent(oc_requesttoken) : null,
+
+        /*current user*/
+        uid: oc_current_user ? encodeURIComponent(oc_current_user) : null,
 
         /*current project*/
         pid: null,

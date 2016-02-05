@@ -82,7 +82,7 @@ class ApiController extends Controller {
 	 * This method is initialized only once for loading gantt chart
 	 *
      * @NoAdminRequired
-     * @NoCSRFRequired
+     * NoCSRFRequired
      *
      * @return DataResponse
      */
@@ -90,11 +90,11 @@ class ApiController extends Controller {
 
 		$uid = $this->userIdAPI;
         $params = [
-            'access' 	=> 'deny',
-            'errorinfo' => '',
-            'isadmin' 	=> $this->isAdmin,
-            'uid' 		=> $uid,
-            'isCallRegistered' 		=> (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            'access' 	    => 'deny',
+            'errorinfo'     => '',
+            'isadmin' 	    => $this->isAdmin,
+            'uid' 		    => $uid,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 
         if($this->isAdmin && $uid){
