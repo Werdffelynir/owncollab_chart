@@ -96,13 +96,11 @@
             {name:"text", label:"Task name", tree:true, width: columnWidth.name, resize:true},
 
             {name:"start_date", label:"Start", align: "center", width: columnWidth.start, template: function(item) {
-                var formatFunc = gantt.date.date_to_str("%d.%m.%Y %H:%i");
-                return formatFunc(item.start_date);
+                return app.timeDateToStr(item.start_date);
             }},
 
             {name:"end_date", label:"End", align: "center", width: columnWidth.end, template: function(item) {
-                var formatFunc = gantt.date.date_to_str("%d.%m.%Y %H:%i");
-                return formatFunc(item.end_date);
+                return app.timeDateToStr(item.end_date);
             }},
 
             {name:"duration", label:"Duration", align: "center", width: columnWidth.duration, template: function(item) {
@@ -111,25 +109,38 @@
             }},
 
             {name:"users", label:"Resources", align: "center", width: columnWidth.resources, template: function(item) {
-                if (Array.isArray(item.users)) {
-                    var users = fn.uniqueArray(item.users);
-                    return users.join(', ');
+                if (app.u.isArr(item.users)) {
+                    return app.u.uniqueArr(item.users).join(', ');
+                }else if(app.u.isStr(item.users)){
+                    return item.users;
                 }
                 return '';
             }},
 
             {name:"added", label:"", width: columnWidth.btn, template: function(item) {
-                return '<span id="on_task_add" data-id="'+item.id+'"></span>';
+                return o.createTaskBtn('add', item.id);
+                //return '<span class="on_task_add" data-id="'+item.id+'"></span>';
             }},
 
             {name:"remove", label:"", width: columnWidth.btn, template: function(item) {
-                return '<span id="on_task_remove" data-id="'+item.id+'"></span>';
+                return o.createTaskBtn('remove', item.id);
+                //return '<span class="on_task_remove" data-id="'+item.id+'"></span>';
             }},
 
             {name:"edit", label:"", width: columnWidth.btn, template: function(item) {
-                return '<span id="on_task_edit" data-id="'+item.id+'"></span>';
+                return o.createTaskBtn('edit', item.id);
+                //return '<span id="on_task_edit" data-id="'+item.id+'"></span>';
             }}
         ];
+
+        // Advance configuration settings
+        // for admin and users and guest (walk share)
+        if(app.uid && !app.guest){
+            o.internal();
+        }
+        else{
+            o.external();
+        }
     };
 
 
@@ -139,9 +150,6 @@
     o.internal = function(){
 
 
-        // gantt lightbox disable, uses custom lightbox
-        gantt.showLightbox = function(id){};
-        gantt.hideLightbox = function(id){};
 
     };
 
@@ -152,7 +160,18 @@
      */
     o.external = function(){
 
+        // gantt lightbox disable, uses custom lightbox
+        gantt.showLightbox = function(id){};
+        gantt.hideLightbox = function(id){};
 
+    };
+
+    o.createTaskBtn = function(type, id){
+        var span = document.createElement('a');
+        span.className = 'task_control_btn icon_' + type;
+        span.setAttribute('data-control',type);
+        span.setAttribute('data-id',id);
+        return span.outerHTML;
     };
 
 })(jQuery, OC, app);

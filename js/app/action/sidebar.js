@@ -239,11 +239,11 @@
 
     /*Share*/
 
-    o.share = function(){}
+    o.share = function(){};
 
     /*Export*/
 
-    o.export = function(){}
+    o.export = function(){};
 
 
 

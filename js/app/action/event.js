@@ -71,13 +71,50 @@
     /**
      * Catch a gantt event "onGanttReady"
      *
-     * @param id
-     * @param item
      */
-    o.ganttReady = function (id, item){
-        app.action.chart.ganttFullSize();
-        console.log(id, item);
-    }
+    o.onGanttReady = function (){};
+    o.onGanttRender = function (){};
+    o.onTaskClick = function (id, event){
+        var target = event.target;
+
+        // control buttons
+        if(target.tagName == 'A' && target.getAttribute('data-control')){
+            event.preventDefault();
+            var action = target.getAttribute('data-control');
+            switch (action) {
+                case "edit":
+                    gantt.showLightbox(id);
+                    break;
+                case "add":
+                    gantt.createTask(null, id);
+                    break;
+                case "remove":
+                    gantt.confirm({
+                        title: gantt.locale.labels.confirm_deleting_title,
+                        text: gantt.locale.labels.confirm_deleting,
+                        callback: function(res){
+                            if(res)
+                                gantt.deleteTask(id);
+                        }
+                    });
+                    break;
+            }
+        }
+    };
 
 
+    /*
+    o.onAddTaskControl = function (id){
+        console.log('onAddTaskControl ' + id);
+    };
+    o.onRemoveTaskControl = function (id){
+        console.log('onRemoveTaskControl ' + id);
+    };
+    o.onEditTaskControl = function (id){
+        console.log('onEditTaskControl ' + id);
+    };
+
+'task_control_btn icon_' + type;
+ span.setAttribute('data-type',type);
+ span.setAttribute('data-id',id);*/
 })(jQuery, OC, app);

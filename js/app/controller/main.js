@@ -88,7 +88,7 @@
             }
 
             // check truth of response
-            if(!response.requesttoken.length || response.requesttoken.length < 100){
+            if(!response.requesttoken.length || response.requesttoken.length < 36){
                 app.requesttoken = response.requesttoken;
                 app.action.error.page('Security at risk. Suspicious response from the server. Possible substitution of data.');
                 return;
@@ -103,6 +103,9 @@
 
             // run action.config
             app.action.config.init();
+
+            // run action.lightbox
+            app.action.lightbox.init();
 
             // run action.chart
             app.action.chart.init();
@@ -172,9 +175,9 @@
         app.dom.sidebarWrap     = o.select('#sidebar-wrapper');
         app.dom.inlineError     = o.select('#app-content-inline-error');
         app.dom.lbox            = o.select('#app-lbox');
-        app.dom.lbox.save       = o.select('#lbox-save');
-        app.dom.lbox.cancel     = o.select('#lbox-cancel');
-        app.dom.lbox.delete     = o.select('#lbox-delete');
+        //app.dom.lbox.save       = o.select('#lbox-save');
+        //app.dom.lbox.cancel     = o.select('#lbox-cancel');
+        //app.dom.lbox.delete     = o.select('#lbox-delete');
         app.dom.gantt           = o.select('#gantt-chart');
 
     }

@@ -35,6 +35,17 @@
         // grant of initialized
         o.opt.ganttIsInit = true;
 
+        //gantt.attachEvent("onGanttRender", onGanttReady);
+        //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
+        gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
+        gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
+
+
+        /*gantt.$click.advanced_details_button=function(e, id, trg){
+            alert("These are advanced details");
+            return false; //blocks the default behavior
+        };*/
+
         // run parse data
         gantt.parse({
             data:   app.data.tasks,
@@ -43,11 +54,8 @@
 
         //o.ganttFullSize();
 
-
         // Catcher of gantt events
-        gantt.attachEvent("onGanttReady", app.action.event.ganttReady);
-
-
+        //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
 
 
@@ -58,7 +66,7 @@
         gantt.attachEvent("onBeforeTaskAdd", eventBeforeTaskAdd);
         */
 
-        //gantt.attachEvent("onGanttRender", onGanttReady);
+        //
     };
 
     /**

@@ -152,6 +152,28 @@ var app = app || {
         });
     };
 
+    // data-time picker
+    app.setTimepicker = function(selector, onSelect){
+        selector = selector || '.datetimepicker';
+        $(selector).datetimepicker({
+            minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
+            controlType: 'select',
+            oneLine: true,
+            dateFormat: 'dd.mm.yy',
+            timeFormat: 'HH:mm',
+            onSelect: onSelect || null
+        });
+    };
+
+    app.timeDateToStr = function(date){
+        var formatFunc = gantt.date.date_to_str("%d.%m.%Y %H:%i");
+        return formatFunc(date);
+    };
+
+    app.timeStrToDate = function(date){
+        var formatFunc = gantt.date.str_to_date("%d.%m.%Y %H:%i");
+        return formatFunc(date);
+    };
 
 
 })(jQuery, OC, app);

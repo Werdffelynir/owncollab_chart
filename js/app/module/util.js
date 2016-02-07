@@ -35,6 +35,18 @@
         return it;
     };
 
+    // Merge two objects into one - 'obj'
+    o.objMerge = function(obj, src){
+        if(Object.key){
+            Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
+            return obj;
+        }else{
+            for (var key in src)
+                if (src.hasOwnProperty(key)) obj[key] = src[key];
+            return obj;
+        }
+    };
+
     // Check on typeof is string a param
     o.isStr = function(param) {
         return (typeof param === 'string');
@@ -109,7 +121,7 @@
     // Removes duplicate values from an array
     o.uniqueArr = function (arr) {
         var tmp = [];
-        for (i = 0; i < arr.length; i++) {
+        for (var i = 0; i < arr.length; i++) {
             if (tmp.indexOf(arr[i]) == "-1") tmp.push(arr[i]);
         }
         return tmp;
