@@ -72,10 +72,8 @@ var app = app || {
 
 	var inc = new Inc(),
         path = '/apps/' + app.name;
-
 	inc.require(path+'/js/app/controller/main.js');
 	inc.require(path+'/js/app/controller/settings.js');
-
     inc.require(path+'/js/app/action/chart.js');
 	inc.require(path+'/js/app/action/error.js');
     inc.require(path+'/js/app/action/event.js');
@@ -83,13 +81,10 @@ var app = app || {
     inc.require(path+'/js/app/action/config.js');
 	inc.require(path+'/js/app/action/sidebar.js');
 	inc.require(path+'/js/app/action/lightbox.js');
-
 	inc.require(path+'/js/app/module/db.js');
 	inc.require(path+'/js/app/module/util.js');
-
 	inc.onerror = onError;
 	inc.onload = onLoaded;
-
 	inc.init();
 
     /**
