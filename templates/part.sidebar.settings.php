@@ -2,7 +2,8 @@
 
     <h3><?php p($l->t('Date'));?></h3>
     <div class="oneline">
-        <input name="show_today_line" type="checkbox"> <?php p($l->t('Show today as red vertical line'));?>
+        <input name="show_today_line" type="checkbox" class="checkbox">
+        <?php p($l->t('Show today as red vertical line'));?>
     </div>
 
     <h3><?php p($l->t('Taskname'));?></h3>

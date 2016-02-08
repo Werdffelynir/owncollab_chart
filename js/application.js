@@ -53,7 +53,8 @@ var app = app || {
 			project:null,
 			tasks:null,
 			links:null,
-			resources:null
+			resources:null,
+            groupsusers:null
 		},
 
 		/*link of app.module.util object*/

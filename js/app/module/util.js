@@ -87,6 +87,12 @@
         return JSON.parse(data);
     };
 
+    o.cleanArr = function (src) {
+        var arr = [];
+        for (var i = 0; i < src.length; i++)
+            if (src[i]) arr.push(src[i]);
+        return arr;
+    };
     // Return type of data as name object "Array", "Object", "String", "Number", "Function"
     o.typeOf = function(data) {
         return Object.prototype.toString.call(data).slice(8, -1);

@@ -18,6 +18,11 @@
 
     o.init = function(){
 
+        //
+        //o.resourcesViewGenerate();
+
+        //console.log(o.resourcesView);
+
         //Add the section to the lightbox configuration:
         gantt.config.lightbox.sections = [
             {name:"template", height:260, type:"template", map_to:"base_template"}
@@ -58,6 +63,7 @@
                     switch(_name){
                         case 'users':
                         case 'predecessor':
+                            fso[_name].value = o.task[_name];
                             fso[_name].onclick = o.onClickLightboxInput;
                             break;
                         case 'buffer': break;
@@ -104,14 +110,21 @@
 
 
         if(target['name'] == 'lbox_users'){
-            var popup = o.showPopup(target, 'aaaaaaaaaaaaalbox_usersaaaaaaaaaaaa');
-            console.log('lbox_users',o.task);
+            o.resourcesViewGenerate();
+            var popup = o.showPopup(target, o.resourcesView);
+            //console.log(popup);
+
+            o.resourcesAppoint(popup);
+            o.resourceOnClickListener(popup, target);
+
+            //console.log('lbox_users',o.task);
         }
         else if(target['name'] == 'lbox_predecessor'){
             o.showPopup(target, 'aaaaaaaaaaaalbox_predecessoraaaaaaaaaaaaa');
             console.log('lbox_predecessor',o.task);
         }
 
+        // gid, uid, displayname
         //console.log(target.name, target.value, target.type);
     };
 
@@ -132,9 +145,13 @@
             o.popup =  _popup;
             o.popup.content = _popupWrap;
         }
+
         o.popup.content.innerHTML = '';
-        if(content.nodeType === Node.ELEMENT_NODE) o.popup.content.appendChild(content);
-        else if(typeof content === 'string') o.popup.content.innerHTML = content;
+
+        if(content.nodeType === Node.ELEMENT_NODE || content.nodeType === Node.DOCUMENT_FRAGMENT_NODE)
+            o.popup.content.appendChild(content);
+        else if(typeof content === 'string')
+            o.popup.content.innerHTML = content;
 
         afterElement.parentNode.appendChild(o.popup);
         return o.popup;
@@ -157,6 +174,140 @@
         o.task = o.field = null;
     };
 
+    o.resourcesView = null;
+
+    o.resourcesViewGenerate = function (){
+        var fragment = document.createDocumentFragment();
+
+        for(var groupName in app.data.groupsusers){
+
+            var _lineGroup = document.createElement('div'),
+                _lineUsers = document.createElement('div'),
+                _inputGroup = document.createElement('input'),
+                users = app.data.groupsusers[groupName],
+                usersCount =  users.length;
+
+            _inputGroup.name = String(groupName).trim();
+            _inputGroup.type = 'checkbox';
+            _inputGroup.className = 'group';
+            _inputGroup.setAttribute('data-type', 'group');
+
+            _lineGroup.appendChild(_inputGroup);
+            _lineGroup.innerHTML += ' <strong>' + groupName + '</strong>';
+
+            for(var i=0; i<usersCount; i++){
+                var _inlineUser = document.createElement('span'),
+                    _inputUser = document.createElement('input');
+
+                _inputUser.name = users[i]['uid'];
+                _inputUser.type = 'checkbox';
+                _inputUser.className = 'user';
+                _inputUser.setAttribute('data-type', 'user');
+                _inputUser.setAttribute('data-gid', users[i]['gid']);
+
+                _inlineUser.appendChild(_inputUser);
+                _lineUsers.appendChild(_inlineUser);
+                _lineUsers.innerHTML += ' <strong>' + users[i]['displayname'] + '</strong>';
+            }
+
+            fragment.appendChild(_lineGroup);
+            fragment.appendChild(_lineUsers);
+        }
+
+        o.resourcesView = fragment;
+    };
+
+    o.resourcesAppoint = function (popup){
+        var usersTask = o.getResources();
+        if(usersTask.length > 0){
+            var inputs = popup.querySelectorAll('input[type=checkbox][data-type=user]'),
+                groupIn = {};
+            for(var i = 0; i<inputs.length; i++){
+                var gid = inputs[i].getAttribute('data-gid'),
+                    name = inputs[i]['name'];
+
+                if(usersTask.indexOf(name) !== -1){
+                    inputs[i].checked = true;
+                    if(groupIn[gid] === undefined) groupIn[gid] = 0;
+                    groupIn[gid] ++
+                }
+            }
+            // checked groups
+            for(var k in groupIn){
+                if(app.data.groupsusers[k] && app.data.groupsusers[k].length === groupIn[k])
+                    $('input[name='+k+'][data-type=group]', popup).prop('checked', true);
+            }
+        }
+
+    };
+    o.resourceOnClickListener = function (popup, fieldUsers) {
+        popup.addEventListener('click', function(event){
+            if(event.target.tagName == 'INPUT'){
+                var target = event.target,
+                    type = target.getAttribute('data-type'),
+                    name = target['name'],
+                    checked = target.checked ? true : false;
+
+                if(type === 'user'){
+                    if(checked){
+                        $('input[name='+name+'][data-type=user]', popup).prop('checked', true);
+                        fieldUsers.value = o.addResource(name);
+                    }
+                    else {
+                        $('input[name='+name+'][data-type=user]', popup).prop('checked', false);
+                        fieldUsers.value = o.removeResource(name);
+                    }
+                }
+                else if(type === 'group'){
+                    var _users = app.data.groupsusers[name].map(function(e){return e['uid']});
+                    if(checked){
+                        $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
+                        fieldUsers.value = o.addResource(_users);
+                    }else {
+                        $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', false);
+                        fieldUsers.value = o.removeResource(_users);
+                    }
+                }
+            }
+        });
+    };
+
+    o.getResources = function(){
+        var res = (o.task.users.split(',').map(function(item){return item.trim()})).filter(function(v){return v.length > 1});
+        return (app.u.isArr(res)) ? res : [];
+    };
+    o.isResourceUser = function(user) {
+        var users = o.getResources();
+        if(users.indexOf(user) !== 1 ) return true;
+        return false;
+    };
+    o.addResource = function(user){
+        var users = o.getResources(),
+            usersString = '';
+        if(typeof user === 'string') user = [user];
+        if(app.u.isArr(user) && user.length > 0){
+            for(var i=0; i<user.length; i ++)
+                users.push(user[i]);
+
+            o.field['users'] = o.task['users'] = usersString =
+                app.u.cleanArr(app.u.uniqueArr(users)).join(', ');
+        }
+        return usersString;
+    };
+    o.removeResource = function(user){
+        var users = o.getResources(),
+            usersString = '';
+        if(typeof user === 'string') user = [user];
+        if(app.u.isArr(user) && user.length > 0){
+            for(var i=0; i<user.length; i ++){
+                if(users.indexOf(user[i]) !== -1)
+                    users.splice(users.indexOf(user[i]),1);
+            }
+            o.field['users'] = o.task['users'] = usersString =
+                app.u.cleanArr(app.u.uniqueArr(users)).join(', ');
+        }
+        return usersString;
+    };
 
     /*onLightbox
      onLightboxButton
@@ -164,8 +315,6 @@
      onLightboxChange
      onLightboxDelete
      onLightboxSave
-
-
 
      lbox_popup
      lbox_popup_hide
