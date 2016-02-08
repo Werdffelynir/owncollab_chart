@@ -9,6 +9,8 @@
 namespace OCA\Owncollab_Chart\Db;
 
 
+use OCA\Owncollab_Chart\Helper;
+
 class Task
 {
     /** @var Connect $connect object instance working with database */
@@ -35,6 +37,58 @@ class Task
         $project = $this->connect->select("*", $this->tableName, "id = :id", [':id' => $id]);
         if(count($project)===1) return $project[0];
         else return false;
+    }
+
+    /**
+     * Get last id
+     * @return mixed
+     */
+    public function getLastId() {
+        $data = $this->connect->query("SELECT id FROM `{$this->tableName}` ORDER BY id DESC LIMIT 1");
+        return (!$data) ? 1 : $data['id'];
+    }
+
+    public function update($task) {
+       $sql = "UPDATE {$this->tableName} SET
+                    type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open
+                  WHERE id = :id";
+
+        return  $this->connect->db->executeUpdate($sql, [
+            ':type'         => $task['type'] ? $task['type'] : 'task',
+            ':text'         => $task['text'] ? $task['text'] : 'text',
+            ':users'        => $task['users'] ? $task['users'] : '',
+            ':start_date'   => Helper::toTimeFormat($task['start_date']),
+            ':end_date'     => Helper::toTimeFormat($task['end_date']),
+            ':duration'     => $task['duration'] ? $task['duration'] : 0,
+            ':progress'     => $task['progress'] ? $task['progress'] : "0",
+            ':parent'       => $task['parent'] ? $task['parent'] : 0,
+            ':open'         => $task['open'] ? 1 : 0,
+            ':id'           => (int)$task['id']
+        ]);
+    }
+
+    public function insertWithId($task) {
+        $sql = "INSERT INTO {$this->tableName}
+                  (`id`, `is_project`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`)
+                VALUES (:id, :is_project, :type, :text, :users, :start_date, :end_date, :duration, :order, :progress, :sortorder, :parent )";
+        $result = $this->connect->db->executeQuery($sql, [
+            ':id'           => $task['id'],
+            ':is_project'   => $task['is_project'] ? 1 : 0,
+            ':type'         => $task['type'] ? $task['type'] : 'task',
+            ':text'         => $task['text'] ? $task['text'] : 'text',
+            ':users'        => $task['users'] ? $task['users'] : '',
+            ':start_date'   => Helper::toTimeFormat($task['start_date']),
+            ':end_date'     => Helper::toTimeFormat($task['end_date']),
+            ':duration'     => $task['duration'] ? $task['duration'] : 0,
+            ':order'        => $task['order'] ? $task['order'] : 0,
+            ':progress'     => $task['progress'] ? $task['progress'] : '0',
+            ':sortorder'    => $task['sortorder'] ? $task['sortorder'] : '0',
+            ':parent'       => $task['parent'] ? $task['parent'] : 0
+        ]);
+
+        if($result)
+            return $this->connect->db->lastInsertId();
+        return $result;
     }
 
     /**

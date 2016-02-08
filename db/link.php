@@ -25,6 +25,15 @@ class Link
     }
 
     /**
+     * Get last id
+     * @return mixed
+     */
+    public function getLastId() {
+        $data = $this->connect->query("SELECT id FROM `{$this->tableName}` ORDER BY id DESC LIMIT 1");
+        return (!$data) ? 1 : $data['id'];
+    }
+
+    /**
      * Retrieve one record by id
      *
      * @param $id

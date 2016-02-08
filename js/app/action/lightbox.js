@@ -18,11 +18,6 @@
 
     o.init = function(){
 
-        //
-        //o.resourcesViewGenerate();
-
-        //console.log(o.resourcesView);
-
         //Add the section to the lightbox configuration:
         gantt.config.lightbox.sections = [
             {name:"template", height:260, type:"template", map_to:"base_template"}
@@ -35,7 +30,6 @@
         gantt.attachEvent("onBeforeLightbox", o.onBeforeLightbox);
         gantt.attachEvent("onLightbox", o.onLightbox);
         gantt.attachEvent("onAfterLightbox", o.onAfterLightbox);
-
         gantt.attachEvent("onLightboxSave", o.onLightboxSave);
         gantt.attachEvent("onLightboxCancel", o.onLightboxCancel);
         gantt.attachEvent("onLightboxDelete", o.onLightboxDelete);
@@ -46,11 +40,9 @@
         o.task.base_template = '<div id="generate-lbox-wrapper">' + app.dom.lbox.innerHTML + '</div>';
         return true;
     };
-    // `id`, `is_project`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`, `deadline`, `planned_start`, `planned_end`, `milestone`, `link`, `open`, `title`, `deleted`)
-    //lbox_popup_text
-    //
 
     o.onLightbox = function (id){
+
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
                 fso = {};
@@ -60,33 +52,46 @@
                 fso[_name] = fsn[i];
 
                 if(o.task[_name] !== undefined){
+
                     switch(_name){
+
                         case 'users':
                         case 'predecessor':
                             fso[_name].value = o.task[_name];
                             fso[_name].onclick = o.onClickLightboxInput;
                             break;
-                        case 'buffer': break;
+
+                        case 'buffer':
+                            break;
+
                         case 'start_date':
                         case 'end_date':
                             fso[_name].value = app.timeDateToStr(o.task[_name]);
                             break;
+
                         default:
                             fso[_name].value = o.task[_name];
                             fso[_name].onchange = o.onChangeLightboxInput;
                     }
                 }
-
             }
             return fso;
         })();
 
-        app.setTimepicker('input[name=lbox_start_date], input[name=lbox_end_date]', o.onChangeLightboxInputDate);
-
+        $('input[name=lbox_start_date], input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+            minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
+            controlType: 'select',
+            oneLine: true,
+            dateFormat: 'dd.mm.yy',
+            timeFormat: 'HH:mm',
+            onSelect: o.onChangeLightboxInputDate
+        });
     };
 
 
-    o.onAfterLightbox = function (){};
+    o.onAfterLightbox = function (){
+        //$('#generate-lbox-wrapper').remove();
+    };
 
     o.onChangeLightboxInput = function (event){
         if(!o.task || !o.field) return;
@@ -99,33 +104,26 @@
             o.task[name] = value;
         }
     };
-    o.onChangeLightboxInputDate = function (date){
+    o.onChangeLightboxInputDate = function (date, picObj){
         if(!o.task || !o.field) return;
         o.task[this['name'].substr(5)] = app.timeStrToDate(date);
     };
 
     o.onClickLightboxInput = function (event){
-        if(!o.task || !o.field) return;
-        var target = this || event.target;
 
+        if(!o.task || !o.field) return;
+        var target = this || event.target,
+            popup = null;
 
         if(target['name'] == 'lbox_users'){
             o.resourcesViewGenerate();
-            var popup = o.showPopup(target, o.resourcesView);
-            //console.log(popup);
-
+            popup = o.showPopup(target, o.resourcesView);
             o.resourcesAppoint(popup);
             o.resourceOnClickListener(popup, target);
-
-            //console.log('lbox_users',o.task);
         }
         else if(target['name'] == 'lbox_predecessor'){
-            o.showPopup(target, 'aaaaaaaaaaaalbox_predecessoraaaaaaaaaaaaa');
-            console.log('lbox_predecessor',o.task);
+            popup = o.showPopup(target, '');
         }
-
-        // gid, uid, displayname
-        //console.log(target.name, target.value, target.type);
     };
 
     o.showPopup = function (afterElement, content){
@@ -139,7 +137,7 @@
             _popup.className = 'lbox_popup';
             _popupWrap.className = 'lbox_popup_wrap';
             _popupClose.className = 'lbox_popup_close icon-close';
-            _popupClose.onclick = function(e){o.showHide()};
+            _popupClose.onclick = function(e){o.hidePopup()};
             _popup.appendChild(_popupClose);
             _popup.appendChild(_popupWrap);
             o.popup =  _popup;
@@ -156,15 +154,30 @@
         afterElement.parentNode.appendChild(o.popup);
         return o.popup;
     };
-    o.showHide = function (){
+    o.hidePopup = function (){
         $('#lbox_popup').remove()
     };
 
 
 
-    o.onLightboxSave = function (id,task,isNew){
+    o.onLightboxSave = function (id, task, isNew){
+
+        var _id = null;
+        if(isNew === true){
+            _id = app.data.lasttaskid ++;
+            gantt.changeTaskId(id, _id);
+            task.id = o.task.id = _id;
+            task.is_new = true;
+
+        }
+
         app.u.objMerge(task, o.task);
-        gantt.updateTask(id);
+
+
+
+        //console.log('onLightboxSave 1:: '+id, task);
+        gantt.updateTask((_id)?_id:id);
+        //console.log('onLightboxSave 2:: '+id, task);
         return true;
     };
     o.onLightboxCancel = function (){
@@ -173,6 +186,8 @@
     o.onLightboxDelete = function (){
         o.task = o.field = null;
     };
+
+
 
     o.resourcesView = null;
 
@@ -273,8 +288,11 @@
     };
 
     o.getResources = function(){
-        var res = (o.task.users.split(',').map(function(item){return item.trim()})).filter(function(v){return v.length > 1});
-        return (app.u.isArr(res)) ? res : [];
+        var res = [];
+        if(o.task.users){
+             res = (o.task.users.split(',').map(function(item){return item.trim()})).filter(function(v){return v.length > 1});
+        }
+        return res;
     };
     o.isResourceUser = function(user) {
         var users = o.getResources();

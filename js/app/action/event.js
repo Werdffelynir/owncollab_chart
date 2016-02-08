@@ -72,22 +72,42 @@
      * Catch a gantt event "onGanttReady"
      *
      */
-    o.onGanttReady = function (){};
-    o.onGanttRender = function (){};
+    //o.onGanttReady = function (){};
+    //o.onGanttRender = function (){};
     o.onTaskClick = function (id, event){
         var target = event.target;
 
         // control buttons
         if(target.tagName == 'A' && target.getAttribute('data-control')){
             event.preventDefault();
+            app.action.chart.opt.isNewTask = false;
             var action = target.getAttribute('data-control');
             switch (action) {
+
                 case "edit":
                     gantt.showLightbox(id);
                     break;
+
                 case "add":
-                    gantt.createTask(null, id);
+                    app.action.chart.opt.isNewTask = true;
+                    var _id = app.data.lasttaskid ++,
+                        _date = new Date(gantt.getTask(id).start_date),
+                        _dateEnd = (function(){ var d = new Date(); d.setDate(_date.getDate() + 7); return d;})(),
+                        _task = {
+                            id: _id,
+                            text: "New Task",
+                            predecessor: '',
+                            buffer: 0,
+                            start_date: _date,
+                            end_date: _dateEnd,
+                            progress: 0,
+                            duration: 0,
+                            type: gantt.config.types.task,
+                            users: ''
+                        };
+                    gantt.createTask(_task, id);
                     break;
+
                 case "remove":
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
@@ -100,21 +120,48 @@
                     break;
             }
         }
+
+        return event;
+    };
+
+    //o.onAfterTaskAdd = function(id, task){};
+    //o.onBeforeTaskAdd = function(id, task){};
+    //
+
+    o.onBeforeTaskUpdate = function(id, task){
+        var worker = (task.$new === true) ? 'insert' : 'update';
+        app.api('updatetask', function(response) {
+            if(typeof response === 'object' && !response['errorinfo'] && response['requesttoken']) {
+                app.requesttoken = response.requesttoken;
+                console.log(response.lasttaskid);
+                if(worker == 'insert'){
+                    if(response.lasttaskid)
+                        app.data.lasttaskid = response.lasttaskid;
+                    else
+                        app.action.error.inline('Error server request operation: Task ' + worker + '. Inset ID not response.');
+                }
+
+            } else {
+                app.action.error.inline('Error server request operation: Task ' + worker );
+            }
+        },{ worker:worker, task_id:id, task_data:task });
+
     };
 
 
-    /*
-    o.onAddTaskControl = function (id){
-        console.log('onAddTaskControl ' + id);
-    };
-    o.onRemoveTaskControl = function (id){
-        console.log('onRemoveTaskControl ' + id);
-    };
-    o.onEditTaskControl = function (id){
-        console.log('onEditTaskControl ' + id);
-    };
 
-'task_control_btn icon_' + type;
- span.setAttribute('data-type',type);
- span.setAttribute('data-id',id);*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 })(jQuery, OC, app);

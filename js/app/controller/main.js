@@ -59,7 +59,14 @@
      */
     function onProjectLoaded(response){
 
-        if(typeof response === 'object' && response.project && response.tasks && response.links && response.resources && response.groupsusers){
+        //console.log(response);
+
+        if(typeof response === 'object' &&
+            response.project &&
+            response.tasks &&
+            response.links &&
+            response.groupsusers
+        ){
 
             // Response data type errors
 
@@ -76,8 +83,8 @@
             if(!app.u.isArr(response.links))
                 error.push("Variable the response.links. Array must be of type Array, but returned type the: " + typeof response.links);
 
-            if(!app.u.isArr(response.resources))
-                error.push("Variable the response.resources. Array must be of type Array, but returned type the: " + typeof response.resources);
+            //if(!app.u.isArr(response.resources))
+            //    error.push("Variable the response.resources. Array must be of type Array, but returned type the: " + typeof response.resources);
 
             if(error.length > 0){
                 error.map(function(item){
@@ -100,6 +107,10 @@
 
             // appoint response as data
             app.data = response;
+            app.data.lasttaskid = parseInt(response['lasttaskid']) + 1;
+            app.data.lastlinkid = parseInt(response['lastlinkid']) + 1;
+
+            app.action.chart.ganttFullSize();
 
             // run action.config
             app.action.config.init();
@@ -138,7 +149,7 @@
 
         /**
          * init jq plugin datetimepicker for all elements with class name 'datetimepic'
-         */
+
         $('.datetimepic').datetimepicker({
             minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
             controlType: 'select',
@@ -152,8 +163,7 @@
                     //app.fn.changeEventSettingsField({target:elemTime});
                 }
             }
-        });
-
+        }); */
     }
 
     /**
@@ -179,6 +189,7 @@
         //app.dom.lbox.cancel     = o.select('#lbox-cancel');
         //app.dom.lbox.delete     = o.select('#lbox-delete');
         app.dom.gantt           = o.select('#gantt-chart');
+        app.dom.zoomSlider      = o.select('#chart_gantt_zoom_slider');
 
     }
 

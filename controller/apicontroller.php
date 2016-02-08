@@ -82,12 +82,13 @@ class ApiController extends Controller {
 	 * This method is initialized only once for loading gantt chart
 	 *
      * @NoAdminRequired
-     * NoCSRFRequired
+     * @NoCSRFRequired
      *
      * @return DataResponse
      */
 	public function getproject() {
 
+		//return new DataResponse($_POST);
 		$uid = $this->userIdAPI;
         $params = [
             'access' 	    => 'deny',
@@ -102,12 +103,44 @@ class ApiController extends Controller {
             $params['project'] 		= $this->connect->project()->get();
             $params['tasks'] 		= $this->connect->task()->get();
             $params['links'] 		= $this->connect->link()->get();
-            $params['resources'] 	= $this->connect->resource()->get();
             $params['groupsusers'] 	= $this->connect->resource()->getGroupsUsersList();
+            $params['lasttaskid'] 	= $this->connect->task()->getLastId();
+            $params['lastlinkid'] 	= $this->connect->link()->getLastId();
         }else
             $params['errorinfo'] 	= 'API method require - uid and request as admin';
 
         return new DataResponse($params);
 	}
+
+	/**
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+	 * @param $data
+	 * @return DataResponse
+	 */
+	public function updatetask($data) {
+
+        $params = [
+            'errorinfo'     => null,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            'lasttaskid'    => null
+        ];
+
+		if($data['worker']&&is_array($data['task_data'])){
+            if($data['worker'] == 'update'){
+                $result = $this->connect->task()->update($data['task_data']);
+                $params['errorinfo'] = $result ? null : 'server error update database';
+            }
+            else if($data['worker'] == 'insert'){
+                $result = $this->connect->task()->insertWithId($data['task_data']);
+                $params['errorinfo'] = $result ? null : 'server error insert database';
+                $params['lasttaskid'] = $result;
+            }
+        }
+
+		return new DataResponse($params);
+	}
+
 
 }

@@ -251,8 +251,7 @@ html, body {
 
 .gc_default_row {}
 
-#check_predecessor {
-}
+#check_predecessor {}
 
 #check_predecessor li {
     display: block;
@@ -276,16 +275,16 @@ html, body {
 }
 
 #chart_gantt_zoom {
-    display: none;
+    /*display: none;*/
     width: 260px;
     float: right;
 }
 
-#chart_gantt_zoom_slider {
-}
+#chart_gantt_zoom_slider {}
 
 #gantt-chart {
     background-color: #FFF;
+    /*position: absolute;*/
     width:100%;
     height:100%;
 }

@@ -54,7 +54,9 @@ var app = app || {
 			tasks:null,
 			links:null,
 			resources:null,
-            groupsusers:null
+            groupsusers:null,
+            lasttaskid:null,
+            lastlinkid:null
 		},
 
 		/*link of app.module.util object*/
@@ -141,14 +143,19 @@ var app = app || {
             url: app.url + '/api',
             data: {key:key, uid:app.uid, pid:app.pid, data:args},
             type: 'POST',
+            timeout: 5000,
             headers: {requesttoken: app.requesttoken},
             success: function(response){
                 if(typeof func === 'function')
                     func.call(app, response);
             },
             error: function(error){
-                console.error("API request error to the key: [" + key + "] Error message: " + error);
                 app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error);
+            },
+            complete: function (jqXHR, status) {
+                if(status == 'timeout'){
+                    app.action.error.inline("You have exceeded the request time. possible problems with the Internet, or an error on the server server");
+                }
             }
         });
     };

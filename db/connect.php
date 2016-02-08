@@ -20,7 +20,7 @@ class Connect
     private $link;
 
     /** @var \OCA\Owncollab_Chart\Db\Resource model of database table */
-    private $resource;
+    //private $resource;
 
     /**
      * Connect constructor.

@@ -59,7 +59,7 @@
         gantt.config.autofit = true;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = true;
+        gantt.config.fit_tasks = false;
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1)
@@ -69,8 +69,9 @@
         if(app.data.project['show_today_line'] == 1)
             app.action.chart.todayLine();
 
-        // Apply scale zooming
+        // Apply scaling chart
         app.action.chart.scale(app.data.project['scale_type']);
+        app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
         // apply scale fit
         if(app.data.project['scale_fit']){
@@ -119,17 +120,14 @@
 
             {name:"added", label:"", width: columnWidth.btn, template: function(item) {
                 return o.createTaskBtn('add', item.id);
-                //return '<span class="on_task_add" data-id="'+item.id+'"></span>';
             }},
 
             {name:"remove", label:"", width: columnWidth.btn, template: function(item) {
                 return o.createTaskBtn('remove', item.id);
-                //return '<span class="on_task_remove" data-id="'+item.id+'"></span>';
             }},
 
             {name:"edit", label:"", width: columnWidth.btn, template: function(item) {
                 return o.createTaskBtn('edit', item.id);
-                //return '<span id="on_task_edit" data-id="'+item.id+'"></span>';
             }}
         ];
 

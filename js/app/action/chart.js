@@ -22,7 +22,9 @@
         // Current scale type on gantt chart size
         weekCount: 0,
         // true if the grant is the initialization occurred
-        ganttIsInit: false
+        ganttIsInit: false,
+        // show new task edit
+        isNewTask: false
     };
 
     /**
@@ -37,9 +39,12 @@
 
         //gantt.attachEvent("onGanttRender", onGanttReady);
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
-        gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
-        gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
 
+        //gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
+        gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
+        //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
+        //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
+        gantt.attachEvent("onBeforeTaskUpdate", app.action.event.onBeforeTaskUpdate);
 
         /*gantt.$click.advanced_details_button=function(e, id, trg){
             alert("These are advanced details");
@@ -52,7 +57,8 @@
             links:  app.data.links
         });
 
-        //o.ganttFullSize();
+
+        o.ganttResize();
 
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
@@ -67,6 +73,14 @@
         */
 
         //
+    };
+
+
+
+    o.ganttResize = function(){
+        window.addEventListener('resize', function onWindowResize(event){
+            app.action.chart.ganttFullSize()
+        }, false);
     };
 
     /**
@@ -86,7 +100,7 @@
     o.ganttInblockSize = function (){
         $(app.dom.gantt)
             .css('height',(window.innerHeight-100) + 'px')
-            .css('width',$(app.dom.content).outerHeight() + 'px');
+            .css('width', $(app.dom.content).outerHeight() + 'px');
     };
 
 
@@ -117,7 +131,6 @@
         gantt.config.min_column_width = 20;
 
         // Scale switch
-
         switch (type){
 
             case 'minute':
@@ -201,7 +214,6 @@
 
         gantt.addMarker({
             css: "today",
-            text:'Today',
             title:"Today: "+ date_to_str(today),
             start_date: today
         });
@@ -215,7 +227,43 @@
 
     };
 
+    /**
+     * Run ZoomSlider
+     */
+    o.enableZoomSlider = function (value) {
 
+        switch (value) {
+            case 'hour':
+                value = 3;
+                break;
+            case 'day':
+                value = 2;
+                break;
+            case 'week':
+                value = 1;
+                break;
+            default :
+                value = 1;
+        }
+        $(app.dom.zoomSlider)
+            .show()
+            .slider({
+                min: 1, max: 3, value: value, change: function (event, ui) {
+                    switch (parseInt(ui.value)) {
+                        case 3:
+                            app.action.chart.scale('hour');
+                            break;
+                        case 2:
+                            app.action.chart.scale('day');
+                            break;
+                        case 1:
+                            app.action.chart.scale('week');
+                            break;
+                    }
+                    gantt.render();
+                }
+            });
+    };
 
 /*
 
