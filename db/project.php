@@ -33,4 +33,40 @@ class Project
     }
 
 
+
+    /**
+     * Retrieve all registered resource
+     *
+     * @return array|null
+     */
+    public function getGroupsUsersList(){
+
+        $records = $this->getGroupsUsers();
+        $result = [];
+
+        // Operation iterate and classify users into groups
+        foreach($records as $record){
+            $result[$record['gid']][] = [
+                'gid'=> $record['gid'],
+                'uid'=> $record['uid'],
+                'displayname'=> ($record['displayname'])?$record['displayname']:$record['uid']
+            ];
+        }
+        return $result;
+    }
+
+
+    /**
+     * Retrieve all records from Users
+     *
+     * @return mixed
+     */
+    public function getGroupsUsers() {
+
+        $sql = "SELECT gu.uid, gu.gid, u.displayname
+                FROM *PREFIX*group_user gu
+                LEFT JOIN *PREFIX*users u ON (u.uid = gu.uid)";
+
+        return $this->connect->queryAll($sql);
+    }
 }

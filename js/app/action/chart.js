@@ -45,6 +45,7 @@
         //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
         //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
         gantt.attachEvent("onBeforeTaskUpdate", app.action.event.onBeforeTaskUpdate);
+        gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
 
         /*gantt.$click.advanced_details_button=function(e, id, trg){
             alert("These are advanced details");
@@ -57,8 +58,8 @@
             links:  app.data.links
         });
 
-
-        o.ganttResize();
+        // Dynamic chart resize when change window
+        //o.ganttResize();
 
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
@@ -79,7 +80,8 @@
 
     o.ganttResize = function(){
         window.addEventListener('resize', function onWindowResize(event){
-            app.action.chart.ganttFullSize()
+            app.action.chart.ganttFullSize();
+            gantt.render();
         }, false);
     };
 

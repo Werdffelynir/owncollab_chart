@@ -103,7 +103,7 @@ class ApiController extends Controller {
             $params['project'] 		= $this->connect->project()->get();
             $params['tasks'] 		= $this->connect->task()->get();
             $params['links'] 		= $this->connect->link()->get();
-            $params['groupsusers'] 	= $this->connect->resource()->getGroupsUsersList();
+            $params['groupsusers'] 	= $this->connect->project()->getGroupsUsersList();
             $params['lasttaskid'] 	= $this->connect->task()->getLastId();
             $params['lastlinkid'] 	= $this->connect->link()->getLastId();
         }else
@@ -141,6 +141,42 @@ class ApiController extends Controller {
 
 		return new DataResponse($params);
 	}
+
+
+    public function deletetask($data) {
+
+        $params = [
+            'errorinfo'     => null,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
+        ];
+
+        if($data['task_id'] && is_array($data['task_data'])){
+            $result = $this->connect->task()->deleteId($data['task_data']);
+            if($result) $params['result'] = $result;
+            else $params['errorinfo'] = 'Error operation delete';
+        }
+
+        return new DataResponse($params);
+    }
+
+
+    /**
+     * @param $data
+     * @return DataResponse
+     */
+    public function updateprojectsetting($data) {
+
+        $params = [
+            'errorinfo'     => null,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
+        ];
+
+
+
+        return new DataResponse($data);
+    }
+
+
 
 
 }

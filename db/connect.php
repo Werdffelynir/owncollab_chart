@@ -30,7 +30,7 @@ class Connect
         $this->db = $db;
 
         // Register tables models
-        $this->resource = new Resource($this, 'collab_resources');
+        //$this->resource = new Resource($this, 'collab_resources');
         $this->project = new Project($this, 'collab_project');
         $this->task = new Task($this, 'collab_tasks');
         $this->link = new Link($this, 'collab_links');
@@ -151,9 +151,9 @@ class Connect
      * Table of collab_resources
      * @return \OCA\Owncollab_Chart\Db\Resource
      */
-    public function resource() {
-        return $this->resource;
-    }
+    //public function resource() {
+    //    return $this->resource;
+    //}
 
 
 }

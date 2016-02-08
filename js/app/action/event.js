@@ -30,13 +30,15 @@
              */
             sendData = (function()
                 {
-                    var data = { pid: app.pid, uid: app.uid, field: name, value: null };
+                    var data = { field: name, value: null };
 
                     if(type == 'checkbox') {
                         data.value = target.checked?'true':'false';
+
+
+
                     }
                     else if(type == 'radio'){
-
                         if(target.name=='scale'){
                             data.field = 'scale_type';
                             data.value = target.value;
@@ -54,16 +56,112 @@
                     return data;
                 })();
 
+        console.log(sendData);
+
         // checks on the user appliances to the administrator group,
         // if the user is the administrator, the data are sent to update
-        if(app.isAdmin === true){
-            app.api('updateProject', onUpdateProject, {update:sendData});
-        }
+        app.api('updateprojectsetting', function(){
 
+            if(response.result === 1){
+
+                // dynamic changes
+                // set scale_type
+                if(sendData.field === 'scale_type'){
+
+                    //fn.ganttZoom(sendData.value);
+                    //gantt.render();
+                    //fn.fixedGanttSize();
+
+
+                // show task name in task line
+                }else if(sendData.field === 'show_task_name'){
+
+                    /*gantt.templates.task_text = function(start, end, task){
+                        if(sendData.value == 'true') return "<strong>"+task.text+"</strong>";
+                        else return "";
+                    };
+                    gantt.refreshData();*/
+
+
+                // is share init
+                }else if(sendData.field === 'is_share'){
+
+                    /*if(sendData.value === "true"){
+                        var shareLink = fn.generateShareLink(response['share_link']);
+                        $('input[name=share_link]').val(shareLink);
+                        $('.chart_share_on').show();
+                    }else{
+                        //fn.removeLinkShare();
+                        $('.chart_share_on').hide();
+                    }*/
+
+                }else if(sendData.field === 'share_is_protected'){
+
+                    /*if(sendData.value === "true"){
+                        $('.chart_share_password').show();
+                        $('input[name=share_password]')[0].focus();
+                        $('input[name=share_password]')[0].select();
+                    }else{
+                        $('.chart_share_password').hide();
+                    }*/
+
+                }else if(sendData.field === 'share_is_expire'){
+
+                    /*if(sendData.value === "true"){
+                        $('.chart_share_expiration').show();
+                    }else{
+                        $('.chart_share_expiration').hide();
+                    }*/
+
+                }else if(sendData.field === 'default'){
+
+
+
+
+                }
+
+            }else
+                console.error('Error update ProjectSettings');
+
+        }, {update:sendData} );
     };
 
-    function onUpdateProject (response){
-        console.log(response);
+    function onUpdateProjectSetting (response){
+
+
+
+
+
+
+
+        //console.log(response);
+
+        /*
+
+         is_share
+
+         show_today_line
+         show_task_name
+         show_user_color
+         scale_type
+         scale_fit
+         critical_path
+
+         Object { pid: null, uid: "admin", field: "show_today_line", value: "false" } event.js:57:9
+         Object { update: Object } event.js:65:9
+         Object { pid: null, uid: "admin", field: "show_task_name", value: "false" } event.js:57:9
+         Object { update: Object } event.js:65:9
+         Object { pid: null, uid: "admin", field: "show_user_color", value: "true" } event.js:57:9
+         Object { update: Object } event.js:65:9
+         Object { pid: null, uid: "admin", field: "scale_type", value: "hour" } event.js:57:9
+         Object { update: Object } event.js:65:9
+         Object { pid: null, uid: "admin", field: "scale_type", value: "day" } event.js:57:9
+         Object { update: Object } event.js:65:9
+         Object { pid: null, uid: "admin", field: "scale_fit", value: "true" } event.js:57:9
+         Object { update: Object } event.js:65:9
+         Object { pid: null, uid: "admin", field: "critical_path", value: "true" }
+         Object { pid: null, uid: "admin", field: "is_share", value: "true" }
+         */
     }
 
 
@@ -125,16 +223,16 @@
     };
 
     //o.onAfterTaskAdd = function(id, task){};
+
     //o.onBeforeTaskAdd = function(id, task){};
-    //
 
     o.onBeforeTaskUpdate = function(id, task){
         var worker = (task.$new === true) ? 'insert' : 'update';
         app.api('updatetask', function(response) {
             if(typeof response === 'object' && !response['errorinfo'] && response['requesttoken']) {
                 app.requesttoken = response.requesttoken;
-                console.log(response.lasttaskid);
-                if(worker == 'insert'){
+
+                if(worker == 'insert') {
                     if(response.lasttaskid)
                         app.data.lasttaskid = response.lasttaskid;
                     else
@@ -145,9 +243,21 @@
                 app.action.error.inline('Error server request operation: Task ' + worker );
             }
         },{ worker:worker, task_id:id, task_data:task });
-
     };
 
+
+    o.onAfterTaskDelete = function(id, task){
+        app.api('deletetask', function(response) {
+            console.log(response);
+            if(typeof response === 'object' && !response['errorinfo'] && response['requesttoken']) {
+                app.requesttoken = response.requesttoken;
+
+
+            } else {
+                app.action.error.inline('Error server request operation delete task');
+            }
+        },{ task_id:id, task_data:task });
+    };
 
 
 

@@ -44,10 +44,24 @@ class Task
      * @return mixed
      */
     public function getLastId() {
-        $data = $this->connect->query("SELECT id FROM `{$this->tableName}` ORDER BY id DESC LIMIT 1");
-        return (!$data) ? 1 : $data['id'];
+        $result = $this->connect->query("SELECT id FROM `{$this->tableName}` ORDER BY id DESC LIMIT 1");
+        return (!$result) ? 1 : $result['id'];
     }
 
+    /**
+     * @param $data
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
+    public function deleteId($data) {
+        $result = $this->connect->delete($this->tableName, 'id = :id', [':id' => $data['id']]);
+        return ($result) ? $result->rowCount() : $result;
+    }
+
+
+    /**
+     * @param $task
+     * @return int
+     */
     public function update($task) {
        $sql = "UPDATE {$this->tableName} SET
                     type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open
@@ -67,6 +81,10 @@ class Task
         ]);
     }
 
+    /**
+     * @param $task
+     * @return \Doctrine\DBAL\Driver\Statement|int
+     */
     public function insertWithId($task) {
         $sql = "INSERT INTO {$this->tableName}
                   (`id`, `is_project`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`)
