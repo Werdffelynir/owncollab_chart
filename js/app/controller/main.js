@@ -83,9 +83,6 @@
             if(!app.u.isArr(response.links))
                 error.push("Variable the response.links. Array must be of type Array, but returned type the: " + typeof response.links);
 
-            //if(!app.u.isArr(response.resources))
-            //    error.push("Variable the response.resources. Array must be of type Array, but returned type the: " + typeof response.resources);
-
             if(error.length > 0){
                 error.map(function(item){
                     errorString += "<p>Response data Error! " + item + "</p>";
@@ -109,6 +106,9 @@
             app.data = response;
             app.data.lasttaskid = parseInt(response['lasttaskid']) + 1;
             app.data.lastlinkid = parseInt(response['lastlinkid']) + 1;
+
+            // accept localstorage settings
+            //o.dataStorageAccept();
 
             app.action.chart.ganttFullSize();
 
@@ -185,9 +185,6 @@
         app.dom.sidebarWrap     = o.select('#sidebar-wrapper');
         app.dom.inlineError     = o.select('#app-content-inline-error');
         app.dom.lbox            = o.select('#app-lbox');
-        //app.dom.lbox.save       = o.select('#lbox-save');
-        //app.dom.lbox.cancel     = o.select('#lbox-cancel');
-        //app.dom.lbox.delete     = o.select('#lbox-delete');
         app.dom.gantt           = o.select('#gantt-chart');
         app.dom.zoomSlider      = o.select('#chart_gantt_zoom_slider');
 
@@ -207,7 +204,34 @@
             return elem;
     };
 
+    o.dataStorageAccept = function(){
 
+        var show_today_line = app.storageGetItem('show_today_line'),
+            show_task_name = app.storageGetItem('show_task_name'),
+            show_user_color = app.storageGetItem('show_user_color'),
+            scale_type = app.storageGetItem('scale_type'),
+            scale_fit = app.storageGetItem('scale_fit'),
+            critical_path = app.storageGetItem('critical_path');
+
+        if(show_today_line === 'true')          app.data.project['show_today_line'] = 1;
+        else if(show_today_line === 'false')    app.data.project['show_today_line'] = 0;
+
+        if(show_task_name === 'true')           app.data.project['show_task_name'] = 1;
+        else if(show_task_name === 'false')     app.data.project['show_task_name'] = 0;
+
+        if(show_user_color === 'true')          app.data.project['show_user_color'] = 1;
+        else if(show_user_color === 'false')    app.data.project['show_user_color'] = 0;
+
+        if(scale_type === 'true')               app.data.project['scale_type'] = 1;
+        else if(scale_type === 'false')         app.data.project['scale_type'] = 0;
+
+        if(scale_fit === 'true')                app.data.project['scale_fit'] = 1;
+        else if(scale_fit === 'false')          app.data.project['scale_fit'] = 0;
+
+        if(critical_path === 'true')            app.data.project['critical_path'] = 1;
+        else if(critical_path === 'false')      app.data.project['critical_path'] = 0;
+
+    }
 
 
 })(jQuery, OC, app);

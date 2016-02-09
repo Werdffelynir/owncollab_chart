@@ -89,5 +89,67 @@ class Project
         return $this->connect->queryAll($sql);
     }
 
+    /**
+     * Update single field in the project
+     *
+     * @param $field
+     * @param $value
+     * @return bool|int
+     */
+    public function updateField($field, $value) {
+        $result = false;
+        if(in_array($field, $this->fields)) {
+            $sql = "UPDATE {$this->tableName}
+                    SET {$field} = :field
+                    WHERE id = :id";
+            $result = $this->connect->db->executeUpdate($sql, [
+                ':field'=>$value
+            ]);
+        }
+        return $result;
+    }
+
+    /**
+     * Update share fields in the project
+     *
+     * @param $field
+     * @param $value
+     * @param $share_link
+     * @return bool|int
+     */
+    public function updateShared($field, $value, $share_link) {
+        $result = false;
+        if(in_array($field, $this->fields)) {
+
+            $clean = ", `share_is_protected` = 0, `share_password` = NULL, `share_email_recipient` = NULL, `share_is_expire` = 0, `share_expire_time` = NULL";
+
+            $sql = "UPDATE `{$this->tableName}`
+                SET `is_share` = :is_share, `share_link` = :share_link " . ($value===0?$clean:'') . "
+                WHERE `open` = 1";
+
+            $result = $this->connect->db->executeUpdate($sql,[
+                ':is_share'=> $value,
+                ':share_link'=> $share_link
+            ]);
+
+        }
+        return $result;
+    }
+
+    /**
+     * Get for public
+     * @param $share_link
+     * @return array|bool|null
+     */
+    public function getShare($share_link) {
+        $result = false;
+        $project = $this->get();
+        if($project && $project['is_share'] == 1 && $project['share_link'] == $share_link){
+            $result = $project;
+        }
+        return $result;
+    }
+
+
 
 }

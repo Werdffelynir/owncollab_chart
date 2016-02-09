@@ -13,6 +13,7 @@ namespace OCA\Owncollab_Chart\Controller;
 
 use OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Db\Connect;
+use OCP\AppFramework\Http\RedirectResponse;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\DataResponse;
@@ -95,6 +96,89 @@ class MainController extends Controller {
 	 */
 	public function doEcho($echo) {
 		return new DataResponse(['echo' => $echo]);
+	}
+
+
+	/**
+	 *
+	 * @PublicPage
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 *
+	 * @param $share
+	 * @return TemplateResponse
+	 */
+	public function publicChart($share){
+
+		$project = $this->connect->project()->getShare($share);
+        $params = [
+            'access' => 'deny'
+        ];
+
+		if($project){
+
+			if($project['share_is_protected'] == 1){
+
+				$link = $project['share_link'];
+				$password = $project['share_password'];
+				$publickey = (isset($_SESSION['publickey'])) ? trim($_SESSION['publickey']) : false;
+
+				if($publickey === md5($password.$link)){
+
+					$params['project'] 		= $project;
+					$params['tasks'] 		= $this->connect->task()->get();
+					$params['links'] 		= $this->connect->link()->get();
+
+					$response = new TemplateResponse($this->appName, 'public', $params);
+				}
+				else if( isset($_POST['requesttoken']) && isset($_POST['password']) ){
+
+					if(trim($_POST['requesttoken']) === md5(trim($_POST['password']).$link)){
+						Helper::session('publickey', $_POST['requesttoken']);
+						return new RedirectResponse($link);
+					}else{
+						$response =  new TemplateResponse($this->appName, 'authenticate', [
+							'wrongpw' => true,
+							'requesttoken' => md5($password.$link)
+						], 'guest');
+					}
+
+				} else{
+
+					$response =  new TemplateResponse($this->appName, 'authenticate', ['requesttoken' => md5($password.$link)], 'guest');
+				}
+
+				if($project['share_is_expire'] == 1 && time() > strtotime($project['share_expire_time'])){
+					$template = new \OCP\Template('', '404', 'guest');
+                    $template->printPage();
+				}else
+					return $response;
+			}
+
+            $params['access'] = 'allow';
+
+            if($params['access'] == 'allow'){
+
+                if($project['share_is_expire'] == 1 && time() > strtotime($project['share_expire_time'])){
+                    $template = new \OCP\Template('', '404', 'guest');
+                    $template->printPage();
+                }else {
+                    unset($project['is_share']);
+                    unset($project['share_password']);
+                    return new TemplateResponse($this->appName, 'public', [
+                        'json' => [
+                            'project' => $project,
+                            'tasks' => $this->connect->task()->get(),
+                            'links' => $this->connect->link()->get()
+                        ]
+                    ]);
+                }
+            }
+		}
+		else {
+            $template = new \OCP\Template('', '404', 'guest');
+            $template->printPage();
+		}
 	}
 
 

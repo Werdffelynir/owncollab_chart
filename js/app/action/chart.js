@@ -59,7 +59,7 @@
         });
 
         // Dynamic chart resize when change window
-        //o.ganttResize();
+        //o.ganttDynamicResize();
 
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
@@ -78,7 +78,7 @@
 
 
 
-    o.ganttResize = function(){
+    o.ganttDynamicResize = function(){
         window.addEventListener('resize', function onWindowResize(event){
             app.action.chart.ganttFullSize();
             gantt.render();
@@ -108,6 +108,7 @@
 
     /**
      * Setting up the gantt chart scale
+     * Use: app.action.chart.scale(type)
      * @param type scale size
      */
     o.scale = function (type){
@@ -210,7 +211,12 @@
     /**
      * Adds a marker "today" to the timeline area
      */
-    o.todayLine = function (){
+    o.showMarkers = function (show){
+        gantt.config.show_markers = !!show;
+    };
+
+
+    o.showTodayLine = function (){
         var date_to_str = gantt.date.date_to_str(gantt.config.task_date),
             today = new Date();
 
@@ -221,12 +227,46 @@
         });
     };
 
+
+    o.showTaskNames = function (show){
+        gantt.templates.task_text = function(start, end, task){
+            if(show)
+                return "<strong>"+task.text+"</strong>";
+            else
+                return "";
+        };
+    };
+
+
+    o.showUserColor = function (show){
+
+    };
+
+
+    o.showCriticalPath = function (show){
+
+        gantt.config.highlight_critical_path = !!show;
+
+    };
+
+
     /**
      * Gantt chart resize. Apply a scale fit
      */
     o.scaleFit = function (){
 
 
+    };
+
+    /**
+     * Generate Share Link for event
+     * Use: app.action.chart.generateShareLink()
+     * @param key
+     * @returns {string}
+     */
+    o.generateShareLink = function(key){
+        var link = OC.generateUrl('apps/' + app.name + '/s/' + key);
+        return OC.getProtocol() + '://' + OC.getHost() + link;
     };
 
     /**

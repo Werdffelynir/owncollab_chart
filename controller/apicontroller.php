@@ -112,48 +112,39 @@ class ApiController extends Controller {
         return new DataResponse($params);
 	}
 
-	/**
-     * @NoAdminRequired
-     * @NoCSRFRequired
-     *
-	 * @param $data
-	 * @return DataResponse
-	 */
-	public function updatetask($data) {
+
+    public function updatetask($data) {
 
         $params = [
-            'errorinfo'     => null,
+            'error'     => null,
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lasttaskid'    => null
         ];
 
-		if($data['worker']&&is_array($data['task_data'])){
-            if($data['worker'] == 'update'){
-                $result = $this->connect->task()->update($data['task_data']);
-                $params['errorinfo'] = $result ? null : 'server error update database';
-            }
-            else if($data['worker'] == 'insert'){
-                $result = $this->connect->task()->insertWithId($data['task_data']);
-                $params['errorinfo'] = $result ? null : 'server error insert database';
+        $params['data'] = $data;
+        if($this->isAdmin && isset($data['worker']) && isset($data['task'])){
+
+            $worker = trim(strip_tags($data['worker']));
+            $id = trim(strip_tags($data['id']));
+            $task = $data['task'];
+
+            if($worker == 'insert'){
+
+                $result = $this->connect->task()->insertWithId($task);
+                $params['error'] = $result ? null : 'Server insert error, on task';
                 $params['lasttaskid'] = $result;
+
+            }else if($worker == 'update'){
+
+                $result = $this->connect->task()->update($task);
+                $params['error'] = $result ? null : 'Server update error, on task';
+
+            }else if($worker == 'delete'){
+
+                $result = $this->connect->task()->deleteById($id);
+                $params['error'] = $result ? null : 'Server delete error, on task';
+
             }
-        }
-
-		return new DataResponse($params);
-	}
-
-
-    public function deletetask($data) {
-
-        $params = [
-            'errorinfo'     => null,
-            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
-        ];
-
-        if($data['task_id'] && is_array($data['task_data']) && $data['task_id'] === $data['task_data']['id']){
-            $result = $this->connect->task()->deleteById($data['task_id']);
-            if($result) $params['result'] = $result;
-            else $params['errorinfo'] = 'Error operation delete';
         }
 
         return new DataResponse($params);
@@ -167,13 +158,58 @@ class ApiController extends Controller {
     public function updateprojectsetting($data) {
 
         $params = [
-            'errorinfo'     => null,
+            'error'     => null,
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
         ];
 
+        if($this->isAdmin && isset($data['field']) && isset($data['value'])){
 
+            $field = trim(strip_tags($data['field']));
+            $value = trim(strip_tags($data['value']));
 
-        return new DataResponse($data);
+            // value for bool param
+
+            if($field == 'is_share'){
+
+                if($value == 'true')
+                    $value = 1;
+                else if($value == 'false')
+                    $value = 0;
+
+                $share_link = $value ? Helper::randomString(16) : '';
+                $result = $this->connect->project()->updateShared($field, $value, $share_link);
+
+                if(!$result)
+                    $params['error'] = 'Error operation update project';
+                else{
+                    $params['share_link'] = $share_link;
+                }
+            }
+/*
+
+            if($field == 'is_share'){
+                $share_link = $value ? Helper::randomString(16) : '';
+                $result = $this->connect->project()->updateShared($field, $value, $share_link);
+
+                if(!$result)
+                    $params['error'] = 'Error operation update project';
+                else{
+                    $params['result'] = $result;
+                    $params['share_link'] = $share_link;
+                }
+            }else{
+
+                $result = $this->connect->project()->updateField($field, $value);
+                if(!$result)
+                    $params['error'] = 'Error operation update project';
+                else
+                    $params['result'] = $result;
+            }
+*/
+        }else
+            $params['error'] = 'API method require - uid and request as admin';
+
+        return new DataResponse($params);
     }
 
 

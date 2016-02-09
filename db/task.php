@@ -92,7 +92,7 @@ class Task
             ':start_date'   => Helper::toTimeFormat($task['start_date']),
             ':end_date'     => Helper::toTimeFormat($task['end_date']),
             ':duration'     => $task['duration'] ? $task['duration'] : 0,
-            ':progress'     => $task['progress'] ? $task['progress'] : "0",
+            ':progress'     => $task['progress'] ? $task['progress'] : 0,
             ':parent'       => $task['parent'] ? $task['parent'] : 0,
             ':open'         => $task['open'] ? 1 : 0,
             ':id'           => (int)$task['id']
@@ -100,27 +100,26 @@ class Task
     }
 
     /**
-     * @param $task
+     * @param $data
      * @return \Doctrine\DBAL\Driver\Statement|int
      */
-    public function insertWithId($task) {
-        $sql = "INSERT INTO {$this->tableName}
-                  (`id`, `is_project`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`)
-                VALUES (:id, :is_project, :type, :text, :users, :start_date, :end_date, :duration, :order, :progress, :sortorder, :parent )";
-        $result = $this->connect->db->executeQuery($sql, [
-            ':id'           => $task['id'],
-            ':is_project'   => $task['is_project'] ? 1 : 0,
-            ':type'         => $task['type'] ? $task['type'] : 'task',
-            ':text'         => $task['text'] ? $task['text'] : 'text',
-            ':users'        => $task['users'] ? $task['users'] : '',
-            ':start_date'   => Helper::toTimeFormat($task['start_date']),
-            ':end_date'     => Helper::toTimeFormat($task['end_date']),
-            ':duration'     => $task['duration'] ? $task['duration'] : 0,
-            ':order'        => $task['order'] ? $task['order'] : 0,
-            ':progress'     => $task['progress'] ? $task['progress'] : 0,
-            ':sortorder'    => $task['sortorder'] ? $task['sortorder'] : 0,
-            ':parent'       => $task['parent'] ? $task['parent'] : 1
-        ]);
+    public function insertWithId($data) {
+
+        $task['id'] = $data['id'];
+        $task['is_project'] = $data['is_project'];
+        $task['type'] = $data['type'] ? $data['type'] : 'task';
+        $task['text'] = $data['text'];
+        $task['users'] = $data['users'];
+        $task['start_date'] = Helper::toTimeFormat($data['start_date']);
+        $task['end_date'] = Helper::toTimeFormat($data['end_date']);
+        $task['duration'] = $data['duration'] ? $data['duration'] : 0;
+        $task['order'] = $data['order'] ? $data['order'] : 0;
+        $task['progress'] = $data['progress'] ? $data['progress'] : 0;
+        $task['sortorder'] = $data['sortorder'] ? $data['sortorder'] : 0;
+        $task['parent'] = $data['parent'] ? $data['parent'] : 1;
+
+        $result = $this->connect->db->insertIfNotExist($this->tableName, $task);
+
 
         if($result)
             return $this->connect->db->lastInsertId();
@@ -129,7 +128,7 @@ class Task
 
     /**
      * Retrieve tasks-data of project
-     * Вatabase query selects all not marked as deleted records, and all columns of type timestamp output
+     * Database query selects all not marked as deleted records, and all columns of type timestamp output
      * formatting for JavaScript identification
      * @return array|null
      */
@@ -140,5 +139,7 @@ class Task
                 FROM `{$this->tableName}` WHERE deleted != 1";
         return $this->connect->queryAll($sql);
     }
+
+
 
 }

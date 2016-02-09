@@ -24,8 +24,6 @@ $application->registerRoutes($this, ['routes' => [
 
     ['name' => 'main#index', 'url' => '/', 'verb' => 'GET'],
     ['name' => 'api#index', 'url' => '/api', 'verb' => 'POST'],
-
-    ['name' => 'main#page', 'url' => '/page', 'verb' => 'GET'],
-    ['name' => 'main#do_echo', 'url' => '/echo', 'verb' => 'POST'],
+    ['name' => 'main#public_chart', 'url' => '/s/{share}', 'verb' => 'GET|POST'],
 
 ]]);

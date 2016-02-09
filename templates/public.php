@@ -9,7 +9,7 @@
 <div id="app">
     <div id="app-content">
         <div id="app-content-wrapper">
-            <div id="chart_gantt_public" style=" width:100%; height:100%;"></div>
+            <div id="gantt-chartpublic" style=" width:100%; height:100%; "></div>
             <div id="ganttdatajson" style="display: none"><?php print_unescaped(json_encode($_['json']))?></div>
         </div>
     </div>

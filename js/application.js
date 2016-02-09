@@ -25,7 +25,7 @@ var app = app || {
 		/*dependent controllers*/
 		controller: {
 			main: {},
-			settings: {}
+            public: {}
 		},
 
 		/*dependent modules*/
@@ -76,7 +76,7 @@ var app = app || {
 	var inc = new Inc(),
         path = '/apps/' + app.name;
 	inc.require(path+'/js/app/controller/main.js');
-	inc.require(path+'/js/app/controller/settings.js');
+	inc.require(path+'/js/app/controller/public.js');
     inc.require(path+'/js/app/action/chart.js');
 	inc.require(path+'/js/app/action/error.js');
     inc.require(path+'/js/app/action/event.js');
@@ -116,7 +116,10 @@ var app = app || {
             /**
              * Start controller handler
              */
-            app.controller.main.construct();
+            if(app.uid)
+                app.controller.main.construct();
+            else
+                app.controller.public.construct();
 
         }else{
 
@@ -181,6 +184,20 @@ var app = app || {
     app.timeStrToDate = function(date){
         var formatFunc = gantt.date.str_to_date("%d.%m.%Y %H:%i");
         return formatFunc(date);
+    };
+
+    app.storageSetItem = function(name, value){
+        return window.localStorage.setItem(name, value);
+    };
+    app.storageGetItem = function(name, orValue){
+        var value = window.localStorage.getItem(name);
+        return (value === undefined) ? orValue : value;
+    };
+    app.storageRemoveItem = function(name){
+        return window.localStorage.removeItem(name);
+    };
+    app.storageKey = function(key){
+        return window.localStorage.key(key);
     };
 
 

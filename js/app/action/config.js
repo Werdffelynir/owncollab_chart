@@ -63,14 +63,15 @@
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1)
-            gantt.config.highlight_critical_path = true;
+            app.action.chart.showCriticalPath(true);
 
         // add red line "today"
         if(app.data.project['show_today_line'] == 1)
-            app.action.chart.todayLine();
+            app.action.chart.showTodayLine();
 
         // Apply scaling chart
         app.action.chart.scale(app.data.project['scale_type']);
+
         app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
         // apply scale fit
@@ -85,9 +86,9 @@
             start: 100,
             end: 100,
             duration: 50,
-            resources: 100,
-            btn: 22
+            resources: 100
         };
+
         gantt.config.columns = [
 
             {name:"id", label:"ID", width: columnWidth.id, template: function(item) {
@@ -116,24 +117,13 @@
                     return item.users;
                 }
                 return '';
-            }},
-
-            {name:"added", label:"", width: columnWidth.btn, template: function(item) {
-                return o.createTaskBtn('add', item.id);
-            }},
-
-            {name:"remove", label:"", width: columnWidth.btn, template: function(item) {
-                return o.createTaskBtn('remove', item.id);
-            }},
-
-            {name:"edit", label:"", width: columnWidth.btn, template: function(item) {
-                return o.createTaskBtn('edit', item.id);
             }}
+
         ];
 
         // Advance configuration settings
         // for admin and users and guest (walk share)
-        if(app.uid && !app.guest){
+        if(app.uid){
             o.internal();
         }
         else{
@@ -147,8 +137,17 @@
      */
     o.internal = function(){
 
+        if(!app.uid) return;
 
-
+        gantt.config.columns.push({name:"added", label:"", width: 22, template: function(item) {
+            return o.createTaskBtn('add', item.id);
+        }});
+        gantt.config.columns.push({name:"remove", label:"", width: 22, template: function(item) {
+            return o.createTaskBtn('remove', item.id);
+        }});
+        gantt.config.columns.push({name:"edit", label:"", width: 22, template: function(item) {
+            return o.createTaskBtn('edit', item.id);
+        }});
     };
 
 
@@ -161,6 +160,9 @@
         // gantt lightbox disable, uses custom lightbox
         gantt.showLightbox = function(id){};
         gantt.hideLightbox = function(id){};
+
+        // Styling the gantt chart. Tasks column grid width size
+        gantt.config.grid_width = 650;
 
     };
 

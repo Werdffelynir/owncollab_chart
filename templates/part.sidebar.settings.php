@@ -22,13 +22,13 @@
 
     <h3><?php p($l->t('Scales'));?></h3>
     <div class="oneline">
-        <input name="scale" value="hour" type="radio"> <?php p($l->t('Scale to hour'));?>
+        <input name="scale_type" value="hour" type="radio"> <?php p($l->t('Scale to hour'));?>
     </div>
     <div class="oneline">
-        <input name="scale" value="day" type="radio"> <?php p($l->t('Scale to day'));?>
+        <input name="scale_type" value="day" type="radio"> <?php p($l->t('Scale to day'));?>
     </div>
     <div class="oneline">
-        <input name="scale" value="week" type="radio"> <?php p($l->t('Scale to week'));?>
+        <input name="scale_type" value="week" type="radio"> <?php p($l->t('Scale to week'));?>
     </div>
     <div class="oneline">
         <input name="scale_fit" value="fit" type="checkbox"> <?php p($l->t('Zoom to fit'));?>
