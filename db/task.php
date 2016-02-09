@@ -19,6 +19,24 @@ class Task
     /** @var string $tableName table name in database */
     private $tableName;
 
+    /** @var string $fields table fields name in database */
+    private $fields = [
+        'id',
+        'is_project',
+        'type',
+        'text',
+        'users',
+        'start_date',
+        'end_date',
+        'duration',
+        'order',
+        'progress',
+        'sortorder',
+        'parent',
+        'open',
+        'delete',
+    ];
+
     /**
      * Task constructor.
      * @param $connect
@@ -49,11 +67,11 @@ class Task
     }
 
     /**
-     * @param $data
+     * @param $id
      * @return \Doctrine\DBAL\Driver\Statement|int
      */
-    public function deleteId($data) {
-        $result = $this->connect->delete($this->tableName, 'id = :id', [':id' => $data['id']]);
+    public function deleteById($id) {
+        $result = $this->connect->delete($this->tableName, 'id = :id', [':id' => $id]);
         return ($result) ? $result->rowCount() : $result;
     }
 
@@ -64,7 +82,7 @@ class Task
      */
     public function update($task) {
        $sql = "UPDATE {$this->tableName} SET
-                    type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open
+                  type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open
                   WHERE id = :id";
 
         return  $this->connect->db->executeUpdate($sql, [
@@ -99,9 +117,9 @@ class Task
             ':end_date'     => Helper::toTimeFormat($task['end_date']),
             ':duration'     => $task['duration'] ? $task['duration'] : 0,
             ':order'        => $task['order'] ? $task['order'] : 0,
-            ':progress'     => $task['progress'] ? $task['progress'] : '0',
-            ':sortorder'    => $task['sortorder'] ? $task['sortorder'] : '0',
-            ':parent'       => $task['parent'] ? $task['parent'] : 0
+            ':progress'     => $task['progress'] ? $task['progress'] : 0,
+            ':sortorder'    => $task['sortorder'] ? $task['sortorder'] : 0,
+            ':parent'       => $task['parent'] ? $task['parent'] : 1
         ]);
 
         if($result)
@@ -118,10 +136,7 @@ class Task
     public function get(){
         $sql = "SELECT *,
                 DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date,
-                DATE_FORMAT( `end_date`, '%d-%m-%Y %H:%i:%s') as end_date,
-                DATE_FORMAT( `deadline`, '%d-%m-%Y %H:%i:%s') as deadline,
-                DATE_FORMAT( `planned_start`, '%d-%m-%Y %H:%i:%s') as planned_start,
-                DATE_FORMAT( `planned_end`, '%d-%m-%Y %H:%i:%s') as planned_end
+                DATE_FORMAT( `end_date`, '%d-%m-%Y %H:%i:%s') as end_date
                 FROM `{$this->tableName}` WHERE deleted != 1";
         return $this->connect->queryAll($sql);
     }

@@ -14,6 +14,15 @@ class Link
     /** @var string $tableName table name in database */
     private $tableName;
 
+    /** @var string $fields table fields name in database */
+    private $fields = [
+        'id',
+        'source',
+        'target',
+        'type',
+        'delete',
+    ];
+
     /**
      * Link constructor.
      * @param $connect

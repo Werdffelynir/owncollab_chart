@@ -150,8 +150,8 @@ class ApiController extends Controller {
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
         ];
 
-        if($data['task_id'] && is_array($data['task_data'])){
-            $result = $this->connect->task()->deleteId($data['task_data']);
+        if($data['task_id'] && is_array($data['task_data']) && $data['task_id'] === $data['task_data']['id']){
+            $result = $this->connect->task()->deleteById($data['task_id']);
             if($result) $params['result'] = $result;
             else $params['errorinfo'] = 'Error operation delete';
         }

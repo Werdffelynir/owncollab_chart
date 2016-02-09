@@ -11,6 +11,26 @@ class Project
     /** @var string $tableName table name in database */
     private $tableName;
 
+    /** @var string $fields table fields name in database */
+    private $fields = [
+        'open',
+        'name',
+        'create_uid',
+        'show_today_line',
+        'show_task_name',
+        'show_user_color',
+        'critical_path',
+        'scale_type',
+        'scale_fit',
+        'is_share',
+        'share_link',
+        'share_is_protected',
+        'share_password',
+        'share_email_recipient',
+        'share_is_expire',
+        'share_expire_time',
+    ];
+
     /**
      * Project constructor.
      * @param $connect
@@ -31,7 +51,6 @@ class Project
                 FROM `{$this->tableName}`";
         return $this->connect->query($sql);
     }
-
 
 
     /**
@@ -69,4 +88,6 @@ class Project
 
         return $this->connect->queryAll($sql);
     }
+
+
 }

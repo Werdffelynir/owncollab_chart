@@ -45,20 +45,28 @@
 
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
-                fso = {};
+                fso = {},
+                fch = ['predecessor','predecessor'];
 
             for(var i=0;i<fsn.length;i++){
                 var _name = fsn[i]['name'].substr(5);
                 fso[_name] = fsn[i];
 
-                if(o.task[_name] !== undefined){
+                if(o.task[_name] !== undefined || fch.indexOf(_name) !== -1){
 
                     switch(_name){
 
+                        case 'progress':
                         case 'users':
-                        case 'predecessor':
                             fso[_name].value = o.task[_name];
                             fso[_name].onclick = o.onClickLightboxInput;
+                            break;
+
+                        case 'predecessor':
+                            fso[_name].onclick = o.onClickLightboxInput;
+                            break;
+
+                        case 'milestone':
                             break;
 
                         case 'buffer':
@@ -100,7 +108,12 @@
             value = target['value'],
             type = target['type'];
 
-        if(o.task[name] !== undefined){
+        if(target['name'] == 'lbox_milestone'){
+            //if(target.checked === true)
+
+
+        }
+        else if(o.task[name] !== undefined){
             o.task[name] = value;
         }
     };
@@ -160,31 +173,28 @@
 
 
 
-    o.onLightboxSave = function (id, task, isNew){
+    o.onLightboxSave = function (id, task, is_new){
 
         var _id = null;
-        if(isNew === true){
+        if(is_new === true){
             _id = app.data.lasttaskid ++;
             gantt.changeTaskId(id, _id);
             task.id = o.task.id = _id;
             task.is_new = true;
 
         }
-
         app.u.objMerge(task, o.task);
 
-
-
-        //console.log('onLightboxSave 1:: '+id, task);
         gantt.updateTask((_id)?_id:id);
-        //console.log('onLightboxSave 2:: '+id, task);
         return true;
     };
     o.onLightboxCancel = function (){
         o.task = o.field = null;
+        return true;
     };
     o.onLightboxDelete = function (){
         o.task = o.field = null;
+        return true;
     };
 
 
@@ -256,7 +266,7 @@
 
     };
     o.resourceOnClickListener = function (popup, fieldUsers) {
-        popup.addEventListener('click', function(event){
+        popup.addEventListener('click', function(event) {
             if(event.target.tagName == 'INPUT'){
                 var target = event.target,
                     type = target.getAttribute('data-type'),
