@@ -135,7 +135,9 @@
             o.resourceOnClickListener(popup, target);
         }
         else if(target['name'] == 'lbox_predecessor'){
-            popup = o.showPopup(target, '');
+            o.predecessorViewGenerate();
+            popup = o.showPopup(target, o.predecessorView);
+            o.predecessorOnClickListener(popup, target);
         }
     };
 
@@ -192,7 +194,9 @@
         o.task = o.field = null;
         return true;
     };
-    o.onLightboxDelete = function (){
+    o.onLightboxDelete = function (id, task){
+        var _task = gantt.getTask(id);
+        gantt.locale.labels.confirm_deleting = _task.text + " " + (_task.$index+1) + " - will be deleted permanently, are you sure?";
         o.task = o.field = null;
         return true;
     };
@@ -359,12 +363,102 @@
 
 
      */
+    o.predecessorView = null;
+
+    o.predecessorViewGenerate = function(){
+        var tasks = gantt._get_tasks_data(),
+            fragment = document.createDocumentFragment();
+
+        tasks.forEach(function(item){
+
+            var _line = document.createElement('div'),
+                _name = document.createElement('div'),
+                _link = document.createElement('div'),
+                _linkElems = o.predecessorLinkGenerate(item.id);
+
+            _line.className = 'tbl predecessor_line';
+            _name.className = _link.className = 'tbl_cell';
+
+            _name.textContent = (item.$index+1) + ' ' + item.text;
+            _link.appendChild(_linkElems);
+
+            _line.appendChild(_name);
+            _line.appendChild(_link);
+            fragment.appendChild(_line);
+        });
+
+        o.predecessorView = fragment;
+    };
+
+    /**
+     * { finish_to_start: "0", start_to_start: "1", finish_to_finish: "2", start_to_finish: "3" }
+     * @param id
+     * @returns {Element}
+     */
+    o.predecessorLinkGenerate = function(id){
+
+        var _select = document.createElement('select'),
+            _optionXX = document.createElement('option'),
+            _optionFF = document.createElement('option'),
+            _optionFS = document.createElement('option'),
+            _optionSS = document.createElement('option'),
+            _optionSF = document.createElement('option');
+
+        _select.name = 'tasklink_' + id;
+        _select.setAttribute('data-taskid',id);
+        _optionXX.value ='x'; _optionXX.textContent = '';
+        _optionFF.value = 0; _optionFF.textContent = 'FS';
+        _optionFS.value = 1; _optionFS.textContent = 'SS';
+        _optionSS.value = 2; _optionSS.textContent = 'FF';
+        _optionSF.value = 3; _optionSF.textContent = 'SF';
+
+        _select.appendChild(_optionXX);
+        _select.appendChild(_optionFF);
+        _select.appendChild(_optionFS);
+        _select.appendChild(_optionSS);
+        _select.appendChild(_optionSF);
+
+        return _select;
+    };
+
+    o.predecessorOnClickListener = function  (popup, target){
+
+        $('select',popup).on('change', function(event){
+            var select = event.target,
+                option = select.options[select.selectedIndex].value,
+                taskid = select.getAttribute('data-taskid');
+
+            // if option is 'x' its delete link, else create or recreate link
+            if(option == 'x'){
 
 
+            }else{
+
+                var linkId = gantt.addLink({
+                    id: app.linkIdIterator(),
+                    source: o.task['id'],
+                    target: taskid,
+                    type: option
+                });
+
+            }
+
+            //var taskObj = gantt.getTask(taskid);
+            //var targetLinks = taskObj.$target;
+            //console.log(select, option, taskObj, targetLinks);
+
+        });
 
 
+        // selectedIndex
+        /*popup.addEventListener('click', function(event) {
 
+            var _target = event.target,
+                _value = target.value;
+            console.log(_target, _value, popup, target)
 
+        }, false);*/
+    };
 
 
 

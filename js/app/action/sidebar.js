@@ -170,7 +170,11 @@
                         else
                             fields[param].addEventListener('change', app.action.event.changeValueProject, false);
 
-                        fields[param].value = project[param];
+                        if(param === 'share_link')
+                            fields[param].value = app.action.chart.generateShareLink(project[param]);
+                        else
+                            fields[param].value = project[param];
+
                         break;
                 }
 

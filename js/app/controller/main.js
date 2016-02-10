@@ -231,7 +231,13 @@
         if(critical_path === 'true')            app.data.project['critical_path'] = 1;
         else if(critical_path === 'false')      app.data.project['critical_path'] = 0;
 
-    }
+    };
 
+    app.taskIdIterator = function(){
+        return app.data.lasttaskid ++;
+    };
+    app.linkIdIterator = function(){
+        return app.data.lastlinkid ++;
+    };
 
 })(jQuery, OC, app);

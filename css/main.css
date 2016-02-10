@@ -224,7 +224,7 @@ html, body {
     margin-top: 3px;
 }
 .lbox_popup_wrap{
-
+    padding-top: 10px;
 }
 
 
@@ -371,4 +371,20 @@ html, body {
 .gantt_zoom_line > div:nth-child(4) {
     width: 16px;
     text-align: center
+}
+
+.predecessor_line {
+    width: 95%;
+}
+.predecessor_line .tbl_cell:first-child{
+}
+.predecessor_line .tbl_cell:last-child{
+    width: 10%;
+}
+.predecessor_line select {
+    height: 20px;
+    border: 1px solid #cecece;
+    font-size: 10px;
+    padding: 0px;
+    margin: 0;
 }

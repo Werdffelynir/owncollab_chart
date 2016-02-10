@@ -207,9 +207,11 @@
                     break;
 
                 case "remove":
+                    var _task = gantt.getTask(id);
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
-                        text: gantt.locale.labels.confirm_deleting,
+                        //text: gantt.locale.labels.confirm_deleting,
+                        text: _task.text + " " +(_task.$index+1)+ " - will be deleted permanently, are you sure?",
                         callback: function(res){
                             if(res)
                                 gantt.deleteTask(id);

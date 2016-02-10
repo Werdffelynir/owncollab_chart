@@ -16,7 +16,7 @@
 
         <div class="chart_share_password">
             <div class="oneline">
-                <input name="share_password" type="text" autocomplete="off" placeholder="<?php p($l->t('Choose a password for the public link'));?>">
+                <input name="share_password" type="password" autocomplete="off" placeholder="<?php p($l->t('Choose a password for the public link'));?>">
             </div>
         </div>
 
