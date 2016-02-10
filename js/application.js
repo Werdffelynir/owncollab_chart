@@ -155,9 +155,11 @@ var app = app || {
                     func.call(app, response);
             },
             error: function(error){
-                app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error);
+                console.log("API request error to the key: [" + key + "] Error message: " + error.message);
+                app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error.message);
             },
             complete: function (jqXHR, status) {
+                console.log("API request complete, status: " + status);
                 if(status == 'timeout'){
                     app.action.error.inline("You have exceeded the request time. possible problems with the Internet, or an error on the server server");
                 }
