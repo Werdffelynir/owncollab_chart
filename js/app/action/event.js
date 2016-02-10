@@ -69,7 +69,7 @@
             if(name === 'scale_fit'){
 
                 //app.action.chart.showTaskNames(target.checked);
-                gantt.config.autofit = true;
+                app.action.fitmode.toggle(target.checked);
                 gantt.render();
                 app.storageSetItem('scale_fit', target.checked);
 

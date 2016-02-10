@@ -366,10 +366,14 @@
     o.predecessorView = null;
 
     o.predecessorViewGenerate = function(){
+        if(!o.task || !o.field) return;
+
         var tasks = gantt._get_tasks_data(),
             fragment = document.createDocumentFragment();
 
         tasks.forEach(function(item){
+            if(item.id == o.task.id) return;
+
 
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
@@ -422,11 +426,15 @@
     };
 
     o.predecessorOnClickListener = function  (popup, target){
+        if(!o.task || !o.field) return;
 
         $('select',popup).on('change', function(event){
             var select = event.target,
                 option = select.options[select.selectedIndex].value,
                 taskid = select.getAttribute('data-taskid');
+
+            // first delete all source links
+            //o.deleteSourceLinks(o.task['id']);
 
             // if option is 'x' its delete link, else create or recreate link
             if(option == 'x'){
@@ -460,7 +468,17 @@
         }, false);*/
     };
 
+    o.deleteSourceLinks = function  (id){
+        var task = gantt.getTask(id),
+            links = task.$source;
 
+        if(links.length > 0){
+            for(var i=0;i<links.length;i++){
+                gantt.deleteLink(links[i]['id']);
+            }
+        }
+        //gantt.refreshData();
+    };
 
 
 

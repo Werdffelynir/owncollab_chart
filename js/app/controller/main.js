@@ -127,6 +127,9 @@
             // run action.export
             app.action.export.init();
 
+            // run action.sort
+            app.action.sort.init();
+
             // Put project data settings into fields of sidebar
             app.action.sidebar.putProjectSettings(app.data.project);
 
@@ -196,7 +199,7 @@
      * @param param
      * @returns {Element}
      */
-    o.select = function(param){
+    o.select = app.select = function(param){
         var elem = document.querySelector(param);
         if(!elem)
             app.action.error.page("Can`t query DOM Element by selector: " + param);

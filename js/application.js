@@ -84,6 +84,8 @@ var app = app || {
     inc.require(path+'/js/app/action/config.js');
 	inc.require(path+'/js/app/action/sidebar.js');
 	inc.require(path+'/js/app/action/lightbox.js');
+	inc.require(path+'/js/app/action/fitmode.js');
+	inc.require(path+'/js/app/action/sort.js');
 	inc.require(path+'/js/app/module/db.js');
 	inc.require(path+'/js/app/module/util.js');
 	inc.onerror = onError;

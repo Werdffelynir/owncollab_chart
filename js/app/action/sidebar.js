@@ -162,18 +162,16 @@
                     case 'textarea':
 
                         if(param === 'share_link') {
+                            fields[param].value = app.action.chart.generateShareLink(project[param]);
                             fields[param].onclick =  function() {
                                 this.focus();
                                 this.select();
                             }
                         }
-                        else
+                        else {
                             fields[param].addEventListener('change', app.action.event.changeValueProject, false);
-
-                        if(param === 'share_link')
-                            fields[param].value = app.action.chart.generateShareLink(project[param]);
-                        else
                             fields[param].value = project[param];
+                        }
 
                         break;
                 }
