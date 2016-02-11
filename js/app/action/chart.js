@@ -274,7 +274,7 @@
      */
     o.enableZoomSlider = function (value) {
 
-        switch (value) {
+        /*switch (value) {
             case 'hour':
                 value = 3;
                 break;
@@ -286,12 +286,15 @@
                 break;
             default :
                 value = 1;
-        }
+        }*/
         $(app.dom.zoomSlider)
             .show()
             .slider({
-                min: 1, max: 3, value: value, change: function (event, ui) {
-                    switch (parseInt(ui.value)) {
+                min: 0, max: 90, value: 0, change: function (event, ui) {
+
+                    app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
+
+                    /*switch (parseInt(ui.value)) {
                         case 3:
                             app.action.chart.scale('hour');
                             break;
@@ -302,18 +305,10 @@
                             app.action.chart.scale('week');
                             break;
                     }
-                    gantt.render();
+                    gantt.render();*/
                 }
             });
     };
-
-/*
-
- //var formatFunc = gantt.date.date_to_str("%d.%m.%Y %H:%i");
- //var formatFunc = gantt.date.str_to_date("%d.%m.%Y %H:%i");
-
-
- */
 
 
 })(jQuery, OC, app);

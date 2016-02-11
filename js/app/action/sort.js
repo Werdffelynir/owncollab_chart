@@ -148,6 +148,12 @@
      */
     o.onFilterForTask = function(event){
 
+        var div = document.createElement('div');
+        div.innerHTML = '<h2>Filter</h2>';
+
+        var popup = app.action.lightbox.showPopup(o.icoFilter.task, div);
+
+        console.log(o.icoFilter.task);
     };
 
     /**
