@@ -45,7 +45,7 @@ Util::addTranslations($appName);
 /**
  * Application styles and scripts
  */
-if(Helper::isAppPage($appName)){
+/*if(Helper::isAppPage($appName)){
     Util::addStyle($appName, 'dhtmlxgantt');
 	Util::addStyle($appName, 'main');
 	Util::addStyle($appName, 'jquery-ui-timepicker');
@@ -55,11 +55,24 @@ if(Helper::isAppPage($appName)){
     Util::addScript($appName,'dhtmlxgantt/api');
 	Util::addScript($appName, 'inc');
 	Util::addScript($appName, 'application');
-}
+}*/
 
 
 /**
  * Detect and appoints styles and scripts for particular app page
  */
 $currentUri = Helper::getCurrentUri($appName);
-if($currentUri == '/') {}
+
+if($currentUri == '/') {
+
+	Util::addStyle($appName, 'dhtmlxgantt');
+	Util::addStyle($appName, 'main');
+	Util::addStyle($appName, 'jquery-ui-timepicker');
+	Util::addScript($appName,'jquery-ui-timepicker');
+	Util::addScript($appName,'dhtmlxgantt/dhtmlxgantt');
+	Util::addScript($appName,'dhtmlxgantt/ext/dhtmlxgantt_marker');
+	Util::addScript($appName,'dhtmlxgantt/api');
+	Util::addScript($appName,'inc');
+	Util::addScript($appName,'application');
+
+}
