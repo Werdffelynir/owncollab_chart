@@ -148,12 +148,19 @@
      */
     o.onFilterForTask = function(event){
 
-        var div = document.createElement('div');
-        div.innerHTML = '<h2>Filter</h2>';
+        var div = document.createElement('div'),
+            inner = '<p>Filter by task groups or tasks</p>';
+
+        inner += '<p><input id="gantt_filter_name" type="text" placeholder="Enter passphrase to be part of task name"></p>';
+        inner += '<p>and / or</p>';
+        inner += '<p><input id="gantt_filter_group" type="text" placeholder="Enter passphrase to be part of task group"></p>';
+
+        div.innerHTML = inner;
 
         var popup = app.action.lightbox.showPopup(o.icoFilter.task, div);
-
-        console.log(o.icoFilter.task);
+        popup.style.width = '350px';
+        popup.style.zIndex = '999';
+        popup.style.left = '110px';
     };
 
     /**
@@ -162,6 +169,18 @@
      */
     o.onFilterForResource = function(event){
 
+
+        var div = document.createElement('div'),
+            inner = '<p>Filter by task groups or resource</p>';
+
+        inner += '<p><input id="gantt_filter_resource" type="text" placeholder="Enter passphrase to be part of task name"></p>';
+
+        div.innerHTML = inner;
+
+        var popup = app.action.lightbox.showPopup(o.icoFilter.task, div);
+        popup.style.width = '350px';
+        popup.style.zIndex = '999';
+        popup.style.left = '490px';
     };
 
 })(jQuery, OC, app);
