@@ -1,4 +1,8 @@
+<?php
 
+
+
+?>
     <div>
         <div class="lbox_title">Edit task details</div>
         <input name="lbox_text" type="text">

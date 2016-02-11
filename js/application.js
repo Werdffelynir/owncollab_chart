@@ -75,6 +75,7 @@ var app = app || {
 
 	var inc = new Inc(),
         path = '/apps/' + app.name;
+
 	inc.require(path+'/js/app/controller/main.js');
 	inc.require(path+'/js/app/controller/public.js');
     inc.require(path+'/js/app/action/chart.js');
@@ -114,6 +115,7 @@ var app = app || {
              * Set application options
              */
             app.uid = OC.currentUser == app.uid ? app.uid : null;
+
 
             /**
              * Start controller handler

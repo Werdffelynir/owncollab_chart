@@ -1,13 +1,14 @@
 <?php
 /**
- * ownCloud
+ * ownCloud - owncollab_chart
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
  *
- * @author Your Name <mail@example.com>
- * @copyright Your Name 2016
+ * @author ownCollab Team <info@owncollab.com>
+ * @copyright ownCollab Team 2015
  */
+
 
 namespace OCA\Owncollab_Chart\Controller;
 
@@ -18,6 +19,9 @@ use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
+
+
+\OCP\App::checkAppEnabled('owncollab_chart');
 
 class MainController extends Controller {
 
@@ -60,12 +64,6 @@ class MainController extends Controller {
 	}
 
 	/**
-	 * CAUTION: the @Stuff turns off security checks; for this page no admin is
-	 *          required and no CSRF check. If you don't know what CSRF is, read
-	 *          it up in the docs or you might create a security hole. This is
-	 *          basically the only required method to add this exemption, don't
-	 *          add it to any other method if you don't exactly know what it does
-	 *
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
@@ -78,26 +76,6 @@ class MainController extends Controller {
             return new TemplateResponse($this->appName, 'main', $params);
         }
 	}
-
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 *
-	 * @return DataResponse
-	 */
-	public function page() {
-        //$project = $this->connect->project()->getById(2);
-		//return new DataResponse(['echo' => $project]);
-	}
-
-	/**
-	 * Simply method that posts back the payload of the request
-	 * @NoAdminRequired
-	 */
-	public function doEcho($echo) {
-		return new DataResponse(['echo' => $echo]);
-	}
-
 
 	/**
 	 *

@@ -1,6 +1,6 @@
 <?php
 /**
- * ownCloud - myapp
+ * ownCloud - owncollab_chart
  *
  * This file is licensed under the Affero General Public License version 3 or
  * later. See the COPYING file.
@@ -25,7 +25,7 @@ class PageControllerTest extends PHPUnit_Framework_TestCase {
 		$request = $this->getMockBuilder('OCP\IRequest')->getMock();
 
 		$this->controller = new PageController(
-			'myapp', $request, $this->userId
+			'owncollab_chart', $request, $this->userId
 		);
 	}
 

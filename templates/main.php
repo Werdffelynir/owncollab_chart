@@ -5,6 +5,7 @@
  */
 
 ?>
+
 <div id="app-lbox">
 	<?php print_unescaped($this->inc('part.lbox')); ?>
 </div>

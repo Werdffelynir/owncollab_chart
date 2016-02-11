@@ -15,7 +15,9 @@ use \OC\AppFramework\DependencyInjection\DIContainer;
 class Application extends App {
 
     public function __construct ( array $urlParams = [] ) {
+
         $appName = Application::appName('owncollab_chart');
+
         parent::__construct($appName, $urlParams);
         $container = $this->getContainer();
 

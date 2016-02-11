@@ -1,7 +1,7 @@
 <?php
 /** @var $_ array */
 /** @var $l OC_L10N */
-style('owncollab', 'authenticate');
+style('owncollab_chart', 'authenticate');
 ?>
 <form method="post">
     <fieldset>
