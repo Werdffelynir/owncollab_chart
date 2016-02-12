@@ -49,6 +49,7 @@
         o.icoFilter.resource.addEventListener('click', o.onFilterForResource, false);
 
         o.applyStyle();
+
     };
 
     o.applyStyle = function(){
@@ -143,17 +144,29 @@
     }
 
     /**
+     *
+     * @type {null}
+     */
+    //o.tasksState = null;
+
+    /**
      * Filter Event For Task
      * @param event
      */
     o.onFilterForTask = function(event){
 
+        // save all tasks
+        //o.tasksState = gantt._get_tasks_data();
+
+        // apply filtering
+        gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplayFilters);
+
         var div = document.createElement('div'),
             inner = '<p>Filter by task groups or tasks</p>';
 
-        inner += '<p><input id="gantt_filter_name" type="text" placeholder="Enter passphrase to be part of task name"></p>';
+        inner += '<p><input id="gantt_filter_name" type="text" placeholder="Enter passphrase to be part of task name" value="' + o.filtersNames + '"></p>';
         inner += '<p>and / or</p>';
-        inner += '<p><input id="gantt_filter_group" type="text" placeholder="Enter passphrase to be part of task group"></p>';
+        inner += '<p><input id="gantt_filter_group" type="text" placeholder="Enter passphrase to be part of task group" value="' + o.filtersGroups + '"></p>';
 
         div.innerHTML = inner;
 
@@ -161,15 +174,44 @@
         popup.style.width = '350px';
         popup.style.zIndex = '999';
         popup.style.left = '110px';
+
+        var gantt_filter_name = document.getElementById('gantt_filter_name'),
+            gantt_filter_group = document.getElementById('gantt_filter_group');
+
+        gantt_filter_name.addEventListener('keyup', function(event){
+            o.filtersNames = event.target.value;
+            gantt.refreshData();
+        }, false);
+        gantt_filter_group.addEventListener('keyup', function(event){
+            o.filtersGroups = event.target.value;
+            gantt.refreshData();
+        }, false);
+
     };
+
+    o.filtersNames = '';
+
+    o.filtersGroups = '';
+
+    function onBeforeTaskDisplayFilters(id, task){
+        //console.log(id, task);
+        if(o.filtersNames.length > 0 && task.text.toLowerCase().indexOf(o.filtersNames.toLowerCase()) !== -1) {
+            return true;
+        }
+        if(o.filtersGroups) {
+
+        }
+
+        if(o.filtersNames.length == 0 && o.filtersGroups.length == 0) return true;
+
+        return false;
+    }
 
     /**
      * Filter Event For Resource
      * @param event
      */
     o.onFilterForResource = function(event){
-
-
         var div = document.createElement('div'),
             inner = '<p>Filter by task groups or resource</p>';
 
