@@ -287,12 +287,12 @@
                         fieldUsers.value = o.removeResource(name);
                     }
                 }
-                else if(type === 'group'){
+                else if(type === 'group') {
                     var _users = app.data.groupsusers[name].map(function(e){return e['uid']});
-                    if(checked){
+                    if(checked) {
                         $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
                         fieldUsers.value = o.addResource(_users);
-                    }else {
+                    } else {
                         $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', false);
                         fieldUsers.value = o.removeResource(_users);
                     }

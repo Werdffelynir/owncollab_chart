@@ -194,14 +194,15 @@
     o.filtersGroups = '';
 
     function onBeforeTaskDisplayFilters(id, task){
-        //console.log(id, task);
-        if(o.filtersNames.length > 0 && task.text.toLowerCase().indexOf(o.filtersNames.toLowerCase()) !== -1) {
+
+        var child = gantt.getChildren(id);
+
+        if(o.filtersNames.length > 0 && task.text.toLowerCase().indexOf(o.filtersNames.toLowerCase()) !== -1 && child.length == 0) {
             return true;
         }
-        if(o.filtersGroups) {
-
+        if(o.filtersGroups.length > 0 && task.text.toLowerCase().indexOf(o.filtersGroups.toLowerCase()) !== -1 && child.length > 0) {
+            return true;
         }
-
         if(o.filtersNames.length == 0 && o.filtersGroups.length == 0) return true;
 
         return false;

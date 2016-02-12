@@ -64,7 +64,7 @@ class Project
         $result = [];
 
         // Operation iterate and classify users into groups
-        foreach($records as $record){
+        foreach($records as $record) {
             $result[$record['gid']][] = [
                 'gid'=> $record['gid'],
                 'uid'=> $record['uid'],
