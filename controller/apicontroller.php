@@ -98,10 +98,29 @@ class ApiController extends Controller {
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 
+        $tasks = $this->connect->task()->get();
+
+        if($tasks){
+            $taskProject = null;
+            for($i=0;$i<count($tasks);$i++){
+                if($tasks[$i]['is_project'] == 1 && $tasks[$i]['type'] == 'project')
+                    $taskProject = $tasks[$i];
+                continue;
+            }
+            if($taskProject){
+                for($j=0;$j<count($tasks);$j++){
+                    if(strtotime($tasks[$j]['start_date']) < strtotime($taskProject['start_date']))
+                        $tasks[$j]['start_date'] = $taskProject['start_date'];
+                    if(strtotime($tasks[$j]['end_date']) < strtotime($taskProject['start_date']))
+                        $tasks[$j]['end_date'] = $taskProject['end_date'];
+                }
+            }
+        }
+
         if($this->isAdmin && $uid){
             $params['access'] 		= 'allow';
             $params['project'] 		= $this->connect->project()->get();
-            $params['tasks'] 		= $this->connect->task()->get();
+            $params['tasks'] 		= $tasks;
             $params['links'] 		= $this->connect->link()->get();
             $params['groupsusers'] 	= $this->connect->project()->getGroupsUsersList();
             $params['lasttaskid'] 	= $this->connect->task()->getLastId();

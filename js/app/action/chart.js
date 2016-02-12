@@ -52,6 +52,7 @@
             return false; //blocks the default behavior
         };*/
 
+        //console.log(app.data.tasks);
         // run parse data
         gantt.parse({
             data:   app.data.tasks,
@@ -74,6 +75,8 @@
         */
 
         //
+
+        //gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplayDateFixer);
     };
 
 
@@ -248,6 +251,8 @@
         gantt.config.highlight_critical_path = !!show;
 
     };
+
+
 
 
     /**
