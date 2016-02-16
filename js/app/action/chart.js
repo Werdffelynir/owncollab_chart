@@ -14,8 +14,6 @@
     /**
      * Dynamic action options
      * Use: app.action.opt[]
-     *
-     * Get project task: app.action.chart.opt.taskProject
      */
     o.opt = {
         // Supported scales sizes
@@ -27,10 +25,15 @@
         // true if the grant is the initialization occurred
         ganttIsInit: false,
         // show new task edit
-        isNewTask: false,
-        // base task inline object
-        taskProject: null
+        isNewTask: false
     };
+
+    /**
+     * Save data of project task
+     * Uses: app.action.chart.taskProjectData
+     * @type {null|object}
+     */
+    o.taskProjectData = null;
 
     /**
      * Run action chart
@@ -52,15 +55,22 @@
         gantt.attachEvent("onBeforeTaskUpdate", app.action.event.onBeforeTaskUpdate);
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
 
-        /*gantt.$click.advanced_details_button=function(e, id, trg){
-            alert("These are advanced details");
-            return false; //blocks the default behavior
-        };*/
+        // Этот фильтр удаляет с таска проэкта даты,
+        // для того что бы таск был интерактивен по отношеню к детям
+        var dataTaskFiltering = app.data.tasks.map(function(_task) {
+            if(_task['type'] == 'project'){
+                // Cloning project task to property app.action.chart.taskProjectData
+                o.taskProjectData = app.u.objClone(_task);
+                delete _task['start_date'];
+                delete _task['end_date'];
+                delete _task['duration'];
+            }
+            return _task;
+        });
 
-        //console.log(app.data.tasks);
         // run parse data
         gantt.parse({
-            data:   app.data.tasks,
+            data:   dataTaskFiltering,
             links:  app.data.links
         });
 
@@ -70,22 +80,12 @@
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
-
-
-/* on_task_edit
-        gantt.attachEvent("onBeforeTaskUpdate", eventBeforeTaskUpdate);
-        gantt.attachEvent("onAfterTaskUpdate", eventAfterTaskUpdate);
-        gantt.attachEvent("onAfterTaskDelete", eventAfterTaskDelete);
-        gantt.attachEvent("onBeforeTaskAdd", eventBeforeTaskAdd);
-        */
-
-        //
-
-        //gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplayDateFixer);
     };
 
 
-
+    /**
+     * Dynamic change size of chart, when browser window on resize
+     */
     o.ganttDynamicResize = function(){
         window.addEventListener('resize', function onWindowResize(event){
             app.action.chart.ganttFullSize();
@@ -319,29 +319,5 @@
                 }
             });
     };
-
-    /**
-     * Save data of project task
-     * @type {null}
-     */
-    o.taskProjectData = null;
-
-    /**
-     * Use: app.action.chart.getTaskProject()
-     * @returns {null|*}
-     */
-    o.getTaskProject = function(){
-        var i, tasks = gantt._get_tasks_data();
-        if(o.taskProjectData == null){
-            for (i = 0; i < tasks.length; i ++){
-                if(tasks[i]['type'] == 'project'){
-                    o.taskProjectData = tasks[i];
-                    continue;
-                }
-            }
-        }
-        return o.taskProjectData;
-    }
-
 
 })(jQuery, OC, app);

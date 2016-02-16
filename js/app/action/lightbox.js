@@ -131,12 +131,22 @@
         if(target['name'] == 'lbox_users'){
             o.resourcesViewGenerate();
             popup = o.showPopup(target, o.resourcesView);
+
+            popup.style.width = '510px';
+            popup.style.zIndex = '999';
+            popup.style.left = '10px';
+
             o.resourcesAppoint(popup);
             o.resourceOnClickListener(popup, target);
         }
         else if(target['name'] == 'lbox_predecessor'){
             o.predecessorViewGenerate();
             popup = o.showPopup(target, o.predecessorView);
+
+            popup.style.width = '510px';
+            popup.style.zIndex = '999';
+            popup.style.left = '10px';
+
             o.predecessorOnClickListener(popup, target);
         }
     };
@@ -236,7 +246,7 @@
 
                 _inlineUser.appendChild(_inputUser);
                 _lineUsers.appendChild(_inlineUser);
-                _lineUsers.innerHTML += ' <strong>' + users[i]['displayname'] + '</strong>';
+                _lineUsers.innerHTML += ' <strong>' + users[i]['uid'] + '</strong>';
             }
 
             fragment.appendChild(_lineGroup);

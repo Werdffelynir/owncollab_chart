@@ -98,9 +98,9 @@ class ApiController extends Controller {
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 
-<<<<<<< HEAD
-        if($uid){
-=======
+
+        //if($uid){
+
         $tasks = $this->connect->task()->get();
 
         if($tasks){
@@ -120,8 +120,8 @@ class ApiController extends Controller {
             }
         }
 
-        if($this->isAdmin && $uid){
->>>>>>> 056dd45ea00bef14ce3c5372ed51f3cd7aad1fcc
+        if($uid){
+
             $params['access'] 		= 'allow';
             $params['project'] 		= $this->connect->project()->get();
             $params['tasks'] 		= $tasks;

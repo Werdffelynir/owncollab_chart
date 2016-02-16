@@ -68,9 +68,6 @@ class MainController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function index() {
-
-        if( $this->isAdmin ){}
-
 		$params = [
 			'current_user' => $this->userId,
 		];

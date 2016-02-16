@@ -182,13 +182,15 @@ var app = app || {
         });
     };
 
-    app.timeDateToStr = function(date){
-        var formatFunc = gantt.date.date_to_str("%d.%m.%Y %H:%i");
+    app.timeDateToStr = function(date, mask){
+        mask = mask || "%d.%m.%Y %H:%i";
+        var formatFunc = gantt.date.date_to_str(mask);
         return formatFunc(date);
     };
 
-    app.timeStrToDate = function(date){
-        var formatFunc = gantt.date.str_to_date("%d.%m.%Y %H:%i");
+    app.timeStrToDate = function(date, mask){
+        mask = mask || "%d.%m.%Y %H:%i";
+        var formatFunc = gantt.date.str_to_date(mask);
         return formatFunc(date);
     };
 

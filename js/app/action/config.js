@@ -52,9 +52,6 @@
         // Styling the gantt chart. Column tasks names size width
         gantt.config.row_height = 22;
 
-        // Styling the gantt chart. Tasks column grid width size
-        gantt.config.grid_width = 605;
-
         // Enables automatic adjusting of the grid's columns to the grid's width
         gantt.config.autofit = true;
 
@@ -100,28 +97,32 @@
 
         // Configures the columns of the table
         var columnWidth = {
-            id: 20,
+            id: 25,
             name: 150,
-            start: 100,
-            end: 100,
+            start: 70,
+            end: 70,
             duration: 50,
             resources: 100
         };
 
+        // Styling the gantt chart. Tasks column grid width size
+        gantt.config.grid_width = 550;
+
         gantt.config.columns = [
 
             {name:"id", label:"ID", width: columnWidth.id, template: function(item) {
-                return (item.$index + 1);
+                //return (item.$index + 1);
+                return item.id;
             }},
 
             {name:"text", label:"Task name", tree:true, width: columnWidth.name, resize:true},
 
             {name:"start_date", label:"Start", align: "center", width: columnWidth.start, template: function(item) {
-                return app.timeDateToStr(item.start_date);
+                return app.timeDateToStr(item.start_date, "%d.%m.%Y");
             }},
 
             {name:"end_date", label:"End", align: "center", width: columnWidth.end, template: function(item) {
-                return app.timeDateToStr(item.end_date);
+                return app.timeDateToStr(item.end_date, "%d.%m.%Y");
             }},
 
             {name:"duration", label:"Duration", align: "center", width: columnWidth.duration, template: function(item) {
@@ -139,13 +140,6 @@
             }}
 
         ];
-
-        //console.log(app.action.chart.opt.taskProject);
-
-        //gantt.config.start_date = app.action.chart.opt.taskProject.start_date;
-
-        //gantt.config.end_date = app.action.chart.opt.taskProject.end_date;
-
 
         // Advance configuration settings
         // for admin and users and guest (walk share)
@@ -166,12 +160,15 @@
         if(!app.uid) return;
 
         gantt.config.columns.push({name:"added", label:"", width: 22, template: function(item) {
+            //if(item.type == 'project') return '';
             return o.createTaskBtn('add', item.id);
         }});
         gantt.config.columns.push({name:"remove", label:"", width: 22, template: function(item) {
+            //if(item.type == 'project')return '';
             return o.createTaskBtn('remove', item.id);
         }});
         gantt.config.columns.push({name:"edit", label:"", width: 22, template: function(item) {
+            //if(item.type == 'project') return '';
             return o.createTaskBtn('edit', item.id);
         }});
     };

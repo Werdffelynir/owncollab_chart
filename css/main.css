@@ -212,7 +212,7 @@ html, body {
 .gantt_cal_ltitle{display:none}
 .gantt_cal_lsection{display:none}
 .lbox_popup {
-    box-shadow: 0 1px 4px -1px rgba(0, 0, 0, 0.65);
+    box-shadow: 0 1px 10px -1px rgba(0, 0, 0, 0.65);
     position: absolute;
     width: 90%;
     min-height: 100px;
