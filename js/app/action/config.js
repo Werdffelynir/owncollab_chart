@@ -59,7 +59,26 @@
         gantt.config.autofit = true;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = false;
+        gantt.config.fit_tasks = true;
+
+        // -------------------------------------------------------------------
+
+        //gantt.config.work_time = true;
+        //gantt.config.round_dnd_dates = true;
+        //gantt.config.static_background = true;
+
+        //gantt.config.start_date = new Date(2016, 1, 1);
+        //gantt.config.end_date = new Date(2016, 2, 30);
+
+
+
+
+
+
+
+
+
+        // -------------------------------------------------------------------
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1)
@@ -120,6 +139,13 @@
             }}
 
         ];
+
+        //console.log(app.action.chart.opt.taskProject);
+
+        //gantt.config.start_date = app.action.chart.opt.taskProject.start_date;
+
+        //gantt.config.end_date = app.action.chart.opt.taskProject.end_date;
+
 
         // Advance configuration settings
         // for admin and users and guest (walk share)

@@ -69,12 +69,13 @@ class MainController extends Controller {
 	 */
 	public function index() {
 
-        if( $this->isAdmin ){
-            $params = [
-                'current_user' => $this->userId,
-            ];
-            return new TemplateResponse($this->appName, 'main', $params);
-        }
+        if( $this->isAdmin ){}
+
+		$params = [
+			'current_user' => $this->userId,
+		];
+		return new TemplateResponse($this->appName, 'main', $params);
+
 	}
 
 	/**

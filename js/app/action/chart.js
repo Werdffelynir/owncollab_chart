@@ -13,6 +13,9 @@
 
     /**
      * Dynamic action options
+     * Use: app.action.opt[]
+     *
+     * Get project task: app.action.chart.opt.taskProject
      */
     o.opt = {
         // Supported scales sizes
@@ -24,7 +27,9 @@
         // true if the grant is the initialization occurred
         ganttIsInit: false,
         // show new task edit
-        isNewTask: false
+        isNewTask: false,
+        // base task inline object
+        taskProject: null
     };
 
     /**
@@ -309,6 +314,29 @@
                 }
             });
     };
+
+    /**
+     * Save data of project task
+     * @type {null}
+     */
+    o.taskProjectData = null;
+
+    /**
+     * Use: app.action.chart.getTaskProject()
+     * @returns {null|*}
+     */
+    o.getTaskProject = function(){
+        var i, tasks = gantt._get_tasks_data();
+        if(o.taskProjectData == null){
+            for (i = 0; i < tasks.length; i ++){
+                if(tasks[i]['type'] == 'project'){
+                    o.taskProjectData = tasks[i];
+                    continue;
+                }
+            }
+        }
+        return o.taskProjectData;
+    }
 
 
 })(jQuery, OC, app);

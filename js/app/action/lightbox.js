@@ -267,7 +267,6 @@
                     $('input[name='+k+'][data-type=group]', popup).prop('checked', true);
             }
         }
-
     };
     o.resourceOnClickListener = function (popup, fieldUsers) {
         popup.addEventListener('click', function(event) {

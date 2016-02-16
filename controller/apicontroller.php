@@ -98,7 +98,7 @@ class ApiController extends Controller {
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 
-        if($this->isAdmin && $uid){
+        if($uid){
             $params['access'] 		= 'allow';
             $params['project'] 		= $this->connect->project()->get();
             $params['tasks'] 		= $this->connect->task()->get();
@@ -107,7 +107,7 @@ class ApiController extends Controller {
             $params['lasttaskid'] 	= $this->connect->task()->getLastId();
             $params['lastlinkid'] 	= $this->connect->link()->getLastId();
         }else
-            $params['errorinfo'] 	= 'API method require - uid and request as admin';
+            $params['errorinfo'] 	= 'API method require uid';
 
         return new DataResponse($params);
 	}
