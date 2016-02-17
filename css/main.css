@@ -383,8 +383,9 @@ html, body {
     width: 95%;
 }
 .predecessor_line .tbl_cell:first-child{
+
 }
-.predecessor_line .tbl_cell:last-child{
+.predecessor_line .tbl_cell:last-child {
     width: 10%;
 }
 .predecessor_line select {

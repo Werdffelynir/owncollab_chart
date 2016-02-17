@@ -74,6 +74,33 @@ class MainController extends Controller {
 		return new TemplateResponse($this->appName, 'main', $params);
 
 	}
+	/**
+	 * @NoAdminRequired
+	 * @NoCSRFRequired
+	 */
+	public function mail() {
+
+        /*$mail = new \OCA\Owncollab_Chart\PHPMailer\PHPMailer();
+
+        $mail->setFrom('from@example.com', 'First Last');
+        $mail->addAddress('whoto@example.com', 'John Doe');
+        $mail->Subject = 'Here is the subject';
+        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+
+        if (!$mail->send()) {
+            var_dump("Mailer Error: " . $mail->ErrorInfo);
+        } else {
+            var_dump("Message sent!");
+        }
+
+        var_dump($mail);*/
+
+        $res = mail('whoto@example.com','Here is the subject', 'Here is the Message');
+
+        var_dump($res);
+
+        die;
+	}
 
 	/**
 	 *
