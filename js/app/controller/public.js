@@ -21,12 +21,16 @@
 
     function onDocumentLoaded(){
 
+        var jData = false;
+
         /**
          * Query DOM Elements
          */
         queryDomElements();
 
-        var jData = JSON.parse($(app.dom.ganttdatajson).text());
+        try{
+            jData = JSON.parse($(app.dom.ganttdatajson).text());
+        }catch(error){}
 
         if(typeof jData === 'object' && jData['tasks'] && jData['links'] && jData['project']){
 
@@ -68,8 +72,8 @@
      */
     function queryDomElements(){
 
-        app.dom.gantt           = app.controller.main.select('#gantt-chartpublic');
-        app.dom.ganttdatajson   = app.controller.main.select('#ganttdatajson');
+        app.dom.gantt           = $('#gantt-chartpublic')[0];
+        app.dom.ganttdatajson   = $('#ganttdatajson')[0];
 
     }
 

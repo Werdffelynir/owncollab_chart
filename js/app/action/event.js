@@ -105,7 +105,7 @@
                     data.value = target.value;
                 }
             }
-            else if(type == 'text'){
+            else if(type == 'text' || type == 'password'){
                 data.value = target.value;
 
                 if(data.field == 'share_expire_time'){
@@ -124,7 +124,7 @@
         app.api('updateprojectsetting', function(response) {
 
             //console.log(sendData);
-            //console.log(response);
+            console.log(response);
 
             if (typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
@@ -135,7 +135,11 @@
                          $('input[name=share_link]').val(shareLink);
                          $('.chart_share_on').show();
                     }else{
-                         $('.chart_share_on').hide();
+                        app.action.sidebar.elemFields['share_is_protected'].checked = false;
+                        app.action.sidebar.elemFields['share_is_expire'].checked = false;
+                        app.action.sidebar.elemFields['share_password'].value = '';
+                        app.action.sidebar.elemFields['share_expire_time'].value = '';
+                        $('.chart_share_on').hide();
                     }
 
                 }else if(sendData.field === 'share_is_protected'){
@@ -271,7 +275,29 @@
 
 
 
+    o.sendShareEmails = function(emails){
 
+        // change all icon to loading emails
+        //background: url("/apps/owncollab_chart/img/loading-icon.gif") no-repeat center center;
+        $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center');
+
+        app.api('sendshareemails', function(response) {
+
+            if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
+
+                app.requesttoken = response.requesttoken;
+
+                $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
+                console.log('response: ', response);
+
+            } else {
+
+                app.action.error.inline('Error Request on send share emails');
+            }
+
+        },{ emails:emails });
+
+    };
 
 
 

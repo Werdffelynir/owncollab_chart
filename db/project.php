@@ -101,7 +101,7 @@ class Project
         if(in_array($field, $this->fields)) {
             $sql = "UPDATE {$this->tableName}
                     SET {$field} = :field
-                    WHERE id = :id";
+                    WHERE open = 1";
             $result = $this->connect->db->executeUpdate($sql, [
                 ':field'=>$value
             ]);

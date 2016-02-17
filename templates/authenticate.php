@@ -1,14 +1,16 @@
 <?php
 /** @var $_ array */
 /** @var $l OC_L10N */
+
 style('owncollab_chart', 'authenticate');
+
 ?>
 <form method="post">
     <fieldset>
-        <?php if (!isset($_['wrongpw'])): ?>
+        <?php if (!isset($_['wrongpw']) && $_['wrongpw'] == true): ?>
             <div class="warning-info"><?php p($l->t('This share is password-protected')); ?></div>
         <?php endif; ?>
-        <?php if (isset($_['wrongpw'])): ?>
+        <?php if (isset($_['wrongpw']) && $_['wrongpw'] == true): ?>
             <div class="warning"><?php p($l->t('The password is wrong. Try again.')); ?></div>
         <?php endif; ?>
         <p>

@@ -397,10 +397,20 @@ html, body {
 #gantt_filter_name, #gantt_filter_group{
     width: 100%;
 }
-
-
-
-
+#share_emails_list{line-height: 25px;}
+.share_email{border-bottom: 2px solid #000;}
+.share_email strong{
+    font-weight: bold !important;
+}
+.share_email_icon{
+    width: 20px;
+}
+.share_email_text{}
+.share_email_butn{
+    width: 20px;
+    height: 20px;
+    background: url('/apps/owncollab_chart/img/delete-color.png') no-repeat center center;
+}
 
 
 

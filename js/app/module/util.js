@@ -172,6 +172,12 @@
         }
     };
 
+    //
+    o.arrDiff = function (arr1, arr2) {
+        return arr1.slice(0).filter(function(item) {
+            return arr2.indexOf(item) === -1;
+        })
+    };
 
 
 })(jQuery, OC, app);

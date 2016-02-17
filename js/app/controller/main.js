@@ -149,23 +149,7 @@
      */
     function enablePlugins(){
 
-        /**
-         * init jq plugin datetimepicker for all elements with class name 'datetimepic'
 
-        $('.datetimepic').datetimepicker({
-            minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
-            controlType: 'select',
-            oneLine: true,
-            dateFormat: 'dd.mm.yy',
-            timeFormat: 'HH:mm',
-            onSelect:function(val,eve){
-                if(this.name == "share_expire_time"){
-                    var elemTime = $('input[name=share_expire_time]')[0];
-                    elemTime.value = val;
-                    //app.fn.changeEventSettingsField({target:elemTime});
-                }
-            }
-        }); */
     }
 
     /**

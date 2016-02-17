@@ -5,6 +5,7 @@ var app = app || {
         name: 'owncollab_chart',
 
         /*url address to current application*/
+        /*OC.webroot + '/index.php' + OC.appswebroots['owncollab_chart']*/
         url: OC.generateUrl('/apps/owncollab_chart'),
 
         /*user is admin*/
@@ -59,7 +60,7 @@ var app = app || {
             lastlinkid:null
 		},
 
-		/*link of app.module.util object*/
+		/*alias for app.module.util object*/
 		u:{},
 
         /*edit data to save*/
@@ -120,11 +121,18 @@ var app = app || {
             /**
              * Start controller handler
              */
-            if(app.uid)
-                app.controller.main.construct();
+            //if(location.pathname.indexOf('/s/') !== -1)
+            //
+            //else
+            if(app.uid) {
+                if(window.location.pathname.indexOf('/s/') === -1)
+                    app.controller.main.construct();
+                else
+                    window.location = app.url;
+            }
             else
                 app.controller.public.construct();
-
+                //app.action.error.page("Page not loaded. Controller not find.");
         }else{
 
             /**
@@ -157,8 +165,8 @@ var app = app || {
                     func.call(app, response);
             },
             error: function(error){
-                console.log("API request error to the key: [" + key + "] Error message: " + error.message);
-                app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error.message);
+                console.log("API request error to the key: [" + key + "] Error message: ", error);
+                app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error);
             },
             complete: function (jqXHR, status) {
                 //console.log("API request complete, status: " + status);

@@ -26,12 +26,22 @@
 
         <div class="chart_share_expiration">
             <div class="oneline">
-                <input name="share_expire_time" class="datetimepic" value="" type="text" placeholder="<?php p($l->t('Expiration time'));?>">
+                <input name="share_expire_time" class="datetimepic" value="" type="text" placeholder="<?php p($l->t('Expiration time'));?>" >
             </div>
         </div>
 
         <div class="oneline">
-            <input name="share_email_recipient" type="text" autocomplete="off" placeholder="<?php p($l->t('Provide recipient email address'));?>">
+            <input
+                id="owc_email_autocomplete"
+                class="ui-autocomplete-input"
+                name="_share_email_recipient"
+                type="text"
+                placeholder="<?php p($l->t('Provide recipient email address'));?>"
+                autocomplete="off">
+        </div>
+
+        <div class="oneline" id="share_emails_list">
+
         </div>
 
         <div class="oneline">

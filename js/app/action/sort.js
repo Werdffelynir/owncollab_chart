@@ -229,23 +229,22 @@
                 resourceName = o.filtersResourceNames.toLowerCase(),
                 resourceGroup = o.filtersResourceGroups.toLowerCase();
 
-            console.log(users, resourceName);
+            //console.log(users, resourceName);
 
             if(resourceName.length > 0 && users.indexOf(resourceName) !== -1) {
                 return true;
             }
+            if(resourceGroup.length > 0 && users.indexOf(resourceGroup) !== -1) {
+                // app.u.arrDiff()
+                return true;
+            }
 
             // clear filter
-            if(resourceName.trim().length == 0) return true;
+            if(resourceName.trim().length == 0 && resourceGroup.length == 0) return true;
 
             // filter over
             return false;
         }
-
-
-        /*if(o.filtersResourceNames.length > 0 && task.users.indexOf(o.filtersResourceNames) !== -1 && child.length > 0) {
-            return true;
-        }*/
 
         return false;
     }

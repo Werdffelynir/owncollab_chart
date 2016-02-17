@@ -191,13 +191,10 @@ class ApiController extends Controller {
             $value = trim(strip_tags($data['value']));
 
             // value for bool param
+            if($value == 'true') $value = 1;
+            else if($value == 'false') $value = 0;
 
             if($field == 'is_share'){
-
-                if($value == 'true')
-                    $value = 1;
-                else if($value == 'false')
-                    $value = 0;
 
                 $share_link = $value ? Helper::randomString(16) : '';
                 $result = $this->connect->project()->updateShared($field, $value, $share_link);
@@ -207,6 +204,17 @@ class ApiController extends Controller {
                 else{
                     $params['share_link'] = $share_link;
                 }
+            }
+            else{
+
+                if($field == 'share_password') $value = md5(trim($value));
+
+                $result = $this->connect->project()->updateField($field, $value);
+                if(!$result)
+                    $params['error'] = 'Error operation update project';
+                else
+                    $params['result'] = $result;
+
             }
 /*
 
@@ -236,6 +244,27 @@ class ApiController extends Controller {
     }
 
 
+    /**
+     * @param $data
+     * @return DataResponse
+     */
+    public function sendshareemails($data)
+    {
+        $params = [
+            'error'     => null,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
+        ];
 
+
+        if($this->isAdmin && isset($data['emails'])){}
+
+        $emails = $data['emails'];
+        $params['result'] = $emails;
+
+        sleep(3);
+
+        return new DataResponse($params);
+
+    }
 
 }

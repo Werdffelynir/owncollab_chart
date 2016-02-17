@@ -86,75 +86,84 @@ class MainController extends Controller {
 	 */
 	public function publicChart($share){
 
-		$project = $this->connect->project()->getShare($share);
+        $project = $this->connect->project()->getShare($share);
         $params = [
-            'access' => 'deny'
+            'template' => 'guest',
+            'protected' => false,
+            'wrongpw' => false,
+            'requesttoken' => false,
         ];
 
-		if($project){
+        if( $project['open'] == 1  && $project['is_share'] == 1){
 
-			if($project['share_is_protected'] == 1){
+            // static requesttoken
+            $params['requesttoken'] = md5($project['share_password'].md5($project['share_link']));
 
-				$link = $project['share_link'];
-				$password = $project['share_password'];
-				$publickey = (isset($_SESSION['publickey'])) ? trim($_SESSION['publickey']) : false;
+            // share time is over
+            if($project['share_is_expire'] == 1 && strtotime($project['share_expire_time']) < time()) {
+                //
+            }
+            else{
+                //
+                $session_publickey = Helper::session('publickey');
+                if(!empty($session_publickey) && $session_publickey == $params['requesttoken']){
 
-				if($publickey === md5($password.$link)){
+                    $params['template'] = 'project';
 
-					$params['project'] 		= $project;
-					$params['tasks'] 		= $this->connect->task()->get();
-					$params['links'] 		= $this->connect->link()->get();
+                }
+                else if($project['share_is_protected'] == 1){
 
-					$response = new TemplateResponse($this->appName, 'public', $params);
-				}
-				else if( isset($_POST['requesttoken']) && isset($_POST['password']) ){
+                    $post_requesttoken = Helper::post('requesttoken');
+                    $post_password = Helper::post('password');
 
-					if(trim($_POST['requesttoken']) === md5(trim($_POST['password']).$link)){
-						Helper::session('publickey', $_POST['requesttoken']);
-						return new RedirectResponse($link);
-					}else{
-						$response =  new TemplateResponse($this->appName, 'authenticate', [
-							'wrongpw' => true,
-							'requesttoken' => md5($password.$link)
-						], 'guest');
-					}
+                    $params['protected'] = true;
+                    $params['template'] = 'authenticate';
 
-				} else{
+                    if($post_requesttoken == $params['requesttoken'] && md5($post_password) == $project['share_password']){
+                        Helper::session('publickey', $params['requesttoken']);
+                        $params['template'] = 'project';
+                    }else{
+                        if(!empty($post_password))
+                            $params['wrongpw'] = true;
+                    }
 
-					$response =  new TemplateResponse($this->appName, 'authenticate', ['requesttoken' => md5($password.$link)], 'guest');
-				}
-
-				if($project['share_is_expire'] == 1 && time() > strtotime($project['share_expire_time'])){
-					$template = new \OCP\Template('', '404', 'guest');
-                    $template->printPage();
-				}else
-					return $response;
-			}
-
-            $params['access'] = 'allow';
-
-            if($params['access'] == 'allow'){
-
-                if($project['share_is_expire'] == 1 && time() > strtotime($project['share_expire_time'])){
-                    $template = new \OCP\Template('', '404', 'guest');
-                    $template->printPage();
-                }else {
-                    unset($project['is_share']);
-                    unset($project['share_password']);
-                    return new TemplateResponse($this->appName, 'public', [
-                        'json' => [
-                            'project' => $project,
-                            'tasks' => $this->connect->task()->get(),
-                            'links' => $this->connect->link()->get()
-                        ]
-                    ]);
+                }
+                else {
+                    $params['template'] = 'project';
                 }
             }
-		}
-		else {
+        }
+
+        if($params['template'] == 'guest'){
             $template = new \OCP\Template('', '404', 'guest');
             $template->printPage();
-		}
+            exit;
+        }
+
+        if($params['template'] == 'authenticate'){
+            return new TemplateResponse($this->appName, 'authenticate', [
+                'wrongpw' => $params['wrongpw'],
+                'requesttoken' => $params['requesttoken']
+            ], 'guest');
+        }
+
+        if($params['template'] == 'project'){
+            unset($project['is_share']);
+            unset($project['share_link']);
+            unset($project['share_is_protected']);
+            unset($project['share_password']);
+            unset($project['share_is_expire']);
+            unset($project['share_expire_time']);
+            return new TemplateResponse($this->appName, 'public', [
+                'json' => [
+                    'project' => $project,
+                    'tasks' => $this->connect->task()->get(),
+                    'links' => $this->connect->link()->get()
+                ]
+            ]);
+        }
+
+
 	}
 
 
