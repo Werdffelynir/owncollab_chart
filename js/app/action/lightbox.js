@@ -46,13 +46,14 @@
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
                 fso = {},
-                fch = ['predecessor','predecessor'];
+                fch = ['predecessor','milestone']; // added params if is undefined in o.task
 
             for(var i=0;i<fsn.length;i++){
                 var _name = fsn[i]['name'].substr(5);
                 fso[_name] = fsn[i];
 
                 if(o.task[_name] !== undefined || fch.indexOf(_name) !== -1){
+
 
                     switch(_name){
 
@@ -67,6 +68,7 @@
                             break;
 
                         case 'milestone':
+                            fso[_name].onclick = o.onClickLightboxInputMilestone;
                             break;
 
                         case 'buffer':
@@ -108,18 +110,25 @@
             value = target['value'],
             type = target['type'];
 
-        if(target['name'] == 'lbox_milestone'){
-            //if(target.checked === true)
-
-
-        }
-        else if(o.task[name] !== undefined){
+        if(o.task[name] !== undefined){
             o.task[name] = value;
         }
     };
     o.onChangeLightboxInputDate = function (date, picObj){
         if(!o.task || !o.field) return;
         o.task[this['name'].substr(5)] = app.timeStrToDate(date);
+    };
+
+    o.onClickLightboxInputMilestone = function (event){
+        if(!o.task || !o.field) return;
+        var target = event.target;
+
+        if(target.checked == true)
+            o.task.type = gantt.config.types.milestone;
+        else
+            o.task.type = gantt.config.types.task;
+
+        console.log(o.task.type);
     };
 
     o.onClickLightboxInput = function (event){
@@ -196,6 +205,8 @@
 
         }
         app.u.objMerge(task, o.task);
+
+        console.log(task,o.task);
 
         gantt.updateTask((_id)?_id:id);
         return true;
