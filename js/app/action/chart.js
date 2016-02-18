@@ -252,9 +252,8 @@
 
 
     o.showCriticalPath = function (show){
-
         gantt.config.highlight_critical_path = !!show;
-
+        //gantt.render();
     };
 
 

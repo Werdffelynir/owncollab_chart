@@ -53,10 +53,10 @@
         gantt.config.row_height = 22;
 
         // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = true;
+        gantt.config.autofit = false;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = true;
+        gantt.config.fit_tasks = false;
 
         // -------------------------------------------------------------------
 
@@ -78,20 +78,25 @@
         // -------------------------------------------------------------------
 
         // Making the Gantt chart to display the critical path
-        if(app.data.project['critical_path'] == 1)
+        if(app.data.project['critical_path'] == 1) {
+            //console.log(app.data.project['critical_path']);
+            //gantt.config.highlight_critical_path = true;
             app.action.chart.showCriticalPath(true);
+        }
 
-        // add red line "today"
-        if(app.data.project['show_today_line'] == 1)
+        // Add red line "today"
+        if(app.data.project['show_today_line'] == 1) {
             app.action.chart.showTodayLine();
+        }
 
         // Apply scaling chart
         app.action.chart.scale(app.data.project['scale_type']);
 
+        // Enable zoom slider
         app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
-        // apply scale fit
-        if(app.data.project['scale_fit']){
+        // Apply scale fit
+        if(app.data.project['scale_fit']) {
             app.action.chart.scaleFit();
         }
 

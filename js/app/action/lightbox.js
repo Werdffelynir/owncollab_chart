@@ -18,8 +18,15 @@
 
     o.init = function(){
 
-        //Add the section to the lightbox configuration:
-        gantt.config.lightbox.sections = [
+        /**
+         * Add the section to the lightbox configuration:
+         *
+         * gantt.config.lightbox.sections - for regular tasks.
+         * gantt.config.lightbox.project_sections - for project tasks.
+         * gantt.config.lightbox.milestone_sections - for milestones.
+         * @type {*[]}
+         */
+        gantt.config.lightbox.sections = gantt.config.lightbox.project_sections = gantt.config.lightbox.milestone_sections = [
             {name:"template", height:260, type:"template", map_to:"base_template"}
         ];
 
@@ -35,6 +42,10 @@
         gantt.attachEvent("onLightboxDelete", o.onLightboxDelete);
     };
 
+    /**
+     * @param id
+     * @returns {boolean}
+     */
     o.onBeforeLightbox = function (id){
         o.task = gantt.getTask(id);
         o.task.base_template = '<div id="generate-lbox-wrapper">' + app.dom.lbox.innerHTML + '</div>';
@@ -68,6 +79,7 @@
                             break;
 
                         case 'milestone':
+                            fso[_name].checked = o.task.type == 'milestone';
                             fso[_name].onclick = o.onClickLightboxInputMilestone;
                             break;
 
@@ -123,12 +135,14 @@
         if(!o.task || !o.field) return;
         var target = event.target;
 
-        if(target.checked == true)
+        if(target.checked == true){
             o.task.type = gantt.config.types.milestone;
-        else
+        } else{
             o.task.type = gantt.config.types.task;
 
-        console.log(o.task.type);
+            // date fix for task
+            o.task.end_date = app.timeAddToDateDays(o.task.start_date, 7);
+        }
     };
 
     o.onClickLightboxInput = function (event){
@@ -193,21 +207,27 @@
     };
 
 
-
+    /**
+     * Click the Save button
+     * Data transfer has already taken place in the event
+     * @param id
+     * @param task
+     * @param is_new
+     * @returns {boolean}
+     */
     o.onLightboxSave = function (id, task, is_new){
-
         var _id = null;
+
+        // after entry in the database, you need to update the id
         if(is_new === true){
             _id = app.data.lasttaskid ++;
             gantt.changeTaskId(id, _id);
             task.id = o.task.id = _id;
             task.is_new = true;
-
         }
+
+        // updates all the properties editing task with the current internal object
         app.u.objMerge(task, o.task);
-
-        console.log(task,o.task);
-
         gantt.updateTask((_id)?_id:id);
         return true;
     };

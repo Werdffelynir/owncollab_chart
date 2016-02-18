@@ -229,13 +229,16 @@
     };
 
     //o.onAfterTaskAdd = function(id, task){};
-
     //o.onBeforeTaskAdd = function(id, task){};
 
+    /**
+     * Событие "onBeforeTaskUpdate" обявление слушателя в app.action.chart
+     * @param id
+     * @param task
+     */
     o.onBeforeTaskUpdate = function(id, task){
         o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
     };
-
     o.onAfterTaskDelete = function(id, task){
         o.requestTaskUpdater('delete', id, task);
     };
