@@ -23,7 +23,6 @@ $application = new \OCA\Owncollab_Chart\AppInfo\Application();
 $application->registerRoutes($this, ['routes' => [
 
     ['name' => 'main#index', 'url' => '/', 'verb' => 'GET'],
-    ['name' => 'main#mail', 'url' => '/mail', 'verb' => 'GET'],
     ['name' => 'api#index', 'url' => '/api', 'verb' => 'POST'],
     ['name' => 'main#public_chart', 'url' => '/s/{share}', 'verb' => 'GET|POST'],
 

@@ -15,10 +15,10 @@ namespace OCA\Owncollab_Chart\Controller;
 use OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Db\Connect;
 use OCP\AppFramework\Http\RedirectResponse;
-use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
+use OCP\IRequest;
 
 
 \OCP\App::checkAppEnabled('owncollab_chart');
@@ -63,6 +63,7 @@ class MainController extends Controller {
 		$this->connect = $connect;
 	}
 
+
 	/**
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
@@ -72,35 +73,8 @@ class MainController extends Controller {
 			'current_user' => $this->userId,
 		];
 		return new TemplateResponse($this->appName, 'main', $params);
-
 	}
-	/**
-	 * @NoAdminRequired
-	 * @NoCSRFRequired
-	 */
-	public function mail() {
 
-        /*$mail = new \OCA\Owncollab_Chart\PHPMailer\PHPMailer();
-
-        $mail->setFrom('from@example.com', 'First Last');
-        $mail->addAddress('whoto@example.com', 'John Doe');
-        $mail->Subject = 'Here is the subject';
-        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-
-        if (!$mail->send()) {
-            var_dump("Mailer Error: " . $mail->ErrorInfo);
-        } else {
-            var_dump("Message sent!");
-        }
-
-        var_dump($mail);*/
-
-        $res = mail('whoto@example.com','Here is the subject', 'Here is the Message');
-
-        var_dump($res);
-
-        die;
-	}
 
 	/**
 	 *

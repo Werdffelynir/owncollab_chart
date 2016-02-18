@@ -4,6 +4,7 @@ namespace OCA\Owncollab_Chart\Controller;
 
 use OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Db\Connect;
+use OCA\Owncollab_Chart\PHPMailer\PHPMailer;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -206,7 +207,6 @@ class ApiController extends Controller {
                 }
             }
             else{
-
                 if($field == 'share_password') $value = md5(trim($value));
 
                 $result = $this->connect->project()->updateField($field, $value);
@@ -214,7 +214,6 @@ class ApiController extends Controller {
                     $params['error'] = 'Error operation update project';
                 else
                     $params['result'] = $result;
-
             }
 /*
 
@@ -237,6 +236,8 @@ class ApiController extends Controller {
                     $params['result'] = $result;
             }
 */
+
+
         }else
             $params['error'] = 'API method require - uid and request as admin';
 
@@ -255,14 +256,25 @@ class ApiController extends Controller {
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
         ];
 
-
         if($this->isAdmin && isset($data['emails'])){}
 
         $emails = $data['emails'];
         $params['result'] = $emails;
 
-        sleep(3);
+        sleep(1);
+/*
+        $mail = new PHPMailer();
 
+        $mail->setFrom('no-reply@gmail.com', 'no-reply');
+        $mail->addAddress('werdffelynir@gmail.com', 'John Doe');
+        $mail->Subject = 'Here is the subject';
+        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+
+        if (!$mail->send())
+            var_dump("Mailer Error: " . $mail->ErrorInfo);
+        else
+            var_dump("Message sent!");
+*/
         return new DataResponse($params);
 
     }
