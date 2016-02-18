@@ -265,7 +265,7 @@
                     case 'password':
                     case 'textarea':
 
-                        if(param == 'share_expire_time' && project[param].length > 8) {
+                        if(param == 'share_expire_time' && project[param] != null && project[param].length > 8) {
                             var dateTime = app.timeDateToStr(app.timeStrToDate(project[param]));
                             fields[param].value = dateTime;
                         }

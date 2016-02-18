@@ -237,7 +237,6 @@ class ApiController extends Controller {
             }
 */
 
-
         }else
             $params['error'] = 'API method require - uid and request as admin';
 
@@ -264,6 +263,7 @@ class ApiController extends Controller {
         sleep(1);
 /*
         $mail = new PHPMailer();
+        if(filter_var($email, FILTER_VALIDATE_EMAIL)){}
 
         $mail->setFrom('no-reply@gmail.com', 'no-reply');
         $mail->addAddress('werdffelynir@gmail.com', 'John Doe');
