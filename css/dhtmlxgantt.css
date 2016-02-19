@@ -76,7 +76,7 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
 .gantt_cal_light .gantt_btn_set {
     margin: 5px 10px
 }
-
+/*
 .gantt_btn_set.gantt_cancel_btn_set {
     background: #fff;
     color: #454545;
@@ -93,7 +93,7 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
     background: #ec8e00;
     text-shadow: 0 -1px 0 #a60;
     color: #fff
-}
+}*/
 
 .gantt_cal_light_wide {
     padding-left: 0 !important;
@@ -1010,10 +1010,10 @@ div.dhx_modal_cover {
 
 .gantt_cal_light select {
     font-family: Arial;
-    border: 1px solid #cecece;
+    border: none;
     font-size: 13px;
-    padding: 2px;
-    margin: 0
+    padding: 0px;
+    margin: 0;
 }
 
 .gantt_cal_ltitle {
@@ -1089,7 +1089,7 @@ div.dhx_modal_cover {
 }
 
 .gantt_btn_set {
-    margin: 10px 7px 5px 10px;
+/*    margin: 10px 7px 5px 10px;
     padding: 5px 15px 5px 10px;
     float: left;
     -webkit-border-radius: 4px;
@@ -1104,7 +1104,7 @@ div.dhx_modal_cover {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    cursor: pointer
+    cursor: pointer*/
 }
 
 .gantt_btn_set div {
@@ -1453,7 +1453,7 @@ div.dhx_modal_cover {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    box-shadow: 0 0 2px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 0 1px 0px rgb(4, 11, 97);
 }
 
 .gantt_marker .gantt_marker_content {

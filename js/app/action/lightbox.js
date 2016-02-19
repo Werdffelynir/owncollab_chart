@@ -192,6 +192,11 @@
             popup.style.zIndex = '999';
             popup.style.left = '10px';
 
+            $('.lbox_popup_wrap',popup)
+                .css('overflow-y','auto')
+                .css('margin-top','10px')
+                .css('max-height','200px');
+
             o.predecessorOnClickListener(popup, target);
         }
     };
