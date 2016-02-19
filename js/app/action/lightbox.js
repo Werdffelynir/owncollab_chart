@@ -57,7 +57,7 @@
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
                 fso = {},
-                fch = ['predecessor','milestone']; // added params if is undefined in o.task
+                fch = ['predecessor','milestone','buffer']; // added params if is undefined as o.task property
 
             for(var i=0;i<fsn.length;i++){
                 var _name = fsn[i]['name'].substr(5);
@@ -65,10 +65,14 @@
 
                 if(o.task[_name] !== undefined || fch.indexOf(_name) !== -1){
 
-
                     switch(_name){
 
                         case 'progress':
+                            fso[_name].value = o.progressToPercent(o.task[_name]) + ' %';
+                            fso[_name].onclick = o.onClickLightboxInput;
+                            fso[_name].onchange = o.onChangeProgress;
+                            break;
+
                         case 'users':
                             fso[_name].value = o.task[_name];
                             fso[_name].onclick = o.onClickLightboxInput;
@@ -84,6 +88,8 @@
                             break;
 
                         case 'buffer':
+                            fso[_name].value = app.action.chart.durationDisplay(o.task);
+                            //fso[_name].disabled = true;
                             break;
 
                         case 'start_date':
@@ -115,9 +121,20 @@
         //$('#generate-lbox-wrapper').remove();
     };
 
-    o.onChangeLightboxInput = function (event){
+    o.onChangeProgress = function (event){
         if(!o.task || !o.field) return;
-        var target = event.target,
+
+        if(event.target.name == 'lbox_progress'){
+            var target = event.target,
+                name = target.name,
+                value = target.value;
+
+            target.value = o.progressToPercent( o.percentToProgress(value) ) + ' %';
+            o.task['progress'] = o.percentToProgress(value);
+        }
+    };
+
+    o.onChangeLightboxInput = function (event){var target = event.target,
             name = target['name'].substr(5),
             value = target['value'],
             type = target['type'];
@@ -161,6 +178,11 @@
 
             o.resourcesAppoint(popup);
             o.resourceOnClickListener(popup, target);
+        }
+        else if(target['name'] == 'lbox_progress'){
+
+            target.select();
+
         }
         else if(target['name'] == 'lbox_predecessor'){
             o.predecessorViewGenerate();
@@ -238,7 +260,7 @@
     };
     o.onLightboxDelete = function (id, task){
         var _task = gantt.getTask(id);
-        gantt.locale.labels.confirm_deleting = _task.text + " " + (_task.$index+1) + " - will be deleted permanently, are you sure?";
+        gantt.locale.labels.confirm_deleting = _task.text + " " + (_task.id) + " - will be deleted permanently, are you sure?";
         o.task = o.field = null;
         return true;
     };
@@ -518,9 +540,32 @@
                 gantt.deleteLink(links[i]['id']);
             }
         }
-        //gantt.refreshData();
     };
 
+
+    /**
+     * Uses: app.action.lightbox.progressToPercent()
+     * @param num
+     * @returns {Number}
+     */
+    o.progressToPercent = function (num){
+        var progress = parseFloat(num) || 0;
+        progress = parseInt(progress*100);
+        return progress > 100 ? 100 : progress;
+    };
+
+
+    /**
+     *
+     * Uses: app.action.lightbox.percentToProgress()
+     * @param num
+     * @returns {Number}
+     */
+    o.percentToProgress = function (num){
+        var progress = num ? (typeof num === 'string') ? num.replace(/[^\d]+/,'') : num : 0;
+        progress = parseFloat(progress/100);
+        return (progress > 1) ? 1 : progress;
+    };
 
 
 

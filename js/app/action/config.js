@@ -39,7 +39,7 @@
          */
         gantt.templates.task_text = function(start, end, task){
             if(app.data.project['show_task_name'] == 1)
-                return "<strong>"+task.text+"</strong>";
+                return task.text; //"<strong>"+task.text+"</strong>";
             else
                 return "";
         };
@@ -53,34 +53,20 @@
         gantt.config.row_height = 22;
 
         // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = false;
+        gantt.config.autofit = true;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = false;
+        gantt.config.fit_tasks = true;
 
-        // -------------------------------------------------------------------
-
-        //gantt.config.work_time = true;
-        //gantt.config.round_dnd_dates = true;
-        //gantt.config.static_background = true;
-
-        //gantt.config.start_date = new Date(2016, 1, 1);
-        //gantt.config.end_date = new Date(2016, 2, 30);
-
-
-
+        // Auto scheduling makes the start date of the second task update according to the end date
+        // of the first task each when it changes.
         gantt.config.auto_scheduling = true;
+
+        // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
         gantt.config.auto_scheduling_strict = true;
+
+        // Defines whether gantt will do autoscheduling on data loading
         gantt.config.auto_scheduling_initial = true;
-
-
-
-
-
-
-
-
-        // -------------------------------------------------------------------
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1) {
@@ -104,6 +90,15 @@
         if(app.data.project['scale_fit']) {
             app.action.chart.scaleFit();
         }
+
+        //
+        gantt.templates.task_class  = function(start, end, task){
+            switch (task.type){
+                case "milestone":
+                    return "gantt_milestone_size";
+                    break;
+            }
+        };
 
         // Configures the columns of the table
         var columnWidth = {
@@ -190,7 +185,7 @@
      */
     o.external = function(){
 
-        // gantt lightbox disable, uses custom lightbox
+        // gantt lightbox disable
         gantt.showLightbox = function(id){};
         gantt.hideLightbox = function(id){};
 

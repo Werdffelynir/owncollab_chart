@@ -239,7 +239,7 @@
     o.showTaskNames = function (show){
         gantt.templates.task_text = function(start, end, task){
             if(show)
-                return "<strong>"+task.text+"</strong>";
+                return task.text;//"<strong>"+task.text+"</strong>";
             else
                 return "";
         };
@@ -318,5 +318,15 @@
                 }
             });
     };
+
+    /**
+     * Uses: app.action.chart.durationDisplay(task)
+     * @param task
+     * @returns {string}
+     */
+    o.durationDisplay = function (task) {
+        var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
+        return ((days%1==0) ? Math.round(days) : days) + ' d';
+    }
 
 })(jQuery, OC, app);

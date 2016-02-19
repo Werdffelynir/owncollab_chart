@@ -208,9 +208,13 @@ html, body {
 #lbox_progress {
     width: 100px;
 }*/
-/**/
-.gantt_cal_ltitle{display:none}
-.gantt_cal_lsection{display:none}
+
+.gantt_cal_ltitle{
+    /*display:none*/
+}
+.gantt_cal_lsection{
+    display:none;
+}
 .lbox_popup {
     box-shadow: 0 1px 10px -1px rgba(0, 0, 0, 0.65);
     position: absolute;
@@ -231,6 +235,8 @@ html, body {
 }
 .lbox_popup_wrap{
     padding-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
 }
 
 
@@ -412,7 +418,11 @@ html, body {
     height: 20px;
     background: url('/apps/owncollab_chart/img/delete-color.png') no-repeat center center;
 }
-
+.gantt_milestone_size{
+    height: 14px !important;
+    line-height: 14px !important;
+    width: 14px !important;
+}
 
 
 
