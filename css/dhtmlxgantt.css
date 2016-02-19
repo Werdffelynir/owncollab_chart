@@ -655,7 +655,7 @@ div.dhx_modal_cover {
 
 .gantt_task_content {
     font-size: 11px;
-    line-height: 14px;
+    line-height: 15px;
     color: #fff;
     width: 100%;
     top: 0;
@@ -927,7 +927,7 @@ div.dhx_modal_cover {
 
 .gantt_task_line.gantt_milestone {
     visibility: hidden;
-    background-color: #d33daf;
+    background-color: #4B71A4;
     border: 0 solid #61164f;
     box-sizing: content-box;
     -moz-box-sizing: content-box
@@ -940,7 +940,7 @@ div.dhx_modal_cover {
 .gantt_task_line.gantt_milestone .gantt_task_content {
     background: inherit;
     border: inherit;
-    border-width: 1px;
+    border-width: 0px;
     border-radius: inherit;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
