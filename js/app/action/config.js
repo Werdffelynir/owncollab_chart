@@ -69,6 +69,11 @@
 
 
 
+        gantt.config.auto_scheduling = true;
+        gantt.config.auto_scheduling_strict = true;
+        gantt.config.auto_scheduling_initial = true;
+
+
 
 
 
