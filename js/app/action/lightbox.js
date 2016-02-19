@@ -224,6 +224,7 @@
             gantt.changeTaskId(id, _id);
             task.id = o.task.id = _id;
             task.is_new = true;
+            //gantt.autoSchedule(task.id);
         }
 
         // updates all the properties editing task with the current internal object

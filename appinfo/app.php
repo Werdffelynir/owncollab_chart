@@ -65,6 +65,7 @@ if(Helper::isAppPage($appName)){
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');
+	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_auto_scheduling');
 	Util::addScript($appName,'dhtmlxganttpro/api');
 }
 

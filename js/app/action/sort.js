@@ -115,7 +115,6 @@
         task1 = task1.start_date;
         task2 = task2.start_date;
 
-        console.log(task1);
         if (o.icoSort.start.direction){
             return task1 > task2 ? 1 : (task1 < task2 ? -1 : 0);
         } else {
