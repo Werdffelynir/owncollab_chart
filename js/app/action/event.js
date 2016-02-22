@@ -276,7 +276,31 @@
 
     };
 
+    o.requestLinkUpdater = function (worker, id, link) {
 
+        app.api('updatelink', function(response) {
+
+            console.log('updatelink: ', response);
+
+            if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
+
+                app.requesttoken = response.requesttoken;
+
+                if(worker == 'insert') {
+                    if(response.lastlinkid)
+                        app.data.lastlinkid = (parseInt(response.lastlinkid) + 1);
+                    else
+                        app.action.error.inline('Error Request: ' + worker + '. Inset ID not response.');
+                }
+
+            } else {
+
+                app.action.error.inline('Error Request: ' + worker );
+            }
+
+        },{ worker:worker, id:id, link:link });
+
+    };
 
     o.sendShareEmails = function(emails){
 

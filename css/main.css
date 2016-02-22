@@ -235,7 +235,8 @@ html, body {
     background-color: #fff;
 }
 .lbox_popup_wrap{
-
+    overflow-y: hidden;
+    overflow-x: hidden;
 }
 
 
@@ -385,7 +386,7 @@ html, body {
 }
 
 .predecessor_line {
-    width: 99%;
+    width: 485px;
     border-bottom: 1px solid RGB(240, 240, 240);
 }
 .predecessor_line .tbl_cell:first-child{

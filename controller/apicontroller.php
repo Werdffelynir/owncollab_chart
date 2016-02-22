@@ -174,6 +174,44 @@ class ApiController extends Controller {
         return new DataResponse($params);
     }
 
+    public function updatelink($data) {
+
+        $params = [
+            'error'     => null,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            'lastlinkid'    => null
+        ];
+
+        $params['data'] = $data;
+        if($this->isAdmin && isset($data['worker']) && isset($data['link'])){
+
+            $worker = trim(strip_tags($data['worker']));
+            $id = trim(strip_tags($data['id']));
+            $link = $data['link'];
+
+            if($worker == 'insert'){
+
+                $result = $this->connect->link()->insertWithId($link);
+                $params['error'] = $result ? null : 'Server insert error, on link';
+                $params['lastlinkid'] = $result;
+
+            }else if($worker == 'update'){
+
+                //$result = $this->connect->task()->update($task);
+                //$params['error'] = $result ? null : 'Server update error, on task';
+
+            }else if($worker == 'delete'){
+
+                $result = $this->connect->link()->deleteById($id);
+                $params['error'] = $result ? null : 'Server delete error, on task';
+
+            }
+        }
+
+        return new DataResponse($params);
+    }
+
+
 
     /**
      * @param $data
@@ -215,27 +253,6 @@ class ApiController extends Controller {
                 else
                     $params['result'] = $result;
             }
-/*
-
-            if($field == 'is_share'){
-                $share_link = $value ? Helper::randomString(16) : '';
-                $result = $this->connect->project()->updateShared($field, $value, $share_link);
-
-                if(!$result)
-                    $params['error'] = 'Error operation update project';
-                else{
-                    $params['result'] = $result;
-                    $params['share_link'] = $share_link;
-                }
-            }else{
-
-                $result = $this->connect->project()->updateField($field, $value);
-                if(!$result)
-                    $params['error'] = 'Error operation update project';
-                else
-                    $params['result'] = $result;
-            }
-*/
 
         }else
             $params['error'] = 'API method require - uid and request as admin';

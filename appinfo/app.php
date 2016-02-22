@@ -49,7 +49,9 @@ Util::addTranslations($appName);
 if(Helper::isAppPage($appName)){
 	Util::addStyle($appName, 'main');
 	Util::addStyle($appName, 'jquery-ui-timepicker');
+	Util::addStyle($appName, 'jquery.custom-scrollbar');
 	Util::addScript($appName,'jquery-ui-timepicker');
+	Util::addScript($appName, 'jquery.custom-scrollbar');
 	Util::addScript($appName, 'inc');
 	Util::addScript($appName, 'application');
 

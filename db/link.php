@@ -63,5 +63,30 @@ class Link
         return $this->connect->select('*', $this->tableName, 'deleted != 1');
     }
 
+    public function insertWithId($data) {
 
+        $task['id'] = $data['id'];
+        $task['source'] = $data['source'];
+        $task['target'] = $data['target'];
+        $task['type'] = $data['type'];
+
+        $result = $this->connect->db->insertIfNotExist($this->tableName, $task);
+
+        if($result)
+            return $this->connect->db->lastInsertId();
+        return $result;
+    }
+
+    public function deleteById($id) {
+        $result = false;
+        try{
+            $result = $this->connect->delete($this->tableName, 'id = :id', [':id' => $id]);
+            if($result){
+                $result = $result->rowCount();
+            }
+
+        }catch(\AbstractDriverException $error ){}
+
+        return $result;
+    }
 }

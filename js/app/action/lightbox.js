@@ -40,6 +40,10 @@
         gantt.attachEvent("onLightboxSave", o.onLightboxSave);
         gantt.attachEvent("onLightboxCancel", o.onLightboxCancel);
         gantt.attachEvent("onLightboxDelete", o.onLightboxDelete);
+
+        gantt.attachEvent("onAfterLinkAdd", o.onAfterLinkAdd);
+        gantt.attachEvent("onAfterLinkDelete", o.onAfterLinkDelete);
+        gantt.attachEvent("onAfterLinkUpdate", o.onAfterLinkUpdate);
     };
 
     /**
@@ -175,6 +179,7 @@
             popup.style.width = '510px';
             popup.style.zIndex = '999';
             popup.style.left = '10px';
+            popup.style.overflowY = 'none';
 
             o.resourcesAppoint(popup);
             o.resourceOnClickListener(popup, target);
@@ -192,12 +197,18 @@
             popup.style.zIndex = '999';
             popup.style.left = '10px';
 
-            $('.lbox_popup_wrap',popup)
-                .css('overflow-y','auto')
-                .css('margin-top','10px')
-                .css('max-height','200px');
+            $('.lbox_popup_wrap', popup)
+                .css('overflow-y','auto')   // styled
+                .css('margin-top','10px')   //
+                .css('margin-right','10px') //
+                .css('height','212px')      //
+                .addClass('default-skin')   // scrollbar skin
+                .customScrollbar();         // add style to scrollbar
 
             o.predecessorOnClickListener(popup, target);
+
+
+            //$(".lbox_popup_wrap")
         }
     };
 
@@ -337,6 +348,8 @@
             }
         }
     };
+
+
     o.resourceOnClickListener = function (popup, fieldUsers) {
         popup.addEventListener('click', function(event) {
             if(event.target.tagName == 'INPUT'){
@@ -451,7 +464,7 @@
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
 
-            _name.textContent = (item.$index+1) + ' ' + item.text;
+            _name.textContent = (item.id) + ' ' + item.text;
             _link.appendChild(_linkElems);
 
             _line.appendChild(_name);
@@ -469,12 +482,16 @@
      */
     o.predecessorLinkGenerate = function(id){
 
+
         var _select = document.createElement('select'),
             _optionXX = document.createElement('option'),
             _optionFF = document.createElement('option'),
             _optionFS = document.createElement('option'),
             _optionSS = document.createElement('option'),
-            _optionSF = document.createElement('option');
+            _optionSF = document.createElement('option'),
+            linksSource = gantt.getTask(id).$source,
+            linksTarget = gantt.getTask(id).$target,
+            selectedOptType = false;
 
         _select.name = 'tasklink_' + id;
         _select.setAttribute('data-taskid',id);
@@ -490,8 +507,28 @@
         _select.appendChild(_optionSS);
         _select.appendChild(_optionSF);
 
+        linksTarget.map(function(linkId){
+            var item = gantt.getLink(linkId);
+            if(item.source == o.task.id && item.target == id){
+                selectedOptType = item.type;
+            }
+        });
+        if(selectedOptType !== false){
+            switch (selectedOptType){
+                case '0': _optionFF.setAttribute('selected','selected');
+                    break;
+                case '1': _optionFS.setAttribute('selected','selected');
+                    break;
+                case '2': _optionSS.setAttribute('selected','selected');
+                    break;
+                case '3': _optionSF.setAttribute('selected','selected');
+                    break;
+            }
+        }
+
         return _select;
     };
+
 
     o.predecessorOnClickListener = function  (popup, target){
         if(!o.task || !o.field) return;
@@ -501,51 +538,68 @@
                 option = select.options[select.selectedIndex].value,
                 taskid = select.getAttribute('data-taskid');
 
-            // first delete all source links
-            //o.deleteSourceLinks(o.task['id']);
-
             // if option is 'x' its delete link, else create or recreate link
             if(option == 'x'){
-
-
+                o.deleteLinksWithTarget(taskid);
             }else{
-
                 var linkId = gantt.addLink({
                     id: app.linkIdIterator(),
                     source: o.task['id'],
                     target: taskid,
                     type: option
                 });
-
             }
-
-            //var taskObj = gantt.getTask(taskid);
-            //var targetLinks = taskObj.$target;
-            //console.log(select, option, taskObj, targetLinks);
-
         });
-
-
-        // selectedIndex
-        /*popup.addEventListener('click', function(event) {
-
-            var _target = event.target,
-                _value = target.value;
-            console.log(_target, _value, popup, target)
-
-        }, false);*/
     };
 
-    o.deleteSourceLinks = function  (id){
-        var task = gantt.getTask(id),
+
+    o.onAfterLinkAdd = function  (id, item){
+        //gantt.changeLinkId(id, app.linkIdIterator());
+        //console.log('onAfterLinkAdd: ', item);
+
+        app.action.event.requestLinkUpdater('insert', id, item);
+    };
+
+
+
+    o.onAfterLinkUpdate = function  (id, item){
+        //console.log('onAfterLinkUpdate: ', item);
+        app.action.event.requestLinkUpdater('update', id, item);
+    };
+
+
+
+    o.onAfterLinkDelete = function  (id, item){
+        //console.log('onAfterLinkDelete: ', item);
+        app.action.event.requestLinkUpdater('delete', id, item);
+    };
+
+
+
+    o.deleteLinksWithTarget = function  (target){
+        var task = gantt.getTask(target),
+            links = task.$target;
+        if(links.length > 0){
+            links.map(function(linkId){
+                gantt.deleteLink(linkId);
+            });
+        }
+        //gantt.refreshLink();
+    };
+
+
+    o.deleteLinksWithSource = function  (source){
+        var task = gantt.getTask(source),
             links = task.$source;
 
         if(links.length > 0){
-            for(var i=0;i<links.length;i++){
-                gantt.deleteLink(links[i]['id']);
-            }
+            links.map(function(linkId){
+                gantt.deleteLink(linkId);
+            });
         }
     };
+
+
 
 
     /**
