@@ -554,44 +554,29 @@
 
 
     o.onAfterLinkAdd = function  (id, item){
-        //gantt.changeLinkId(id, app.linkIdIterator());
-        //console.log('onAfterLinkAdd: ', item);
-
+        gantt.changeLinkId(id, app.linkIdIterator());
         app.action.event.requestLinkUpdater('insert', id, item);
     };
 
-
-
     o.onAfterLinkUpdate = function  (id, item){
-        //console.log('onAfterLinkUpdate: ', item);
         app.action.event.requestLinkUpdater('update', id, item);
     };
 
-
-
     o.onAfterLinkDelete = function  (id, item){
-        //console.log('onAfterLinkDelete: ', item);
         app.action.event.requestLinkUpdater('delete', id, item);
     };
 
-
-
     o.deleteLinksWithTarget = function  (target){
-        var task = gantt.getTask(target),
-            links = task.$target;
+        var task = gantt.getTask(target), links = task.$target;
         if(links.length > 0){
             links.map(function(linkId){
                 gantt.deleteLink(linkId);
             });
         }
-        //gantt.refreshLink();
     };
 
-
     o.deleteLinksWithSource = function  (source){
-        var task = gantt.getTask(source),
-            links = task.$source;
-
+        var task = gantt.getTask(source), links = task.$source;
         if(links.length > 0){
             links.map(function(linkId){
                 gantt.deleteLink(linkId);
