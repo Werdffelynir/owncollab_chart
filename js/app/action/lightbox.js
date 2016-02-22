@@ -422,28 +422,6 @@
         return usersString;
     };
 
-    /*onLightbox
-     onLightboxButton
-     onLightboxCancel
-     onLightboxChange
-     onLightboxDelete
-     onLightboxSave
-
-     lbox_popup
-     lbox_popup_hide
-     lbox_popup_wrap
-
-     lbox_start_date
-     lbox_end_date
-     lbox_predecessor
-     lbox_buffer
-     lbox_progress
-     lbox_end_milestone
-
-
-
-
-     */
     o.predecessorView = null;
 
     o.predecessorViewGenerate = function(){
@@ -542,6 +520,8 @@
             if(option == 'x'){
                 o.deleteLinksWithTarget(taskid);
             }else{
+                o.deleteLinksWithTarget(taskid);
+
                 var linkId = gantt.addLink({
                     id: app.linkIdIterator(),
                     source: o.task['id'],

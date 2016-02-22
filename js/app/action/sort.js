@@ -72,8 +72,8 @@
     };
 
     function sortById(task1, task2){
-        task1 = task1.id;
-        task2 = task2.id;
+        task1 = parseInt(task1.id);
+        task2 = parseInt(task2.id);
 
         if (o.icoSort.id.direction){
             return task1 > task2 ? 1 : (task1 < task2 ? -1 : 0);

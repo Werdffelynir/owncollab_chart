@@ -1445,15 +1445,15 @@ div.dhx_modal_cover {
 
 .gantt_marker {
     height: 100%;
-    width: 2px;
+    width: 3px;
     top: 0;
     position: absolute;
     text-align: center;
-    background-color: rgba(255, 100, 0, 0.6);
+    background-color: rgba(255, 100, 0, 0.4);
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    box-shadow: 0 0 1px 0px rgb(4, 11, 97);
+    /*box-shadow: 0 0 0px 1px rgb(4, 11, 97);*/
 }
 
 .gantt_marker .gantt_marker_content {

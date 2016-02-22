@@ -21,6 +21,12 @@
      */
     o.init = function(){
 
+/*        gantt.config.start_date = app.timeStrToDate(app.action.chart.taskProjectData.start_date);
+        gantt.config.end_date = app.timeStrToDate(app.action.chart.taskProjectData.end_date);
+        console.log(app.action.chart.taskProjectData);
+        console.log();
+        console.log();*/
+
         /**
          * Global Date format
          * @type {string}
@@ -39,7 +45,7 @@
          */
         gantt.templates.task_text = function(start, end, task){
             if(app.data.project['show_task_name'] == 1)
-                return task.text; //"<strong>"+task.text+"</strong>";
+                return task.text;
             else
                 return "";
         };
@@ -53,7 +59,7 @@
         gantt.config.row_height = 22;
 
         // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = true;
+        gantt.config.autofit = false;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
         gantt.config.fit_tasks = true;
@@ -91,7 +97,7 @@
             app.action.chart.scaleFit();
         }
 
-        //
+        // add style class to milestone display object
         gantt.templates.task_class  = function(start, end, task){
             switch (task.type){
                 case "milestone":
@@ -165,15 +171,12 @@
         if(!app.uid) return;
 
         gantt.config.columns.push({name:"added", label:"", width: 22, template: function(item) {
-            //if(item.type == 'project') return '';
             return o.createTaskBtn('add', item.id);
         }});
         gantt.config.columns.push({name:"remove", label:"", width: 22, template: function(item) {
-            //if(item.type == 'project')return '';
             return o.createTaskBtn('remove', item.id);
         }});
         gantt.config.columns.push({name:"edit", label:"", width: 22, template: function(item) {
-            //if(item.type == 'project') return '';
             return o.createTaskBtn('edit', item.id);
         }});
     };

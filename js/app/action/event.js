@@ -204,6 +204,7 @@
                             end_date: _dateEnd,
                             progress: 0,
                             duration: 0,
+                            //parent: id,
                             type: gantt.config.types.task,
                             users: ''
                         };
@@ -212,6 +213,10 @@
 
                 case "remove":
                     var _task = gantt.getTask(id);
+
+                    // binding for find parent after delete
+                    o.taskToDelete = {id:_task.id, parent:_task.parent};
+
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
                         //text: gantt.locale.labels.confirm_deleting,
@@ -240,8 +245,32 @@
         o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
     };
     o.onAfterTaskDelete = function(id, task){
+
+        // update the parent task type, if it does not have children
+        if(typeof o.taskToDelete === 'object' && o.taskToDelete.id == id){
+            var parent = gantt.getTask(o.taskToDelete.parent),
+                children = gantt.getChildren(o.taskToDelete.parent);
+            if(children.length == 0){
+                parent.type = 'task';
+                gantt.updateTask(parent.id);
+            }
+        }
         o.requestTaskUpdater('delete', id, task);
     };
+
+    o.onAfterTaskUpdate = function(id, task){
+        var parent = gantt.getTask(task.parent),
+            children = gantt.getChildren(task.parent);
+
+        if(parent.type != 'project'){
+            parent.type = 'project';
+            gantt.updateTask(parent.id);
+        }
+
+        return true;
+    };
+
+
 
     o.requestIsProcessed = false;
 
@@ -255,6 +284,8 @@
     o.requestTaskUpdater = function (worker, id, task) {
 
         app.api('updatetask', function(response) {
+
+            //console.log(response);
 
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
@@ -325,8 +356,6 @@
         },{ emails:emails });
 
     };
-
-
 
 
 

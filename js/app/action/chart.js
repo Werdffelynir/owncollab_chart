@@ -47,27 +47,37 @@
 
         //gantt.attachEvent("onGanttRender", onGanttReady);
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
-
         //gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
-        gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
         //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
         //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
+
+        gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
         gantt.attachEvent("onBeforeTaskUpdate", app.action.event.onBeforeTaskUpdate);
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
+        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
+
+        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
+        gantt.attachEvent("onAfterTaskUpdate", app.action.event.onAfterTaskUpdate);
 
         // Этот фильтр удаляет с таска проэкта даты,
         // для того что бы таск был интерактивен по отношеню к детям
         var dataTaskFiltering = app.data.tasks.map(function(_task) {
             if(_task['type'] == 'project'){
                 // Cloning project task to property app.action.chart.taskProjectData
-                o.taskProjectData = app.u.objClone(_task);
-                delete _task['start_date'];
-                delete _task['end_date'];
-                delete _task['duration'];
+                if(_task['id'] == 1)
+                    o.taskProjectData = app.u.objClone(_task);
+
+                //delete _task['start_date'];
+                //delete _task['end_date'];
+                //delete _task['duration'];
             }
             return _task;
         });
 
+        // run action.config
+        app.action.config.init();
+
+        //console.log(dataTaskFiltering);
         // run parse data
         gantt.parse({
             data:   dataTaskFiltering,
@@ -301,7 +311,8 @@
             .slider({
                 min: 0, max: 90, value: 0, change: function (event, ui) {
 
-                    app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
+                    //app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
+                    $('.gantt_data_area')[0].style.transform = 'scaleX(1.'+ String((ui.value/10)).replace(/\./,'') +')';
 
                     /*switch (parseInt(ui.value)) {
                         case 3:

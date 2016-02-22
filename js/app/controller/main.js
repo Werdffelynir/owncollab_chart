@@ -112,9 +112,6 @@
 
             app.action.chart.ganttFullSize();
 
-            // run action.config
-            app.action.config.init();
-
             // run action.lightbox
             app.action.lightbox.init();
 
@@ -132,6 +129,10 @@
 
             // Put project data settings into fields of sidebar
             app.action.sidebar.putProjectSettings(app.data.project);
+
+
+            // display elements
+            app.dom.topbar.style['display'] = 'block';
 
         }else{
 
@@ -170,6 +171,7 @@
         app.dom.sidebarContent  = o.select('#sidebar-content');
         app.dom.sidebarWrap     = o.select('#sidebar-wrapper');
         app.dom.inlineError     = o.select('#app-content-inline-error');
+        app.dom.topbar          = o.select('.topbar');
         app.dom.lbox            = o.select('#app-lbox');
         app.dom.gantt           = o.select('#gantt-chart');
         app.dom.zoomSlider      = o.select('#chart_gantt_zoom_slider');

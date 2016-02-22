@@ -65,6 +65,21 @@ html, body {
     padding: 50px 0;
 }
 
+#loading_page{
+    display: inline-block;
+    position: absolute;
+    top: 40%;
+    left: 48%;
+}
+#loading_page:before {
+    content: " ";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    background: url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center;
+}
+
 .gt_event_add_user, .gt_event_remove_user, .gt_event_edit {
     display: block;
     width: 25px;
@@ -75,6 +90,7 @@ html, body {
 }
 
 .topbar {
+    display: none;
     width: 100%;
     height: 30px;
 }
