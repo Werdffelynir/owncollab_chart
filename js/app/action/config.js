@@ -35,6 +35,8 @@
         gantt.config.task_date = "%Y-%m-%d %H:%i";
         gantt.config.date_grid = "%Y-%m-%d %H:%i";
 
+        gantt.config.grid_resize = true;
+
         /**
          * Visibly task text
          *
