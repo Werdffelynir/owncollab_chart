@@ -170,6 +170,7 @@
         app.dom.sidebarToggle   = o.select('#sidebar-toggle');
         app.dom.sidebarContent  = o.select('#sidebar-content');
         app.dom.sidebarWrap     = o.select('#sidebar-wrapper');
+        app.dom.sidebarExpPdf   = o.select('#sidebar-export-pdf');
         app.dom.inlineError     = o.select('#app-content-inline-error');
         app.dom.topbar          = o.select('.topbar');
         app.dom.lbox            = o.select('#app-lbox');

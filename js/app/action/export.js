@@ -16,11 +16,21 @@
      */
     o.init = function (){
         $('.export_gantt').click(function(){
-            if(this.classList.contains('export_excel')) o.toExcel();
-            if(this.classList.contains('export_pdf'))   o.toPDF();
-            if(this.classList.contains('export_img'))   o.toPNG();
-            if(this.classList.contains('export_ical'))  o.toICal();
-            if(this.classList.contains('export_mc'))    o.toMSProject();
+
+            if(this.classList.contains('export_excel'))
+                o.toExcel();
+
+            if(this.classList.contains('export_pdf'))
+                o.toPDF();
+
+            if(this.classList.contains('export_img'))
+                o.toPNG();
+
+            if(this.classList.contains('export_ical'))
+                o.toICal();
+
+            if(this.classList.contains('export_mc'))
+                o.toMSProject();
         });
     };
 
@@ -31,7 +41,8 @@
 
     o.toPDF = function (){
         var config = {};
-        gantt.exportToPDF(config);
+        app.dom.sidebarExpPdf.style['display'] = 'block';
+        //gantt.exportToPDF(config);
     };
 
     o.toPNG = function (){
