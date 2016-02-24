@@ -30,10 +30,10 @@
 
     /**
      * Save data of project task
-     * Uses: app.action.chart.taskProjectData
+     * Uses: app.action.chart.baseProjectTask
      * @type {null|object}
      */
-    o.taskProjectData = null;
+    o.baseProjectTask = null;
 
     /**
      * Run action chart
@@ -63,9 +63,9 @@
         // для того что бы таск был интерактивен по отношеню к детям
         var dataTaskFiltering = app.data.tasks.map(function(_task) {
             if(_task['type'] == 'project'){
-                // Cloning project task to property app.action.chart.taskProjectData
+                // Cloning project task to property app.action.chart.baseProjectTask
                 if(_task['id'] == 1)
-                    o.taskProjectData = app.u.objClone(_task);
+                    app.data.baseProjectTask = o.baseProjectTask = app.u.objClone(_task);
 
                 //delete _task['start_date'];
                 //delete _task['end_date'];

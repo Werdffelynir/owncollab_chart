@@ -40,7 +40,6 @@
         gantt.attachEvent("onLightboxSave", o.onLightboxSave);
         gantt.attachEvent("onLightboxCancel", o.onLightboxCancel);
         gantt.attachEvent("onLightboxDelete", o.onLightboxDelete);
-
         gantt.attachEvent("onAfterLinkAdd", o.onAfterLinkAdd);
         gantt.attachEvent("onAfterLinkDelete", o.onAfterLinkDelete);
         gantt.attachEvent("onAfterLinkUpdate", o.onAfterLinkUpdate);

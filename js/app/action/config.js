@@ -21,9 +21,9 @@
      */
     o.init = function(){
 
-/*        gantt.config.start_date = app.timeStrToDate(app.action.chart.taskProjectData.start_date);
-        gantt.config.end_date = app.timeStrToDate(app.action.chart.taskProjectData.end_date);
-        console.log(app.action.chart.taskProjectData);
+/*        gantt.config.start_date = app.timeStrToDate(app.action.chart.baseProject.start_date);
+        gantt.config.end_date = app.timeStrToDate(app.action.chart.baseProject.end_date);
+        console.log(app.action.chart.baseProject);
         console.log();
         console.log();*/
 

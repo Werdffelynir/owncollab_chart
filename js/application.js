@@ -7,6 +7,10 @@ var app = app || {
         /*OC.webroot + '/index.php' + OC.appswebroots['owncollab_chart']*/
         url: OC.generateUrl('/apps/owncollab_chart'),
 
+        host: OC.getHost(),
+
+        protocol: OC.getProtocol(),
+
         /*user is admin*/
         isAdmin: null,
 
@@ -51,6 +55,7 @@ var app = app || {
             errorinfo: null,
             uid: null,
             project: null,
+            baseProjectTask: null,
             tasks: null,
             links: null,
             resources: null,
