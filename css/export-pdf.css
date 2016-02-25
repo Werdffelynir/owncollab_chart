@@ -1,0 +1,537 @@
+html, body {
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+
+.tbl{display: table; width:100%;}
+.tbl_cell{display: table-cell;}
+.tbl_row{display: table-row;}
+.width1{width: 1%}.width2{width: 2%}.width3{width: 3%}.width4{width: 4%}.width5{width: 5%}.width10{width: 10%}.width15{width: 15%}.width20{width: 20%}.width25{width: 25%}.width30{width: 30%}.width35{width: 35%}.width40{width: 40%}.width45{width: 45%}.width50{width: 50%}.width55{width: 55%}.width60{width: 60%}.width65{width: 65%}.width70{width: 70%}.width75{width: 75%}.width80{width: 80%}.width85{width: 85%}.width90{width: 90%}.width95{width: 95%}.width96{width: 96%}.width97{width: 97%}.width98{width: 98%}.width99{width: 99%}.width100{width: 100%}
+
+
+#app-content {
+    background-color: #EEEEEE;
+    height:100%;
+}
+
+#app-content-error{
+    display: none;
+    width: 60%;
+    height:100%;
+    padding: 10px;
+    margin: 0 auto;
+    text-align: center;
+}
+#app-content-error h1{
+    padding-top: 100px;
+    padding-bottom: 10px;
+    font-size: 125%;
+    font-weight: bold;
+    color: #b10610;
+}
+#app-content-error p{
+    line-height: 25px;
+    color: #71050d;
+}
+#app-content-wrapper {
+    overflow: hidden;
+    height:100%;
+}
+
+
+.child_preview {
+    box-sizing: border-box;
+    margin-top: 2px;
+    position: absolute;
+    z-index: 1;
+    color: white;
+    text-align: center;
+    font-size: 12px;
+}
+.sidebar_loader {
+    display: block;
+    text-align: center;
+}
+
+.sidebar_loader img {
+    padding: 50px 0;
+}
+
+#loading_page{
+    display: inline-block;
+    position: absolute;
+    top: 40%;
+    left: 48%;
+}
+#loading_page:before {
+    content: " ";
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-right: 10px;
+    background: url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center;
+}
+
+.gt_event_add_user, .gt_event_remove_user, .gt_event_edit {
+    display: block;
+    width: 25px;
+}
+
+.gt_event_add_user:hover, .gt_event_remove_user:hover, .gt_event_edit:hover {
+    background-color: #e1e9ff;
+}
+
+.topbar {
+    display: none;
+    width: 100%;
+    height: 30px;
+}
+#sortedfilters{
+    display: inline-block;
+}
+#sortedfilters>span{
+    display: inline-block;
+}
+
+#sidebar-toggle {
+    display: inline-block;
+    background: url("/core/img/actions/menu.png") no-repeat center center;
+    width: 30px;
+    height: 30px;
+    float: right;
+}
+
+#sidebar-wrapper {
+    padding: 10px;
+}
+
+#sidebar-wrapper h3 {
+    font-size: 110%;
+    font-weight: bold;
+}
+
+#sidebar-tab {
+    margin-bottom: 5px;
+}
+
+#sidebar-tab span {
+    display: inline-block;
+    padding: 3px 10px 5px;
+    font-size: 110%;
+    color: #727272;
+    cursor: pointer;
+}
+
+.sidebar_tab_active {
+    border-bottom: 2px solid #000;
+    color: #000 !important;
+}
+
+#sidebar-content > div {
+    display: none;
+}
+
+#sidebar_content_2 > .tbl > .tbl_cell {
+    text-align: center;
+    width: 20%;
+    border-bottom: 2px solid #fff;
+}
+
+#sidebar_content_2 > .tbl > .tbl_cell:hover {
+    border-bottom: 2px solid #000;
+}
+
+#sidebar_content_2 img {
+    width: 36px;
+    height: 36px;
+}
+
+#sidebar_locker {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.75);
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+#sidebar_locker img{
+    display: block;
+    text-align: center;
+    vertical-align: baseline;
+    margin: 40% auto;
+}
+
+.sidebar_line{
+    width: 100%;
+    height: 2px;
+    display: block;
+    background-color: #BDBDBD;
+    margin: 20px 0 10px;
+}
+
+.sidebar_line_arrow{
+    width: 15px;
+    height: 15px;
+    display: block;
+    position: absolute;
+    transform: rotate(45deg);
+    margin-left: 108px;
+    background-color: #fff;
+    border: 2px solid #BDBDBD;
+    border-bottom: none;
+    border-right: none;
+    margin-top: -7px;
+}
+
+
+#sidebar-content input[type=text]{
+    width: 100%;
+    border-radius: 0;
+    border: 1px solid #BDBDBD;
+    font-size: 12px;
+}
+
+
+
+
+
+
+
+#chart_share {}
+
+#chart_share input[type=text] {
+    width: 100%
+}
+
+.txt_right {
+    text-align: right;
+}
+#app-content-inline-error{
+    display: none;
+    color: #fff;
+    background-color: #ff0200;
+    font-weight: bold;
+    padding: 2px 10px 3px;
+}
+#app-lbox {display: none;}
+/*
+#app-lbox {
+    display: none;
+    position: absolute;
+    padding: 10px 15px;
+    width: 420px;
+    background-color: #fff;
+    box-shadow: 0 6px 15px -2px rgba(0, 0, 0, 0.7);
+    z-index: 999;
+}
+
+#app-lbox .close {
+    text-align: right;
+    font-weight: bold;
+}
+
+.lbox_line {
+    margin-bottom: 10px;
+}
+
+#lbox_taskname, #lbox_resources {
+    width: 405px;
+}
+
+#lbox_start_date, #lbox_end_date {
+    width: 154px;
+}
+
+#lbox_predecessor {
+    width: 154px;
+}
+
+#lbox_buffer, #lbox_link {
+    width: 60px;
+}
+
+#lbox_progress {
+    width: 100px;
+}*/
+
+.gantt_cal_ltitle{
+    /*display:none*/
+}
+.gantt_cal_lsection{
+    display:none;
+}
+.lbox_popup {
+    box-shadow: 0 1px 10px -1px rgba(0, 0, 0, 0.65);
+    position: absolute;
+    width: 90%;
+    min-height: 100px;
+    padding: 0 10px 10px 10px;
+    background-color: #fff;
+}
+.lbox_popup_close{
+    display: inline-block;
+    position: absolute;
+    width: 18px;
+    height: 18px;
+    left: 100%;
+    padding-left: -20px;
+    margin-left: -20px;
+    margin-top: 3px;
+    background-color: #fff;
+}
+.lbox_popup_wrap{
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+
+/*task_control_btn icon_*/
+.task_control_btn {
+    display: inline-block;
+    margin-top: 3px;
+    margin-left: -3px;
+    width: 16px;
+    height: 16px;
+}
+
+.icon_add {
+    background: url('/apps/owncollab_chart/img/add-color.png') no-repeat center center;
+}
+
+.icon_remove {
+    background: url('/apps/owncollab_chart/img/delete-color.png') no-repeat center center;
+}
+
+.icon_edit {
+    background: url('/apps/owncollab_chart/img/drafts.png') no-repeat center center;
+}
+
+.gc_default_row {}
+
+#check_predecessor {}
+
+#check_predecessor li {
+    display: block;
+    height: 24px;
+}
+
+#check_predecessor input {
+    float: left;
+}
+
+.chart_share_on {
+    display: none;
+}
+
+.chart_share_password {
+    display: none;
+}
+
+.chart_share_expiration {
+    display: none;
+}
+
+#chart_gantt_zoom {
+    /*display: none;*/
+    width: 260px;
+    float: right;
+}
+
+#chart_gantt_zoom_slider {}
+
+#gantt-chart {
+    background-color: #FFF;
+    /*position: absolute;*/
+    width:100%;
+    height:100%;
+}
+.gantt_grid_data, .gantt_ver_scroll {
+    height: auto;
+}
+.gantt_task_line.task-collapsed {
+    height: 4px;
+    opacity: 0.25;
+}
+
+.gantt_task_line.gantt_project.task-collapsed .gantt_task_content {
+    display: none;
+}
+
+.gantt_row.task-parent {
+    font-weight: bold;
+}
+
+#gantt_sidebar {
+    display: none;
+    position: absolute;
+    padding: 10px;
+    width: 260px;
+    height: 98%;
+    background-color: #fff;
+    z-index: 999;
+    right: 0;
+    border-left: 1px solid #EBEBEB;
+}
+
+.gantt_cal_light {
+    border-radius: 0 !important;
+    font-family: 'Open Sans', Frutiger, Calibri, 'Myriad Pro', Myriad, sans-serif !important;
+    color: #6b6b6b;
+    box-shadow: 0 0 15px -3px rgba(0, 0, 0, .8) !important;
+}
+
+.gantt_zoom_line .ui-slider-horizontal {
+    height: .2em;
+}
+
+.gantt_zoom_line .ui-slider-horizontal .ui-slider-handle {
+    top: -.6em;
+    margin-left: -.6em;
+    border-radius: 1em;
+}
+
+.gantt_zoom_line .ui-state-default,
+.gantt_zoom_line .ui-widget-content .ui-state-default,
+.gantt_zoom_line .ui-widget-header .ui-state-default {
+    border: 1px solid #0a235d;
+}
+
+.gantt_zoom_line .ui-widget-content {
+    border: 1px solid #0a235d;
+    background: #0a235d;
+}
+
+.gantt_zoom_line > .tbl_cell {
+    height: 25px;
+    vertical-align: middle;
+}
+
+.gantt_zoom_line {
+    padding-right: 10px
+}
+
+.gantt_zoom_line > div:nth-child(1) {
+    width: 16px;
+    text-align: center
+}
+
+.gantt_zoom_line > div:nth-child(2) {
+    padding: 0 10px;
+    text-align: center
+}
+
+.gantt_zoom_line > div:nth-child(3) {
+    width: 16px;
+    text-align: center
+}
+
+.gantt_zoom_line > div:nth-child(4) {
+    width: 16px;
+    text-align: center
+}
+
+.predecessor_line {
+    width: 485px;
+    border-bottom: 1px solid RGB(240, 240, 240);
+}
+.predecessor_line .tbl_cell:first-child{
+
+}
+.predecessor_line .tbl_cell:last-child {
+    width: 10%;
+}
+.predecessor_line select {
+    height: 20px;
+    border: 1px solid #cecece;
+    font-size: 10px;
+    padding: 0px;
+    margin: 0;
+}
+#gantt_filter_name, #gantt_filter_group{
+    width: 100%;
+}
+#share_emails_list{line-height: 25px;}
+.share_email{border-bottom: 2px solid #000;}
+.share_email strong{
+    font-weight: bold !important;
+}
+.share_email_icon{
+    width: 20px;
+}
+.share_email_text{}
+.share_email_butn{
+    width: 20px;
+    height: 20px;
+    background: url('/apps/owncollab_chart/img/delete-color.png') no-repeat center center;
+}
+.gantt_milestone_size{
+    height: 14px !important;
+    line-height: 14px !important;
+    width: 14px !important;
+}
+
+.gantt_save_btn_set>div:first-child, .gantt_cancel_btn_set>div:first-child, .gantt_delete_btn_set>div:first-child{
+    display: none;
+}
+
+.gantt_btn_set{
+    font-size: 110px;
+}
+.gantt_btn_set div {
+    font-size: 14px !important;
+    font-family: 'Arial', sans-serif;
+}
+.gantt_cal_larea{
+    border: none !important;
+}
+.gantt_btn_set.gantt_cancel_btn_set {
+    padding: 0px 15px 0px 10px;
+    float: left;
+    background-color: #fff !important;
+    border: 3px solid #F2F2F2 !important;
+}
+.gantt_btn_set.gantt_save_btn_set {
+    padding: 0px 15px 0px 10px;
+    float: left;
+    background-color: #F2F2F2 !important;
+    border: 3px solid #F2F2F2 !important;
+}
+.gantt_btn_set.gantt_delete_btn_set {
+    padding: 0px 15px 0px 10px;
+    float: left;
+    background-color: #fff !important;
+    border: 3px solid #f00 !important;
+    color: #f00;
+}
+#generate-lbox-wrapper input[type=text]{
+    border-radius: 0;
+    border: 1px solid #BDBDBD;
+    font-size: 12px;
+}
+#generate-lbox-wrapper>div:nth-child(1) input[name=lbox_text]{
+    width: 515px;
+}
+#generate-lbox-wrapper>div:nth-child(2) input[name=lbox_users]{
+    width: 515px;
+}
+#generate-lbox-wrapper>div:nth-child(n+3)>div:nth-child(odd){
+    width: 10%;
+    text-align: right;
+}
+.lbox_title {
+    font-size: 13px;
+    color: #000;
+    padding-right: 15px;
+}
+
+
+
+
+
+
+
+
+
+
+
