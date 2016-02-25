@@ -9,7 +9,8 @@ html, body {
 .tbl_cell{display: table-cell;}
 .tbl_row{display: table-row;}
 .width1{width: 1%}.width2{width: 2%}.width3{width: 3%}.width4{width: 4%}.width5{width: 5%}.width10{width: 10%}.width15{width: 15%}.width20{width: 20%}.width25{width: 25%}.width30{width: 30%}.width35{width: 35%}.width40{width: 40%}.width45{width: 45%}.width50{width: 50%}.width55{width: 55%}.width60{width: 60%}.width65{width: 65%}.width70{width: 70%}.width75{width: 75%}.width80{width: 80%}.width85{width: 85%}.width90{width: 90%}.width95{width: 95%}.width96{width: 96%}.width97{width: 97%}.width98{width: 98%}.width99{width: 99%}.width100{width: 100%}
-
+.txtleft{text-align: left}
+.txtrigth{text-align: right}
 
 #app-content {
     background-color: #EEEEEE;
@@ -191,7 +192,10 @@ html, body {
     border: 1px solid #BDBDBD;
     font-size: 12px;
 }
-
+#sidebar-content input[name=pdf_start_date],
+#sidebar-content input[name=pdf_end_date]{
+    width: 75%;
+}
 
 
 

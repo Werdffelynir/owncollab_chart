@@ -201,7 +201,12 @@
                 event = gantt.attachEvent(eventName, function(){
                     o.opt.weekCount = 0;
                     gantt.templates.date_scale = function(date) {
-                        return "<strong>Week " + ( ++ o.opt.weekCount ) + "</strong>";
+                        if(!o.opt.weekRecount) {
+                            o.opt.weekRecount = app.timeDateToStr(date);
+                        }else if(o.opt.weekRecount == app.timeDateToStr(date)){
+                            o.opt.weekCount = 0;
+                        }
+                        return "<strong>" + ( ++ o.opt.weekCount ) + " Week</strong>";
                     };
                     gantt.detachEvent(event);
                 });

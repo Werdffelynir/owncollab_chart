@@ -45,11 +45,14 @@
 
     /**
      * Merge two objects into one - 'obj'
-     * @param obj
-     * @param src
-     * @returns {*}
+     * @param obj       main object of merge
+     * @param src       the elements of this object will be added/replaced to main object `obj`
+     * @returns {*}     object result
      */
     o.objMerge = function(obj, src){
+        if (typeof obj !== 'object' || typeof src !== 'object')
+            return false;
+
         if(Object.key){
             Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
             return obj;
@@ -66,7 +69,7 @@
      * @returns {boolean}
      */
     o.isStr = function(param) {
-        return (typeof param === 'string');
+        return typeof param === 'string';
     };
 
     /**

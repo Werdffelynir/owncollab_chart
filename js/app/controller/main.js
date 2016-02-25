@@ -107,8 +107,8 @@
             app.data.lasttaskid = parseInt(response['lasttaskid']) + 1;
             app.data.lastlinkid = parseInt(response['lastlinkid']) + 1;
 
-            // accept localstorage settings
-            //o.dataStorageAccept();
+            // accept localStorage settings
+            o.dataStorageAccept();
 
             app.action.chart.ganttFullSize();
 
@@ -129,7 +129,6 @@
 
             // Put project data settings into fields of sidebar
             app.action.sidebar.putProjectSettings(app.data.project);
-
 
             // display elements
             app.dom.topbar.style['display'] = 'block';
@@ -211,15 +210,14 @@
         if(show_user_color === 'true')          app.data.project['show_user_color'] = 1;
         else if(show_user_color === 'false')    app.data.project['show_user_color'] = 0;
 
-        if(scale_type === 'true')               app.data.project['scale_type'] = 1;
-        else if(scale_type === 'false')         app.data.project['scale_type'] = 0;
-
         if(scale_fit === 'true')                app.data.project['scale_fit'] = 1;
         else if(scale_fit === 'false')          app.data.project['scale_fit'] = 0;
 
         if(critical_path === 'true')            app.data.project['critical_path'] = 1;
         else if(critical_path === 'false')      app.data.project['critical_path'] = 0;
 
+        if(scale_type)
+            app.data.project['scale_type'] = scale_type;
     };
 
     app.taskIdIterator = function(){
