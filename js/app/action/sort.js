@@ -225,16 +225,20 @@
         // filter task with resources - users field
         else if(o.filteringType == 'users'){
             var users = task.users.split(',').map(function(item){return item.trim()}),
+                usersArr = (app.u.isArr(users)) ? users : [],
                 resourceName = o.filtersResourceNames.toLowerCase(),
-                resourceGroup = o.filtersResourceGroups.toLowerCase();
-
-            //console.log(users, resourceName);
+                resourceGroup = (o.filtersResourceGroups instanceof Array)
+                    ? o.filtersResourceGroups.map(function(item){return item['uid'].trim()})
+                    : [];
 
             if(resourceName.length > 0 && users.indexOf(resourceName) !== -1) {
                 return true;
             }
-            if(resourceGroup.length > 0 && users.indexOf(resourceGroup) !== -1) {
-                // app.u.arrDiff()
+            if(usersArr.length > 0 && resourceGroup.length > 0 &&
+                    usersArr instanceof Array &&
+                    resourceGroup instanceof Array &&
+                    app.u.arrDiff(usersArr, resourceGroup).length === 0) {
+
                 return true;
             }
 
@@ -325,15 +329,24 @@
                 type = input.getAttribute('data-type');
 
             if(type == 'user'){
+
                 if(checked) o.filtersResourceNames = name;
                 else o.filtersResourceNames = '';
+
                 gantt.refreshData();
             }
             else if(type == 'group'){
 
+                if(app.data.groupsusers[name]){
+                    if(checked) o.filtersResourceGroups = app.data.groupsusers[name];
+                    else o.filtersResourceGroups = '';
+                }
+
+                gantt.refreshData();
             }
 
-            console.log(o.filtersResourceNames);
+            //console.log(name);
+            //console.log(o.filtersResourceNames);
 
         });
     };

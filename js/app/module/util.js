@@ -19,7 +19,11 @@
     // alias of app.u and app.module.util
     var o = app.u = app.module.util;
 
-    // Clone object
+    /**
+     * Clone object
+     * @param obj
+     * @returns {*}
+     */
     o.objClone = function(obj){
         if (obj === null || typeof obj !== 'object') return obj;
         var temp = obj.constructor();
@@ -28,14 +32,23 @@
         return temp;
     };
 
-    // Count object length
+    /**
+     * Count object length
+     * @param obj
+     * @returns {number}
+     */
     o.objLen = function(obj){
         var it = 0;
         for(var k in obj) it ++;
         return it;
     };
 
-    // Merge two objects into one - 'obj'
+    /**
+     * Merge two objects into one - 'obj'
+     * @param obj
+     * @param src
+     * @returns {*}
+     */
     o.objMerge = function(obj, src){
         if(Object.key){
             Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
@@ -47,27 +60,47 @@
         }
     };
 
-    // Check on typeof is string a param
+    /**
+     * Check on typeof is string a param
+     * @param param
+     * @returns {boolean}
+     */
     o.isStr = function(param) {
         return (typeof param === 'string');
     };
 
-    // Check on typeof is array a param
+    /**
+     * Check on typeof is array a param
+     * @param param
+     * @returns {boolean}
+     */
     o.isArr = function(param) {
         return Array.isArray(param);
     };
 
-    // Check on typeof is object a param
+    /**
+     * Check on typeof is object a param
+     * @param param
+     * @returns {boolean}
+     */
     o.isObj = function(param) {
         return (param !== null && typeof param == 'object');
     };
 
-    // Finds whether a variable is a number or a numeric string
+    /**
+     * Finds whether a variable is a number or a numeric string
+     * @param param
+     * @returns {boolean}
+     */
     o.isNum = function(param) {
         return !isNaN(param);
     };
 
-    // Determine param to undefined type
+    /**
+     * Determine param to undefined type
+     * @param param
+     * @returns {boolean}
+     */
     o.defined = function(param) {
         return typeof(param) != 'undefined';
     };
@@ -77,28 +110,49 @@
         return (param===""||param===0||param==="0"||param===null||param===undefined||param===false||(o.isArr(param)&&param.length===0));
     };
 
-    // Javascript object to JSON data
+    /**
+     * Javascript object to JSON data
+     * @param data
+     */
     o.objToJson = function(data) {
         return JSON.stringify(data);
     };
 
-    // JSON data to Javascript object
+    /**
+     * JSON data to Javascript object
+     * @param data
+     */
     o.jsonToObj = function(data) {
         return JSON.parse(data);
     };
 
+    /**
+     * Cleans the array of empty elements
+     * @param src
+     * @returns {Array}
+     */
     o.cleanArr = function (src) {
         var arr = [];
         for (var i = 0; i < src.length; i++)
             if (src[i]) arr.push(src[i]);
         return arr;
     };
-    // Return type of data as name object "Array", "Object", "String", "Number", "Function"
+
+    /**
+     * Return type of data as name object "Array", "Object", "String", "Number", "Function"
+     * @param data
+     * @returns {string}
+     */
     o.typeOf = function(data) {
         return Object.prototype.toString.call(data).slice(8, -1);
     };
 
-    // Convert HTML form to encode URI string
+    /**
+     * Convert HTML form to encode URI string
+     * @param form
+     * @param asObject
+     * @returns {*}
+     */
     o.formData = function (form, asObject){
         var obj = {}, str = '';
         for(var i=0;i<form.length;i++){
@@ -114,7 +168,11 @@
         return (asObject === true)?obj:str;
     };
 
-    // HTML string convert to DOM Elements Object
+    /**
+     * HTML string convert to DOM Elements Object
+     * @param data
+     * @returns {*}
+     */
     o.toNode = function(data) {
         var parser = new DOMParser();
         var node = parser.parseFromString(data, "text/xml");
@@ -124,7 +182,11 @@
         else return false;
     };
 
-    // Removes duplicate values from an array
+    /**
+     * Removes duplicate values from an array
+     * @param arr
+     * @returns {Array}
+     */
     o.uniqueArr = function (arr) {
         var tmp = [];
         for (var i = 0; i < arr.length; i++) {
@@ -133,8 +195,12 @@
         return tmp;
     };
 
-    // Reads entire file into a string
-    // This function uses XmlHttpRequest and cannot retrieve resource from different domain.
+    /**
+     * Reads entire file into a string
+     * This function uses XmlHttpRequest and cannot retrieve resource from different domain.
+     * @param url
+     * @returns {*|string|null|string}
+     */
     o.fileGetContents = function(url) {
         var req = null;
         try { req = new ActiveXObject("Msxml2.XMLHTTP"); } catch (e) {
@@ -148,7 +214,12 @@
         return req.responseText;
     };
 
-    //
+    /**
+     * Calculates the position and size of elements.
+     *
+     * @param elem
+     * @returns {{y: number, x: number, width: number, height: number}}
+     */
     o.getPosition = function(elem) {
         var top=0, left=0;
         if (elem.getBoundingClientRect) {
@@ -172,13 +243,31 @@
         }
     };
 
-    //
+    /**
+     * Computes the difference of arrays
+     * Compares arr1 against one or more other arrays and returns the values in arr1
+     * that are not present in any of the other arrays.
+     * @param arr1
+     * @param arr2
+     * @returns {*}
+     */
     o.arrDiff = function (arr1, arr2) {
-        return arr1.slice(0).filter(function(item) {
-            return arr2.indexOf(item) === -1;
-        })
+        if(o.isArr(arr1) && o.isArr(arr2)){
+            return arr1.slice(0).filter(function(item) {
+                return arr2.indexOf(item) === -1;
+            })
+        }
+        return false;
     };
 
+
+    /**
+     * Create style element or style text.
+     *
+     * @param selector      name of selector styles
+     * @param property      string "display:object" or object {'background-color':'red'}
+     * @returns {*}         return object with methods : getString(), getObject(), add()
+     */
     o.createStyle = function(selector, property){
         var o = {
             content : '',
@@ -206,6 +295,13 @@
         return o.add(selector, property);
     };
 
+    /**
+     * Create new NodeElement
+     * @param tag       element tag name 'p, div, h3 ... other'
+     * @param attrs     object with attributes key=value
+     * @param inner     text, html or NodeElement
+     * @returns {Element}
+     */
     o.createNode = function(tag, attrs, inner){
         var elem = document.createElement(tag);
         if(typeof attrs === 'object'){

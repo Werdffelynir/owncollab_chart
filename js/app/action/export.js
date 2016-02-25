@@ -85,7 +85,7 @@
 
         var fd = app.u.formData(o.formExportToPDF, true);
 
-        console.log(fd);
+        //console.log(fd);
 
         /*var style = app.u.createStyle('body','background-color:#000' +
             'transform: rotate(93deg) scale(1.001) skew(1deg) translate(0px);' +
@@ -110,10 +110,12 @@
         //var styleLink = '<link rel="stylesheet" href="'+app.protocol+"://"+app.host+app.url+'/css/dhtmlxgantt.css">';
         var styleLink = '<link rel="stylesheet" href="https://owncollab.andreasseiler.com/apps/owncollab_chart/css/dhtmlxgantt.css">';
         var style = app.u.createStyle();
+
         //style.add('body','margin: auto 25px');
         //style.add('.header','margin-top: 25px !important');
         //style.add('.footer','margin-bottom: 25px !important');
         //style.add('.gantt_container','padding 50px');
+
         style.add('.tbl','display:table; width:100%');
         style.add('.tbl_cell','display:table-cell');
         style.add('.third','width:32%');
