@@ -91,6 +91,7 @@ class ApiController extends Controller {
 
 		//return new DataResponse($_POST);
 		$uid = $this->userIdAPI;
+
         $params = [
             'access' 	    => 'deny',
             'errorinfo'     => '',
@@ -98,9 +99,6 @@ class ApiController extends Controller {
             'uid' 		    => $uid,
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
-
-
-        //if($uid){
 
         $tasks = $this->connect->task()->get();
 
@@ -122,7 +120,7 @@ class ApiController extends Controller {
         }
 
         if($uid){
-
+            $params['isadmin'] 		= $this->isAdmin;
             $params['access'] 		= 'allow';
             $params['project'] 		= $this->connect->project()->get();
             $params['tasks'] 		= $tasks;

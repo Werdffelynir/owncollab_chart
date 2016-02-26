@@ -320,4 +320,45 @@
         return elem;
     };
 
+    /**
+     * Multi function to work with the object localStorage combines in self:
+     * .Storage(name)           identically .Storage.get(name)
+     * .Storage(name, false)    identically .Storage.remove(name)
+     * .Storage(name, value)    identically .Storage.set(name, value)
+     * @param name
+     * @param value
+     * @returns {boolean}
+     * @constructor
+     */
+    o.Storage = function(name, value){
+        if(!name){
+            return false;
+        }else if(value === undefined){
+            return o.Storage.get(name);
+        }else if(!value){
+            return o.Storage.remove(name);
+        }else{
+            return o.Storage.set(name, value);
+        }
+    };
+    o.Storage.set = function (name, value) {
+        try{value = JSON.stringify(value)}catch(error){}
+        return window.localStorage.setItem(name, value);
+    };
+    o.Storage.get = function (name) {
+        var value = window.localStorage.getItem(name);
+        if(value)
+            try{value = JSON.parse(value)}catch(error){}
+        return value;
+    };
+    o.Storage.remove = function (name) {
+        return window.localStorage.removeItem(name);
+    };
+    o.Storage.key = function (name) {
+        return window.localStorage.key(key);
+    };
+
+
+
+
 })(jQuery, OC, app);
