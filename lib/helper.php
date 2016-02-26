@@ -35,11 +35,12 @@ class Helper
         if(strpos($requestUri, $subPath) !== false){
             $ps =  substr($requestUri, strpos($requestUri, $subPath)+strlen($subPath));
             if($ps==='/'||$ps===false) return '/';
-            else return trim($ps,'/');
+            else return trim($ps, '/');
         }else{
             return false;
         }
     }
+
 
     /**
      * Check URI address path

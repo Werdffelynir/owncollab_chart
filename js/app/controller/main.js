@@ -106,6 +106,7 @@
             app.data = response;
             app.data.lasttaskid = parseInt(response['lasttaskid']) + 1;
             app.data.lastlinkid = parseInt(response['lastlinkid']) + 1;
+            app.data.isAdmin = response['isadmin'];
 
             // accept localStorage settings
             o.dataStorageAccept();

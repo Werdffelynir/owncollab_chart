@@ -181,6 +181,12 @@
         gantt.config.columns.push({name:"edit", label:"", width: 22, template: function(item) {
             return o.createTaskBtn('edit', item.id);
         }});
+
+        if(!app.data.isAdmin){
+            // gantt lightbox disable
+            gantt.showLightbox = function(id){};
+            gantt.hideLightbox = function(id){};
+        }
     };
 
 
