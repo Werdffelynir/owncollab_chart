@@ -46,7 +46,10 @@
          * @returns {*}
          */
         gantt.templates.task_text = function(start, end, task){
-            if(app.data.project['show_task_name'] == 1)
+            if(task.type == 'project'){
+                return "";
+            }
+            else if(app.data.project['show_task_name'] == 1)
                 return task.text;
             else
                 return "";

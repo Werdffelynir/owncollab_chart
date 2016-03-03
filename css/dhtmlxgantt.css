@@ -1522,3 +1522,43 @@ div.dhx_modal_cover {
     font-weight: 700;
     border-width: 0
 }
+.gantt_project .gantt_task_progress{
+    background-color: rgba(0,0,0,0) !important;
+    border-right: 1px solid #4b71a4;
+}
+.gantt_project {
+    background-color: rgba(0,0,0,0) !important;
+    border: none !important;
+    box-shadow: inset 0px 10px 0px 0px #1C2C42;
+}
+.gantt_project:before {
+    content: " ";
+    border-color: #1C2C42 #fff #fff #fff;
+    border-style: solid;
+    border-width: 8px 10px 0 0px;
+    height: 0px;
+    width: 0px;
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+}
+.gantt_project:after {
+    content: " ";
+    border-color: #1C2C42 #fff #fff #fff;
+    border-style: solid;
+    border-width: 8px 0px 0 10px;
+    height: 0px;
+    width: 0px;
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 0px;
+}
+.gantt_project.gantt_selected {
+    background-color: rgba(0,0,0,0) !important;
+    box-shadow: inset 0px 5px 0px 5px #1C2C42 !important;
+}
+
+
+
+

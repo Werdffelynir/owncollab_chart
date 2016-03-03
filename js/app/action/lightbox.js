@@ -57,6 +57,19 @@
 
     o.onLightbox = function (id){
 
+        window.addEventListener('keydown', function onKeyEnterClick(event){
+            /*if(event.key == "Enter"){
+                var save_btn = $('.gantt_save_btn_set');
+                event.cancelBubble = true;
+
+                $('.gantt_cal_light').click();
+                save_btn.click();
+            }*/
+            //console.log(event);
+            //window.removeEventListener('keydown', onKeyEnterClick);
+
+        }, true);
+
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
                 fso = {},
@@ -73,7 +86,7 @@
                         case 'progress':
                             fso[_name].value = o.progressToPercent(o.task[_name]) + ' %';
                             fso[_name].onclick = o.onClickLightboxInput;
-                            fso[_name].onchange = o.onChangeProgress;
+                            fso[_name].onkeyup = o.onChangeProgress;
                             break;
 
                         case 'users':
@@ -102,7 +115,7 @@
 
                         default:
                             fso[_name].value = o.task[_name];
-                            fso[_name].onchange = o.onChangeLightboxInput;
+                            fso[_name].onkeyup = o.onChangeLightboxInput;
                     }
                 }
             }
@@ -137,7 +150,9 @@
         }
     };
 
-    o.onChangeLightboxInput = function (event){var target = event.target,
+    o.onChangeLightboxInput = function (event){
+
+        var target = event.target,
             name = target['name'].substr(5),
             value = target['value'],
             type = target['type'];
