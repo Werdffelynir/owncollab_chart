@@ -298,26 +298,31 @@
      */
     o.enableZoomSlider = function (value) {
 
-        /*switch (value) {
-            case 'hour':
-                value = 3;
-                break;
-            case 'day':
-                value = 2;
-                break;
-            case 'week':
-                value = 1;
-                break;
-            default :
-                value = 1;
-        }*/
         $(app.dom.zoomSlider)
             .show()
             .slider({
                 min: 0, max: 90, value: 0, change: function (event, ui) {
 
                     //app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
-                    $('.gantt_data_area')[0].style.transform = 'scaleX(1.'+ String((ui.value/10)).replace(/\./,'') +')';
+                    var _s = ui.value/10,
+                        task = $('.gantt_task')[0],
+                        grid = $('.gantt_grid')[0];
+
+                    //console.log(_s, app.dom.gantt.clientWidth);
+                    //app.dom.gantt.style.width = (app.dom.gantt.clientWidth * _s) + 'px';
+                    //console.log(app.dom.gantt.clientWidth);
+                    //app.dom.gantt.style.width = app.dom.gantt.clientWidth + 1000 + 'px';
+                    //$('.gantt_data_area')[0].style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
+
+                    $(grid).css('z-index', '2')
+                        .css('position','relative');
+                    $(task)
+                        .css('z-index', '1')
+                        .css('transform', 'scaleX(1.'+ String(_s).replace(/\./,'') +')');
+
+                    //gantt.render();
+
+                    //task.style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
 
                     /*switch (parseInt(ui.value)) {
                         case 3:

@@ -186,6 +186,7 @@
             // gantt lightbox disable
             gantt.showLightbox = function(id){};
             gantt.hideLightbox = function(id){};
+            app.action.error.inline('You do not have the right to modify the chart', 'Information: ');
         }
     };
 
