@@ -289,7 +289,8 @@
      * @returns {string}
      */
     o.generateShareLink = function(key){
-        var link = OC.generateUrl('apps/' + app.name + '/s/' + key);
+        //var link = OC.generateUrl('apps/' + app.name + '/s/' + key);
+        var link = OC.generateUrl('s/' + key);
         return OC.getProtocol() + '://' + OC.getHost() + link;
     };
 

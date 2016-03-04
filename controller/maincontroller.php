@@ -19,6 +19,7 @@ use OCP\AppFramework\Http\TemplateResponse;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Controller;
 use OCP\IRequest;
+use OCP\IURLGenerator;
 
 
 \OCP\App::checkAppEnabled('owncollab_chart');
@@ -38,6 +39,9 @@ class MainController extends Controller {
      * instance working with database */
     private $connect;
 
+    /** @var IURLGenerator */
+    private $urlGenerator;
+
     /**
      * MainController constructor.
      * @param string $appName
@@ -53,14 +57,15 @@ class MainController extends Controller {
 		$userId,
 		$isAdmin,
 		\OC_L10N $l10n,
-		Connect $connect
-
+		Connect $connect,
+        IURLGenerator $urlGenerator
     ){
 		parent::__construct($appName, $request);
 		$this->userId = $userId;
 		$this->isAdmin = $isAdmin;
 		$this->l10n = $l10n;
 		$this->connect = $connect;
+		$this->urlGenerator = $urlGenerator;
 	}
 
 
@@ -164,8 +169,16 @@ class MainController extends Controller {
             ]);
         }
 
-
 	}
+
+    private function createPublicUrl($parameter){
+        $route = 'myapp.author_api.do_something';
+        $parameters = array('id' => $parameter);
+
+        $url = $this->urlGenerator->linkToRoute($route, $parameters);
+
+        return new RedirectResponse($url);
+    }
 
 
 }

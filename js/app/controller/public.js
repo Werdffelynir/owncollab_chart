@@ -30,38 +30,43 @@
 
         try{
             jData = JSON.parse($(app.dom.ganttdatajson).text());
-        }catch(error){}
 
-        if(typeof jData === 'object' && jData['tasks'] && jData['links'] && jData['project']){
+            if(window.location.href.indexOf('apps/owncollab_chart/s/') !== -1){
+                window.history.replaceState({}, document.title, window.location.href.replace(/apps\/owncollab_chart\//,''));
+            }
 
-            // project default information
-            app.data.project = jData.project;
-            app.data.tasks = jData.tasks;
-            app.data.links = jData.links;
+            if(typeof jData === 'object' && jData['tasks'] && jData['links'] && jData['project']){
 
-            console.log(app.data);
+                // project default information
+                app.data.project = jData.project;
+                app.data.tasks = jData.tasks;
+                app.data.links = jData.links;
 
-            // clear ganttdatajson
-            app.dom.ganttdatajson.textContent = '';
+                // clear ganttdatajson
+                app.dom.ganttdatajson.textContent = '';
 
-            gantt.init(app.dom.gantt);
+                gantt.init(app.dom.gantt);
 
-            gantt.attachEvent("onParse", function(){
-                app.action.chart.ganttFullSize();
-            });
+                gantt.attachEvent("onParse", function(){
+                    app.action.chart.ganttFullSize();
+                });
 
-            /**
-             * Configuration public set
-             */
-            app.action.config.init();
-            app.action.config.external();
+                /**
+                 * Configuration public set
+                 */
+                app.action.config.init();
+                app.action.config.external();
 
-            // parse data
-            gantt.parse({
-                data: app.data.tasks,
-                links: app.data.links
-            });
+                // parse data
+                gantt.parse({
+                    data: app.data.tasks,
+                    links: app.data.links
+                });
 
+            }
+
+        }catch(error){
+            window.location = '/';
         }
 
     }

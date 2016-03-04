@@ -35,6 +35,9 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 	];
 });
 
+// Create public accept, only redirecting
+$shred = new Sharedchart();
+$shred->match();
 
 /**
  * Loading translations
@@ -62,7 +65,6 @@ if(Helper::isAppPage($appName)){
 	//Util::addScript($appName,'dhtmlxgantt/api');
 
 	// dhtmlxGantt v.4.0.0 Professional
-    //Util::addStyle($appName, 'dhtmlxganttpro');
 	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
