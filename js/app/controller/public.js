@@ -6,6 +6,9 @@
 
     var o = app.controller.public;
 
+    if(window.location.href.indexOf('apps/owncollab_chart/s/') !== -1){
+        window.history.replaceState({}, document.title, window.location.href.replace(/apps\/owncollab_chart\//,''));
+    }
     /**
      * Construct call first when this controller run
      */
@@ -30,10 +33,6 @@
 
         try{
             jData = JSON.parse($(app.dom.ganttdatajson).text());
-
-            if(window.location.href.indexOf('apps/owncollab_chart/s/') !== -1){
-                window.history.replaceState({}, document.title, window.location.href.replace(/apps\/owncollab_chart\//,''));
-            }
 
             if(typeof jData === 'object' && jData['tasks'] && jData['links'] && jData['project']){
 

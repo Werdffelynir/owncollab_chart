@@ -259,14 +259,15 @@
     };
 
     o.onAfterTaskUpdate = function(id, task){
-        var parent = gantt.getTask(task.parent),
-            children = gantt.getChildren(task.parent);
+        if(task.is_project != 1){
+            var parent = gantt.getTask(task.parent),
+                children = gantt.getChildren(task.parent);
 
-        if(parent.type != 'project'){
-            parent.type = 'project';
-            gantt.updateTask(parent.id);
+            if(parent.type != 'project'){
+                parent.type = 'project';
+                gantt.updateTask(parent.id);
+            }
         }
-
         return true;
     };
 
@@ -333,7 +334,7 @@
 
     };
 
-    o.sendShareEmails = function(emails){
+    o.sendShareEmails = function(emails, resources){
 
         // change all icon to loading emails
         //background: url("/apps/owncollab_chart/img/loading-icon.gif") no-repeat center center;
@@ -353,7 +354,7 @@
                 app.action.error.inline('Error Request on send share emails');
             }
 
-        },{ emails:emails });
+        },{ emails:emails,resources:resources });
 
     };
 

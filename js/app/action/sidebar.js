@@ -51,72 +51,94 @@
         });
 
         // autocomplete for email sends
-        var usersEmails = (function(){
-            var group, userIter = 0, user, list = [], all = app.data.groupsusers;
+        var usersEmails = function(){
+            var resources = app.action.chart.getProjectResources(true),
+                group,
+                userIter = 0,
+                project = 'project',
+                domain = 'domain.com',
+                list = [],
+                all = app.data.groupsusers;
+
             for(group in all){
-                list.push({
-                    value: group,
-                    label: 'group:' + group
-                });
-                for(userIter = 0; userIter < all[group].length; userIter ++){
+                var inGroup = false;
+                for(userIter = 0; userIter < all[group].length; userIter ++) {
+                    if(resources.indexOf(all[group][userIter]['uid']) !== -1) {
+                        inGroup = true;
+                        list.push({
+                            value: all[group][userIter]['uid'],
+                            type: 'user',
+                            email: all[group][userIter]['uid'] + '@' + project + '.' + domain
+                        });
+                    }
+                }
+
+                if(inGroup){
                     list.push({
-                        value: all[group][userIter]['uid'],
-                        label: all[group][userIter]['uid']
+                        value: group,
+                        type: 'group',
+                        email: group + '@' + project + '.' + domain
                     });
                 }
             }
+            // static emails
+            list.push({
+                value: 'team',
+                type: 'static',
+                email: 'team@' + project + '.' + domain
+            });
+            list.push({
+                value: 'support',
+                type: 'static',
+                email: 'support@' + project + '.' + domain
+            });
             return list;
-        })();
+        };
+
         $(document).on('focus', "#owc_email_autocomplete", function (event) {
             $( this ).autocomplete({
                     minLength: 0,
-                    source: usersEmails,
+                    source: usersEmails(),
                     select: function( event, ui ) {
                         this.value = "";
-                        o.addEmailToList(ui.item.value, ui.item.value, (ui.item.label.indexOf('group:')===0));
-                        //$( this ).val( ui.item.value );
-                        //$( "#owc_email" ).val( ui.item.value );
+                        o.emailsList(ui.item);
                         return false;
                     }
-
             }).data("ui-autocomplete")._renderItem = function( ul, item ) {
+                var emailLabel = (item.type == 'user') ? item.email : "<strong>"  +item.email+ "</strong>";
                 return $('<li>')
-                    .append('<a>' + (item.label.indexOf('group:')===0 ? "<strong>" + (item.label.split(':')[1]) + " (group)</strong>"  : item.label ) + '</a>' )
+                    .append('<a>' +  emailLabel + '</a>' )
                     .appendTo( ul );
             };
         });
 
         // send email list to server
         $('input[name=share_email_submit]').click(function(event){
-
             var emailsList = [];
-
-            $('.share_email', app.dom.sidebar).each(function(index,item){
+            $('.share_email', app.dom.sidebar).each(function(index, item){
+                //var id = item.getAttribute('data-id');
                 var type = item.getAttribute('data-type');
-                var id = item.getAttribute('data-id');
-                if(type == 'user') emailsList.push(id);
-                else if(type == 'group' && app.data.groupsusers[id]){
-                    app.data.groupsusers[id].map(function(item){emailsList.push(item.uid)});
-                }
+                var email = item.getAttribute('data-email');
+                emailsList.push(type+ ':' +email);
             });
-
-            app.action.event.sendShareEmails(app.u.uniqueArr(emailsList));
-            //console.log(app.u.uniqueArr(emailsList));
-
+            app.action.event.sendShareEmails(
+                app.u.uniqueArr(emailsList),
+                app.action.chart.getProjectResources(true)
+            );
         });
 
     };
 
-
-    o.addEmailToList = function(id, name, isGroup){
+    o.emailsList = function(item){
         var wrap = document.createElement('div');
         var icon = document.createElement('div');
         var text = document.createElement('div');
         var butn = document.createElement('div');
 
         wrap.className = 'tbl share_email';
-        wrap.setAttribute('data-type', (isGroup?'group':'user'));
-        wrap.setAttribute('data-id', id);
+        wrap.setAttribute('data-type', item.type);
+        //wrap.setAttribute('data-id', item.type == 'user' ? item.value : item.type );
+        wrap.setAttribute('data-email', item.email);
 
         icon.className = 'tbl_cell share_email_icon';
         text.className = 'tbl_cell share_email_text';
@@ -125,7 +147,7 @@
         butn.onclick = function(event){$(wrap).remove()};
 
         icon.innerHTML = '<strong> &#149; </strong>';
-        text.innerHTML = isGroup? '<strong>' + name + ' (group) </strong>' : name;
+        text.innerHTML = item.email;
 
         wrap.appendChild(icon);
         wrap.appendChild(text);

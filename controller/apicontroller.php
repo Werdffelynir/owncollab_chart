@@ -260,6 +260,12 @@ class ApiController extends Controller {
 
 
     /**
+     * mail templates:
+     * support@project1.domain.com      - to one owncloud admin
+     * team@project1.domain.com         - to all project users
+     * group_name@project1.domain.com   - to all project group users
+     * user_id@project1.domain.com      - to one project users
+     *
      * @param $data
      * @return DataResponse
      */
@@ -273,10 +279,16 @@ class ApiController extends Controller {
         if($this->isAdmin && isset($data['emails'])){}
 
         $emails = $data['emails'];
-        $params['result'] = $emails;
-
+        $resources = $data['resources'];
         sleep(1);
+
+
 /*
+
+group:managers@project.domain.com
+static:team@project.domain.com
+user:dev2@project.domain.com
+
         $mail = new PHPMailer();
         if(filter_var($email, FILTER_VALIDATE_EMAIL)){}
 
@@ -290,6 +302,8 @@ class ApiController extends Controller {
         else
             var_dump("Message sent!");
 */
+        $params['result'] = $emails;
+        $params['resources'] = $resources;
         return new DataResponse($params);
 
     }

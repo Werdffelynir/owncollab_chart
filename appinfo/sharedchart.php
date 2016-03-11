@@ -2,8 +2,6 @@
 namespace OCA\Owncollab_Chart\AppInfo;
 
 use OCA\Owncollab_Chart\Db\Connect;
-use OCP\AppFramework\Http\RedirectResponse;
-use \OCP\IRequest;
 
 class Sharedchart {
 

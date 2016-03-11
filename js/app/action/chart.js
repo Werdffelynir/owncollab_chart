@@ -277,10 +277,7 @@
     /**
      * Gantt chart resize. Apply a scale fit
      */
-    o.scaleFit = function (){
-
-
-    };
+    o.scaleFit = function (){};
 
     /**
      * Generate Share Link for event
@@ -339,6 +336,33 @@
                     gantt.render();*/
                 }
             });
+    };
+
+
+    /**
+     * Uses: app.action.chart.getProjectTasks()
+     * @returns {Array}
+     */
+    o.getProjectTasks = function (){
+        return gantt._get_tasks_data();
+    };
+
+    /**
+     * Uses: app.action.chart.getProjectResources(true)
+     * @param unique     boolean
+     * @returns {Array}
+     */
+    o.getProjectResources = function (unique){
+        //gantt.refreshData();
+        var
+            res = [],
+            mapper = function (item) {
+                if(item.users.length > 1){
+                    item.users.split(" ").map(function(user){res.push(user.trim())});
+                }
+            };
+            o.getProjectTasks().map(mapper);
+        return (!!unique) ? app.u.uniqueArr(res) : res
     };
 
     /**
