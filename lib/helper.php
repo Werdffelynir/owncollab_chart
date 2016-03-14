@@ -3,6 +3,8 @@
 namespace OCA\Owncollab_Chart;
 
 use OC\User\Session;
+use OCA\Owncollab_Chart\PHPMailer\PHPMailer;
+use OCA\Owncollab_Chart\PHPMailer\phpmailerException;
 use OCP\AppFramework\Http\DataResponse;
 use OCP\AppFramework\Http\TemplateResponse;
 
@@ -161,6 +163,49 @@ class Helper
             $rand .= $abc[rand()%strlen($abc)];
         }
         return $rand;
+    }
+
+    /**
+     * @param array $conf mailSend(['to'=>0, 'name_to'=>0, 'from'=>0, 'name_from'=>, 'subject'=>0, 'body'=>0])
+     * @throws PHPMailer
+     */
+    /**
+     * @param array $conf
+     * @return bool|string
+     * @throws PHPMailer\phpmailerException
+     */
+    static public function mailSend(array $conf){
+
+        $to = isset($conf['to'])
+            ? $conf['to']
+            : false;
+        $nameTo = isset($conf['name_to'])
+            ? $conf['name_to']
+            : 'To';
+        $from = isset($conf['from'])
+            ? $conf['from']
+            : "no-reply@".\OC::$server->getRequest()->getServerHost();
+        $nameFrom = isset($conf['name_from'])
+            ? $conf['name_from']
+            : 'no-reply';
+        $subject = isset($conf['subject'])
+            ? $conf['subject']
+            : 'OwnCollab message';
+        $body = isset($conf['body'])
+            ? $conf['body']
+            : '';
+
+        $mail = new PHPMailer();
+        if(filter_var($to, FILTER_VALIDATE_EMAIL)){
+            $mail->setFrom($from, $nameFrom);
+            $mail->addAddress($to, $nameTo);
+            $mail->Subject = $subject;
+            $mail->Body    = $body;
+            $mail->isHTML();
+
+            if (!$mail->send()) return $mail->ErrorInfo;
+            else return true;
+        }
     }
 
 }

@@ -279,6 +279,8 @@
             var _lineGroup = document.createElement('div'),
                 _lineUsers = document.createElement('div'),
                 _inputGroup = document.createElement('input'),
+                _inputLabel = document.createElement('label'),
+                _inputSpan = document.createElement('span'),
                 users = app.data.groupsusers[groupName],
                 usersCount =  users.length;
 
@@ -288,11 +290,18 @@
             _inputGroup.setAttribute('data-type', 'group');
 
             _lineGroup.appendChild(_inputGroup);
-            _lineGroup.innerHTML += ' <strong>' + groupName + '</strong>';
+            _inputLabel.appendChild(_inputSpan);
+            _lineGroup.appendChild(_inputLabel);
+
+            _inputGroup.id = 'sort_g_' + groupName;
+            _inputLabel.setAttribute('for', 'sort_g_' + groupName);
+            _inputLabel.innerHTML += ' <strong>' + app.u.ucfirst(groupName) + '</strong>';
 
             for(var i=0; i<usersCount; i++){
                 var _inlineUser = document.createElement('span'),
-                    _inputUser = document.createElement('input');
+                    _inputUser = document.createElement('input'),
+                    _inputUserLabel = document.createElement('label'),
+                    _inputUserSpan = document.createElement('span');
 
                 _inputUser.name = users[i]['uid'];
                 _inputUser.type = 'checkbox';
@@ -300,9 +309,19 @@
                 _inputUser.setAttribute('data-type', 'user');
                 _inputUser.setAttribute('data-gid', users[i]['gid']);
 
+                _inputUser.id = 'sort_u_' + users[i]['uid'];
+                _inputUserLabel.setAttribute('for', 'sort_u_' + users[i]['uid']);
+                _inputUserLabel.appendChild(_inputUserSpan);
+                _inputUserLabel.innerHTML += users[i]['uid'];
+
                 _inlineUser.appendChild(_inputUser);
+                _inlineUser.appendChild(_inputUserLabel);
+
                 _lineUsers.appendChild(_inlineUser);
-                _lineUsers.innerHTML += ' <strong>' + users[i]['uid'] + '</strong>';
+
+/*                _inlineUser.appendChild(_inputUser);
+                _lineUsers.appendChild(_inlineUser);
+                _lineUsers.innerHTML += ' <strong>' + users[i]['uid'] + '</strong>';*/
             }
 
             fragment.appendChild(_lineGroup);

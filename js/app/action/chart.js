@@ -90,6 +90,11 @@
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
+
+        // form.styler
+        //$('input, select').styler();
+
+
     };
 
 
@@ -345,6 +350,15 @@
      */
     o.getProjectTasks = function (){
         return gantt._get_tasks_data();
+    };
+
+
+    /**
+     * Uses: app.action.chart.getProjectUrlName()
+     * @returns {String}
+     */
+    o.getProjectUrlName = function (){
+        return String(app.data.baseProjectTask.text).trim().toLowerCase().replace(/\W+/gm, '_');
     };
 
     /**

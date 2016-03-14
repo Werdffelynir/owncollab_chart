@@ -334,10 +334,10 @@
 
     };
 
-    o.sendShareEmails = function(emails, resources){
+    o.sendShareEmails = function(emails, resources, link){
 
         // change all icon to loading emails
-        //background: url("/apps/owncollab_chart/img/loading-icon.gif") no-repeat center center;
+        // background: url("/apps/owncollab_chart/img/loading-icon.gif") no-repeat center center;
         $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center');
 
         app.api('sendshareemails', function(response) {
@@ -354,7 +354,7 @@
                 app.action.error.inline('Error Request on send share emails');
             }
 
-        },{ emails:emails,resources:resources });
+        },{ emails:emails, resources:resources, link:link });
 
     };
 

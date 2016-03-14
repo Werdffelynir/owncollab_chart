@@ -27,5 +27,8 @@
         <div class="tbl_cell lbox_title">Progress</div>
         <div class="tbl_cell"><input name="lbox_progress" type="text"></div>
         <div class="tbl_cell lbox_title">Milestone</div>
-        <div class="tbl_cell"><input name="lbox_milestone" type="checkbox"></div>
+        <div class="tbl_cell">
+            <input id="lbm" name="lbox_milestone" type="checkbox">
+            <label for="lbm"><span></span></label>
+        </div>
     </div>

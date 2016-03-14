@@ -1,7 +1,8 @@
 <div id="chart_share">
 
     <div class="oneline">
-        <input name="is_share" type="checkbox"> <?php p($l->t('Share chart project'));?>
+        <input id="sis" name="is_share" type="checkbox">
+        <label for="sis"><span></span> <?php p($l->t('Share chart project'));?> </label>
     </div>
 
     <div class="chart_share_on">
@@ -11,7 +12,8 @@
         </div>
 
         <div class="oneline">
-            <input name="share_is_protected" type="checkbox"> <?php p($l->t('Password protection'));?>
+            <input id="sip" name="share_is_protected" type="checkbox">
+            <label for="sip"><span></span> <?php p($l->t('Password protection'));?> </label>
         </div>
 
         <div class="chart_share_password">
@@ -21,7 +23,8 @@
         </div>
 
         <div class="oneline">
-            <input name="share_is_expire" type="checkbox"> <?php p($l->t('Expiration time'));?>
+            <input id="sie" name="share_is_expire" type="checkbox">
+            <label for="sie"><span></span> <?php p($l->t('Expiration time'));?> </label>
         </div>
 
         <div class="chart_share_expiration">

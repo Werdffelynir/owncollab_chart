@@ -55,8 +55,8 @@
             var resources = app.action.chart.getProjectResources(true),
                 group,
                 userIter = 0,
-                project = 'project',
-                domain = 'domain.com',
+                project = app.action.chart.getProjectUrlName(),
+                domain = OC.getHost(),
                 list = [],
                 all = app.data.groupsusers;
 
@@ -114,12 +114,13 @@
 
         // send email list to server
         $('input[name=share_email_submit]').click(function(event){
+            event.preventDefault();
             var emailsList = [];
             $('.share_email', app.dom.sidebar).each(function(index, item){
-                //var id = item.getAttribute('data-id');
+                var id = item.getAttribute('data-id');
                 var type = item.getAttribute('data-type');
                 var email = item.getAttribute('data-email');
-                emailsList.push(type+ ':' +email);
+                emailsList.push(type+ ':' +id);
             });
             app.action.event.sendShareEmails(
                 app.u.uniqueArr(emailsList),
@@ -136,8 +137,8 @@
         var butn = document.createElement('div');
 
         wrap.className = 'tbl share_email';
+        wrap.setAttribute('data-id', item.value );
         wrap.setAttribute('data-type', item.type);
-        //wrap.setAttribute('data-id', item.type == 'user' ? item.value : item.type );
         wrap.setAttribute('data-email', item.email);
 
         icon.className = 'tbl_cell share_email_icon';

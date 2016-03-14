@@ -273,39 +273,94 @@ class ApiController extends Controller {
     {
         $params = [
             'error'     => null,
-            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ?: \OC_Util::callRegister()
         ];
 
-        if($this->isAdmin && isset($data['emails'])){}
+        if(!$this->isAdmin && empty($data['emails'])){return new DataResponse($params);}
 
+        $groupsusers = $this->connect->project()->getGroupsUsersList();
+        $resources = is_array($data['resources']) ? $data['resources'] : [];
         $emails = $data['emails'];
-        $resources = $data['resources'];
-        sleep(1);
+        $sharedLink = $this->connect->project()->getShare();
+        $serverHost = \OC::$server->getRequest()->getServerHost();
+        $sharedALink = '<a href="'.$sharedLink.'">'.$sharedLink.'</a>';
+        $mailSendResult = false;
 
+        //$params['groupsusers'] = $groupsusers;
+        //sleep(1);
 
-/*
+        try{
+            foreach ($emails as $email) {
+                $_emArr = explode(':',$email);
+                $_type = $_emArr[0];
+                $_id = $_emArr[1];
 
-group:managers@project.domain.com
-static:team@project.domain.com
-user:dev2@project.domain.com
+                if($_type == 'static') {
+                    if($_id == 'support'){
+                        $_mail_from_address = \OC::$server->getConfig()->getSystemValue('mail_from_address');
+                        $_mail_domain = \OC::$server->getConfig()->getSystemValue('mail_domain');
+                        $mailSendResult = Helper::mailSend([
+                            'to'        => $_mail_from_address .'@'. $_mail_domain,
+                            'name_to'   => '',
+                            'from'      => 'no-reply@' . $_mail_domain,
+                            'name_from' => 'ownCollab chart',
+                            'subject'   => $_id,
+                            'body'      => 'Access to the project ownCollab chart '.$sharedALink
+                        ]);
+                    }
+                    else if($_id == 'team') {
+                        foreach ($resources as $_res_uid) {
+                            $_user_email = $this->connect->project()->getUserEmail($_res_uid);
+                            if(!empty($_user_email)){
+                                $mailSendResult = Helper::mailSend([
+                                    'to'        => $_user_email,
+                                    'name_to'   => '',
+                                    'from'      => 'no-reply@' . $serverHost,
+                                    'name_from' => 'ownCollab chart',
+                                    'subject'   => 'Access to the project ownCollab chart',
+                                    'body'      => 'Access to the project ownCollab chart '.$sharedALink
+                                ]);
+                            }
+                        }
+                    }
+                }
+                else if($_type == 'group') {
+                    $_group = !empty($groupsusers[$_type]) ? $groupsusers[$_id] : [];
+                    foreach ($_group as $_uid) {
+                        $_user_email = $this->connect->project()->getUserEmail($_uid);
+                        $mailSendResult = Helper::mailSend([
+                            'to'        => $_user_email,
+                            'name_to'   => '',
+                            'from'      => 'no-reply@' . $serverHost,
+                            'name_from' => 'ownCollab chart',
+                            'subject'   => 'Access to the project ownCollab chart',
+                            'body'      => 'Access to the project ownCollab chart'.$sharedALink
+                        ]);
+                    }
+                }
+                else if($_type == 'user') {
+                    $_user_email = $this->connect->project()->getUserEmail($_id);
+                    $mailSendResult = Helper::mailSend([
+                        'to'        => $_user_email,
+                        'name_to'   => '',
+                        'from'      => 'no-reply@' . $serverHost,
+                        'name_from' => 'ownCollab chart',
+                        'subject'   => 'Access to the project ownCollab chart',
+                        'body'      => 'Access to the project ownCollab chart'.$sharedALink
+                    ]);
+                }
+            }
 
-        $mail = new PHPMailer();
-        if(filter_var($email, FILTER_VALIDATE_EMAIL)){}
+            $params['result'] = $mailSendResult;
 
-        $mail->setFrom('no-reply@gmail.com', 'no-reply');
-        $mail->addAddress('werdffelynir@gmail.com', 'John Doe');
-        $mail->Subject = 'Here is the subject';
-        $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
+        } catch(\Exception $e) {
+            $params['result'] = 'error';
+        }
 
-        if (!$mail->send())
-            var_dump("Mailer Error: " . $mail->ErrorInfo);
-        else
-            var_dump("Message sent!");
-*/
-        $params['result'] = $emails;
-        $params['resources'] = $resources;
         return new DataResponse($params);
-
     }
+
+
+
 
 }
