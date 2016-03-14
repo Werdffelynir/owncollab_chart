@@ -287,22 +287,20 @@
         app.api('updatetask', function(response) {
 
             //console.log(response);
-
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
-
                 app.requesttoken = response.requesttoken;
-
                 if(worker == 'insert') {
                     if(response.lasttaskid)
                         app.data.lasttaskid = response.lasttaskid;
                     else
                         app.action.error.inline('Error Request: ' + worker + '. Inset ID not response.');
                 }
-
             } else {
-
                 app.action.error.inline('Error Request: ' + worker );
             }
+            console.log('save close');
+            $('#lboxsave').hide();
+
 
         },{ worker:worker, id:id, task:task });
 

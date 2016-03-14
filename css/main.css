@@ -367,6 +367,31 @@ html, body {
     font-weight: bold;
 }
 
+
+.gantt_modal_box{
+    border-radius: 0 !important;
+}
+.gantt_popup_button {
+    min-width: 70px !important;
+}
+.gantt_popup_button.dhtmlx_popup_button.gantt_cancel_button.dhtmlx_cancel_button{
+    padding: 0px 15px 0px 10px !important;
+    background-color: #fff !important;
+    border: 3px solid #F2F2F2 !important;
+    border-radius: 0 !important;
+    font-weight: normal;
+    cursor: pointer;
+}
+.gantt_popup_button.dhtmlx_popup_button.gantt_ok_button.dhtmlx_ok_button{
+    background-color: #fff !important;
+    border: 3px solid #f00 !important;
+    color: #f00;
+    border-radius: 0 !important;
+    padding: 0px 15px 0px 10px !important;
+    font-weight: normal;
+    cursor: pointer;
+}
+
 #gantt_sidebar {
     display: none;
     position: absolute;
@@ -520,6 +545,7 @@ html, body {
 .gantt_btn_set div {
     font-size: 14px !important;
     font-family: 'Arial', sans-serif;
+    cursor: pointer;
 }
 .gantt_cal_larea{
     border: none !important;
@@ -557,6 +583,22 @@ html, body {
 #generate-lbox-wrapper>div:nth-child(n+3)>div:nth-child(odd){
     width: 10%;
     text-align: right;
+}
+/*<div class="lboxsave"></div>*/
+.lboxsave{
+    display: none;
+    position: absolute;
+    width: 98%;
+    height: 88%;
+    background-color: rgba(255,255,255,.5);
+}
+.lboxsave::after {
+    content: 'save...';
+    position: relative;
+    text-align: center;
+    margin-left: 45%;
+    margin-top: 50px;
+    color: #000;
 }
 .lbox_title {
     font-size: 13px;

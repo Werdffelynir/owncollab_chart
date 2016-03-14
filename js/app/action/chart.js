@@ -80,13 +80,19 @@
         // run action.config
         app.action.config.init();
 
-        //console.log(dataTaskFiltering);
-        // run parse data
-        gantt.parse({
-            data:   dataTaskFiltering,
-            links:  app.data.links
-        });
 
+
+        try{
+            //console.log(dataTaskFiltering);
+            // run parse data
+            gantt.parse({
+                data:   dataTaskFiltering,
+                links:  app.data.links
+            });
+        }catch (e){
+            console.log(e);
+            app.action.error.page('Parse data error');
+        }
         // Dynamic chart resize when change window
         //o.ganttDynamicResize();
 

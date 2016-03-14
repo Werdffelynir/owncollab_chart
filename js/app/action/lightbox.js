@@ -270,6 +270,9 @@
     o.onLightboxSave = function (id, task, is_new){
         var _id = null;
 
+        console.log('save open');
+        $('.lboxsave').show();
+
         // after entry in the database, you need to update the id
         if(is_new === true){
             _id = app.data.lasttaskid ++;
@@ -486,6 +489,7 @@
         var
             fragment = document.createDocumentFragment(),
 
+            _isChecked = false,
             _inpBuffer = document.createElement('input'),
 
             _inpFS = document.createElement('input'),
@@ -556,25 +560,24 @@
         _inpClearLabel.appendChild(document.createTextNode('rm'));
 
         if(linksTarget.length > 0){
-            var _link = gantt.getLink(linksTarget[0]);
-            //console.log(_link, id, o.task.id);
-            if(_link.source == o.task.id) {
-                switch (_link.type){
-                    case '0': _inpFS.checked = true; break;
-                    case '1': _inpSS.checked = true; break;
-                    case '2': _inpFF.checked = true; break;
-                    case '3': _inpSF.checked = true; break;
+            linksTarget.map(function(_item){
+                var _link = gantt.getLink(_item);
+                if(_link.source == o.task.id) {
+                    _isChecked = true;
+                    switch (_link.type){
+                        case '0': _inpFS.checked = true; break;
+                        case '1': _inpSS.checked = true; break;
+                        case '2': _inpFF.checked = true; break;
+                        case '3': _inpSF.checked = true; break;
+                    }
                 }
-            } else _inpClear.checked = true;
+            });
+
+            if(!_isChecked) _inpClear.checked = true;
+
         } else {
             _inpClear.checked = true;
         }
-
-        /*
-         if(linksTarget.length >= 1){
-
-         }*/
-
 
         fragment.appendChild(_inpBuffer);
 
