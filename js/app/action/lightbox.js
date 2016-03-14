@@ -466,7 +466,7 @@
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
                 _link = document.createElement('div'),
-                _linkElems = o.predecessorLinkGenerate(item.id);
+                _linkElems = o.predecessorLinkGenerate2(item.id);
 
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
@@ -482,82 +482,146 @@
         o.predecessorView = fragment;
     };
 
-    /**
-     * { finish_to_start: "0", start_to_start: "1", finish_to_finish: "2", start_to_finish: "3" }
-     * @param id
-     * @returns {Element}
-     */
-    o.predecessorLinkGenerate = function(id){
+    o.predecessorLinkGenerate2 = function(id){
+        var
+            fragment = document.createDocumentFragment(),
 
+            _inpBuffer = document.createElement('input'),
 
-        var _select = document.createElement('select'),
-            _optionXX = document.createElement('option'),
-            _optionFF = document.createElement('option'),
-            _optionFS = document.createElement('option'),
-            _optionSS = document.createElement('option'),
-            _optionSF = document.createElement('option'),
+            _inpFS = document.createElement('input'),
+            _inpFSLabel = document.createElement('label'),
+            _inpFSSpan = document.createElement('span'),
+
+            _inpSS = document.createElement('input'),
+            _inpSSLabel = document.createElement('label'),
+            _inpSSSpan = document.createElement('span'),
+
+            _inpFF = document.createElement('input'),
+            _inpFFLabel = document.createElement('label'),
+            _inpFFSpan = document.createElement('span'),
+
+            _inpSF = document.createElement('input'),
+            _inpSFLabel = document.createElement('label'),
+            _inpSFSpan = document.createElement('span'),
+
+            _inpClear = document.createElement('input'),
+            _inpClearLabel = document.createElement('label'),
+            _inpClearSpan = document.createElement('span'),
+
             linksSource = gantt.getTask(id).$source,
-            linksTarget = gantt.getTask(id).$target,
-            selectedOptType = false;
+            linksTarget = gantt.getTask(id).$target;
 
-        _select.name = 'tasklink_' + id;
-        _select.setAttribute('data-taskid',id);
-        _optionXX.value ='x'; _optionXX.textContent = '';
-        _optionFF.value = 0; _optionFF.textContent = 'FS';
-        _optionFS.value = 1; _optionFS.textContent = 'SS';
-        _optionSS.value = 2; _optionSS.textContent = 'FF';
-        _optionSF.value = 3; _optionSF.textContent = 'SF';
+        _inpBuffer.name = 'buffer' + id;
+        _inpBuffer.type = 'text';
+        _inpBuffer.value = '0 d';
 
-        _select.appendChild(_optionXX);
-        _select.appendChild(_optionFF);
-        _select.appendChild(_optionFS);
-        _select.appendChild(_optionSS);
-        _select.appendChild(_optionSF);
+        _inpFS.id = 'plg_fs_' + id;
+        _inpFS.name = 'plg_' + id;
+        _inpFS.type = 'radio';
+        _inpFS.value = 0;
+        _inpFSLabel.setAttribute('for', 'plg_fs_' + id);
+        _inpFSLabel.appendChild(_inpFSSpan);
+        _inpFSLabel.appendChild(document.createTextNode('FS'));
 
-        linksTarget.map(function(linkId){
-            var item = gantt.getLink(linkId);
-            if(item.source == o.task.id && item.target == id){
-                selectedOptType = item.type;
-            }
-        });
-        if(selectedOptType !== false){
-            switch (selectedOptType){
-                case '0': _optionFF.setAttribute('selected','selected');
-                    break;
-                case '1': _optionFS.setAttribute('selected','selected');
-                    break;
-                case '2': _optionSS.setAttribute('selected','selected');
-                    break;
-                case '3': _optionSF.setAttribute('selected','selected');
-                    break;
-            }
+        _inpSS.id = 'plg_ss_' + id;
+        _inpSS.name = 'plg_' + id;
+        _inpSS.type = 'radio';
+        _inpSS.value = 1;
+        _inpSSLabel.setAttribute('for', 'plg_ss_' + id);
+        _inpSSLabel.appendChild(_inpSSSpan);
+        _inpSSLabel.appendChild(document.createTextNode('SS'));
+
+        _inpFF.id = 'plg_ff_' + id;
+        _inpFF.name = 'plg_' + id;
+        _inpFF.type = 'radio';
+        _inpFF.value = 2;
+        _inpFFLabel.setAttribute('for', 'plg_ff_' + id);
+        _inpFFLabel.appendChild(_inpFFSpan);
+        _inpFFLabel.appendChild(document.createTextNode('FF'));
+
+        _inpSF.id = 'plg_sf_' + id;
+        _inpSF.name = 'plg_' + id;
+        _inpSF.type = 'radio';
+        _inpSF.value = 3;
+        _inpSFLabel.setAttribute('for', 'plg_sf_' + id);
+        _inpSFLabel.appendChild(_inpSFSpan);
+        _inpSFLabel.appendChild(document.createTextNode('SF'));
+
+        _inpClear.id = 'plg_clear_' + id;
+        _inpClear.name = 'plg_' + id;
+        _inpClear.type = 'radio';
+        _inpClear.value = 'clear';
+        _inpClearLabel.setAttribute('for', 'plg_clear_' + id);
+        _inpClearLabel.appendChild(_inpClearSpan);
+        _inpClearLabel.appendChild(document.createTextNode('rm'));
+
+        if(linksTarget.length > 0){
+            var _link = gantt.getLink(linksTarget[0]);
+            //console.log(_link, id, o.task.id);
+            if(_link.source == o.task.id) {
+                switch (_link.type){
+                    case '0': _inpFS.checked = true; break;
+                    case '1': _inpFS.checked = true; break;
+                    case '2': _inpFS.checked = true; break;
+                    case '3': _inpFS.checked = true; break;
+                }
+            } else _inpClear.checked = true;
+        } else {
+            _inpClear.checked = true;
         }
 
-        return _select;
+        /*
+         if(linksTarget.length >= 1){
+
+         }*/
+
+
+        fragment.appendChild(_inpBuffer);
+
+        fragment.appendChild(_inpFS);
+        fragment.appendChild(_inpFSLabel);
+
+        fragment.appendChild(_inpSS);
+        fragment.appendChild(_inpSSLabel);
+
+        fragment.appendChild(_inpFF);
+        fragment.appendChild(_inpFFLabel);
+
+        fragment.appendChild(_inpSF);
+        fragment.appendChild(_inpSFLabel);
+
+        fragment.appendChild(_inpClear);
+        fragment.appendChild(_inpClearLabel);
+
+        return fragment;
     };
+
 
 
     o.predecessorOnClickListener = function  (popup, target){
         if(!o.task || !o.field) return;
 
-        $('select',popup).on('change', function(event){
-            var select = event.target,
-                option = select.options[select.selectedIndex].value,
-                taskid = select.getAttribute('data-taskid');
+        $('input[type=radio]', popup).on('click', function(event){
+            var id = this.name.split('_')[1];
+            var type = this.value;
 
-            // if option is 'x' its delete link, else create or recreate link
-            if(option == 'x'){
-                o.deleteLinksWithTarget(taskid);
+            if(type == 'clear'){
+                o.deleteLinksWithTarget(id);
             }else{
-                o.deleteLinksWithTarget(taskid);
-
+                o.deleteLinksWithTarget(id);
                 var linkId = gantt.addLink({
                     id: app.linkIdIterator(),
                     source: o.task['id'],
-                    target: taskid,
-                    type: option
+                    target: id,
+                    type: type
                 });
             }
+            //console.log('radio', this);
+
+        });
+
+        $('input[type=text]', popup).on('keyup', function(event){
+            console.log('buffer', this.value);
         });
     };
 
@@ -576,7 +640,8 @@
     };
 
     o.deleteLinksWithTarget = function  (target){
-        var task = gantt.getTask(target), links = task.$target;
+        var task = gantt.getTask(target),
+            links = task.$target;
         if(links.length > 0){
             links.map(function(linkId){
                 gantt.deleteLink(linkId);

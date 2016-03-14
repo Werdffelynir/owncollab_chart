@@ -441,18 +441,35 @@ html, body {
     border-bottom: 1px solid RGB(240, 240, 240);
 }
 .predecessor_line .tbl_cell:first-child{
-
+    width: 45%;
 }
-.predecessor_line .tbl_cell:last-child {
-    width: 10%;
-}
-.predecessor_line select {
+.predecessor_line .tbl_cell:last-child {}
+/*.predecessor_line select {
     height: 20px;
     border: 1px solid #cecece;
     font-size: 10px;
     padding: 0px;
     margin: 0;
+}*/
+.predecessor_line input[type=text] {
+    display: inline-block;
+    width: 60px;
+    padding: 1px 2px;
 }
+
+.predecessor_line input[type="radio"] + label {
+    border: 1px solid #E9E9E9;
+    margin-right: 2px;
+    padding: 0 1px;
+}
+.delete_plg{
+    width: 19px;
+    height: 19px;
+    display: inline-block;
+    background: url('/apps/owncollab_chart/img/delete.png') no-repeat center center;
+
+}
+
 #gantt_filter_name, #gantt_filter_group{
     width: 100%;
 }
@@ -575,7 +592,7 @@ input[type="radio"] + label span {
     display:inline-block;
     width:19px;
     height:19px;
-    margin:-1px 4px 0 0;
+    margin:0px 0px 0 0;
     vertical-align:middle;
     /*background:url(/apps/owncollab_chart/img/check_radio_sheet.png) -38px top no-repeat;*/
     background:url(/apps/owncollab_chart/img/checkbox.png) left top no-repeat;

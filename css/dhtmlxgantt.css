@@ -1020,12 +1020,16 @@ div.dhx_modal_cover {
     padding: 7px 10px;
     overflow: hidden;
     white-space: nowrap;
-    -webkit-border-radius: 6px 6px 0 0;
-    -moz-border-radius-topleft: 6px;
-    -moz-border-radius-bottomleft: 0;
-    -moz-border-radius-topright: 6px;
-    -moz-border-radius-bottomright: 0;
-    border-radius: 6px 6px 0 0
+    /*-webkit-border-radius: 6px 6px 0 0;*/
+    /*-moz-border-radius-topleft: 6px;*/
+    /*-moz-border-radius-bottomleft: 0;*/
+    /*-moz-border-radius-topright: 6px;*/
+    /*-moz-border-radius-bottomright: 0;*/
+    /*border-radius: 6px 6px 0 0*/
+    background-color: rgb(25, 40, 60);
+    color: rgb(255, 255, 255);
+    border-radius: 0px;
+    cursor: move !important;
 }
 
 .gantt_cal_ltitle span {
