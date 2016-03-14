@@ -66,18 +66,20 @@
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
         gantt.config.fit_tasks = true;
 
-        // Auto scheduling makes the start date of the second task update according to the end date
-        // of the first task each when it changes.
-        gantt.config.auto_scheduling = true;
+        try{
+            // Auto scheduling makes the start date of the second task update according to the end date
+            // of the first task each when it changes.
+            gantt.config.auto_scheduling = true;
 
-        // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
-        gantt.config.auto_scheduling_strict = true;
+            // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
+            gantt.config.auto_scheduling_strict = true;
 
-        // Defines whether gantt will do autoscheduling on data loading
-        gantt.config.auto_scheduling_initial = true;
+            // Defines whether gantt will do autoscheduling on data loading
+            gantt.config.auto_scheduling_initial = true;
 
-        // allows or forbids creation of links from parent tasks (projects) to their children
-        gantt.config.auto_scheduling_descendant_links = false;
+            // allows or forbids creation of links from parent tasks (projects) to their children
+            gantt.config.auto_scheduling_descendant_links = false;
+        }catch (e){}
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1) {
