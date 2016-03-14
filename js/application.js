@@ -207,7 +207,11 @@ var app = app || {
         result.setDate(result.getDate() + days);
         return result;
     };
-
+    app.timeMinToDateDays = function (date, days) {
+        var result = new Date(date);
+        result.setDate(result.getDate() - days);
+        return result;
+    };
     app.storageSetItem = function (name, value) {
         return window.localStorage.setItem(name, value);
     };

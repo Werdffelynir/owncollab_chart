@@ -34,7 +34,7 @@ class Task
         'sortorder',
         'parent',
         'open',
-        'delete',
+        'buffer',
     ];
 
     /**
@@ -128,7 +128,7 @@ class Task
 
     /**
      * Retrieve tasks-data of project
-     * Database query selects all not marked as deleted records, and all columns of type timestamp output
+     * Database query selects all opened records, and all columns of type timestamp output
      * formatting for JavaScript identification
      * @return array|null
      */
@@ -136,7 +136,7 @@ class Task
         $sql = "SELECT *,
                 DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date,
                 DATE_FORMAT( `end_date`, '%d-%m-%Y %H:%i:%s') as end_date
-                FROM `{$this->tableName}` WHERE deleted != 1";
+                FROM `{$this->tableName}` WHERE open = 1";
         return $this->connect->queryAll($sql);
     }
 

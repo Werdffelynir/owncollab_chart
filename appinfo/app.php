@@ -58,9 +58,6 @@ if(Helper::isAppPage($appName)){
 	Util::addScript($appName, 'inc');
 	Util::addScript($appName, 'application');
 
-	//Util::addStyle($appName, 'jquery.formstyler');
-	//Util::addScript($appName,'jquery.formstyler.min');
-
 	// dhtmlxGantt v.4.0.0 Standard
     Util::addStyle($appName, 'dhtmlxgantt');
 	//Util::addScript($appName,'dhtmlxgantt/dhtmlxgantt');

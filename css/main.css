@@ -435,6 +435,23 @@ html, body {
     width: 16px;
     text-align: center
 }
+/**/
+.gantt_task_line.gantt_buffer_line{
+    /*background-color: #FFF;*/
+    background: #FFF url('/apps/owncollab_chart/img/bg_buffer.png');
+    border: 1px solid #FFF !important;
+}
+.gantt_task_line.buffer_gantt_bar{
+    background-color: #FFF !important;
+    border: none !important;
+}
+
+/*.gantt_buffer_line{
+    background-color: #FFF;
+}*/
+
+
+
 
 .predecessor_line {
     width: 485px;

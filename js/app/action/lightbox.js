@@ -561,9 +561,9 @@
             if(_link.source == o.task.id) {
                 switch (_link.type){
                     case '0': _inpFS.checked = true; break;
-                    case '1': _inpFS.checked = true; break;
-                    case '2': _inpFS.checked = true; break;
-                    case '3': _inpFS.checked = true; break;
+                    case '1': _inpSS.checked = true; break;
+                    case '2': _inpFF.checked = true; break;
+                    case '3': _inpSF.checked = true; break;
                 }
             } else _inpClear.checked = true;
         } else {

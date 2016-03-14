@@ -37,22 +37,19 @@
 
         gantt.config.grid_resize = true;
 
-        /**
-         * Visibly task text
-         *
-         * @param start
-         * @param end
-         * @param task
-         * @returns {*}
-         */
+
+        // add style class to milestone display object
+        gantt.templates.task_class  = function(start, end, task){
+            if(task.type == 'milestone'){return "gantt_milestone_size"}
+        };
+
+        //Visibly task text
         gantt.templates.task_text = function(start, end, task){
-            if(task.type == 'project'){
-                return "";
+            if(task.type == 'project') return "";
+            else {
+                if(app.data.project['show_task_name'] == 1) return task.text;
+                else return "";
             }
-            else if(app.data.project['show_task_name'] == 1)
-                return task.text;
-            else
-                return "";
         };
 
         // Defines the style of task bars
@@ -79,6 +76,9 @@
         // Defines whether gantt will do autoscheduling on data loading
         gantt.config.auto_scheduling_initial = true;
 
+        // allows or forbids creation of links from parent tasks (projects) to their children
+        gantt.config.auto_scheduling_descendant_links = false;
+
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1) {
             //console.log(app.data.project['critical_path']);
@@ -102,14 +102,6 @@
             app.action.chart.scaleFit();
         }
 
-        // add style class to milestone display object
-        gantt.templates.task_class  = function(start, end, task){
-            switch (task.type){
-                case "milestone":
-                    return "gantt_milestone_size";
-                    break;
-            }
-        };
 
         // Configures the columns of the table
         var columnWidth = {

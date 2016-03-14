@@ -71,6 +71,9 @@
                 //delete _task['end_date'];
                 //delete _task['duration'];
             }
+            if(_task['duration'] < 1){
+                _task['duration'] = 1;
+            }
             return _task;
         });
 
