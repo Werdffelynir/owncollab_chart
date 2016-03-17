@@ -119,12 +119,42 @@ class ApiController extends Controller {
             }
         }
 
+        $links = $this->connect->link()->get();
+        // links cleaner
+        $linksTrash = [];
+        for($li = 0; $li < count($links); $li ++ ){
+
+            $_hasTaskTarget = $_hasTaskSource = false;
+
+            $_linkTarget = $links[$li]['target'];
+            $_linkSource = $links[$li]['source'];
+
+            for($ti = 0; $ti < count($tasks); $ti ++ ){
+
+                $_taskId = $tasks[$ti]['id'];
+
+                if($_taskId == $_linkTarget){
+                    $_hasTaskTarget = true;
+                }
+                if($_taskId == $_linkSource){
+                    $_hasTaskSource = true;
+                }
+            }
+            if(!$_hasTaskTarget || !$_hasTaskSource){
+                array_push($linksTrash, $links[$li]['id']);
+                unset($links[$li]);
+            }
+        }
+        if(!empty($linksTrash)) {
+            $this->connect->link()->deleteAllById($linksTrash);
+        }
+
         if($uid){
             $params['isadmin'] 		= $this->isAdmin;
             $params['access'] 		= 'allow';
             $params['project'] 		= $this->connect->project()->get();
             $params['tasks'] 		= $tasks;
-            $params['links'] 		= $this->connect->link()->get();
+            $params['links'] 		= array_values($links);
             $params['groupsusers'] 	= $this->connect->project()->getGroupsUsersList();
             $params['lasttaskid'] 	= $this->connect->task()->getLastId();
             $params['lastlinkid'] 	= $this->connect->link()->getLastId();

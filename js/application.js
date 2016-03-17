@@ -213,7 +213,7 @@ var app = app || {
      * @param startDate
      * @returns {Date}
      */
-    app.dayToDate = function (day, startDate){
+    app.addDaysToDate = function (day, startDate){
         var date = startDate ? new Date(startDate) : new Date();
         date.setTime(date.getTime() + (day * 86400000));
         return date;
@@ -221,8 +221,8 @@ var app = app || {
 
     app.injectBufferToDate = function  (_task, _buffer){
         _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
-        _task.start_date = app.dayToDate(parseFloat(_buffer), _task.start_date);
-        _task.end_date = app.dayToDate(parseFloat(_buffer), _task.end_date);
+        _task.start_date = app.addDaysToDate(parseFloat(_buffer), _task.start_date);
+        _task.end_date = app.addDaysToDate(parseFloat(_buffer), _task.end_date);
         return _task;
     };
 

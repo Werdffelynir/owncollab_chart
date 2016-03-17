@@ -195,14 +195,13 @@
                     app.action.chart.opt.isNewTask = true;
                     var _id = app.data.lasttaskid ++,
                         _date = new Date(gantt.getTask(id).start_date),
-                        _dateEnd = (function(){ var d = new Date(); d.setDate(_date.getDate() + 7); return d;})(),
                         _task = {
                             id: _id,
                             text: "New Task",
                             predecessor: '',
                             buffer: 0,
                             start_date: _date,
-                            end_date: _dateEnd,
+                            end_date: app.addDaysToDate(7, _date),
                             progress: 0,
                             duration: 0,
                             //parent: id,

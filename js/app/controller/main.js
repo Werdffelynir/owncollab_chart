@@ -69,9 +69,9 @@
         ){
 
             // Response data type errors
-
             var error = [],
                 errorString = "";
+
 
             // Defined response data per conformity/discrepancy, and throw an errors
             if(!app.u.isObj(response.project))

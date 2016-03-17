@@ -99,10 +99,9 @@
             // Buffer update date position to time with buffer
             if(_task.buffer > 0){
                 _task.isBuffered = true;
-                _task.start_date = app.timeDateToStr( app.dayToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
-                _task.end_date = app.timeDateToStr( app.dayToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
+                _task.start_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
+                _task.end_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
             }
-
             return _task;
         });
 
@@ -110,7 +109,6 @@
         app.action.config.init();
 
         try{
-            //console.log(dataTaskFiltering);
             // run parse data
             gantt.parse({
                 data:   dataTaskFiltering,

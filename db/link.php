@@ -84,9 +84,28 @@ class Link
             if($result){
                 $result = $result->rowCount();
             }
-
         }catch(\AbstractDriverException $error ){}
-
         return $result;
     }
+
+    public function deleteAllById(array $ids) {
+        $result = false;
+        $prep = '';
+        $bind = [];
+        try{
+            for($i = 0; $i < count($ids); $i ++){
+                if(!empty($prep)) $prep .= " OR ";
+                $prep .= "id = :id$i";
+                $bind[":id$i"] = $ids[$i];
+            }
+            $result = $this->connect->delete($this->tableName, $prep, $bind);
+            if($result){
+                $result = $result->rowCount();
+            }
+        }catch(\AbstractDriverException $error ){}
+        return $result;
+    }
+
+
+
 }

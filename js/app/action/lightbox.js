@@ -137,14 +137,30 @@
             return fso;
         })();
 
-        $('input[name=lbox_start_date], input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
-            minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
+
+        var startDate = app.timeStrToDate(app.data.baseProjectTask.start_date);
+
+        $('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+            minDate: startDate,
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
             onSelect: o.onChangeLightboxInputDate
         });
+
+        $('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+            minDate: (function(){
+                var fsd = $('input[name=lbox_start_date]').val();
+                return app.timeStrToDate(fsd?fsd:startDate);
+            })(),
+            controlType: 'select',
+            oneLine: true,
+            dateFormat: 'dd.mm.yy',
+            timeFormat: 'HH:mm',
+            onSelect: o.onChangeLightboxInputDate
+        });
+
     };
 
 
@@ -184,9 +200,19 @@
             o.task[name] = value;
         }
     };
+
+    //o._tmpCurrentMinDate = null;
+
     o.onChangeLightboxInputDate = function (date, picObj){
         if(!o.task || !o.field) return;
-        o.task[this['name'].substr(5)] = app.timeStrToDate(date);
+        var name = this['name'].substr(5);
+
+        /*if(name == 'start_date')
+            o._tmpCurrentMinDate = app.timeStrToDate(date);
+        else if(name == 'end_date')
+            picObj.settings.minDate = o._tmpCurrentMinDate ? o._tmpCurrentMinDate : picObj.settings.minDate;*/
+
+        o.task[name] = app.timeStrToDate(date);
     };
 
     o.onClickLightboxInputMilestone = function (event){
@@ -199,7 +225,7 @@
             o.task.type = gantt.config.types.task;
 
             // date fix for task
-            o.task.end_date = app.dayToDate(7, o.task.start_date);
+            o.task.end_date = app.addDaysToDate(7, o.task.start_date);
         }
     };
 
@@ -224,6 +250,11 @@
         else if(target['name'] == 'lbox_progress'){
 
             target.select();
+
+        }
+        else if(target['name'] == 'lbox_end_date'){
+
+            //app.timeStrToDate($('input[name=lbox_start_date]').val())
 
         }
         else if(target['name'] == 'lbox_predecessor'){
