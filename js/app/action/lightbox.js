@@ -51,11 +51,25 @@
      */
     o.onBeforeLightbox = function (id){
         o.task = gantt.getTask(id);
+
+        // Buffer update date position to normal
+        if(o.task.buffer > 0 && o.task.isBuffered === true){
+            o.task.isBuffered = false;
+            o.task = app.injectBufferToDate(o.task, -parseFloat(o.task.buffer), true);
+            gantt.updateTask(id);
+        }
+
         o.task.base_template = '<div id="generate-lbox-wrapper">' + app.dom.lbox.innerHTML + '</div>';
         return true;
     };
 
     o.onLightbox = function (id){
+
+/*        var _task = gantt.getTask(id);
+        if(_task.buffer > 0){
+            _task = app.injectBufferToDate(_task, -parseFloat(_task.buffer), true);
+            gantt.updateTask(id);
+        }*/
 
         window.addEventListener('keydown', function onKeyEnterClick(event){
             /*if(event.key == "Enter"){
@@ -104,8 +118,9 @@
                             break;
 
                         case 'buffer':
-                            fso[_name].value = app.action.chart.durationDisplay(o.task);
+                            fso[_name].value = o.task.buffer;//app.action.chart.durationDisplay(o.task);
                             //fso[_name].disabled = true;
+                            fso[_name].onkeyup = o.onChangeLightboxInput;
                             break;
 
                         case 'start_date':
@@ -134,7 +149,15 @@
 
 
     o.onAfterLightbox = function (){
-        //$('#generate-lbox-wrapper').remove();
+
+        // Buffer update date position to time with buffer
+        gantt._get_tasks_data().map(function(task){
+            if(task.buffer > 0 && task.isBuffered !== true){
+                app.injectBufferToDate(task, parseFloat(task.buffer), true);
+                task.isBuffered = true;
+                gantt.render();
+            }
+        });
     };
 
     o.onChangeProgress = function (event){
@@ -176,7 +199,7 @@
             o.task.type = gantt.config.types.task;
 
             // date fix for task
-            o.task.end_date = app.timeAddToDateDays(o.task.start_date, 7);
+            o.task.end_date = app.dayToDate(7, o.task.start_date);
         }
     };
 
@@ -270,8 +293,8 @@
     o.onLightboxSave = function (id, task, is_new){
         var _id = null;
 
-        console.log('save open');
-        $('.lboxsave').show();
+        //console.log('save open');
+        //$('.lboxsave').show();
 
         // after entry in the database, you need to update the id
         if(is_new === true){
@@ -469,12 +492,12 @@
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
                 _link = document.createElement('div'),
-                _linkElems = o.predecessorLinkGenerate2(item.id);
+                _linkElems = o.predecessorLinkGenerate2(item.id, item.buffer);
 
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
 
-            _name.textContent = (item.id) + ' ' + item.text;
+            _name.textContent = (item.id) + '\t' + item.text;
             _link.appendChild(_linkElems);
 
             _line.appendChild(_name);
@@ -485,7 +508,7 @@
         o.predecessorView = fragment;
     };
 
-    o.predecessorLinkGenerate2 = function(id){
+    o.predecessorLinkGenerate2 = function(id, buffer){
         var
             fragment = document.createDocumentFragment(),
 
@@ -515,9 +538,9 @@
             linksSource = gantt.getTask(id).$source,
             linksTarget = gantt.getTask(id).$target;
 
-        _inpBuffer.name = 'buffer' + id;
+        _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        _inpBuffer.value = '0 d';
+        _inpBuffer.value = buffer ? buffer +'':'0';
 
         _inpFS.id = 'plg_fs_' + id;
         _inpFS.name = 'plg_' + id;
@@ -619,12 +642,19 @@
                     type: type
                 });
             }
-            //console.log('radio', this);
-
         });
 
-        $('input[type=text]', popup).on('keyup', function(event){
-            console.log('buffer', this.value);
+        $('input[type=text]', popup).on('change', function(event){
+            var id = this.name.split('_')[1],
+                task = gantt.getTask(id);
+            if(task){
+                task.buffer = parseFloat(this.value);
+                if(task.isBuffered === true){
+                    app.injectBufferToDate(task, -task.buffer);
+                    task.isBuffered = false;
+                }
+                gantt.updateTask(id);
+            }
         });
     };
 

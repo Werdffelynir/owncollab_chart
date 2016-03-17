@@ -191,40 +191,69 @@ var app = app || {
         });
     };
 
+    /**
+     * Convert date to gantt time format
+     * @param date
+     * @param mask
+     */
     app.timeDateToStr = function (date, mask) {
         mask = mask || "%d.%m.%Y %H:%i";
         var formatFunc = gantt.date.date_to_str(mask);
         return formatFunc(date);
     };
-
     app.timeStrToDate = function (date, mask) {
         mask = mask || "%d.%m.%Y %H:%i";
         var formatFunc = gantt.date.str_to_date(mask);
         return formatFunc(date);
     };
-    app.timeAddToDateDays = function (date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() + days);
-        return result;
+
+    /**
+     * Added days to date
+     * @param day       day - 0.04, 1, .5, 10
+     * @param startDate
+     * @returns {Date}
+     */
+    app.dayToDate = function (day, startDate){
+        var date = startDate ? new Date(startDate) : new Date();
+        date.setTime(date.getTime() + (day * 86400000));
+        return date;
     };
-    app.timeMinToDateDays = function (date, days) {
-        var result = new Date(date);
-        result.setDate(result.getDate() - days);
-        return result;
+
+    app.injectBufferToDate = function  (_task, _buffer){
+        _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
+        _task.start_date = app.dayToDate(parseFloat(_buffer), _task.start_date);
+        _task.end_date = app.dayToDate(parseFloat(_buffer), _task.end_date);
+        return _task;
     };
+
+    /**
+     * Saved data to local storage
+     * @param name
+     * @param value
+     */
     app.storageSetItem = function (name, value) {
         return window.localStorage.setItem(name, value);
     };
+
+    /**
+     * Pull data to local storage
+     * @param name
+     * @param orValue
+     * @returns {*}
+     */
     app.storageGetItem = function (name, orValue) {
         var value = window.localStorage.getItem(name);
         return (value === undefined) ? orValue : value;
     };
+
+    /**
+     * Remove data to local storage
+     * @param name
+     */
     app.storageRemoveItem = function (name) {
         return window.localStorage.removeItem(name);
     };
-    app.storageKey = function (key) {
-        return window.localStorage.key(key);
-    };
+
 
     /**
      * Uses: app.modSampleHeight();

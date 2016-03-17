@@ -124,7 +124,7 @@
         app.api('updateprojectsetting', function(response) {
 
             //console.log(sendData);
-            console.log(response);
+            //console.log(response);
 
             if (typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
@@ -187,6 +187,7 @@
             switch (action) {
 
                 case "edit":
+
                     gantt.showLightbox(id);
                     break;
 
@@ -242,6 +243,7 @@
      * @param task
      */
     o.onBeforeTaskUpdate = function(id, task){
+        //console.log(task);
         o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
     };
     o.onAfterTaskDelete = function(id, task){
@@ -283,9 +285,8 @@
      * @param worker
      */
     o.requestTaskUpdater = function (worker, id, task) {
-
+        //console.log(task);
         app.api('updatetask', function(response) {
-
             //console.log(response);
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
                 app.requesttoken = response.requesttoken;
@@ -298,9 +299,6 @@
             } else {
                 app.action.error.inline('Error Request: ' + worker );
             }
-            console.log('save close');
-            $('#lboxsave').hide();
-
 
         },{ worker:worker, id:id, task:task });
 
@@ -309,13 +307,9 @@
     o.requestLinkUpdater = function (worker, id, link) {
 
         app.api('updatelink', function(response) {
-
-            console.log('updatelink: ', response);
-
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
                 app.requesttoken = response.requesttoken;
-
                 if(worker == 'insert') {
                     if(response.lastlinkid)
                         app.data.lastlinkid = (parseInt(response.lastlinkid) + 1);
@@ -324,12 +318,10 @@
                 }
 
             } else {
-
                 app.action.error.inline('Error Request: ' + worker );
             }
 
         },{ worker:worker, id:id, link:link });
-
     };
 
     o.sendShareEmails = function(emails, resources, link){
@@ -339,16 +331,11 @@
         $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center');
 
         app.api('sendshareemails', function(response) {
-
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
-
                 app.requesttoken = response.requesttoken;
-
                 $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
-                console.log('response: ', response);
-
+                //console.log('response: ', response);
             } else {
-
                 app.action.error.inline('Error Request on send share emails');
             }
 

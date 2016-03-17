@@ -82,7 +82,7 @@ class Task
      */
     public function update($task) {
        $sql = "UPDATE {$this->tableName} SET
-                  type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open
+                  type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open, buffer = :buffer
                   WHERE id = :id";
 
         return  $this->connect->db->executeUpdate($sql, [
@@ -95,6 +95,7 @@ class Task
             ':progress'     => $task['progress'] ? $task['progress'] : 0,
             ':parent'       => $task['parent'] ? $task['parent'] : 0,
             ':open'         => $task['open'] ? 1 : 0,
+            ':buffer'       => $task['buffer'] ? $task['buffer'] : 0,
             ':id'           => (int)$task['id']
         ]);
     }

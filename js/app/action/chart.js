@@ -50,14 +50,35 @@
         //gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
         //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
         //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
+        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
+        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
 
         gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
         gantt.attachEvent("onBeforeTaskUpdate", app.action.event.onBeforeTaskUpdate);
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
-        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
-
-        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
         gantt.attachEvent("onAfterTaskUpdate", app.action.event.onAfterTaskUpdate);
+
+        // buffer listener
+        gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){
+            // any custom logic here
+            //console.log(task, startDate, link, predecessor);
+            if(task.buffer > 0){
+                return false;
+            }
+            else
+                return true;
+        });
+
+        // After task drag update date position to time with buffer
+        gantt.attachEvent("onAfterTaskDrag", function(id, parent, tindex){
+            var _moveTask = gantt.getTask(id);
+            //console.log(_moveTask);
+            if(_moveTask.buffer > 0){
+                app.injectBufferToDate(_moveTask, parseFloat(_moveTask.buffer), true);
+                _moveTask.isBuffered = true;
+                gantt.render();
+            }
+        });
 
         // Этот фильтр удаляет с таска проэкта даты,
         // для того что бы таск был интерактивен по отношеню к детям
@@ -74,13 +95,19 @@
             if(_task['duration'] < 1){
                 _task['duration'] = 1;
             }
+
+            // Buffer update date position to time with buffer
+            if(_task.buffer > 0){
+                _task.isBuffered = true;
+                _task.start_date = app.timeDateToStr( app.dayToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
+                _task.end_date = app.timeDateToStr( app.dayToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
+            }
+
             return _task;
         });
 
         // run action.config
         app.action.config.init();
-
-
 
         try{
             //console.log(dataTaskFiltering);
@@ -91,7 +118,7 @@
             });
         }catch (e){
             console.log(e);
-            app.action.error.page('Parse data error');
+            app.action.error.page('Gantt.parse data have error');
         }
         // Dynamic chart resize when change window
         //o.ganttDynamicResize();
