@@ -65,25 +65,6 @@
 
     o.onLightbox = function (id){
 
-/*        var _task = gantt.getTask(id);
-        if(_task.buffer > 0){
-            _task = app.injectBufferToDate(_task, -parseFloat(_task.buffer), true);
-            gantt.updateTask(id);
-        }*/
-
-        window.addEventListener('keydown', function onKeyEnterClick(event){
-            /*if(event.key == "Enter"){
-                var save_btn = $('.gantt_save_btn_set');
-                event.cancelBubble = true;
-
-                $('.gantt_cal_light').click();
-                save_btn.click();
-            }*/
-            //console.log(event);
-            //window.removeEventListener('keydown', onKeyEnterClick);
-
-        }, true);
-
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
                 fso = {},
@@ -142,6 +123,7 @@
 
         $('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             minDate: startDate,
+            maxDate: app.addDaysToDate(365, startDate),
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
@@ -154,6 +136,7 @@
                 var fsd = $('input[name=lbox_start_date]').val();
                 return app.timeStrToDate(fsd?fsd:startDate);
             })(),
+            maxDate: app.addDaysToDate(365, startDate),
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
