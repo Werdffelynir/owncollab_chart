@@ -1,11 +1,15 @@
-
 var app = app || {
 
         /*application name and folder*/
         name: 'owncollab_chart',
 
         /*url address to current application*/
+        /*OC.webroot + '/index.php' + OC.appswebroots['owncollab_chart']*/
         url: OC.generateUrl('/apps/owncollab_chart'),
+
+        host: OC.getHost(),
+
+        protocol: OC.getProtocol(),
 
         /*user is admin*/
         isAdmin: null,
@@ -22,94 +26,95 @@ var app = app || {
         /*DOM Elements*/
         dom: {},
 
-		/*dependent controllers*/
-		controller: {
-			main: {},
+        /*dependent controllers*/
+        controller: {
+            main: {},
             public: {}
-		},
+        },
 
-		/*dependent modules*/
-		module: {
-			db: {},
-			util: {}
-		},
+        /*dependent modules*/
+        module: {
+            db: {},
+            util: {}
+        },
 
-		/*dependent actions*/
-		action: {
+        /*dependent actions*/
+        action: {
             chart: {},
-			error: {},
+            error: {},
             event: {},
             export: {},
             config: {},
             sidebar: {},
             lightbox: {}
-		},
+        },
 
         /*db project data*/
         data: {
-			access:null,
-			errorinfo:null,
-			uid:null,
-			project:null,
-			tasks:null,
-			links:null,
-			resources:null,
-            groupsusers:null,
-            lasttaskid:null,
-            lastlinkid:null
-		},
+            access: null,
+            errorinfo: null,
+            uid: null,
+            project: null,
+            baseProjectTask: null,
+            tasks: null,
+            links: null,
+            resources: null,
+            groupsusers: null,
+            lasttaskid: null,
+            lastlinkid: null
+        },
 
-		/*link of app.module.util object*/
-		u:{},
+        /*alias for app.module.util object*/
+        u: {},
 
         /*edit data to save*/
         edit: {
-			project:null,
-            tasks:null,
-			links:null,
-			resources:null
-		}
-	};
+            project: null,
+            tasks: null,
+            links: null,
+            resources: null
+        }
+    };
 
 (function ($, OC, app) {
 
-	var inc = new Inc(),
+    var inc = new Inc(),
         path = '/apps/' + app.name;
 
-	inc.require(path+'/js/app/controller/main.js');
-	inc.require(path+'/js/app/controller/public.js');
-    inc.require(path+'/js/app/action/chart.js');
-	inc.require(path+'/js/app/action/error.js');
-    inc.require(path+'/js/app/action/event.js');
-    inc.require(path+'/js/app/action/export.js');
-    inc.require(path+'/js/app/action/config.js');
-	inc.require(path+'/js/app/action/sidebar.js');
-	inc.require(path+'/js/app/action/lightbox.js');
-	inc.require(path+'/js/app/action/fitmode.js');
-	inc.require(path+'/js/app/action/sort.js');
-	inc.require(path+'/js/app/module/db.js');
-	inc.require(path+'/js/app/module/util.js');
-	inc.onerror = onError;
-	inc.onload = onLoaded;
-	inc.init();
+    inc.require(path + '/js/app/controller/main.js');
+    inc.require(path + '/js/app/controller/public.js');
+    inc.require(path + '/js/app/action/chart.js');
+    inc.require(path + '/js/app/action/error.js');
+    inc.require(path + '/js/app/action/event.js');
+    inc.require(path + '/js/app/action/export.js');
+    inc.require(path + '/js/app/action/config.js');
+    inc.require(path + '/js/app/action/sidebar.js');
+    inc.require(path + '/js/app/action/lightbox.js');
+    inc.require(path + '/js/app/action/fitmode.js');
+    inc.require(path + '/js/app/action/sort.js');
+    inc.require(path + '/js/app/module/db.js');
+    inc.require(path + '/js/app/module/util.js');
+    inc.onerror = onError;
+    inc.onload = onLoaded;
+    inc.init();
 
     /**
      * Executed if any errors occur while loading scripts
      *
      * @param error
      */
-	function onError(error) {
-		console.error('Error on loading script. Message: ' + error);
+    function onError(error) {
+        console.error('Error on loading script. Message: ' + error);
         app.action.error.page('Error on loading script');
-	}
+    }
 
     /**
      * Running when all scripts loaded is successfully
      */
-	function onLoaded() {
-		console.log('application loaded...');
+    function onLoaded() {
+        console.log('application loaded...');
 
-        if(typeof gantt === 'object'){
+        if (typeof gantt === 'object') {
 
             /**
              * Set application options
@@ -120,12 +125,16 @@ var app = app || {
             /**
              * Start controller handler
              */
-            if(app.uid)
-                app.controller.main.construct();
+            if (app.uid) {
+                if (window.location.pathname.indexOf('/s/') === -1)
+                    app.controller.main.construct();
+                else
+                    window.location = app.url;
+            }
             else
                 app.controller.public.construct();
-
-        }else{
+            //app.action.error.page("Page not loaded. Controller not find.");
+        } else {
 
             /**
              * Show error message on main content
@@ -134,9 +143,9 @@ var app = app || {
 
         }
 
-	}
+    }
 
-	/*app methods*/
+    /*app methods*/
 
     /**
      * The method requests to the server. The application should use this method for asynchronous requests
@@ -145,24 +154,24 @@ var app = app || {
      * @param func After request, a run function
      * @param args Arguments to key method
      */
-    app.api = function (key, func, args){
+    app.api = function (key, func, args) {
         $.ajax({
             url: app.url + '/api',
-            data: {key:key, uid:app.uid, pid:app.pid, data:args},
+            data: {key: key, uid: app.uid, pid: app.pid, data: args},
             type: 'POST',
             timeout: 5000,
             headers: {requesttoken: app.requesttoken},
-            success: function(response){
-                if(typeof func === 'function')
+            success: function (response) {
+                if (typeof func === 'function')
                     func.call(app, response);
             },
-            error: function(error){
-                console.log("API request error to the key: [" + key + "] Error message: " + error.message);
-                app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error.message);
+            error: function (error) {
+                console.log("API request error to the key: [" + key + "] Error message: ", error);
+                app.action.error.inline("API request error to the key: [" + key + "] Error message: " + error);
             },
             complete: function (jqXHR, status) {
-                console.log("API request complete, status: " + status);
-                if(status == 'timeout'){
+                //console.log("API request complete, status: " + status);
+                if (status == 'timeout') {
                     app.action.error.inline("You have exceeded the request time. possible problems with the Internet, or an error on the server server");
                 }
             }
@@ -170,7 +179,7 @@ var app = app || {
     };
 
     // data-time picker
-    app.setTimepicker = function(selector, onSelect){
+    app.setTimepicker = function (selector, onSelect) {
         selector = selector || '.datetimepicker';
         $(selector).datetimepicker({
             minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
@@ -182,29 +191,83 @@ var app = app || {
         });
     };
 
-    app.timeDateToStr = function(date){
-        var formatFunc = gantt.date.date_to_str("%d.%m.%Y %H:%i");
+    /**
+     * Convert date to gantt time format
+     * @param date
+     * @param mask
+     */
+    app.timeDateToStr = function (date, mask) {
+        mask = mask || "%d.%m.%Y %H:%i";
+        var formatFunc = gantt.date.date_to_str(mask);
+        return formatFunc(date);
+    };
+    app.timeStrToDate = function (date, mask) {
+        mask = mask || "%d.%m.%Y %H:%i";
+        var formatFunc = gantt.date.str_to_date(mask);
         return formatFunc(date);
     };
 
-    app.timeStrToDate = function(date){
-        var formatFunc = gantt.date.str_to_date("%d.%m.%Y %H:%i");
-        return formatFunc(date);
+    /**
+     * Added days to date
+     * @param day       day - 0.04, 1, .5, 10
+     * @param startDate
+     * @returns {Date}
+     */
+    app.addDaysToDate = function (day, startDate){
+        var date = startDate ? new Date(startDate) : new Date();
+        date.setTime(date.getTime() + (day * 86400000));
+        return date;
     };
 
-    app.storageSetItem = function(name, value){
+    app.injectBufferToDate = function  (_task, _buffer){
+        _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
+        _task.start_date = app.addDaysToDate(parseFloat(_buffer), _task.start_date);
+        _task.end_date = app.addDaysToDate(parseFloat(_buffer), _task.end_date);
+        return _task;
+    };
+
+    /**
+     * Saved data to local storage
+     * @param name
+     * @param value
+     */
+    app.storageSetItem = function (name, value) {
         return window.localStorage.setItem(name, value);
     };
-    app.storageGetItem = function(name, orValue){
+
+    /**
+     * Pull data to local storage
+     * @param name
+     * @param orValue
+     * @returns {*}
+     */
+    app.storageGetItem = function (name, orValue) {
         var value = window.localStorage.getItem(name);
         return (value === undefined) ? orValue : value;
     };
-    app.storageRemoveItem = function(name){
+
+    /**
+     * Remove data to local storage
+     * @param name
+     */
+    app.storageRemoveItem = function (name) {
         return window.localStorage.removeItem(name);
     };
-    app.storageKey = function(key){
-        return window.localStorage.key(key);
-    };
+
+
+    /**
+     * Uses: app.modSampleHeight();
+     */
+    app.modSampleHeight = function () {
+        var headHeight = 60;
+        app.dom.gantt.style.height = (parseInt(document.body.offsetHeight) - headHeight) + "px";
+
+
+        var sidebarWidth = (app.dom.sidebar.classList.contains('disappear')) ? 0 : app.dom.sidebar.offsetWidth;
+
+        app.dom.appContent.style.width = (parseInt(document.body.offsetWidth) - parseInt(sidebarWidth)) + "px";
+        gantt.setSizes();
+    }
 
 
 })(jQuery, OC, app);

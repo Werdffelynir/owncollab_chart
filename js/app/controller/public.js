@@ -6,6 +6,9 @@
 
     var o = app.controller.public;
 
+    if(window.location.href.indexOf('apps/owncollab_chart/s/') !== -1){
+        window.history.replaceState({}, document.title, window.location.href.replace(/apps\/owncollab_chart\//,''));
+    }
     /**
      * Construct call first when this controller run
      */
@@ -21,43 +24,48 @@
 
     function onDocumentLoaded(){
 
+        var jData = false;
+
         /**
          * Query DOM Elements
          */
         queryDomElements();
 
-        var jData = JSON.parse($(app.dom.ganttdatajson).text());
+        try{
+            jData = JSON.parse($(app.dom.ganttdatajson).text());
 
-        if(typeof jData === 'object' && jData['tasks'] && jData['links'] && jData['project']){
+            if(typeof jData === 'object' && jData['tasks'] && jData['links'] && jData['project']){
 
-            // project default information
-            app.data.project = jData.project;
-            app.data.tasks = jData.tasks;
-            app.data.links = jData.links;
+                // project default information
+                app.data.project = jData.project;
+                app.data.tasks = jData.tasks;
+                app.data.links = jData.links;
 
-            console.log(app.data);
+                // clear ganttdatajson
+                app.dom.ganttdatajson.textContent = '';
 
-            // clear ganttdatajson
-            app.dom.ganttdatajson.textContent = '';
+                gantt.init(app.dom.gantt);
 
-            gantt.init(app.dom.gantt);
+                gantt.attachEvent("onParse", function(){
+                    app.action.chart.ganttFullSize();
+                });
 
-            gantt.attachEvent("onParse", function(){
-                app.action.chart.ganttFullSize();
-            });
+                /**
+                 * Configuration public set
+                 */
+                app.action.config.init();
+                app.action.config.external();
 
-            /**
-             * Configuration public set
-             */
-            app.action.config.init();
-            app.action.config.external();
+                // parse data
+                gantt.parse({
+                    data: app.data.tasks,
+                    links: app.data.links
+                });
 
-            // parse data
-            gantt.parse({
-                data: app.data.tasks,
-                links: app.data.links
-            });
+            }
 
+        }catch(error){
+            window.location = '/';
         }
 
     }
@@ -68,8 +76,8 @@
      */
     function queryDomElements(){
 
-        app.dom.gantt           = app.controller.main.select('#gantt-chartpublic');
-        app.dom.ganttdatajson   = app.controller.main.select('#ganttdatajson');
+        app.dom.gantt           = $('#gantt-chartpublic')[0];
+        app.dom.ganttdatajson   = $('#ganttdatajson')[0];
 
     }
 

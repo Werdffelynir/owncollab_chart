@@ -13,6 +13,7 @@
 
     /**
      * Dynamic action options
+     * Use: app.action.opt[]
      */
     o.opt = {
         // Supported scales sizes
@@ -28,6 +29,13 @@
     };
 
     /**
+     * Save data of project task
+     * Uses: app.action.chart.baseProjectTask
+     * @type {null|object}
+     */
+    o.baseProjectTask = null;
+
+    /**
      * Run action chart
      */
     o.init = function(){
@@ -39,26 +47,77 @@
 
         //gantt.attachEvent("onGanttRender", onGanttReady);
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
-
         //gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
-        gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
         //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
         //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
+        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
+        //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
+
+        gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
         gantt.attachEvent("onBeforeTaskUpdate", app.action.event.onBeforeTaskUpdate);
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
+        gantt.attachEvent("onAfterTaskUpdate", app.action.event.onAfterTaskUpdate);
 
-        /*gantt.$click.advanced_details_button=function(e, id, trg){
-            alert("These are advanced details");
-            return false; //blocks the default behavior
-        };*/
-
-        //console.log(app.data.tasks);
-        // run parse data
-        gantt.parse({
-            data:   app.data.tasks,
-            links:  app.data.links
+        // buffer listener
+        gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){
+            // any custom logic here
+            //console.log(task, startDate, link, predecessor);
+            if(task.buffer > 0){
+                return false;
+            }
+            else
+                return true;
         });
 
+        // After task drag update date position to time with buffer
+        gantt.attachEvent("onAfterTaskDrag", function(id, parent, tindex){
+            var _moveTask = gantt.getTask(id);
+            //console.log(_moveTask);
+            if(_moveTask.buffer > 0){
+                app.injectBufferToDate(_moveTask, parseFloat(_moveTask.buffer), true);
+                _moveTask.isBuffered = true;
+                gantt.render();
+            }
+        });
+
+        // Этот фильтр удаляет с таска проэкта даты,
+        // для того что бы таск был интерактивен по отношеню к детям
+        var dataTaskFiltering = app.data.tasks.map(function(_task) {
+            if(_task['type'] == 'project'){
+                // Cloning project task to property app.action.chart.baseProjectTask
+                if(_task['id'] == 1)
+                    app.data.baseProjectTask = o.baseProjectTask = app.u.objClone(_task);
+
+                //delete _task['start_date'];
+                //delete _task['end_date'];
+                //delete _task['duration'];
+            }
+            if(_task['duration'] < 1){
+                _task['duration'] = 1;
+            }
+
+            // Buffer update date position to time with buffer
+            if(_task.buffer > 0){
+                _task.isBuffered = true;
+                _task.start_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
+                _task.end_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
+            }
+            return _task;
+        });
+
+        // run action.config
+        app.action.config.init();
+
+        try{
+            // run parse data
+            gantt.parse({
+                data:   dataTaskFiltering,
+                links:  app.data.links
+            });
+        }catch (e){
+            console.log(e);
+            app.action.error.page('Gantt.parse data have error');
+        }
         // Dynamic chart resize when change window
         //o.ganttDynamicResize();
 
@@ -66,21 +125,16 @@
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
 
+        // form.styler
+        //$('input, select').styler();
 
-/* on_task_edit
-        gantt.attachEvent("onBeforeTaskUpdate", eventBeforeTaskUpdate);
-        gantt.attachEvent("onAfterTaskUpdate", eventAfterTaskUpdate);
-        gantt.attachEvent("onAfterTaskDelete", eventAfterTaskDelete);
-        gantt.attachEvent("onBeforeTaskAdd", eventBeforeTaskAdd);
-        */
 
-        //
-
-        //gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplayDateFixer);
     };
 
 
-
+    /**
+     * Dynamic change size of chart, when browser window on resize
+     */
     o.ganttDynamicResize = function(){
         window.addEventListener('resize', function onWindowResize(event){
             app.action.chart.ganttFullSize();
@@ -186,7 +240,12 @@
                 event = gantt.attachEvent(eventName, function(){
                     o.opt.weekCount = 0;
                     gantt.templates.date_scale = function(date) {
-                        return "<strong>Week " + ( ++ o.opt.weekCount ) + "</strong>";
+                        if(!o.opt.weekRecount) {
+                            o.opt.weekRecount = app.timeDateToStr(date);
+                        }else if(o.opt.weekRecount == app.timeDateToStr(date)){
+                            o.opt.weekCount = 0;
+                        }
+                        return "<strong>" + ( ++ o.opt.weekCount ) + " Week</strong>";
                     };
                     gantt.detachEvent(event);
                 });
@@ -234,7 +293,7 @@
     o.showTaskNames = function (show){
         gantt.templates.task_text = function(start, end, task){
             if(show)
-                return "<strong>"+task.text+"</strong>";
+                return task.text;//"<strong>"+task.text+"</strong>";
             else
                 return "";
         };
@@ -247,9 +306,8 @@
 
 
     o.showCriticalPath = function (show){
-
         gantt.config.highlight_critical_path = !!show;
-
+        //gantt.render();
     };
 
 
@@ -258,10 +316,7 @@
     /**
      * Gantt chart resize. Apply a scale fit
      */
-    o.scaleFit = function (){
-
-
-    };
+    o.scaleFit = function (){};
 
     /**
      * Generate Share Link for event
@@ -270,7 +325,8 @@
      * @returns {string}
      */
     o.generateShareLink = function(key){
-        var link = OC.generateUrl('apps/' + app.name + '/s/' + key);
+        //var link = OC.generateUrl('apps/' + app.name + '/s/' + key);
+        var link = OC.generateUrl('s/' + key);
         return OC.getProtocol() + '://' + OC.getHost() + link;
     };
 
@@ -279,25 +335,31 @@
      */
     o.enableZoomSlider = function (value) {
 
-        /*switch (value) {
-            case 'hour':
-                value = 3;
-                break;
-            case 'day':
-                value = 2;
-                break;
-            case 'week':
-                value = 1;
-                break;
-            default :
-                value = 1;
-        }*/
         $(app.dom.zoomSlider)
             .show()
             .slider({
                 min: 0, max: 90, value: 0, change: function (event, ui) {
 
-                    app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
+                    //app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
+                    var _s = ui.value/10,
+                        task = $('.gantt_task')[0],
+                        grid = $('.gantt_grid')[0];
+
+                    //console.log(_s, app.dom.gantt.clientWidth);
+                    //app.dom.gantt.style.width = (app.dom.gantt.clientWidth * _s) + 'px';
+                    //console.log(app.dom.gantt.clientWidth);
+                    //app.dom.gantt.style.width = app.dom.gantt.clientWidth + 1000 + 'px';
+                    //$('.gantt_data_area')[0].style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
+
+                    $(grid).css('z-index', '2')
+                        .css('position','relative');
+                    $(task)
+                        .css('z-index', '1')
+                        .css('transform', 'scaleX(1.'+ String(_s).replace(/\./,'') +')');
+
+                    //gantt.render();
+
+                    //task.style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
 
                     /*switch (parseInt(ui.value)) {
                         case 3:
@@ -315,5 +377,50 @@
             });
     };
 
+
+    /**
+     * Uses: app.action.chart.getProjectTasks()
+     * @returns {Array}
+     */
+    o.getProjectTasks = function (){
+        return gantt._get_tasks_data();
+    };
+
+
+    /**
+     * Uses: app.action.chart.getProjectUrlName()
+     * @returns {String}
+     */
+    o.getProjectUrlName = function (){
+        return String(app.data.baseProjectTask.text).trim().toLowerCase().replace(/\W+/gm, '_');
+    };
+
+    /**
+     * Uses: app.action.chart.getProjectResources(true)
+     * @param unique     boolean
+     * @returns {Array}
+     */
+    o.getProjectResources = function (unique){
+        //gantt.refreshData();
+        var
+            res = [],
+            mapper = function (item) {
+                if(item.users.length > 1){
+                    item.users.split(" ").map(function(user){res.push(user.trim())});
+                }
+            };
+            o.getProjectTasks().map(mapper);
+        return (!!unique) ? app.u.uniqueArr(res) : res
+    };
+
+    /**
+     * Uses: app.action.chart.durationDisplay(task)
+     * @param task
+     * @returns {string}
+     */
+    o.durationDisplay = function (task) {
+        var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
+        return ((days%1==0) ? Math.round(days) : days) + ' d';
+    }
 
 })(jQuery, OC, app);

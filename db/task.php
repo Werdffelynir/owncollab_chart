@@ -34,7 +34,7 @@ class Task
         'sortorder',
         'parent',
         'open',
-        'delete',
+        'buffer',
     ];
 
     /**
@@ -82,7 +82,7 @@ class Task
      */
     public function update($task) {
        $sql = "UPDATE {$this->tableName} SET
-                  type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open
+                  type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open, buffer = :buffer
                   WHERE id = :id";
 
         return  $this->connect->db->executeUpdate($sql, [
@@ -95,6 +95,7 @@ class Task
             ':progress'     => $task['progress'] ? $task['progress'] : 0,
             ':parent'       => $task['parent'] ? $task['parent'] : 0,
             ':open'         => $task['open'] ? 1 : 0,
+            ':buffer'       => $task['buffer'] ? $task['buffer'] : 0,
             ':id'           => (int)$task['id']
         ]);
     }
@@ -128,7 +129,7 @@ class Task
 
     /**
      * Retrieve tasks-data of project
-     * Database query selects all not marked as deleted records, and all columns of type timestamp output
+     * Database query selects all opened records, and all columns of type timestamp output
      * formatting for JavaScript identification
      * @return array|null
      */
@@ -136,7 +137,7 @@ class Task
         $sql = "SELECT *,
                 DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date,
                 DATE_FORMAT( `end_date`, '%d-%m-%Y %H:%i:%s') as end_date
-                FROM `{$this->tableName}` WHERE deleted != 1";
+                FROM `{$this->tableName}` WHERE open = 1";
         return $this->connect->queryAll($sql);
     }
 

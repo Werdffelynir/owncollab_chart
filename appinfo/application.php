@@ -80,7 +80,8 @@ class Application extends App {
                 $c->query('UserId'),
                 $c->query('isAdmin'),
                 $c->query('L10N'),
-                $c->query('Connect')
+                $c->query('Connect'),
+                $c->query('ServerContainer')->getURLGenerator()
             );
         });
 

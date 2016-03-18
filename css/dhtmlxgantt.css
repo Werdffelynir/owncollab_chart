@@ -76,7 +76,7 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
 .gantt_cal_light .gantt_btn_set {
     margin: 5px 10px
 }
-
+/*
 .gantt_btn_set.gantt_cancel_btn_set {
     background: #fff;
     color: #454545;
@@ -93,7 +93,7 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
     background: #ec8e00;
     text-shadow: 0 -1px 0 #a60;
     color: #fff
-}
+}*/
 
 .gantt_cal_light_wide {
     padding-left: 0 !important;
@@ -655,14 +655,16 @@ div.dhx_modal_cover {
 
 .gantt_task_content {
     font-size: 11px;
-    line-height: 14px;
+    line-height: 15px;
     color: #fff;
     width: 100%;
     top: 0;
     position: absolute;
     white-space: nowrap;
-    text-align: center
+    text-align: left;
+    padding-left: 8px;
 }
+
 
 .gantt_task_progress {
     text-align: center;
@@ -927,7 +929,7 @@ div.dhx_modal_cover {
 
 .gantt_task_line.gantt_milestone {
     visibility: hidden;
-    background-color: #d33daf;
+    background-color: #4B71A4;
     border: 0 solid #61164f;
     box-sizing: content-box;
     -moz-box-sizing: content-box
@@ -940,7 +942,7 @@ div.dhx_modal_cover {
 .gantt_task_line.gantt_milestone .gantt_task_content {
     background: inherit;
     border: inherit;
-    border-width: 1px;
+    border-width: 0px;
     border-radius: inherit;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -1008,22 +1010,26 @@ div.dhx_modal_cover {
 
 .gantt_cal_light select {
     font-family: Arial;
-    border: 1px solid #cecece;
+    border: none;
     font-size: 13px;
-    padding: 2px;
-    margin: 0
+    padding: 0px;
+    margin: 0;
 }
 
 .gantt_cal_ltitle {
     padding: 7px 10px;
     overflow: hidden;
     white-space: nowrap;
-    -webkit-border-radius: 6px 6px 0 0;
-    -moz-border-radius-topleft: 6px;
-    -moz-border-radius-bottomleft: 0;
-    -moz-border-radius-topright: 6px;
-    -moz-border-radius-bottomright: 0;
-    border-radius: 6px 6px 0 0
+    /*-webkit-border-radius: 6px 6px 0 0;*/
+    /*-moz-border-radius-topleft: 6px;*/
+    /*-moz-border-radius-bottomleft: 0;*/
+    /*-moz-border-radius-topright: 6px;*/
+    /*-moz-border-radius-bottomright: 0;*/
+    /*border-radius: 6px 6px 0 0*/
+    background-color: rgb(25, 40, 60);
+    color: rgb(255, 255, 255);
+    border-radius: 0px;
+    cursor: move !important;
 }
 
 .gantt_cal_ltitle span {
@@ -1087,7 +1093,7 @@ div.dhx_modal_cover {
 }
 
 .gantt_btn_set {
-    margin: 10px 7px 5px 10px;
+/*    margin: 10px 7px 5px 10px;
     padding: 5px 15px 5px 10px;
     float: left;
     -webkit-border-radius: 4px;
@@ -1102,7 +1108,7 @@ div.dhx_modal_cover {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    cursor: pointer
+    cursor: pointer*/
 }
 
 .gantt_btn_set div {
@@ -1443,15 +1449,15 @@ div.dhx_modal_cover {
 
 .gantt_marker {
     height: 100%;
-    width: 2px;
+    width: 3px;
     top: 0;
     position: absolute;
     text-align: center;
-    background-color: rgba(255, 100, 0, 0.6);
+    background-color: rgba(255, 100, 0, 0.4);
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    box-shadow: 0 0 2px rgba(255, 0, 0, 0.4);
+    /*box-shadow: 0 0 0px 1px rgb(4, 11, 97);*/
 }
 
 .gantt_marker .gantt_marker_content {
@@ -1520,3 +1526,43 @@ div.dhx_modal_cover {
     font-weight: 700;
     border-width: 0
 }
+.gantt_project .gantt_task_progress{
+    background-color: rgba(0,0,0,0) !important;
+    border-right: 1px solid #4b71a4;
+}
+.gantt_project {
+    background-color: rgba(0,0,0,0) !important;
+    border: none !important;
+    box-shadow: inset 0px 10px 0px 0px #1C2C42;
+}
+.gantt_project:before {
+    content: " ";
+    border-color: #1C2C42 #fff #fff #fff;
+    border-style: solid;
+    border-width: 8px 10px 0 0px;
+    height: 0px;
+    width: 0px;
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+}
+.gantt_project:after {
+    content: " ";
+    border-color: #1C2C42 #fff #fff #fff;
+    border-style: solid;
+    border-width: 8px 0px 0 10px;
+    height: 0px;
+    width: 0px;
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    right: 0px;
+}
+.gantt_project.gantt_selected {
+    background-color: rgba(0,0,0,0) !important;
+    box-shadow: inset 0px 5px 0px 5px #1C2C42 !important;
+}
+
+
+
+

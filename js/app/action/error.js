@@ -27,14 +27,14 @@
 
     };
 
-    o.inline = function (text){
+    o.inline = function (text, title){
 
-        var title = 'Application throw error';
+        title = title || 'Application throw error: ';
 
         if(text){
             $(app.dom.inlineError)
                 .show()
-                .html('Application throw error: ' + text).show();
+                .html(title + text).show();
         }else{
             $(app.dom.inlineError)
                 .hide()

@@ -35,6 +35,9 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 	];
 });
 
+// Create public accept, only redirecting
+$shred = new Sharedchart();
+$shred->match();
 
 /**
  * Loading translations
@@ -47,17 +50,28 @@ Util::addTranslations($appName);
  * Application styles and scripts
  */
 if(Helper::isAppPage($appName)){
-    Util::addStyle($appName, 'dhtmlxgantt');
 	Util::addStyle($appName, 'main');
 	Util::addStyle($appName, 'jquery-ui-timepicker');
+	Util::addStyle($appName, 'jquery.custom-scrollbar');
 	Util::addScript($appName,'jquery-ui-timepicker');
-    Util::addScript($appName,'dhtmlxgantt/dhtmlxgantt');
-    Util::addScript($appName,'dhtmlxgantt/ext/dhtmlxgantt_marker');
-    Util::addScript($appName,'dhtmlxgantt/api');
+	Util::addScript($appName, 'jquery.custom-scrollbar');
 	Util::addScript($appName, 'inc');
 	Util::addScript($appName, 'application');
-}
 
+	// dhtmlxGantt v.4.0.0 Standard
+    Util::addStyle($appName, 'dhtmlxgantt');
+	//Util::addScript($appName,'dhtmlxgantt/dhtmlxgantt');
+	//Util::addScript($appName,'dhtmlxgantt/ext/dhtmlxgantt_marker');
+	//Util::addScript($appName,'dhtmlxgantt/api');
+
+	// dhtmlxGantt v.4.0.0 Professional
+	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
+	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
+	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
+	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');
+	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_auto_scheduling');
+	Util::addScript($appName,'dhtmlxganttpro/api');
+}
 
 /**
  * Detect and appoints styles and scripts for particular app page

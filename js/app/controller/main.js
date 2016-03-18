@@ -69,9 +69,9 @@
         ){
 
             // Response data type errors
-
             var error = [],
                 errorString = "";
+
 
             // Defined response data per conformity/discrepancy, and throw an errors
             if(!app.u.isObj(response.project))
@@ -106,14 +106,12 @@
             app.data = response;
             app.data.lasttaskid = parseInt(response['lasttaskid']) + 1;
             app.data.lastlinkid = parseInt(response['lastlinkid']) + 1;
+            app.data.isAdmin = response['isadmin'];
 
-            // accept localstorage settings
-            //o.dataStorageAccept();
+            // accept localStorage settings
+            o.dataStorageAccept();
 
             app.action.chart.ganttFullSize();
-
-            // run action.config
-            app.action.config.init();
 
             // run action.lightbox
             app.action.lightbox.init();
@@ -133,6 +131,9 @@
             // Put project data settings into fields of sidebar
             app.action.sidebar.putProjectSettings(app.data.project);
 
+            // display elements
+            app.dom.topbar.style['display'] = 'block';
+
         }else{
 
             /**
@@ -149,23 +150,7 @@
      */
     function enablePlugins(){
 
-        /**
-         * init jq plugin datetimepicker for all elements with class name 'datetimepic'
 
-        $('.datetimepic').datetimepicker({
-            minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
-            controlType: 'select',
-            oneLine: true,
-            dateFormat: 'dd.mm.yy',
-            timeFormat: 'HH:mm',
-            onSelect:function(val,eve){
-                if(this.name == "share_expire_time"){
-                    var elemTime = $('input[name=share_expire_time]')[0];
-                    elemTime.value = val;
-                    //app.fn.changeEventSettingsField({target:elemTime});
-                }
-            }
-        }); */
     }
 
     /**
@@ -185,7 +170,9 @@
         app.dom.sidebarToggle   = o.select('#sidebar-toggle');
         app.dom.sidebarContent  = o.select('#sidebar-content');
         app.dom.sidebarWrap     = o.select('#sidebar-wrapper');
+        app.dom.sidebarExpPdf   = o.select('#sidebar-export-pdf');
         app.dom.inlineError     = o.select('#app-content-inline-error');
+        app.dom.topbar          = o.select('.topbar');
         app.dom.lbox            = o.select('#app-lbox');
         app.dom.gantt           = o.select('#gantt-chart');
         app.dom.zoomSlider      = o.select('#chart_gantt_zoom_slider');
@@ -224,15 +211,14 @@
         if(show_user_color === 'true')          app.data.project['show_user_color'] = 1;
         else if(show_user_color === 'false')    app.data.project['show_user_color'] = 0;
 
-        if(scale_type === 'true')               app.data.project['scale_type'] = 1;
-        else if(scale_type === 'false')         app.data.project['scale_type'] = 0;
-
         if(scale_fit === 'true')                app.data.project['scale_fit'] = 1;
         else if(scale_fit === 'false')          app.data.project['scale_fit'] = 0;
 
         if(critical_path === 'true')            app.data.project['critical_path'] = 1;
         else if(critical_path === 'false')      app.data.project['critical_path'] = 0;
 
+        if(scale_type)
+            app.data.project['scale_type'] = scale_type;
     };
 
     app.taskIdIterator = function(){

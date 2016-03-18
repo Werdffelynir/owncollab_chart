@@ -32,9 +32,130 @@
         o.elemLocker = o.createLocker();
 
         // put project settings to sidebar fields
-        o.putProjectSettings();
+        //o.putProjectSettings();
+
+        // enabled jquery plugin datetimepicker for all elements with class name 'datetimepic'
+        $('.datetimepic').datetimepicker({
+            //minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
+            controlType: 'select',
+            oneLine: true,
+            dateFormat: 'dd.mm.yy',
+            timeFormat: 'HH:mm',
+            onSelect:function(val,eve){
+                if(this.name == "share_expire_time"){
+                    var elemTime = $('input[name=share_expire_time]')[0];
+                    elemTime.value = val;
+                    app.action.event.changeValueProject({target:elemTime});
+                }
+            }
+        });
+
+        // autocomplete for email sends
+        var usersEmails = function(){
+            var resources = app.action.chart.getProjectResources(true),
+                group,
+                userIter = 0,
+                project = app.action.chart.getProjectUrlName(),
+                domain = OC.getHost(),
+                list = [],
+                all = app.data.groupsusers;
+
+            for(group in all){
+                var inGroup = false;
+                for(userIter = 0; userIter < all[group].length; userIter ++) {
+                    if(resources.indexOf(all[group][userIter]['uid']) !== -1) {
+                        inGroup = true;
+                        list.push({
+                            value: all[group][userIter]['uid'],
+                            type: 'user',
+                            email: all[group][userIter]['uid'] + '@' + project + '.' + domain
+                        });
+                    }
+                }
+
+                if(inGroup){
+                    list.push({
+                        value: group,
+                        type: 'group',
+                        email: group + '@' + project + '.' + domain
+                    });
+                }
+            }
+            // static emails
+            list.push({
+                value: 'team',
+                type: 'static',
+                email: 'team@' + project + '.' + domain
+            });
+            list.push({
+                value: 'support',
+                type: 'static',
+                email: 'support@' + project + '.' + domain
+            });
+            return list;
+        };
+
+        $(document).on('focus', "#owc_email_autocomplete", function (event) {
+            $( this ).autocomplete({
+                    minLength: 0,
+                    source: usersEmails(),
+                    select: function( event, ui ) {
+                        this.value = "";
+                        o.emailsList(ui.item);
+                        return false;
+                    }
+            }).data("ui-autocomplete")._renderItem = function( ul, item ) {
+                var emailLabel = (item.type == 'user') ? item.email : "<strong>"  +item.email+ "</strong>";
+                return $('<li>')
+                    .append('<a>' +  emailLabel + '</a>' )
+                    .appendTo( ul );
+            };
+        });
+
+        // send email list to server
+        $('input[name=share_email_submit]').click(function(event){
+            event.preventDefault();
+            var emailsList = [];
+            $('.share_email', app.dom.sidebar).each(function(index, item){
+                var id = item.getAttribute('data-id');
+                var type = item.getAttribute('data-type');
+                var email = item.getAttribute('data-email');
+                emailsList.push(type+ ':' +id);
+            });
+            app.action.event.sendShareEmails(
+                app.u.uniqueArr(emailsList),
+                app.action.chart.getProjectResources(true)
+            );
+        });
 
     };
+
+    o.emailsList = function(item){
+        var wrap = document.createElement('div');
+        var icon = document.createElement('div');
+        var text = document.createElement('div');
+        var butn = document.createElement('div');
+
+        wrap.className = 'tbl share_email';
+        wrap.setAttribute('data-id', item.value );
+        wrap.setAttribute('data-type', item.type);
+        wrap.setAttribute('data-email', item.email);
+
+        icon.className = 'tbl_cell share_email_icon';
+        text.className = 'tbl_cell share_email_text';
+        butn.className = 'tbl_cell share_email_butn';
+
+        butn.onclick = function(event){$(wrap).remove()};
+
+        icon.innerHTML = '<strong> &#149; </strong>';
+        text.innerHTML = item.email;
+
+        wrap.appendChild(icon);
+        wrap.appendChild(text);
+        wrap.appendChild(butn);
+        $('#share_emails_list').append(wrap);
+    };
+
 
     /**
      * Toggle sidebar
@@ -135,7 +256,11 @@
     o.putProjectSettings = function(){
 
         var project = app.data.project,
+
+            // all field of sidebar
             fields = o.elemFields,
+
+            // field names
             param;
 
         try{
@@ -159,9 +284,15 @@
                         break;
 
                     case 'text':
+                    case 'date':
+                    case 'password':
                     case 'textarea':
 
-                        if(param === 'share_link') {
+                        if(param == 'share_expire_time' && project[param] != null && project[param].length > 8) {
+                            var dateTime = app.timeDateToStr(app.timeStrToDate(project[param]));
+                            fields[param].value = dateTime;
+                        }
+                        else if(param == 'share_link') {
                             fields[param].value = app.action.chart.generateShareLink(project[param]);
                             fields[param].onclick =  function() {
                                 this.focus();
@@ -169,8 +300,10 @@
                             }
                         }
                         else {
-                            fields[param].addEventListener('change', app.action.event.changeValueProject, false);
-                            fields[param].value = project[param];
+                            if(project[param] !== undefined){
+                                fields[param].addEventListener('change', app.action.event.changeValueProject, false);
+                                fields[param].value = project[param];
+                            }
                         }
 
                         break;
@@ -183,9 +316,13 @@
                     }
                 }
 
-                if(param === 'is_share'){
-                    if(fields[param].checked === true) $('.chart_share_on').show();
-                    else $('.chart_share_on').hide();
+                if(param == 'is_share'){
+                    if(fields[param].checked === true) {
+                        $('.chart_share_on').show();
+                    }
+                    else {
+                        $('.chart_share_on').hide();
+                    }
                 }
                 else
                 if(param === 'share_is_protected'){

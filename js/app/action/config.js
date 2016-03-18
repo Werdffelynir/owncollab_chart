@@ -21,6 +21,12 @@
      */
     o.init = function(){
 
+/*        gantt.config.start_date = app.timeStrToDate(app.action.chart.baseProject.start_date);
+        gantt.config.end_date = app.timeStrToDate(app.action.chart.baseProject.end_date);
+        console.log(app.action.chart.baseProject);
+        console.log();
+        console.log();*/
+
         /**
          * Global Date format
          * @type {string}
@@ -29,19 +35,21 @@
         gantt.config.task_date = "%Y-%m-%d %H:%i";
         gantt.config.date_grid = "%Y-%m-%d %H:%i";
 
-        /**
-         * Visibly task text
-         *
-         * @param start
-         * @param end
-         * @param task
-         * @returns {*}
-         */
+        gantt.config.grid_resize = true;
+
+
+        // add style class to milestone display object
+        gantt.templates.task_class  = function(start, end, task){
+            if(task.type == 'milestone'){return "gantt_milestone_size"}
+        };
+
+        //Visibly task text
         gantt.templates.task_text = function(start, end, task){
-            if(app.data.project['show_task_name'] == 1)
-                return "<strong>"+task.text+"</strong>";
-            else
-                return "";
+            if(task.type == 'project') return "";
+            else {
+                if(app.data.project['show_task_name'] == 1) return task.text;
+                else return "";
+            }
         };
 
         // Defines the style of task bars
@@ -52,57 +60,78 @@
         // Styling the gantt chart. Column tasks names size width
         gantt.config.row_height = 22;
 
-        // Styling the gantt chart. Tasks column grid width size
-        gantt.config.grid_width = 605;
-
         // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = true;
+        gantt.config.autofit = false;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = false;
+        gantt.config.fit_tasks = true;
+
+        // Auto scheduling makes the start date of the second task update according to the end date
+        // of the first task each when it changes.
+        gantt.config.auto_scheduling = true;
+
+        // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
+        gantt.config.auto_scheduling_strict = true;
+
+        // Defines whether gantt will do autoscheduling on data loading
+        gantt.config.auto_scheduling_initial = false;
+
+        // allows or forbids creation of links from parent tasks (projects) to their children
+        gantt.config.auto_scheduling_descendant_links = false;
+
 
         // Making the Gantt chart to display the critical path
-        if(app.data.project['critical_path'] == 1)
+        if(app.data.project['critical_path'] == 1) {
+            //console.log(app.data.project['critical_path']);
+            //gantt.config.highlight_critical_path = true;
             app.action.chart.showCriticalPath(true);
+        }
 
-        // add red line "today"
-        if(app.data.project['show_today_line'] == 1)
+        // Add red line "today"
+        if(app.data.project['show_today_line'] == 1) {
             app.action.chart.showTodayLine();
+        }
 
         // Apply scaling chart
         app.action.chart.scale(app.data.project['scale_type']);
 
+        // Enable zoom slider
         app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
-        // apply scale fit
-        if(app.data.project['scale_fit']){
+        // Apply scale fit
+        if(app.data.project['scale_fit']) {
             app.action.chart.scaleFit();
         }
 
+
         // Configures the columns of the table
         var columnWidth = {
-            id: 20,
+            id: 25,
             name: 150,
-            start: 100,
-            end: 100,
+            start: 70,
+            end: 70,
             duration: 50,
             resources: 100
         };
 
+        // Styling the gantt chart. Tasks column grid width size
+        gantt.config.grid_width = 550;
+
         gantt.config.columns = [
 
             {name:"id", label:"ID", width: columnWidth.id, template: function(item) {
-                return (item.$index + 1);
+                //return (item.$index + 1);
+                return item.id;
             }},
 
             {name:"text", label:"Task name", tree:true, width: columnWidth.name, resize:true},
 
             {name:"start_date", label:"Start", align: "center", width: columnWidth.start, template: function(item) {
-                return app.timeDateToStr(item.start_date);
+                return app.timeDateToStr(item.start_date, "%d.%m.%Y");
             }},
 
             {name:"end_date", label:"End", align: "center", width: columnWidth.end, template: function(item) {
-                return app.timeDateToStr(item.end_date);
+                return app.timeDateToStr(item.end_date, "%d.%m.%Y");
             }},
 
             {name:"duration", label:"Duration", align: "center", width: columnWidth.duration, template: function(item) {
@@ -148,6 +177,13 @@
         gantt.config.columns.push({name:"edit", label:"", width: 22, template: function(item) {
             return o.createTaskBtn('edit', item.id);
         }});
+
+        if(!app.data.isAdmin){
+            // gantt lightbox disable
+            gantt.showLightbox = function(id){};
+            gantt.hideLightbox = function(id){};
+            app.action.error.inline('You do not have the right to modify the chart', 'Information: ');
+        }
     };
 
 
@@ -157,7 +193,7 @@
      */
     o.external = function(){
 
-        // gantt lightbox disable, uses custom lightbox
+        // gantt lightbox disable
         gantt.showLightbox = function(id){};
         gantt.hideLightbox = function(id){};
 

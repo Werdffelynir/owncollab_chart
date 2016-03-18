@@ -105,7 +105,7 @@
                     data.value = target.value;
                 }
             }
-            else if(type == 'text'){
+            else if(type == 'text' || type == 'password'){
                 data.value = target.value;
 
                 if(data.field == 'share_expire_time'){
@@ -135,7 +135,11 @@
                          $('input[name=share_link]').val(shareLink);
                          $('.chart_share_on').show();
                     }else{
-                         $('.chart_share_on').hide();
+                        app.action.sidebar.elemFields['share_is_protected'].checked = false;
+                        app.action.sidebar.elemFields['share_is_expire'].checked = false;
+                        app.action.sidebar.elemFields['share_password'].value = '';
+                        app.action.sidebar.elemFields['share_expire_time'].value = '';
+                        $('.chart_share_on').hide();
                     }
 
                 }else if(sendData.field === 'share_is_protected'){
@@ -183,6 +187,7 @@
             switch (action) {
 
                 case "edit":
+
                     gantt.showLightbox(id);
                     break;
 
@@ -190,16 +195,16 @@
                     app.action.chart.opt.isNewTask = true;
                     var _id = app.data.lasttaskid ++,
                         _date = new Date(gantt.getTask(id).start_date),
-                        _dateEnd = (function(){ var d = new Date(); d.setDate(_date.getDate() + 7); return d;})(),
                         _task = {
                             id: _id,
                             text: "New Task",
                             predecessor: '',
                             buffer: 0,
                             start_date: _date,
-                            end_date: _dateEnd,
+                            end_date: app.addDaysToDate(7, _date),
                             progress: 0,
                             duration: 0,
+                            //parent: id,
                             type: gantt.config.types.task,
                             users: ''
                         };
@@ -208,10 +213,14 @@
 
                 case "remove":
                     var _task = gantt.getTask(id);
+
+                    // binding for find parent after delete
+                    o.taskToDelete = {id:_task.id, parent:_task.parent};
+
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
                         //text: gantt.locale.labels.confirm_deleting,
-                        text: _task.text + " " +(_task.$index+1)+ " - will be deleted permanently, are you sure?",
+                        text: _task.text + " " +(_task.id)+ " - will be deleted permanently, are you sure?",
                         callback: function(res){
                             if(res)
                                 gantt.deleteTask(id);
@@ -225,16 +234,45 @@
     };
 
     //o.onAfterTaskAdd = function(id, task){};
-
     //o.onBeforeTaskAdd = function(id, task){};
 
+    /**
+     * Событие "onBeforeTaskUpdate" обявление слушателя в app.action.chart
+     * @param id
+     * @param task
+     */
     o.onBeforeTaskUpdate = function(id, task){
+        //console.log(task);
         o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
     };
-
     o.onAfterTaskDelete = function(id, task){
+
+        // update the parent task type, if it does not have children
+        if(typeof o.taskToDelete === 'object' && o.taskToDelete.id == id){
+            var parent = gantt.getTask(o.taskToDelete.parent),
+                children = gantt.getChildren(o.taskToDelete.parent);
+            if(children.length == 0){
+                parent.type = 'task';
+                gantt.updateTask(parent.id);
+            }
+        }
         o.requestTaskUpdater('delete', id, task);
     };
+
+    o.onAfterTaskUpdate = function(id, task){
+        if(task.is_project != 1){
+            var parent = gantt.getTask(task.parent),
+                children = gantt.getChildren(task.parent);
+
+            if(parent.type != 'project'){
+                parent.type = 'project';
+                gantt.updateTask(parent.id);
+            }
+        }
+        return true;
+    };
+
+
 
     o.requestIsProcessed = false;
 
@@ -246,22 +284,18 @@
      * @param worker
      */
     o.requestTaskUpdater = function (worker, id, task) {
-
+        //console.log(task);
         app.api('updatetask', function(response) {
-
+            //console.log(response);
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
-
                 app.requesttoken = response.requesttoken;
-
                 if(worker == 'insert') {
                     if(response.lasttaskid)
                         app.data.lasttaskid = response.lasttaskid;
                     else
                         app.action.error.inline('Error Request: ' + worker + '. Inset ID not response.');
                 }
-
             } else {
-
                 app.action.error.inline('Error Request: ' + worker );
             }
 
@@ -269,11 +303,44 @@
 
     };
 
+    o.requestLinkUpdater = function (worker, id, link) {
 
+        app.api('updatelink', function(response) {
+            if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
+                app.requesttoken = response.requesttoken;
+                if(worker == 'insert') {
+                    if(response.lastlinkid)
+                        app.data.lastlinkid = (parseInt(response.lastlinkid) + 1);
+                    else
+                        app.action.error.inline('Error Request: ' + worker + '. Inset ID not response.');
+                }
 
+            } else {
+                app.action.error.inline('Error Request: ' + worker );
+            }
 
+        },{ worker:worker, id:id, link:link });
+    };
 
+    o.sendShareEmails = function(emails, resources, link){
+
+        // change all icon to loading emails
+        // background: url("/apps/owncollab_chart/img/loading-icon.gif") no-repeat center center;
+        $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center');
+
+        app.api('sendshareemails', function(response) {
+            if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
+                app.requesttoken = response.requesttoken;
+                $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
+                //console.log('response: ', response);
+            } else {
+                app.action.error.inline('Error Request on send share emails');
+            }
+
+        },{ emails:emails, resources:resources, link:link });
+
+    };
 
 
 

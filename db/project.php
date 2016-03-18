@@ -101,7 +101,7 @@ class Project
         if(in_array($field, $this->fields)) {
             $sql = "UPDATE {$this->tableName}
                     SET {$field} = :field
-                    WHERE id = :id";
+                    WHERE open = 1";
             $result = $this->connect->db->executeUpdate($sql, [
                 ':field'=>$value
             ]);
@@ -141,13 +141,29 @@ class Project
      * @param $share_link
      * @return array|bool|null
      */
-    public function getShare($share_link) {
+    public function getShare($share_link = false) {
         $result = false;
         $project = $this->get();
-        if($project && $project['is_share'] == 1 && $project['share_link'] == $share_link){
-            $result = $project;
+        if($share_link == false){
+            return $project['share_link'];
+        }else{
+            if($project && $project['is_share'] == 1 && $project['share_link'] == $share_link){
+                $result = $project;
+            }
+            return $result;
         }
-        return $result;
+    }
+
+    /**
+     * @param $uid
+     * @return mixed
+     */
+    public function getUserEmail($uid) {
+        $sql = "SELECT * FROM oc_preferences
+                WHERE configkey = 'email'
+                AND appid = 'settings'
+                AND userid = :uid";
+        return $this->connect->query($sql, [':uid'=>$uid]);
     }
 
 
