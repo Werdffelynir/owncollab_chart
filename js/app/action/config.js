@@ -31,15 +31,15 @@
          * Global Date format
          * @type {string}
          */
-        gantt.config.api_date  = "%Y-%m-%d %H:%i";
-        gantt.config.task_date = "%Y-%m-%d %H:%i";
-        gantt.config.date_grid = "%Y-%m-%d %H:%i";
+        //gantt.config.api_date  = "%Y-%m-%d %H:%i";
+        //gantt.config.task_date = "%Y-%m-%d %H:%i";
+        //gantt.config.date_grid = "%Y-%m-%d %H:%i";
 
         gantt.config.grid_resize = true;
 
         // reordering tasks within the whole gantt
         gantt.config.order_branch = true;
-        gantt.config.order_branch_free = true;
+        //gantt.config.order_branch_free = true;
 
         gantt.config.undo = true;
         gantt.config.redo = true;

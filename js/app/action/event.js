@@ -178,11 +178,13 @@
     /**
      * Catch a gantt event "onGanttRender"
      */
+    o._undo_redo_timer = 0;
     o.onGanttRender = function (){
         // checked and re-visual buttons Undo and Redo
         //To get the stack of the stored undo commands, use the getUndoStack method:
         //To return the stack of the stored redo commands, apply the getRedoStack method:
-        setTimeout(function(){
+        clearTimeout(o._undo_redo_timer);
+        o._undo_redo_timer = setTimeout(function(){
             var undoStack = gantt.getUndoStack(),
                 redoStack= gantt.getRedoStack();
             if(undoStack.length > 0){

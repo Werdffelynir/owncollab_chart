@@ -65,10 +65,10 @@
 
     o.onChangeExportToPDFInputDate = function(date){
         if(this.name == "pdf_start_date")
-            o.toPDF.config['start'] = app.timeDateToStr(app.timeStrToDate(date),"%d-%m-%Y");
+            o.toPDF.config['start'] = app.timeDateToStr(app.timeStrToDate(date),"%Y-%m-%d");
 
         if(this.name == "pdf_end_date")
-            o.toPDF.config['end'] = app.timeDateToStr(app.timeStrToDate(date),"%d-%m-%Y");
+            o.toPDF.config['end'] = app.timeDateToStr(app.timeStrToDate(date),"%Y-%m-%d");
     };
 
     o.onSubmitExportToPDF = function (event){
@@ -91,7 +91,7 @@
         style.add('.center','text-align:center');
         style.add('.right','text-align:right');
 
-        var rotate = '0deg', scale = 1, marginLeft = '';
+        /*var rotate = '0deg', scale = 1, marginLeft = '';
         if(fd['pdf_paper_orientation'] == 2){
             rotate = '90deg';
             marginLeft = 'margin-left: -52%;';
@@ -106,7 +106,7 @@
             '-o-transform: rotate('+rotate+') scale('+scale+') skew(0deg) translate(0px);' +
             '-ms-transform: rotate('+rotate+') scale('+scale+') skew(0deg) translate(0px);' +
             marginLeft
-        );
+        );*/
 
         var headerString = '<div class="tbl header">' +
             '<div class="tbl_cell third">' +fd['pdf_head_left']+ '</div>' +
@@ -151,7 +151,15 @@
     };
 
     o.toMSProject = function (){
-        var config = {};
+        var sd = app.data.baseProjectTask.end_date,
+            ed = app.data.baseProjectTask.start_date,
+            config = {
+                start:app.timeDateToStr(app.timeStrToDate(sd),"%Y-%m-%d"),
+                end:app.timeDateToStr(app.timeStrToDate(ed),"%Y-%m-%d")
+            };
+
+        console.log(config);
+
         gantt.exportToMSProject(config);
     };
 
