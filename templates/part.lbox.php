@@ -30,5 +30,3 @@
             <label for="lbm"><span></span></label>
         </div>
     </div>
-    <!--        <div class="tbl_cell lbox_title">Predecessor</div>-->
-    <!--            <input name="lbox_predecessor" type="text">-->

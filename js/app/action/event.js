@@ -174,7 +174,30 @@
      *
      */
     //o.onGanttReady = function (){};
-    //o.onGanttRender = function (){};
+
+    /**
+     * Catch a gantt event "onGanttRender"
+     */
+    o.onGanttRender = function (){
+        // checked and re-visual buttons Undo and Redo
+        //To get the stack of the stored undo commands, use the getUndoStack method:
+        //To return the stack of the stored redo commands, apply the getRedoStack method:
+        setTimeout(function(){
+            var undoStack = gantt.getUndoStack(),
+                redoStack= gantt.getRedoStack();
+            if(undoStack.length > 0){
+                app.dom.actionUndo.style.visibility = 'visible';
+            }else{
+                app.dom.actionUndo.style.visibility = 'hidden';
+            }
+            if(redoStack.length > 0){
+                app.dom.actionRedo.style.visibility = 'visible';
+            }else{
+                app.dom.actionRedo.style.visibility = 'hidden';
+            }
+        },1000);
+    };
+
 
     o.onTaskClick = function (id, event){
         var target = event.target;
@@ -270,6 +293,8 @@
     };
 
     o.onAfterTaskUpdate = function(id, task){
+
+        // change types task and project by nesting
         if(task.is_project != 1){
             var parent = gantt.getTask(task.parent),
                 children = gantt.getChildren(task.parent);

@@ -683,7 +683,10 @@ input[type="radio"]:checked + label span {
     background:url(/apps/owncollab_chart/img/checkbox-checked.png) left top no-repeat;
 }
 
-
+#act_undo, #act_redo{
+    visibility: hidden;
+    cursor: pointer;
+}
 
 
 

@@ -37,6 +37,12 @@
 
         gantt.config.grid_resize = true;
 
+        // reordering tasks within the whole gantt
+        gantt.config.order_branch = true;
+        gantt.config.order_branch_free = true;
+
+        gantt.config.undo = true;
+        gantt.config.redo = true;
 
         // add style class to milestone display object
         gantt.templates.task_class  = function(start, end, task){

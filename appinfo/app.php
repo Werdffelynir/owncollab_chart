@@ -66,6 +66,7 @@ if(Helper::isAppPage($appName)){
 
 	// dhtmlxGantt v.4.0.0 Professional
 	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
+	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_undo');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');

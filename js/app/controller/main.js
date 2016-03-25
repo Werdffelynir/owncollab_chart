@@ -176,6 +176,8 @@
         app.dom.lbox            = o.select('#app-lbox');
         app.dom.gantt           = o.select('#gantt-chart');
         app.dom.zoomSlider      = o.select('#chart_gantt_zoom_slider');
+        app.dom.actionUndo      = o.select('#act_undo');
+        app.dom.actionRedo      = o.select('#act_redo');
 
     }
 

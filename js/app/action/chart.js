@@ -47,7 +47,7 @@
 
         //gantt.attachEvent("onGanttRender", onGanttReady);
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
-        //gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
+        gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
         //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
         //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
         //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
@@ -119,16 +119,14 @@
             app.action.error.page('Gantt.parse data have error');
         }
         // Dynamic chart resize when change window
-        //o.ganttDynamicResize();
+        o.ganttDynamicResize();
 
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
 
-        // form.styler
-        //$('input, select').styler();
-
-
+        app.dom.actionUndo.addEventListener('click',function(){gantt.undo()});
+        app.dom.actionRedo.addEventListener('click',function(){gantt.redo()});
     };
 
 
