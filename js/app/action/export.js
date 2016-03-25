@@ -40,7 +40,8 @@
         o.formExportToPDF.onsubmit = o.onSubmitExportToPDF;
 
         $('input[name=pdf_start_date], input[name=pdf_end_date]', o.formExportToPDF).datetimepicker({
-            minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
+            minDate: gantt.getTask(1).start_date,
+            maxDate: gantt.getTask(1).end_date,
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',

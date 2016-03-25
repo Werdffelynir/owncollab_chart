@@ -301,15 +301,18 @@ html, body {
 }
 
 .icon_add {
-    background: url('/apps/owncollab_chart/img/add-color.png') no-repeat center center;
+    /*background: url('/apps/owncollab_chart/img/add-color.png') no-repeat center center;*/
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAE5JREFUOI1jYBjUoKam5n9NTc1/fGqYKLVk4A1gIVYhIyMjE4RiZGJkZGT6+/fvTwYGBgZGmAJCgYUOWlpaGBkYqOAFvGCERCNtA5EuAAD9gRHiaGVkgQAAAABJRU5ErkJggg==') no-repeat center center;
 }
 
 .icon_remove {
-    background: url('/apps/owncollab_chart/img/delete-color.png') no-repeat center center;
+    /*background: url('/apps/owncollab_chart/img/delete-color.png') no-repeat center center;*/
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABHNCSVQICAgIfAhkiAAAAR5JREFUOI3VkTFOwzAUhl8psWS9JbLSsjBBsiCilwskRMpSNhaOABuXgROAxIDoFZIFcQArkgfnAjZMIJklC0sjmbRl6AT/9mz/v97/GeDfa+oPWZYd5nl+HwRBY6398u+I6KAsy2fG2Isx5mM43/MfJUlyF0XRBRHVRDTzzHMiaoQQ53Ec3/qefX/QWl9zzo8RMSWiGgCqVUCDiCfOuVZrfeV7JuNORDQjohoRU+dcCwATRDx1zrVSykpK+b6VAQDAqvtSCLFAxJQxNt9mXmOwi9Y2GFfo+/4NEVMhxAIAluPfmf5mllJW1tqHoc6mkB8BRVE8hmF45nceM+GcJ0qpp40BjLFXzvmRUurSBzaEcM6TrutujDGfuxH7k/oGY6GHu90irnUAAAAASUVORK5CYII=') no-repeat center center;
 }
 
 .icon_edit {
-    background: url('/apps/owncollab_chart/img/drafts.png') no-repeat center center;
+    /*background: url('/apps/owncollab_chart/img/drafts.png') no-repeat center center;*/
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAMFBMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABaPxwLAAAAEHRSTlMABAUHGiApKzM8QERNT2aAtNfm4gAAAEJJREFUeNqdyTsCACEIA9G46iL4u/9tpQyNhdO9BLf+KQjZ3sI0X2a4fRGy18H27NllRUOTBueKb5HRrGoBNVrGrQPrGQOEfAezJgAAAABJRU5ErkJggg==') no-repeat center center;
 }
 
 .gc_default_row {}
