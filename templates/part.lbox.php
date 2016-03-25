@@ -14,8 +14,10 @@
         <div class="tbl_cell"><input name="lbox_end_date" type="text"></div>
     </div>
     <div class="tbl">
-        <div class="tbl_cell lbox_title">Predecessor</div>
-        <div class="tbl_cell"><input name="lbox_predecessor" type="text"></div>
+        <div class="tbl_cell">
+            <input name="lbox_predecessor" type="submit" value="Predecessor">
+        </div>
+        <div class="tbl_cell"></div>
         <div class="tbl_cell lbox_title">Buffer</div>
         <div class="tbl_cell"><input name="lbox_buffer" type="text"></div>
     </div>
@@ -28,3 +30,5 @@
             <label for="lbm"><span></span></label>
         </div>
     </div>
+    <!--        <div class="tbl_cell lbox_title">Predecessor</div>-->
+    <!--            <input name="lbox_predecessor" type="text">-->

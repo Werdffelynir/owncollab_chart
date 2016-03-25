@@ -24,6 +24,9 @@ $appName = 'owncollab_chart';
         <span id="ganttsort_resource"><img src="<?php p($this->image_path($appName,'sort30.png'))?>" alt=""></span>
         <span id="ganttfilter_resource"><img src="<?php p($this->image_path($appName,'filter30.png'))?>" alt=""></span>
 
+        <span id="act_undo" style="width: 30px;" ><img src="<?php p($this->image_path($appName,'undo2.png'))?>" alt=""></span>
+        <span id="act_prev" style="width: 30px;" ><img src="<?php p($this->image_path($appName,'prev2.png'))?>" alt=""></span>
+
     </div>
 
     <div id="sidebar-toggle"></div>

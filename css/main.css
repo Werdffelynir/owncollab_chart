@@ -582,8 +582,27 @@ html, body {
 }
 #generate-lbox-wrapper>div:nth-child(n+3)>div:nth-child(odd){
     width: 10%;
-    text-align: right;
+    /*text-align: right;*/
 }
+.predecessor_item_id, .lbox_pl_id{
+    min-width: 20px;
+    font-weight: bold;
+    display: inline-block;
+}
+.predecessor_labels>span{
+    font-weight: bold;
+    display: inline-block;
+}
+.lbox_pl_name{
+    min-width: 198px;
+}
+.lbox_pl_buffer{
+    min-width: 69px;
+}
+.lbox_pl_link{
+    min-width: 20px;
+}
+
 /*<div class="lboxsave"></div>*/
 .lboxsave{
     display: none;
@@ -609,6 +628,7 @@ html, body {
 .lbox_popup_wrap strong{
     font-weight: bold !important;
 }
+
 input[type="checkbox"] {
     display:none;
 }

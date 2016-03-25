@@ -4,7 +4,6 @@ namespace OCA\Owncollab_Chart\Controller;
 
 use OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Db\Connect;
-use OCA\Owncollab_Chart\PHPMailer\PHPMailer;
 use OCP\IConfig;
 use OCP\IRequest;
 use OCP\AppFramework\Http\TemplateResponse;
@@ -386,6 +385,9 @@ class ApiController extends Controller {
         } catch(\Exception $e) {
             $params['result'] = 'error';
         }
+
+        $m = new PHPMailer();
+
 
         return new DataResponse($params);
     }

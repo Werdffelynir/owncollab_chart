@@ -53,4 +53,10 @@
 
     </div>
 
+
+
+    <label for="file_upload_start" class="menuitem" data-action="upload" title=""><span class="svg icon icon-upload"></span><span class="displayname">Загрузить</span></label>
+
+
+
 </div>

@@ -242,9 +242,19 @@
      * @param task
      */
     o.onBeforeTaskUpdate = function(id, task){
-        //console.log(task);
-        o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
+
+        var maxLimit = 750,
+            maxLimit = 750;
+
+        // date checked and fixed if the date is beyond the scope
+        if(task.start_date < app.data.baseProjectTask.start_date)
+            task.start_date = app.data.baseProjectTask.start_date;
+        if(task.end_date > app.addDaysToDate(maxLimit, app.data.baseProjectTask.end_date))
+            task.end_date = app.addDaysToDate(7, task.end_date);
+
+            o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
     };
+
     o.onAfterTaskDelete = function(id, task){
 
         // update the parent task type, if it does not have children

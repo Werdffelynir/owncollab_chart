@@ -60,10 +60,17 @@
         }
 
         o.task.base_template = '<div id="generate-lbox-wrapper">' + app.dom.lbox.innerHTML + '</div>';
+
         return true;
     };
 
     o.onLightbox = function (id){
+
+        // delete predecessor button if task is first child in the project
+        var t = gantt.getTask(id);
+        if(gantt.getChildren(t.parent)[0] == id){
+            $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
+        }
 
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
@@ -242,11 +249,28 @@
         }
         else if(target['name'] == 'lbox_predecessor'){
             o.predecessorViewGenerate();
-            popup = o.showPopup(target, o.predecessorView);
+
+
+            var view = o.predecessorView,
+                labels = document.createElement('div'),
+                btns = document.createElement('div');
+
+            labels.className = 'predecessor_labels';
+            labels.innerHTML = '<span class="lbox_pl_id">ID</span>' +
+                '<span class="lbox_pl_name">Task name</span>' +
+                '<span class="lbox_pl_buffer">Buffer</span>' +
+                '<span class="lbox_pl_link">Link type</span>';
+
+            view.insertBefore(labels, view.firstChild);
+
+            //view.insertAdjacentHTML('afterend', '<div id="predecessor_labels">two</div>');
+
+            popup = o.showPopup(target, view);
 
             popup.style.width = '510px';
             popup.style.zIndex = '999';
             popup.style.left = '10px';
+            //popup.style.top = '10px';
 
             $('.lbox_popup_wrap', popup)
                 .css('overflow-y','auto')   // styled
@@ -501,7 +525,7 @@
 
         tasks.forEach(function(item){
             if(item.id == o.task.id) return;
-
+            if(item.type == 'project') return;
 
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
@@ -511,7 +535,7 @@
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
 
-            _name.textContent = (item.id) + '\t' + item.text;
+            _name.innerHTML = '<span class="predecessor_item_id">' + (item.id) + '</span>' + item.text;
             _link.appendChild(_linkElems);
 
             _line.appendChild(_name);
@@ -596,10 +620,11 @@
         _inpClearLabel.appendChild(_inpClearSpan);
         _inpClearLabel.appendChild(document.createTextNode('rm'));
 
-        if(linksTarget.length > 0){
-            linksTarget.map(function(_item){
+        // todo:linksTarget to linksSource, change _link.source to _link.target
+        if(linksSource.length > 0){
+            linksSource.map(function(_item){
                 var _link = gantt.getLink(_item);
-                if(_link.source == o.task.id) {
+                if(_link.target == o.task.id) {
                     _isChecked = true;
                     switch (_link.type){
                         case '0': _inpFS.checked = true; break;
@@ -646,13 +671,15 @@
             var type = this.value;
 
             if(type == 'clear'){
-                o.deleteLinksWithTarget(id);
+                //o.deleteLinksWithTarget(id);
+                o.deleteLinksWithSource(id);
             }else{
-                o.deleteLinksWithTarget(id);
+                //o.deleteLinksWithTarget(id);
+                o.deleteLinksWithSource(id);
                 var linkId = gantt.addLink({
                     id: app.linkIdIterator(),
-                    source: o.task['id'],
-                    target: id,
+                    source:  id,
+                    target: o.task['id'],
                     type: type
                 });
             }
