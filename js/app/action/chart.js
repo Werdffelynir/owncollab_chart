@@ -60,22 +60,25 @@
 
         // buffer listener
         gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){
-            // any custom logic here
-            //console.log(task, startDate, link, predecessor);
-            if(task.buffer > 0){
-                return false;
+            task.isBuffered = false;
+        });
+
+        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
+            if(parseFloat(predecessor.buffer) > 0){
+                task.start_date = app.addDaysToDate(parseFloat(predecessor.buffer), startDate)
             }
-            else
-                return true;
+            if(task.buffer > 0 && !task.isBuffered){
+                app.injectBufferToDate(task, parseFloat(task.buffer), true);
+                task.isBuffered = true;
+            }
         });
 
         // After task drag update date position to time with buffer
         gantt.attachEvent("onAfterTaskDrag", function(id, parent, tindex){
-            var _moveTask = gantt.getTask(id);
-            //console.log(_moveTask);
-            if(_moveTask.buffer > 0){
-                app.injectBufferToDate(_moveTask, parseFloat(_moveTask.buffer), true);
-                _moveTask.isBuffered = true;
+            var task = gantt.getTask(id);
+            if(task.buffer > 0){
+                app.injectBufferToDate(task, parseFloat(task.buffer), true);
+                task.isBuffered = true;
                 gantt.render();
             }
         });

@@ -283,7 +283,8 @@
                 .css('overflow-y','auto')   // styled
                 //.css('margin-top','10px')
                 .css('margin-right','10px') //
-                .css('height','212px')      //
+                .css('min-height','180px')
+                //.css('height','212px')
                 .addClass('default-skin')   // scrollbar skin
                 .customScrollbar();         // add style to scrollbar
 
