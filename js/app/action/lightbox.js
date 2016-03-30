@@ -68,7 +68,9 @@
 
         // delete predecessor button if task is first child in the project
         var t = gantt.getTask(id);
-        if(gantt.getChildren(t.parent)[0] == id){
+        //console.log(t.parent);
+        //if(gantt.getChildren(t.parent)[0] == id){
+        if(t.parent == 0 || t.parent == 1){
             $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
         }
 

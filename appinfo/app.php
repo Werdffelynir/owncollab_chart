@@ -31,7 +31,7 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 		'order' => 10,
 		'href' => $urlGenerator->linkToRoute($appName.'.main.index'),
 		'icon' => $urlGenerator->imagePath($appName, 'gantt.svg'),
-		'name' => $l10n->t('Chart ')
+		'name' => $l10n->t('GanttChart ')
 	];
 });
 

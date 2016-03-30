@@ -388,7 +388,6 @@ class ApiController extends Controller {
 
         $m = new PHPMailer();
 
-
         return new DataResponse($params);
     }
 
