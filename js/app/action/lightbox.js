@@ -70,7 +70,7 @@
         var t = gantt.getTask(id);
         //console.log(t.parent);
         //if(gantt.getChildren(t.parent)[0] == id){
-        if(t.parent == 0 || t.parent == 1){
+        if(t.parent == 0){
             $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
         }
 

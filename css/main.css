@@ -612,9 +612,6 @@ html, body {
     text-align: right;
 }
 
-
-
-
 .predecessor_item_id, .lbox_pl_id{
     min-width: 20px;
     font-weight: bold;
@@ -707,14 +704,16 @@ input[type="radio"] + label span {
     height:19px;
     margin:0px 0px 0 0;
     vertical-align:middle;
-    /*background:url(/apps/owncollab_chart/img/check_radio_sheet.png) -38px top no-repeat;*/
-    background:url(/apps/owncollab_chart/img/checkbox.png) left top no-repeat;
+    /*background:url(/apps/owncollab_chart/img/checkbox.png) left top no-repeat;*/
+    background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAElBMVEUAAACenp6dnZ2enp6Wlpb///+ZjNYiAAAABHRSTlMA0tPUFjUH1QAAAB9JREFUeAFjIAYws8ABE1iAhRUOWAa3ABPC6YzEeBUAZMUCnSs/s9MAAAAASUVORK5CYII=')
+    left top no-repeat;
     cursor:pointer;
 }
 
 input[type="radio"]:checked + label span {
-    /*background:url(/apps/owncollab_chart/img/check_radio_sheet.png) -57px top no-repeat;*/
-    background:url(/apps/owncollab_chart/img/checkbox-checked.png) left top no-repeat;
+    /*background:url(/apps/owncollab_chart/img/checkbox-checked.png) left top no-repeat;*/
+    background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAATlBMVEUAAABhfaJhfKFhfaFhfaFbeJ1Vc5p3j66Qo72Spr6Tpr+Up7+VqMCWqMCer8ais8ijs8imtsqnt8uouMyquczy9ff8/P39/f7+/v7////UwwP2AAAABnRSTlMA0tPU7/fZzSivAAAAWUlEQVR42o2OSw6AIAxEEbUqqPhB69z/oqYSQeKGt5vXZlpVQk0R/Qj6kAtvc+FxNkF0s+QdPISN9sBCtIHN29EzVge2qXS8IPMoxLDNz07m/0cSOuVKFXADuOgFHgZOXGwAAAAASUVORK5CYII=')
+    left top no-repeat;
 }
 
 #act_undo, #act_redo{
@@ -724,8 +723,13 @@ input[type="radio"]:checked + label span {
     cursor: pointer;
 }
 
-
-
+.ico_clear{
+    background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACzJYIvAAAAFXRSTlMAAxYiIy87PEdIVGBhYmNmZ215eoCuiavIAAAASklEQVQYGXXBWRZAMAADwLR2tZXc/6weCc9HzeBHIhMeC18zLvxA2UHbIZmWIRMtQUbaCBloPaSjtZCG1kBqWgWJtAgJG29rQMEJpDMI8I1jH0oAAAAASUVORK5CYII=')
+    right center no-repeat;
+    width: 24px;
+}
+.lbox_popup{ /*opacity: 0.85;*/}
+.lbox_popup:hover{ /*opacity: 1;*/}
 
 
 
