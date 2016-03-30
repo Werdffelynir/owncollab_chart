@@ -293,6 +293,7 @@ html, body {
     overflow-y: hidden;
     overflow-x: hidden;
     color: #4D4D4D;
+    padding-top: 10px;
 }
 
 /*task_control_btn icon_*/
@@ -325,9 +326,7 @@ html, body {
     height: 24px;
 }
 
-#check_predecessor input {
-    float: left;
-}
+#check_predecessor input {}
 
 .chart_share_on {
     display: none;
@@ -483,14 +482,19 @@ html, body {
 
 
 .predecessor_line {
-    text-align: left;
+    /*text-align: left;*/
     width: 485px;
     border-bottom: 1px solid RGB(240, 240, 240);
 }
-.predecessor_line .tbl_cell:first-child{
-    width: 45%;
+.predecessor_line>.tbl_cell:first-child{
+    /*width: 45%;*/
+    /*width: 280px;*/
+    width: 50%;
+    text-align: left;
 }
-.predecessor_line .tbl_cell:last-child {}
+.predecessor_line>.tbl_cell:last-child {
+    text-align: right;
+}
 /*.predecessor_line select {
     height: 20px;
     border: 1px solid #cecece;
@@ -592,6 +596,10 @@ html, body {
     width: 50px;
 }
 
+#generate-lbox-wrapper input[name=lbox_buffer]{
+    width: 77px;
+}
+
 .lbox_date_column{
     width: 35%;
 }
@@ -620,7 +628,7 @@ html, body {
     display: inline-block;
 }
 .lbox_pl_name{
-    min-width: 198px;
+    min-width: 273px;
 }
 .lbox_pl_buffer{
     min-width: 69px;

@@ -232,9 +232,14 @@
             popup = o.showPopup(target, o.resourcesView);
 
             popup.style.width = '510px';
+            popup.style.height = 'auto';
             popup.style.zIndex = '999';
             popup.style.left = '10px';
             popup.style.overflowY = 'none';
+            //popup.style.paddingTop = '10px';
+
+            //$('.lbox_popup_wrap', popup).customScrollbar("remove");
+            $(popup).customScrollbar("remove");
 
             o.resourcesAppoint(popup);
             o.resourceOnClickListener(popup, target);
@@ -260,8 +265,8 @@
             labels.className = 'predecessor_labels';
             labels.innerHTML = '<span class="lbox_pl_id">ID</span>' +
                 '<span class="lbox_pl_name">Task name</span>' +
-                '<span class="lbox_pl_buffer">Buffer</span>' +
-                '<span class="lbox_pl_link">Link type</span>';
+                '<span class="lbox_pl_buffer">Link type</span>' +
+                '<span class="lbox_pl_link"></span>';
 
             view.insertBefore(labels, view.firstChild);
 
@@ -276,15 +281,13 @@
 
             $('.lbox_popup_wrap', popup)
                 .css('overflow-y','auto')   // styled
-                .css('margin-top','10px')   //
+                //.css('margin-top','10px')
                 .css('margin-right','10px') //
                 .css('height','212px')      //
                 .addClass('default-skin')   // scrollbar skin
                 .customScrollbar();         // add style to scrollbar
 
             o.predecessorOnClickListener(popup, target);
-
-
             //$(".lbox_popup_wrap")
         }
     };
@@ -578,9 +581,9 @@
             linksSource = gantt.getTask(id).$source,
             linksTarget = gantt.getTask(id).$target;
 
-        _inpBuffer.name = 'buffer_' + id;
+/*        _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        _inpBuffer.value = buffer ? buffer +'':'0';
+        _inpBuffer.value = buffer ? buffer +'':'0';*/
 
         _inpFS.id = 'plg_fs_' + id;
         _inpFS.name = 'plg_' + id;
@@ -643,7 +646,7 @@
             _inpClear.checked = true;
         }
 
-        fragment.appendChild(_inpBuffer);
+        //fragment.appendChild(_inpBuffer);
 
         fragment.appendChild(_inpFS);
         fragment.appendChild(_inpFSLabel);
@@ -760,16 +763,6 @@
         progress = parseFloat(progress/100);
         return (progress > 1) ? 1 : progress;
     };
-
-
-
-
-
-
-
-
-
-
 
 
 

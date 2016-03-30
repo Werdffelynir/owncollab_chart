@@ -124,7 +124,6 @@
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
-
         app.dom.actionUndo.addEventListener('click',function(){gantt.undo()});
         app.dom.actionRedo.addEventListener('click',function(){gantt.redo()});
     };

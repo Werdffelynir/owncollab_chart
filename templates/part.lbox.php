@@ -25,7 +25,18 @@
             </div>
         </div>
         <div class="tbl_cell valign_middle txt_center">
-            <input name="lbox_predecessor" type="submit" value="Predecessor">
+<!--            <input name="lbox_predecessor" type="submit" value="Predecessor">-->
+
+            <div class="tbl">
+                <div class="tbl_cell"></div>
+                <div class="tbl_cell"><input name="lbox_predecessor" type="submit" value="Predecessor"></div>
+
+            </div>
+            <div class="tbl">
+                <div class="tbl_cell"></div>
+                <div class="tbl_cell">Buffer <input name="lbox_buffer" type="text"></div>
+            </div>
+
         </div>
         <div class="tbl_cell valign_middle txt_right">
             <div>
