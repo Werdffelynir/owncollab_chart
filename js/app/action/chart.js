@@ -317,7 +317,7 @@
      * Gantt chart resize. Apply a scale fit
      */
     o.scaleFit = function (){
-        app.action.fitmode.toggle()
+        //app.action.fitmode.toggle()
     };
 
     /**
