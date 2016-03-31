@@ -316,7 +316,9 @@
     /**
      * Gantt chart resize. Apply a scale fit
      */
-    o.scaleFit = function (){};
+    o.scaleFit = function (){
+        app.action.fitmode.toggle()
+    };
 
     /**
      * Generate Share Link for event
@@ -330,51 +332,51 @@
         return OC.getProtocol() + '://' + OC.getHost() + link;
     };
 
+    o.zoomValue = 2;
+
     /**
      * Run ZoomSlider
+     * Uses: app.action.chart.enableZoomSlider()
      */
-    o.enableZoomSlider = function (value) {
+    o.enableZoomSlider = function () {
+
+        $(app.dom.zoomSliderMin).click(function(){
+            o.zoomValue --;
+            o.changeScaleByStep();
+        });
+        $(app.dom.zoomSliderPlus).click(function(){
+            o.zoomValue ++;
+            o.changeScaleByStep();
+        });
+        $(app.dom.zoomSliderFit).click(o.scaleFit);
 
         $(app.dom.zoomSlider)
             .show()
             .slider({
-                min: 0, max: 90, value: 0, change: function (event, ui) {
-
-                    //app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
-                    var _s = ui.value/10,
-                        task = $('.gantt_task')[0],
-                        grid = $('.gantt_grid')[0];
-
-                    //console.log(_s, app.dom.gantt.clientWidth);
-                    //app.dom.gantt.style.width = (app.dom.gantt.clientWidth * _s) + 'px';
-                    //console.log(app.dom.gantt.clientWidth);
-                    //app.dom.gantt.style.width = app.dom.gantt.clientWidth + 1000 + 'px';
-                    //$('.gantt_data_area')[0].style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
-
-                    $(grid).css('z-index', '2')
-                        .css('position','relative');
-                    $(task)
-                        .css('z-index', '1')
-                        .css('transform', 'scaleX(1.'+ String(_s).replace(/\./,'') +')');
-
-                    //gantt.render();
-
-                    //task.style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
-
-                    /*switch (parseInt(ui.value)) {
-                        case 3:
-                            app.action.chart.scale('hour');
-                            break;
-                        case 2:
-                            app.action.chart.scale('day');
-                            break;
-                        case 1:
-                            app.action.chart.scale('week');
-                            break;
-                    }
-                    gantt.render();*/
+                min: 1, max: 3, value: o.zoomValue, step:1, change: function (event, ui) {
+                    o.zoomValue = parseInt(ui.value);
+                    o.changeScaleByStep();
                 }
             });
+    };
+
+    o.changeScaleByStep = function(){
+        var value = parseInt(o.zoomValue);
+        if(value > 3) value = 0;
+        if(value < 0) value = 3;
+
+        switch (value) {
+            case 3:
+                app.action.chart.scale('hour');
+                break;
+            case 2:
+                app.action.chart.scale('day');
+                break;
+            case 1:
+                app.action.chart.scale('week');
+                break;
+        }
+        gantt.render();
     };
 
 

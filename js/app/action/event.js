@@ -60,6 +60,9 @@
             if(name === 'scale_type'){
 
                 app.action.chart.scale(value);
+                //if(value == 'week') app.action.chart.enableZoomSlider(1);
+                //if(value == 'day') app.action.chart.enableZoomSlider(2);
+                //if(value == 'hour') app.action.chart.enableZoomSlider(3);
                 app.storageSetItem('scale_type', value);
                 gantt.render();
 
@@ -245,7 +248,7 @@
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
                         //text: gantt.locale.labels.confirm_deleting,
-                        text: _task.text + " " +(_task.id)+ " - will be deleted permanently, are you sure?",
+                        text: _task.text + " " +(_task.id)+ " - " + app.t('will be deleted permanently, are you sure?'),
                         callback: function(res){
                             if(res)
                                 gantt.deleteTask(id);

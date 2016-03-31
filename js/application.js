@@ -243,7 +243,7 @@ var app = app || {
      */
     app.storageGetItem = function (name, orValue) {
         var value = window.localStorage.getItem(name);
-        return (value === undefined) ? orValue : value;
+        return (value === null) ? orValue : value;
     };
 
     /**
@@ -252,6 +252,12 @@ var app = app || {
      */
     app.storageRemoveItem = function (name) {
         return window.localStorage.removeItem(name);
+    };
+
+
+    app.t = function (name, params) {
+        params = typeof params === 'object' ? params : {};
+        return t('owncollab_chart', name, params)
     };
 
 

@@ -1,5 +1,6 @@
 /**
  * Action fitmode.js
+ * use app.action.fitmode.toggle()
  */
 
 (function($, OC, app){
@@ -9,20 +10,18 @@
         app.action.fitmode = {};
 
     // alias of app.action.chart
-    var o = app.action.fitmode;
+    var toggler = false, cachedSettings = {},
+        o = app.action.fitmode;
 
     /**
      * Init event click on export buttons
      */
-    o.init = function (){
-
-
-    };
+    o.init = function (){};
 
     o.toggle = function (toggle) {
-        //toggle.enabled = !toggle.enabled;
+        toggler = toggle !== undefined ? toggle : !toggler;
 
-        if (toggle) {
+        if (toggler) {
             //toggle.innerHTML = "Set default Scale";
             //Saving previous scale state for future restore
             saveConfig();

@@ -48,15 +48,9 @@
         </div>
 
         <div class="oneline">
-            <input name="share_email_submit" value="Submit" type="button">
+            <input name="share_email_submit" value="<?=$l->t('Submit')?>" type="button">
         </div>
 
     </div>
-
-
-
-    <label for="file_upload_start" class="menuitem" data-action="upload" title=""><span class="svg icon icon-upload"></span><span class="displayname">Загрузить</span></label>
-
-
 
 </div>

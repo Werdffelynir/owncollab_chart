@@ -176,6 +176,9 @@
         app.dom.lbox            = o.select('#app-lbox');
         app.dom.gantt           = o.select('#gantt-chart');
         app.dom.zoomSlider      = o.select('#chart_gantt_zoom_slider');
+        app.dom.zoomSliderMin   = o.select('#zoom_min');
+        app.dom.zoomSliderPlus  = o.select('#zoom_plus');
+        app.dom.zoomSliderFit   = o.select('#zoom_fit_btn');
         app.dom.actionUndo      = o.select('#act_undo');
         app.dom.actionRedo      = o.select('#act_redo');
 

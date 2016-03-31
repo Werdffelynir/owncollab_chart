@@ -130,22 +130,22 @@
                 return item.id;
             }},
 
-            {name:"text", label:"Task name", tree:true, width: columnWidth.name, resize:true},
+            {name:"text", label: app.t('Taskname'), tree:true, width: columnWidth.name, resize:true},
 
-            {name:"start_date", label:"Start", align: "center", width: columnWidth.start, template: function(item) {
+            {name:"start_date", label: app.t('Start'), align: "center", width: columnWidth.start, template: function(item) {
                 return app.timeDateToStr(item.start_date, "%d.%m.%Y");
             }},
 
-            {name:"end_date", label:"End", align: "center", width: columnWidth.end, template: function(item) {
+            {name:"end_date", label: app.t('End'), align: "center", width: columnWidth.end, template: function(item) {
                 return app.timeDateToStr(item.end_date, "%d.%m.%Y");
             }},
 
-            {name:"duration", label:"Duration", align: "center", width: columnWidth.duration, template: function(item) {
+            {name:"duration", label: app.t('Duration'), align: "center", width: columnWidth.duration, template: function(item) {
                 var days = (Math.abs((item.start_date.getTime() - item.end_date.getTime())/(86400000)) ).toFixed(1);
                 return ((days%1==0) ? Math.round(days) : days) + ' d';
             }},
 
-            {name:"users", label:"Resources", align: "center", width: columnWidth.resources, template: function(item) {
+            {name:"users", label: app.t('Resources'), align: "center", width: columnWidth.resources, template: function(item) {
                 if (app.u.isArr(item.users)) {
                     return app.u.uniqueArr(item.users).join(', ');
                 }else if(app.u.isStr(item.users)){
@@ -188,7 +188,7 @@
             // gantt lightbox disable
             gantt.showLightbox = function(id){};
             gantt.hideLightbox = function(id){};
-            app.action.error.inline('You do not have the right to modify the chart', 'Information: ');
+            app.action.error.inline(app.t('You do not have the right to modify the chart'), app.t('Information') + ': ');
         }
     };
 

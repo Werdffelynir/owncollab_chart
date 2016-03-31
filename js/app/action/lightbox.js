@@ -73,6 +73,9 @@
         if(t.parent == 0){
             $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
         }
+        if(t.type == 'project'){
+            $('#generate-lbox-wrapper .lbox_buffer_wrapp').remove();
+        }
 
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
@@ -90,7 +93,7 @@
                         case 'progress':
                             fso[_name].value = o.progressToPercent(o.task[_name]) + ' %';
                             fso[_name].onclick = o.onClickLightboxInput;
-                            fso[_name].onkeyup = o.onChangeProgress;
+                            fso[_name].onkeyup = o.onChangeWithPrefix;
                             break;
 
                         case 'users':
@@ -108,9 +111,9 @@
                             break;
 
                         case 'buffer':
-                            fso[_name].value = o.task.buffer;//app.action.chart.durationDisplay(o.task);
-                            //fso[_name].disabled = true;
-                            fso[_name].onkeyup = o.onChangeLightboxInput;
+                            fso[_name].value = o.task.buffer + ' days';
+                            fso[_name].onclick = o.onClickLightboxInput;
+                            fso[_name].onkeyup = o.onChangeWithPrefix;
                             break;
 
                         case 'start_date':
@@ -168,18 +171,27 @@
         });
     };
 
-    o.onChangeProgress = function (event){
+    o.onChangeWithPrefix = function (event){
         if(!o.task || !o.field) return;
 
-        if(event.target.name == 'lbox_progress'){
-            var target = event.target,
-                name = target.name,
-                value = target.value;
+        var target = event.target,
+            name = target.name,
+            value = target.value;
 
+        if(name == 'lbox_progress'){
             target.value = o.progressToPercent( o.percentToProgress(value) ) + ' %';
             o.task['progress'] = o.percentToProgress(value);
         }
+        if(name == 'lbox_buffer'){
+            var _value = parseInt(value);
+            if(_value > 100) _value = 100;
+            setTimeout(function(){
+                target.value = _value + ' days';
+                o.task['buffer'] = _value;
+            },300);
+        }
     };
+
 
     o.onChangeLightboxInput = function (event){
 
@@ -249,6 +261,11 @@
             target.select();
 
         }
+        else if(target['name'] == 'lbox_buffer'){
+
+            target.select();
+
+        }
         else if(target['name'] == 'lbox_end_date'){
 
             //app.timeStrToDate($('input[name=lbox_start_date]').val())
@@ -264,8 +281,8 @@
 
             labels.className = 'predecessor_labels';
             labels.innerHTML = '<span class="lbox_pl_id">ID</span>' +
-                '<span class="lbox_pl_name">Task name</span>' +
-                '<span class="lbox_pl_buffer">Link type</span>' +
+                '<span class="lbox_pl_name">' + app.t('Taskname') + '</span>' +
+                '<span class="lbox_pl_buffer">' + app.t('Link type') + '</span>' +
                 '<span class="lbox_pl_link"></span>';
 
             view.insertBefore(labels, view.firstChild);

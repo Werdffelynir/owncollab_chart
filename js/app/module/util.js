@@ -424,5 +424,19 @@
 
 
 
+    /**
+     * Calls the callback in a given interval until it returns true
+     * @param {function} callback
+     * @param {number} interval in milliseconds
+     */
+    o.waitFor = function(callback, interval) {
+        var internalCallback = function() {
+            if(callback() !== true) {
+                setTimeout(internalCallback, interval);
+            }
+        };
+        internalCallback();
+    };
+
 
 })(jQuery, OC, app);

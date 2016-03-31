@@ -19,19 +19,21 @@ $appName = 'owncollab_chart';
 $app = new App($appName);
 $container = $app->getContainer();
 
+//$l = \OC::$server->getL10N('owncollab_chart', 'de_DE');
 
 /**
  * Navigation menu settings
  */
 $container->query('OCP\INavigationManager')->add(function () use ($container, $appName) {
 	$urlGenerator = $container->query('OCP\IURLGenerator');
-	$l10n = $container->query('OCP\IL10N');
+	//$l10n = $container->query('OCP\IL10N');
+	$l = \OC::$server->getL10N('owncollab_chart');
 	return [
 		'id' => $appName,
 		'order' => 10,
 		'href' => $urlGenerator->linkToRoute($appName.'.main.index'),
 		'icon' => $urlGenerator->imagePath($appName, 'gantt.svg'),
-		'name' => $l10n->t('GanttChart ')
+		'name' => $l->t('Gantt')
 	];
 });
 
