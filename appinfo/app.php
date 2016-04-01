@@ -19,19 +19,21 @@ $appName = 'owncollab_chart';
 $app = new App($appName);
 $container = $app->getContainer();
 
+//$l = \OC::$server->getL10N('owncollab_chart', 'de_DE');
 
 /**
  * Navigation menu settings
  */
 $container->query('OCP\INavigationManager')->add(function () use ($container, $appName) {
 	$urlGenerator = $container->query('OCP\IURLGenerator');
-	$l10n = $container->query('OCP\IL10N');
+	//$l10n = $container->query('OCP\IL10N');
+	$l = \OC::$server->getL10N('owncollab_chart');
 	return [
 		'id' => $appName,
 		'order' => 10,
 		'href' => $urlGenerator->linkToRoute($appName.'.main.index'),
 		'icon' => $urlGenerator->imagePath($appName, 'gantt.svg'),
-		'name' => $l10n->t('Chart ')
+		'name' => $l->t('Gantt')
 	];
 });
 
@@ -66,6 +68,7 @@ if(Helper::isAppPage($appName)){
 
 	// dhtmlxGantt v.4.0.0 Professional
 	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
+	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_undo');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');

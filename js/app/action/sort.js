@@ -162,11 +162,12 @@
         gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplayFilters);
 
         var div = document.createElement('div'),
-            inner = '<p>Filter by task groups or tasks</p>';
+            inner = '<p>' +app.t('Filter by task groups or tasks')+ '</p>';
 
-        inner += '<p><input id="gantt_filter_name" type="text" placeholder="Enter passphrase to be part of task name" value="' + o.filtersNames + '"></p>';
-        inner += '<p>and / or</p>';
-        inner += '<p><input id="gantt_filter_group" type="text" placeholder="Enter passphrase to be part of task group" value="' + o.filtersGroups + '"></p>';
+        inner += '<div class="tbl">';
+        inner += '<div class="tbl_cell"><input id="gantt_filter_name" type="text" placeholder="'+app.t('Enter passphrase to be part of task name')+'" value="' + o.filtersNames + '"></div>';
+        inner += '<div class="tbl_cell ico_clear"></div>';
+        inner += '</div>';
 
         div.innerHTML = inner;
 
@@ -176,14 +177,15 @@
         popup.style.left = '110px';
 
         var gantt_filter_name = document.getElementById('gantt_filter_name'),
-            gantt_filter_group = document.getElementById('gantt_filter_group');
+            clear_btn = document.querySelector('.ico_clear');
 
         gantt_filter_name.addEventListener('keyup', function(event){
             o.filtersNames = event.target.value;
             gantt.refreshData();
         }, false);
-        gantt_filter_group.addEventListener('keyup', function(event){
-            o.filtersGroups = event.target.value;
+
+        clear_btn.addEventListener('click', function(event){
+            o.filtersNames = gantt_filter_name.value = '';
             gantt.refreshData();
         }, false);
 
@@ -258,9 +260,10 @@
      */
     o.onFilterForResource = function(event){
         var div = document.createElement('div'),
-            inner = '<p>Filter by task groups or resource</p>';
+            inner = '<p>'+app.t('Filter by task groups or resource')+'</p>';
 
         var viewFilterResource = o.getViewFilterResource();
+        div.innerHTML = inner;
         div.appendChild(viewFilterResource);
 
         var popup = app.action.lightbox.showPopup(o.icoFilter.task, div);

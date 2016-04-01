@@ -81,8 +81,9 @@ var app = app || {
     var inc = new Inc(),
         path = '/apps/' + app.name;
 
-    inc.require(path + '/js/app/controller/main.js');
-    inc.require(path + '/js/app/controller/public.js');
+    inc.require(path + '/js/app/module/db.js');
+    inc.require(path + '/js/app/module/util.js');
+
     inc.require(path + '/js/app/action/chart.js');
     inc.require(path + '/js/app/action/error.js');
     inc.require(path + '/js/app/action/event.js');
@@ -92,8 +93,11 @@ var app = app || {
     inc.require(path + '/js/app/action/lightbox.js');
     inc.require(path + '/js/app/action/fitmode.js');
     inc.require(path + '/js/app/action/sort.js');
-    inc.require(path + '/js/app/module/db.js');
-    inc.require(path + '/js/app/module/util.js');
+    inc.require(path + '/js/app/action/buffer.js');
+
+    inc.require(path + '/js/app/controller/main.js');
+    inc.require(path + '/js/app/controller/public.js');
+
     inc.onerror = onError;
     inc.onload = onLoaded;
     inc.init();
@@ -219,10 +223,19 @@ var app = app || {
         return date;
     };
 
+    // todo: buffer fix
     app.injectBufferToDate = function  (_task, _buffer){
         _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
         _task.start_date = app.addDaysToDate(parseFloat(_buffer), _task.start_date);
         _task.end_date = app.addDaysToDate(parseFloat(_buffer), _task.end_date);
+        return _task;
+    };
+    app.injectBufferToDate2 = function  (_task, _buffer){
+        _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
+
+        //_task.start_date = app.addDaysToDate(parseFloat(_buffer), _task.start_date);
+        //_task.end_date = app.addDaysToDate(parseFloat(_buffer), _task.end_date);
+
         return _task;
     };
 
@@ -243,7 +256,7 @@ var app = app || {
      */
     app.storageGetItem = function (name, orValue) {
         var value = window.localStorage.getItem(name);
-        return (value === undefined) ? orValue : value;
+        return (value === null) ? orValue : value;
     };
 
     /**
@@ -252,6 +265,12 @@ var app = app || {
      */
     app.storageRemoveItem = function (name) {
         return window.localStorage.removeItem(name);
+    };
+
+
+    app.t = function (name, params) {
+        params = typeof params === 'object' ? params : {};
+        return t('owncollab_chart', name, params)
     };
 
 

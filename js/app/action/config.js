@@ -31,12 +31,18 @@
          * Global Date format
          * @type {string}
          */
-        gantt.config.api_date  = "%Y-%m-%d %H:%i";
-        gantt.config.task_date = "%Y-%m-%d %H:%i";
-        gantt.config.date_grid = "%Y-%m-%d %H:%i";
+        //gantt.config.api_date  = "%Y-%m-%d %H:%i";
+        //gantt.config.task_date = "%Y-%m-%d %H:%i";
+        //gantt.config.date_grid = "%Y-%m-%d %H:%i";
 
         gantt.config.grid_resize = true;
 
+        // reordering tasks within the whole gantt
+        gantt.config.order_branch = true;
+        //gantt.config.order_branch_free = true;
+
+        gantt.config.undo = true;
+        gantt.config.redo = true;
 
         // add style class to milestone display object
         gantt.templates.task_class  = function(start, end, task){
@@ -60,12 +66,6 @@
         // Styling the gantt chart. Column tasks names size width
         gantt.config.row_height = 22;
 
-        // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = false;
-
-        // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = true;
-
         // Auto scheduling makes the start date of the second task update according to the end date
         // of the first task each when it changes.
         gantt.config.auto_scheduling = true;
@@ -78,7 +78,6 @@
 
         // allows or forbids creation of links from parent tasks (projects) to their children
         gantt.config.auto_scheduling_descendant_links = false;
-
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1) {
@@ -98,9 +97,15 @@
         // Enable zoom slider
         app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
+        // Enables automatic adjusting of the grid's columns to the grid's width
+        gantt.config.autofit = false;
+
         // Apply scale fit
         if(app.data.project['scale_fit']) {
-            app.action.chart.scaleFit();
+            //app.action.chart.scaleFit();
+
+            // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
+            gantt.config.fit_tasks = true;
         }
 
 
@@ -124,22 +129,22 @@
                 return item.id;
             }},
 
-            {name:"text", label:"Task name", tree:true, width: columnWidth.name, resize:true},
+            {name:"text", label: app.t('Taskname'), tree:true, width: columnWidth.name, resize:true},
 
-            {name:"start_date", label:"Start", align: "center", width: columnWidth.start, template: function(item) {
+            {name:"start_date", label: app.t('Start'), align: "center", width: columnWidth.start, template: function(item) {
                 return app.timeDateToStr(item.start_date, "%d.%m.%Y");
             }},
 
-            {name:"end_date", label:"End", align: "center", width: columnWidth.end, template: function(item) {
+            {name:"end_date", label: app.t('End'), align: "center", width: columnWidth.end, template: function(item) {
                 return app.timeDateToStr(item.end_date, "%d.%m.%Y");
             }},
 
-            {name:"duration", label:"Duration", align: "center", width: columnWidth.duration, template: function(item) {
+            {name:"duration", label: app.t('Duration'), align: "center", width: columnWidth.duration, template: function(item) {
                 var days = (Math.abs((item.start_date.getTime() - item.end_date.getTime())/(86400000)) ).toFixed(1);
                 return ((days%1==0) ? Math.round(days) : days) + ' d';
             }},
 
-            {name:"users", label:"Resources", align: "center", width: columnWidth.resources, template: function(item) {
+            {name:"users", label: app.t('Resources'), align: "center", width: columnWidth.resources, template: function(item) {
                 if (app.u.isArr(item.users)) {
                     return app.u.uniqueArr(item.users).join(', ');
                 }else if(app.u.isStr(item.users)){
@@ -182,7 +187,7 @@
             // gantt lightbox disable
             gantt.showLightbox = function(id){};
             gantt.hideLightbox = function(id){};
-            app.action.error.inline('You do not have the right to modify the chart', 'Information: ');
+            app.action.error.inline(app.t('You do not have the right to modify the chart'), app.t('Information') + ': ');
         }
     };
 

@@ -52,18 +52,31 @@
     o.onBeforeLightbox = function (id){
         o.task = gantt.getTask(id);
 
+        // todo buffer
         // Buffer update date position to normal
-        if(o.task.buffer > 0 && o.task.isBuffered === true){
+        /*if(o.task.buffer > 0 && o.task.isBuffered === true){
             o.task.isBuffered = false;
             o.task = app.injectBufferToDate(o.task, -parseFloat(o.task.buffer), true);
             gantt.updateTask(id);
-        }
+        }*/
 
         o.task.base_template = '<div id="generate-lbox-wrapper">' + app.dom.lbox.innerHTML + '</div>';
+
         return true;
     };
 
     o.onLightbox = function (id){
+
+        // delete predecessor button if task is first child in the project
+        var t = gantt.getTask(id);
+        //console.log(t.parent);
+        //if(gantt.getChildren(t.parent)[0] == id){
+        if(t.parent == 0){
+            $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
+        }
+        if(t.type == 'project'){
+            $('#generate-lbox-wrapper .lbox_buffer_wrapp').remove();
+        }
 
         o.field = (function(){
             var fsn = document.querySelectorAll('#generate-lbox-wrapper input'),
@@ -81,7 +94,7 @@
                         case 'progress':
                             fso[_name].value = o.progressToPercent(o.task[_name]) + ' %';
                             fso[_name].onclick = o.onClickLightboxInput;
-                            fso[_name].onkeyup = o.onChangeProgress;
+                            fso[_name].onkeyup = o.onChangeWithPrefix;
                             break;
 
                         case 'users':
@@ -98,11 +111,12 @@
                             fso[_name].onclick = o.onClickLightboxInputMilestone;
                             break;
 
-                        case 'buffer':
-                            fso[_name].value = o.task.buffer;//app.action.chart.durationDisplay(o.task);
-                            //fso[_name].disabled = true;
-                            fso[_name].onkeyup = o.onChangeLightboxInput;
-                            break;
+                        // todo buffer
+                        /*case 'buffer':
+                            fso[_name].value = o.task.buffer + ' days';
+                            fso[_name].onclick = o.onClickLightboxInput;
+                            fso[_name].onkeyup = o.onChangeWithPrefix;
+                            break;*/
 
                         case 'start_date':
                         case 'end_date':
@@ -149,28 +163,38 @@
 
     o.onAfterLightbox = function (){
 
+        // todo buffer
         // Buffer update date position to time with buffer
-        gantt._get_tasks_data().map(function(task){
+        /*gantt._get_tasks_data().map(function(task){
             if(task.buffer > 0 && task.isBuffered !== true){
                 app.injectBufferToDate(task, parseFloat(task.buffer), true);
                 task.isBuffered = true;
                 gantt.render();
             }
-        });
+        });*/
     };
 
-    o.onChangeProgress = function (event){
+    o.onChangeWithPrefix = function (event){
         if(!o.task || !o.field) return;
 
-        if(event.target.name == 'lbox_progress'){
-            var target = event.target,
-                name = target.name,
-                value = target.value;
+        var target = event.target,
+            name = target.name,
+            value = target.value;
 
+        if(name == 'lbox_progress'){
             target.value = o.progressToPercent( o.percentToProgress(value) ) + ' %';
             o.task['progress'] = o.percentToProgress(value);
         }
+        /*if(name == 'lbox_buffer'){
+            var _value = parseInt(value);
+            if(_value > 100) _value = 100;
+            setTimeout(function(){
+                target.value = _value + ' days';
+                o.task['buffer'] = _value;
+            },300);
+        }*/
     };
+
 
     o.onChangeLightboxInput = function (event){
 
@@ -223,9 +247,14 @@
             popup = o.showPopup(target, o.resourcesView);
 
             popup.style.width = '510px';
+            popup.style.height = 'auto';
             popup.style.zIndex = '999';
             popup.style.left = '10px';
             popup.style.overflowY = 'none';
+            //popup.style.paddingTop = '10px';
+
+            //$('.lbox_popup_wrap', popup).customScrollbar("remove");
+            $(popup).customScrollbar("remove");
 
             o.resourcesAppoint(popup);
             o.resourceOnClickListener(popup, target);
@@ -235,6 +264,13 @@
             target.select();
 
         }
+
+        // todo buffer
+        /*else if(target['name'] == 'lbox_buffer'){
+
+            target.select();
+
+        }*/
         else if(target['name'] == 'lbox_end_date'){
 
             //app.timeStrToDate($('input[name=lbox_start_date]').val())
@@ -242,23 +278,39 @@
         }
         else if(target['name'] == 'lbox_predecessor'){
             o.predecessorViewGenerate();
-            popup = o.showPopup(target, o.predecessorView);
+
+
+            var view = o.predecessorView,
+                labels = document.createElement('div'),
+                btns = document.createElement('div');
+
+            labels.className = 'predecessor_labels';
+            labels.innerHTML = '<span class="lbox_pl_id">ID</span>' +
+                '<span class="lbox_pl_name">' + app.t('Taskname') + '</span>' +
+                '<span class="lbox_pl_buffer">' + app.t('Buffer') + '</span>' +
+                '<span class="lbox_pl_link">' + app.t('Link type') + '</span>';
+
+            view.insertBefore(labels, view.firstChild);
+
+            //view.insertAdjacentHTML('afterend', '<div id="predecessor_labels">two</div>');
+
+            popup = o.showPopup(target, view);
 
             popup.style.width = '510px';
             popup.style.zIndex = '999';
             popup.style.left = '10px';
+            //popup.style.top = '10px';
 
             $('.lbox_popup_wrap', popup)
                 .css('overflow-y','auto')   // styled
-                .css('margin-top','10px')   //
+                //.css('margin-top','10px')
                 .css('margin-right','10px') //
-                .css('height','212px')      //
+                .css('min-height','180px')
+                //.css('height','212px')
                 .addClass('default-skin')   // scrollbar skin
                 .customScrollbar();         // add style to scrollbar
 
             o.predecessorOnClickListener(popup, target);
-
-
             //$(".lbox_popup_wrap")
         }
     };
@@ -460,8 +512,9 @@
     };
     o.isResourceUser = function(user) {
         var users = o.getResources();
-        if(users.indexOf(user) !== 1 ) return true;
-        return false;
+        //if(users.indexOf(user) !== 1 ) return true;
+        //return false;
+        return users.indexOf(user) !== 1;
     };
     o.addResource = function(user){
         var users = o.getResources(),
@@ -501,7 +554,7 @@
 
         tasks.forEach(function(item){
             if(item.id == o.task.id) return;
-
+            if(item.type == 'project') return;
 
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
@@ -511,7 +564,7 @@
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
 
-            _name.textContent = (item.id) + '\t' + item.text;
+            _name.innerHTML = '<span class="predecessor_item_id">' + (item.id) + '</span>' + item.text;
             _link.appendChild(_linkElems);
 
             _line.appendChild(_name);
@@ -554,7 +607,7 @@
 
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        _inpBuffer.value = buffer ? buffer +'':'0';
+        _inpBuffer.value = (buffer ? buffer +'':'0') + ' ' +app.t('days');
 
         _inpFS.id = 'plg_fs_' + id;
         _inpFS.name = 'plg_' + id;
@@ -596,10 +649,11 @@
         _inpClearLabel.appendChild(_inpClearSpan);
         _inpClearLabel.appendChild(document.createTextNode('rm'));
 
-        if(linksTarget.length > 0){
-            linksTarget.map(function(_item){
+        // todo:linksTarget to linksSource, change _link.source to _link.target
+        if(linksSource.length > 0){
+            linksSource.map(function(_item){
                 var _link = gantt.getLink(_item);
-                if(_link.source == o.task.id) {
+                if(_link.target == o.task.id) {
                     _isChecked = true;
                     switch (_link.type){
                         case '0': _inpFS.checked = true; break;
@@ -646,21 +700,25 @@
             var type = this.value;
 
             if(type == 'clear'){
-                o.deleteLinksWithTarget(id);
+                //o.deleteLinksWithTarget(id);
+                o.deleteLinksWithSource(id);
             }else{
-                o.deleteLinksWithTarget(id);
+                //o.deleteLinksWithTarget(id);
+                o.deleteLinksWithSource(id);
                 var linkId = gantt.addLink({
                     id: app.linkIdIterator(),
-                    source: o.task['id'],
-                    target: id,
+                    source:  id,
+                    target: o.task['id'],
                     type: type
                 });
             }
         });
 
-        $('input[type=text]', popup).on('change', function(event){
+        // todo: buffer fix
+        /*$('input[type=text]', popup).on('change', function(event){
             var id = this.name.split('_')[1],
                 task = gantt.getTask(id);
+
             if(task){
                 task.buffer = parseFloat(this.value);
                 if(task.isBuffered === true){
@@ -669,7 +727,8 @@
                 }
                 gantt.updateTask(id);
             }
-        });
+        });*/
+
     };
 
 
@@ -731,16 +790,6 @@
         progress = parseFloat(progress/100);
         return (progress > 1) ? 1 : progress;
     };
-
-
-
-
-
-
-
-
-
-
 
 
 

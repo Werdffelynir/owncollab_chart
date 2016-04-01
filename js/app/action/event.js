@@ -60,6 +60,9 @@
             if(name === 'scale_type'){
 
                 app.action.chart.scale(value);
+                //if(value == 'week') app.action.chart.enableZoomSlider(1);
+                //if(value == 'day') app.action.chart.enableZoomSlider(2);
+                //if(value == 'hour') app.action.chart.enableZoomSlider(3);
                 app.storageSetItem('scale_type', value);
                 gantt.render();
 
@@ -174,7 +177,32 @@
      *
      */
     //o.onGanttReady = function (){};
-    //o.onGanttRender = function (){};
+
+    /**
+     * Catch a gantt event "onGanttRender"
+     */
+    o._undo_redo_timer = 0;
+    o.onGanttRender = function (){
+        // checked and re-visual buttons Undo and Redo
+        //To get the stack of the stored undo commands, use the getUndoStack method:
+        //To return the stack of the stored redo commands, apply the getRedoStack method:
+        clearTimeout(o._undo_redo_timer);
+        o._undo_redo_timer = setTimeout(function(){
+            var undoStack = gantt.getUndoStack(),
+                redoStack= gantt.getRedoStack();
+            if(undoStack.length > 0){
+                app.dom.actionUndo.style.visibility = 'visible';
+            }else{
+                app.dom.actionUndo.style.visibility = 'hidden';
+            }
+            if(redoStack.length > 0){
+                app.dom.actionRedo.style.visibility = 'visible';
+            }else{
+                app.dom.actionRedo.style.visibility = 'hidden';
+            }
+        },1000);
+    };
+
 
     o.onTaskClick = function (id, event){
         var target = event.target;
@@ -220,7 +248,7 @@
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
                         //text: gantt.locale.labels.confirm_deleting,
-                        text: _task.text + " " +(_task.id)+ " - will be deleted permanently, are you sure?",
+                        text: _task.text + " " +(_task.id)+ " - " + app.t('will be deleted permanently, are you sure?'),
                         callback: function(res){
                             if(res)
                                 gantt.deleteTask(id);
@@ -242,9 +270,19 @@
      * @param task
      */
     o.onBeforeTaskUpdate = function(id, task){
-        //console.log(task);
-        o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
+
+        var maxLimit = 750,
+            maxLimit = 750;
+
+        // date checked and fixed if the date is beyond the scope
+        if(task.start_date < app.data.baseProjectTask.start_date)
+            task.start_date = app.data.baseProjectTask.start_date;
+        if(task.end_date > app.addDaysToDate(maxLimit, app.data.baseProjectTask.end_date))
+            task.end_date = app.addDaysToDate(7, task.end_date);
+
+            o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
     };
+
     o.onAfterTaskDelete = function(id, task){
 
         // update the parent task type, if it does not have children
@@ -260,6 +298,8 @@
     };
 
     o.onAfterTaskUpdate = function(id, task){
+
+        // change types task and project by nesting
         if(task.is_project != 1){
             var parent = gantt.getTask(task.parent),
                 children = gantt.getChildren(task.parent);

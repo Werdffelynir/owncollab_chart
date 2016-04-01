@@ -47,7 +47,7 @@
 
         //gantt.attachEvent("onGanttRender", onGanttReady);
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
-        //gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
+        gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
         //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
         //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
         //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
@@ -58,27 +58,33 @@
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
         gantt.attachEvent("onAfterTaskUpdate", app.action.event.onAfterTaskUpdate);
 
+
+// todo buffer
+        /*
         // buffer listener
         gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){
-            // any custom logic here
-            //console.log(task, startDate, link, predecessor);
-            if(task.buffer > 0){
-                return false;
+            task.isBuffered = false;
+        });
+
+        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
+            if(parseFloat(predecessor.buffer) > 0){
+                task.start_date = app.addDaysToDate(parseFloat(predecessor.buffer), startDate)
             }
-            else
-                return true;
+            if(task.buffer > 0 && !task.isBuffered){
+                app.injectBufferToDate(task, parseFloat(task.buffer), true);
+                task.isBuffered = true;
+            }
         });
 
         // After task drag update date position to time with buffer
         gantt.attachEvent("onAfterTaskDrag", function(id, parent, tindex){
-            var _moveTask = gantt.getTask(id);
-            //console.log(_moveTask);
-            if(_moveTask.buffer > 0){
-                app.injectBufferToDate(_moveTask, parseFloat(_moveTask.buffer), true);
-                _moveTask.isBuffered = true;
+            var task = gantt.getTask(id);
+            if(task.buffer > 0){
+                app.injectBufferToDate(task, parseFloat(task.buffer), true);
+                task.isBuffered = true;
                 gantt.render();
             }
-        });
+        });*/
 
         // Этот фильтр удаляет с таска проэкта даты,
         // для того что бы таск был интерактивен по отношеню к детям
@@ -96,12 +102,15 @@
                 _task['duration'] = 1;
             }
 
+            // todo buffer
+            /*
             // Buffer update date position to time with buffer
             if(_task.buffer > 0){
                 _task.isBuffered = true;
                 _task.start_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
                 _task.end_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
-            }
+            }*/
+
             return _task;
         });
 
@@ -119,16 +128,13 @@
             app.action.error.page('Gantt.parse data have error');
         }
         // Dynamic chart resize when change window
-        //o.ganttDynamicResize();
+        o.ganttDynamicResize();
 
         // Catcher of gantt events
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
-
-        // form.styler
-        //$('input, select').styler();
-
-
+        app.dom.actionUndo.addEventListener('click',function(){gantt.undo()});
+        app.dom.actionRedo.addEventListener('click',function(){gantt.redo()});
     };
 
 
@@ -311,12 +317,12 @@
     };
 
 
-
-
     /**
      * Gantt chart resize. Apply a scale fit
      */
-    o.scaleFit = function (){};
+    o.scaleFit = function (){
+        app.action.fitmode.toggle()
+    };
 
     /**
      * Generate Share Link for event
@@ -330,51 +336,51 @@
         return OC.getProtocol() + '://' + OC.getHost() + link;
     };
 
+    o.zoomValue = 2;
+
     /**
      * Run ZoomSlider
+     * Uses: app.action.chart.enableZoomSlider()
      */
-    o.enableZoomSlider = function (value) {
+    o.enableZoomSlider = function () {
+
+        $(app.dom.zoomSliderMin).click(function(){
+            o.zoomValue --;
+            o.changeScaleByStep();
+        });
+        $(app.dom.zoomSliderPlus).click(function(){
+            o.zoomValue ++;
+            o.changeScaleByStep();
+        });
+        $(app.dom.zoomSliderFit).click(o.scaleFit);
 
         $(app.dom.zoomSlider)
             .show()
             .slider({
-                min: 0, max: 90, value: 0, change: function (event, ui) {
-
-                    //app.dom.gantt.style.transform = 'scale(1.'+ String((ui.value/10)).replace(/\./,'') +')';
-                    var _s = ui.value/10,
-                        task = $('.gantt_task')[0],
-                        grid = $('.gantt_grid')[0];
-
-                    //console.log(_s, app.dom.gantt.clientWidth);
-                    //app.dom.gantt.style.width = (app.dom.gantt.clientWidth * _s) + 'px';
-                    //console.log(app.dom.gantt.clientWidth);
-                    //app.dom.gantt.style.width = app.dom.gantt.clientWidth + 1000 + 'px';
-                    //$('.gantt_data_area')[0].style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
-
-                    $(grid).css('z-index', '2')
-                        .css('position','relative');
-                    $(task)
-                        .css('z-index', '1')
-                        .css('transform', 'scaleX(1.'+ String(_s).replace(/\./,'') +')');
-
-                    //gantt.render();
-
-                    //task.style.transform = 'scaleX(1.'+ String(_s).replace(/\./,'') +')';
-
-                    /*switch (parseInt(ui.value)) {
-                        case 3:
-                            app.action.chart.scale('hour');
-                            break;
-                        case 2:
-                            app.action.chart.scale('day');
-                            break;
-                        case 1:
-                            app.action.chart.scale('week');
-                            break;
-                    }
-                    gantt.render();*/
+                min: 1, max: 3, value: o.zoomValue, step:1, change: function (event, ui) {
+                    o.zoomValue = parseInt(ui.value);
+                    o.changeScaleByStep();
                 }
             });
+    };
+
+    o.changeScaleByStep = function(){
+        var value = parseInt(o.zoomValue);
+        if(value > 3) value = 0;
+        if(value < 0) value = 3;
+
+        switch (value) {
+            case 3:
+                app.action.chart.scale('hour');
+                break;
+            case 2:
+                app.action.chart.scale('day');
+                break;
+            case 1:
+                app.action.chart.scale('week');
+                break;
+        }
+        gantt.render();
     };
 
 
