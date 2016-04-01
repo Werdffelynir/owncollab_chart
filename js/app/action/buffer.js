@@ -26,7 +26,19 @@
 
     };
 
-    o.add = function(){
+    o.transactionBegin = function(){
+
+    };
+
+    o.transactionCommit = function(){
+
+    };
+
+
+    o.addToStart = function(){
+
+    };
+    o.addToEnd = function(){
 
     };
 

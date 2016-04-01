@@ -607,7 +607,7 @@
 
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        _inpBuffer.value = (buffer ? buffer +'':'0') + ' ' +app.t('days');
+        _inpBuffer.value = (buffer ? buffer +'':'0') + ' ' +app.t('d');
 
         _inpFS.id = 'plg_fs_' + id;
         _inpFS.name = 'plg_' + id;
@@ -727,7 +727,37 @@
                 }
                 gantt.updateTask(id);
             }
-        });*/
+        });
+         var _value = parseInt(value);
+         if(_value > 100) _value = 100;
+         setTimeout(function(){
+         target.value = _value + ' days';
+         o.task['buffer'] = _value;
+         },300);
+        */
+        $('input[type=text]', popup).on('click', function(event){
+            this.select();
+        });
+        $('input[type=text]', popup).on('keyup', function(event){
+            var id = this.name.split('_')[1],
+                task = gantt.getTask(id),
+                elem = this,
+                buffer = parseInt(elem.value);
+
+            if(buffer > 90) buffer = 90;
+            else if(buffer < 0) buffer = 0;
+            else if(isNaN(buffer)) buffer = 0;
+
+            setTimeout(function(){
+                elem.value = buffer + ' d';
+                o.task.buffer = task.buffer = buffer;
+                elem.select();
+            },300);
+
+            console.log(task);
+            //console.log(task);
+            //console.log(value);
+        });
 
     };
 

@@ -110,6 +110,9 @@
                 _task.start_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
                 _task.end_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
             }*/
+            _task.is_buffered = false;
+            _task.start_date_origin = app.timeStrToDate(_task.start_date);
+            _task.end_date_origin = app.timeStrToDate(_task.end_date);
 
             return _task;
         });

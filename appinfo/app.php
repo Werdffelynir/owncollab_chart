@@ -64,7 +64,6 @@ if(Helper::isAppPage($appName)){
     Util::addStyle($appName, 'dhtmlxgantt');
 	//Util::addScript($appName,'dhtmlxgantt/dhtmlxgantt');
 	//Util::addScript($appName,'dhtmlxgantt/ext/dhtmlxgantt_marker');
-	//Util::addScript($appName,'dhtmlxgantt/api');
 
 	// dhtmlxGantt v.4.0.0 Professional
 	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
@@ -73,7 +72,9 @@ if(Helper::isAppPage($appName)){
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');
 	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_auto_scheduling');
-	Util::addScript($appName,'dhtmlxganttpro/api');
+
+    // dhtmlxGantt v.4.0.0 Common
+	Util::addScript($appName,'dhtmlxgantt/api');
 }
 
 /**

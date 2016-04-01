@@ -299,6 +299,9 @@
 
     o.onAfterTaskUpdate = function(id, task){
 
+        task.start_date_origin = task.start_date;
+        task.end_date_origin = task.end_date;
+
         // change types task and project by nesting
         if(task.is_project != 1){
             var parent = gantt.getTask(task.parent),

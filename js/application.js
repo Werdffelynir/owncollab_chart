@@ -224,20 +224,12 @@ var app = app || {
     };
 
     // todo: buffer fix
-    app.injectBufferToDate = function  (_task, _buffer){
-        _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
-        _task.start_date = app.addDaysToDate(parseFloat(_buffer), _task.start_date);
-        _task.end_date = app.addDaysToDate(parseFloat(_buffer), _task.end_date);
-        return _task;
-    };
-    app.injectBufferToDate2 = function  (_task, _buffer){
-        _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
-
-        //_task.start_date = app.addDaysToDate(parseFloat(_buffer), _task.start_date);
-        //_task.end_date = app.addDaysToDate(parseFloat(_buffer), _task.end_date);
-
-        return _task;
-    };
+    //app.injectBufferToDate = function  (_task, _buffer){
+    //    _buffer = (_buffer === undefined) ? (_task.buffer ? _task.buffer : 0) : _buffer;
+    //    _task.start_date = app.addDaysToDate(parseFloat(_buffer), _task.start_date);
+    //    _task.end_date = app.addDaysToDate(parseFloat(_buffer), _task.end_date);
+    //    return _task;
+    //};
 
     /**
      * Saved data to local storage
