@@ -58,6 +58,9 @@
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
         gantt.attachEvent("onAfterTaskUpdate", app.action.event.onAfterTaskUpdate);
 
+
+// todo buffer
+        /*
         // buffer listener
         gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){
             task.isBuffered = false;
@@ -81,7 +84,7 @@
                 task.isBuffered = true;
                 gantt.render();
             }
-        });
+        });*/
 
         // Этот фильтр удаляет с таска проэкта даты,
         // для того что бы таск был интерактивен по отношеню к детям
@@ -99,12 +102,15 @@
                 _task['duration'] = 1;
             }
 
+            // todo buffer
+            /*
             // Buffer update date position to time with buffer
             if(_task.buffer > 0){
                 _task.isBuffered = true;
                 _task.start_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
                 _task.end_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
-            }
+            }*/
+
             return _task;
         });
 

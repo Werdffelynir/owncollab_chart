@@ -445,7 +445,7 @@ html, body {
 /**/
 .gantt_task_line.gantt_buffer_line{
     /*background-color: #FFF;*/
-    background: #FFF url('/apps/owncollab_chart/img/bg_buffer.png');
+    /*background: #FFF url('/apps/owncollab_chart/img/bg_buffer.png');*/
     border: 1px solid #FFF !important;
 }
 .gantt_task_line.buffer_gantt_bar{
@@ -604,7 +604,7 @@ html, body {
     display: inline-block;
 }
 .lbox_pl_name{
-    min-width: 273px;
+    min-width: 205px;
 }
 .lbox_pl_buffer{
     min-width: 69px;

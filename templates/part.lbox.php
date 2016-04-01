@@ -25,17 +25,7 @@
             </div>
         </div>
         <div class="tbl_cell valign_middle txt_center">
-            <div class="tbl">
-                <div class="tbl_cell"></div>
-                <div class="tbl_cell"><input name="lbox_predecessor" type="submit" value="<?=$l->t('Predecessor')?>"></div>
-            </div>
-            <div class="tbl lbox_buffer_wrapp">
-                <div class="tbl_cell"></div>
-                <div class="tbl_cell">
-                    <span class="lbox_title"> <?=$l->t('Buffer')?> </span>
-                    <input name="lbox_buffer" type="text">
-                </div>
-            </div>
+            <input name="lbox_predecessor" type="submit" value="<?=$l->t('Predecessor')?>">
         </div>
         <div class="tbl_cell valign_middle txt_right">
             <div>

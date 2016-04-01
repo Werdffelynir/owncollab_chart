@@ -52,12 +52,13 @@
     o.onBeforeLightbox = function (id){
         o.task = gantt.getTask(id);
 
+        // todo buffer
         // Buffer update date position to normal
-        if(o.task.buffer > 0 && o.task.isBuffered === true){
+        /*if(o.task.buffer > 0 && o.task.isBuffered === true){
             o.task.isBuffered = false;
             o.task = app.injectBufferToDate(o.task, -parseFloat(o.task.buffer), true);
             gantt.updateTask(id);
-        }
+        }*/
 
         o.task.base_template = '<div id="generate-lbox-wrapper">' + app.dom.lbox.innerHTML + '</div>';
 
@@ -110,11 +111,12 @@
                             fso[_name].onclick = o.onClickLightboxInputMilestone;
                             break;
 
-                        case 'buffer':
+                        // todo buffer
+                        /*case 'buffer':
                             fso[_name].value = o.task.buffer + ' days';
                             fso[_name].onclick = o.onClickLightboxInput;
                             fso[_name].onkeyup = o.onChangeWithPrefix;
-                            break;
+                            break;*/
 
                         case 'start_date':
                         case 'end_date':
@@ -161,14 +163,15 @@
 
     o.onAfterLightbox = function (){
 
+        // todo buffer
         // Buffer update date position to time with buffer
-        gantt._get_tasks_data().map(function(task){
+        /*gantt._get_tasks_data().map(function(task){
             if(task.buffer > 0 && task.isBuffered !== true){
                 app.injectBufferToDate(task, parseFloat(task.buffer), true);
                 task.isBuffered = true;
                 gantt.render();
             }
-        });
+        });*/
     };
 
     o.onChangeWithPrefix = function (event){
@@ -182,14 +185,14 @@
             target.value = o.progressToPercent( o.percentToProgress(value) ) + ' %';
             o.task['progress'] = o.percentToProgress(value);
         }
-        if(name == 'lbox_buffer'){
+        /*if(name == 'lbox_buffer'){
             var _value = parseInt(value);
             if(_value > 100) _value = 100;
             setTimeout(function(){
                 target.value = _value + ' days';
                 o.task['buffer'] = _value;
             },300);
-        }
+        }*/
     };
 
 
@@ -261,11 +264,13 @@
             target.select();
 
         }
-        else if(target['name'] == 'lbox_buffer'){
+
+        // todo buffer
+        /*else if(target['name'] == 'lbox_buffer'){
 
             target.select();
 
-        }
+        }*/
         else if(target['name'] == 'lbox_end_date'){
 
             //app.timeStrToDate($('input[name=lbox_start_date]').val())
@@ -282,8 +287,8 @@
             labels.className = 'predecessor_labels';
             labels.innerHTML = '<span class="lbox_pl_id">ID</span>' +
                 '<span class="lbox_pl_name">' + app.t('Taskname') + '</span>' +
-                '<span class="lbox_pl_buffer">' + app.t('Link type') + '</span>' +
-                '<span class="lbox_pl_link"></span>';
+                '<span class="lbox_pl_buffer">' + app.t('Buffer') + '</span>' +
+                '<span class="lbox_pl_link">' + app.t('Link type') + '</span>';
 
             view.insertBefore(labels, view.firstChild);
 
@@ -507,8 +512,9 @@
     };
     o.isResourceUser = function(user) {
         var users = o.getResources();
-        if(users.indexOf(user) !== 1 ) return true;
-        return false;
+        //if(users.indexOf(user) !== 1 ) return true;
+        //return false;
+        return users.indexOf(user) !== 1;
     };
     o.addResource = function(user){
         var users = o.getResources(),
@@ -599,10 +605,9 @@
             linksSource = gantt.getTask(id).$source,
             linksTarget = gantt.getTask(id).$target;
 
-/**/
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        _inpBuffer.value = buffer ? buffer +'':'0';
+        _inpBuffer.value = (buffer ? buffer +'':'0') + ' ' +app.t('days');
 
         _inpFS.id = 'plg_fs_' + id;
         _inpFS.name = 'plg_' + id;
@@ -709,9 +714,11 @@
             }
         });
 
-        $('input[type=text]', popup).on('change', function(event){
+        // todo: buffer fix
+        /*$('input[type=text]', popup).on('change', function(event){
             var id = this.name.split('_')[1],
                 task = gantt.getTask(id);
+
             if(task){
                 task.buffer = parseFloat(this.value);
                 if(task.isBuffered === true){
@@ -720,7 +727,8 @@
                 }
                 gantt.updateTask(id);
             }
-        });
+        });*/
+
     };
 
 
