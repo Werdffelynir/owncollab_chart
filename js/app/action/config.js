@@ -66,12 +66,6 @@
         // Styling the gantt chart. Column tasks names size width
         gantt.config.row_height = 22;
 
-        // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = false;
-
-        // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = true;
-
         // Auto scheduling makes the start date of the second task update according to the end date
         // of the first task each when it changes.
         gantt.config.auto_scheduling = true;
@@ -84,7 +78,6 @@
 
         // allows or forbids creation of links from parent tasks (projects) to their children
         gantt.config.auto_scheduling_descendant_links = false;
-
 
         // Making the Gantt chart to display the critical path
         if(app.data.project['critical_path'] == 1) {
@@ -104,9 +97,15 @@
         // Enable zoom slider
         app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
+        // Enables automatic adjusting of the grid's columns to the grid's width
+        gantt.config.autofit = false;
+
         // Apply scale fit
         if(app.data.project['scale_fit']) {
-            app.action.chart.scaleFit();
+            //app.action.chart.scaleFit();
+
+            // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
+            gantt.config.fit_tasks = true;
         }
 
 

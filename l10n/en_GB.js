@@ -42,7 +42,25 @@ OC.L10N.register(
         "Export": "Export",
         "Settings": "Settings",
         "___": "___",
-        "Submit": "Submit"
+        "Define period to export": "Define period to export",
+        "Paper size": "Paper size",
+        "Orientation": "Orientation",
+        "Define Header": "Define Header",
+        "Define Footer": "Define Footer",
+        "Left": "Left",
+        "Center": "Center",
+        "Right": "Right",
+        "Size": "Size",
+        "will be deleted permanently, are you sure?": "will be deleted permanently, are you sure?",
+        "Filter by task groups or resource": "Filter by task groups or resource",
+        "Enter passphrase to be part of task name": "Enter passphrase to be part of task name",
+        "Filter by task groups or tasks": "Filter by task groups or tasks",
+        "You do not have the right to modify the chart": "You do not have the right to modify the chart",
+        "Information": "Information",
+        "Resources": "Resources",
+        "Duration": "Duration",
+        "Link type": "Link type",
+        "Submit": "Отправить"
     },
     "nplurals=2; plural=(n != 1);"
 );

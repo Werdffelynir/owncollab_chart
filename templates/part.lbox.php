@@ -12,15 +12,15 @@
     <div class="tbl">
         <div class="tbl_cell lbox_date_column">
             <div class="tbl">
-                <div class="tbl_cell"><?=$l->t('Start')?></div>
+                <div class="tbl_cell lbox_title"><?=$l->t('Start')?></div>
                 <div class="tbl_cell"><input name="lbox_start_date" type="text"></div>
             </div>
             <div class="tbl">
-                <div class="tbl_cell"><?=$l->t('End')?></div>
+                <div class="tbl_cell lbox_title"><?=$l->t('End')?></div>
                 <div class="tbl_cell"><input name="lbox_end_date" type="text"></div>
             </div>
             <div class="tbl">
-                <div class="tbl_cell"><?=$l->t('Progress')?></div>
+                <div class="tbl_cell lbox_title"><?=$l->t('Progress')?></div>
                 <div class="tbl_cell"><input name="lbox_progress" type="text"></div>
             </div>
         </div>
@@ -31,12 +31,15 @@
             </div>
             <div class="tbl lbox_buffer_wrapp">
                 <div class="tbl_cell"></div>
-                <div class="tbl_cell"><?=$l->t('Buffer')?> <input name="lbox_buffer" type="text"></div>
+                <div class="tbl_cell">
+                    <span class="lbox_title"> <?=$l->t('Buffer')?> </span>
+                    <input name="lbox_buffer" type="text">
+                </div>
             </div>
         </div>
         <div class="tbl_cell valign_middle txt_right">
             <div>
-                <span><?=$l->t('Milestone')?></span>
+                <span class="lbox_title"><?=$l->t('Milestone')?></span>
                 <span>
                     <input id="lbm" name="lbox_milestone" type="checkbox">
                     <label for="lbm"><span></span></label>

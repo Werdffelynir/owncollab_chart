@@ -192,10 +192,10 @@ html, body {
 
 
 #sidebar-content input[type=text]{
-    width: 100%;
-    border-radius: 0;
-    border: 1px solid #BDBDBD;
-    font-size: 12px;
+    /*width: 100%;*/
+    /*border-radius: 0;*/
+    /*border: 1px solid #BDBDBD;*/
+    /*font-size: 12px;*/
 }
 #sidebar-content input[name=pdf_start_date],
 #sidebar-content input[name=pdf_end_date]{
@@ -227,7 +227,7 @@ html, body {
 
 #chart_share {}
 
-#chart_share input[type=text] {
+#chart_share input[type=text], #chart_share input[type=password], #chart_share input[type=date] {
     width: 100%
 }
 
@@ -468,7 +468,7 @@ html, body {
 .predecessor_line>.tbl_cell:first-child{
     /*width: 45%;*/
     /*width: 280px;*/
-    width: 50%;
+    width: 45%;
     text-align: left;
 }
 .predecessor_line>.tbl_cell:last-child {

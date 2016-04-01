@@ -599,9 +599,10 @@
             linksSource = gantt.getTask(id).$source,
             linksTarget = gantt.getTask(id).$target;
 
-/*        _inpBuffer.name = 'buffer_' + id;
+/**/
+        _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        _inpBuffer.value = buffer ? buffer +'':'0';*/
+        _inpBuffer.value = buffer ? buffer +'':'0';
 
         _inpFS.id = 'plg_fs_' + id;
         _inpFS.name = 'plg_' + id;
@@ -664,7 +665,7 @@
             _inpClear.checked = true;
         }
 
-        //fragment.appendChild(_inpBuffer);
+        fragment.appendChild(_inpBuffer);
 
         fragment.appendChild(_inpFS);
         fragment.appendChild(_inpFSLabel);
