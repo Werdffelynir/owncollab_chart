@@ -98,14 +98,15 @@
         app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
         // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = false;
+        gantt.config.autofit = true;
+
+        // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
+        gantt.config.fit_tasks = true;
 
         // Apply scale fit
         if(app.data.project['scale_fit']) {
             //app.action.chart.scaleFit();
 
-            // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-            gantt.config.fit_tasks = true;
         }
 
 

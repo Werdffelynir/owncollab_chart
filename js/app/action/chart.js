@@ -86,6 +86,19 @@
             }
         });*/
 
+        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
+            //console.log(task);
+            console.log(startDate);
+            //console.log(link);
+            //console.log(predecessor);
+            if(parseFloat(predecessor.buffer) > 0){
+                task.start_date = app.addDaysToDate(parseFloat(predecessor.buffer), startDate);
+                //console.log(predecessor.start_date);
+                //console.log(predecessor.buffer);
+                //console.log(task.start_date);
+            }
+        });
+
         // Этот фильтр удаляет с таска проэкта даты,
         // для того что бы таск был интерактивен по отношеню к детям
         var dataTaskFiltering = app.data.tasks.map(function(_task) {

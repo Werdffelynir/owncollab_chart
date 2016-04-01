@@ -271,8 +271,8 @@
      */
     o.onBeforeTaskUpdate = function(id, task){
 
-        var maxLimit = 750,
-            maxLimit = 750;
+        //console.log(task);
+        var maxLimit = 750;
 
         // date checked and fixed if the date is beyond the scope
         if(task.start_date < app.data.baseProjectTask.start_date)
@@ -301,6 +301,12 @@
 
         task.start_date_origin = task.start_date;
         task.end_date_origin = task.end_date;
+
+        //gantt.autoSchedule(id);
+        console.log(task);
+        app.eachLinksById(id,'source', function(link){
+            console.log(id, link);
+        });
 
         // change types task and project by nesting
         if(task.is_project != 1){

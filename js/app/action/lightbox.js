@@ -750,11 +750,12 @@
 
             setTimeout(function(){
                 elem.value = buffer + ' d';
-                o.task.buffer = task.buffer = buffer;
+                task.buffer = buffer;
                 elem.select();
+                gantt.updateTask(id);
             },300);
 
-            console.log(task);
+            //console.log(task);
             //console.log(task);
             //console.log(value);
         });

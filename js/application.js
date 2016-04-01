@@ -176,7 +176,7 @@ var app = app || {
             complete: function (jqXHR, status) {
                 //console.log("API request complete, status: " + status);
                 if (status == 'timeout') {
-                    app.action.error.inline("You have exceeded the request time. possible problems with the Internet, or an error on the server server");
+                    app.action.error.inline("You have exceeded the request time. possible problems with the Internet, or an error on the server");
                 }
             }
         });
@@ -278,7 +278,23 @@ var app = app || {
 
         app.dom.appContent.style.width = (parseInt(document.body.offsetWidth) - parseInt(sidebarWidth)) + "px";
         gantt.setSizes();
-    }
+    };
+
+    /**
+     * Uses: app.eachLinksById(taskId,'source', function(){});
+     * @param id
+     * @param type
+     * @param callback
+     */
+    app.eachLinksById = function  (id, type, callback){
+        var task = gantt.getTask(id),
+            links = (type === 'source') ? task.$source : ((type === 'target') ? task.$target: [] );
+        if(links.length > 0){
+            links.map(function(id){
+                callback.call(task, gantt.getLink(id))
+            });
+        }
+    };
 
 
 })(jQuery, OC, app);
