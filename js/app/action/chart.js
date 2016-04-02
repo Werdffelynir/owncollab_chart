@@ -93,9 +93,10 @@
             //console.log(predecessor);
             //console.log(predecessor.buffer);
             //console.log(predecessor.start_date);
-            if(app.u.isNum(predecessor.buffer) && parseInt(predecessor.buffer) > 0) {
-                task.start_date = app.addDaysToDate(parseInt(predecessor.buffer), task.start_date);
-                task.end_date = app.addDaysToDate(parseInt(predecessor.buffer), task.end_date);
+            var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+            if(buffer > 0) {
+                task.start_date = app.addDaysToDate(buffer, task.start_date);
+                task.end_date = app.addDaysToDate(buffer, task.end_date);
                 task.is_buffered = true;
                 //console.log(task.start_date);
             }
