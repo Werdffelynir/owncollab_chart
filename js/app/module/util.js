@@ -438,5 +438,4 @@
         internalCallback();
     };
 
-
 })(jQuery, OC, app);

@@ -293,5 +293,11 @@ var app = app || {
         }
     };
 
+    app.daysBetween = function (date1, date2) {
+        var date1_ms = date1.getTime(),
+            date2_ms = date2.getTime();
+        return Math.round((Math.abs(date1_ms - date2_ms))/86400000)
+    };
+
 
 })(jQuery, OC, app);

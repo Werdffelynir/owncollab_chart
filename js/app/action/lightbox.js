@@ -359,26 +359,16 @@
     o.onLightboxSave = function (id, task, is_new){
         var _id = null;
 
-        //console.log('save open');
-        //$('.lboxsave').show();
-
-
-        //gantt.autoSchedule(id);
-        //console.log(id, task);
         app.eachLinksById(id, 'target', function(link){
             var predecessor = gantt.getTask(link.source);
-
-            //console.log(task, predecessor);
-
             var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
             if(buffer > 0) {
                 o.task.start_date = app.addDaysToDate(buffer, predecessor.end_date);
                 o.task.end_date = app.addDaysToDate(buffer, task.end_date);
                 o.task.is_buffered = true;
+            }else{
+                gantt.autoSchedule(predecessor.id);
             }
-            //console.log(predecessor);
-            //gantt.autoSchedule(link.source);
-            //console.log(id, link);
         });
 
         // after entry in the database, you need to update the id
@@ -387,7 +377,6 @@
             gantt.changeTaskId(id, _id);
             task.id = o.task.id = _id;
             task.is_new = true;
-            //gantt.autoSchedule(task.id);
         }
 
         // updates all the properties editing task with the current internal object
