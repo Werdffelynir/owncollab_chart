@@ -364,7 +364,7 @@
             var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
             if(buffer > 0) {
                 o.task.start_date = app.addDaysToDate(buffer, predecessor.end_date);
-                o.task.end_date = app.addDaysToDate(buffer, task.end_date);
+                o.task.end_date = app.addDaysToDate(buffer+app.daysBetween(task.start_date,task.end_date), predecessor.end_date);
                 o.task.is_buffered = true;
             }else{
                 gantt.autoSchedule(predecessor.id);
