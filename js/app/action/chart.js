@@ -88,13 +88,15 @@
 
         gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
             //console.log(task);
-            console.log(startDate);
             //console.log(link);
+            //console.log(startDate);
             //console.log(predecessor);
-            if(parseFloat(predecessor.buffer) > 0){
-                task.start_date = app.addDaysToDate(parseFloat(predecessor.buffer), startDate);
-                //console.log(predecessor.start_date);
-                //console.log(predecessor.buffer);
+            //console.log(predecessor.buffer);
+            //console.log(predecessor.start_date);
+            if(app.u.isNum(predecessor.buffer) && parseInt(predecessor.buffer) > 0) {
+                task.start_date = app.addDaysToDate(parseInt(predecessor.buffer), task.start_date);
+                task.end_date = app.addDaysToDate(parseInt(predecessor.buffer), task.end_date);
+                task.is_buffered = true;
                 //console.log(task.start_date);
             }
         });

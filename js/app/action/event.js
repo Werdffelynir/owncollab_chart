@@ -303,9 +303,12 @@
         task.end_date_origin = task.end_date;
 
         //gantt.autoSchedule(id);
-        console.log(task);
-        app.eachLinksById(id,'source', function(link){
-            console.log(id, link);
+        //console.log(task);
+        app.eachLinksById(id, 'source', function(link){
+            var predecessor = gantt.getTask(link.target);
+            //predecessor.start_date =
+            console.log(predecessor);
+            //console.log(id, link);
         });
 
         // change types task and project by nesting

@@ -97,6 +97,7 @@
         // Enable zoom slider
         app.action.chart.enableZoomSlider(app.data.project['scale_type']);
 
+
         // Enables automatic adjusting of the grid's columns to the grid's width
         gantt.config.autofit = true;
 

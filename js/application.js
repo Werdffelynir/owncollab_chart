@@ -272,10 +272,7 @@ var app = app || {
     app.modSampleHeight = function () {
         var headHeight = 60;
         app.dom.gantt.style.height = (parseInt(document.body.offsetHeight) - headHeight) + "px";
-
-
         var sidebarWidth = (app.dom.sidebar.classList.contains('disappear')) ? 0 : app.dom.sidebar.offsetWidth;
-
         app.dom.appContent.style.width = (parseInt(document.body.offsetWidth) - parseInt(sidebarWidth)) + "px";
         gantt.setSizes();
     };
