@@ -19,9 +19,6 @@ class Connect
     /** @var Link model of database table */
     private $link;
 
-    /** @var \OCA\Owncollab_Chart\Db\Resource model of database table */
-    //private $resource;
-
     /**
      * Connect constructor.
      * @param IDBConnection $db
@@ -30,7 +27,6 @@ class Connect
         $this->db = $db;
 
         // Register tables models
-        //$this->resource = new Resource($this, 'collab_resources');
         $this->project = new Project($this, 'collab_project');
         $this->task = new Task($this, 'collab_tasks');
         $this->link = new Link($this, 'collab_links');
@@ -145,15 +141,6 @@ class Connect
     public function link() {
         return $this->link;
     }
-
-    /**
-     * Retry instance of class working with database
-     * Table of collab_resources
-     * @return \OCA\Owncollab_Chart\Db\Resource
-     */
-    //public function resource() {
-    //    return $this->resource;
-    //}
 
 
 }

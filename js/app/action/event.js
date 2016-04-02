@@ -287,7 +287,7 @@
 
         // update the parent task type, if it does not have children
         if(typeof o.taskToDelete === 'object' && o.taskToDelete.id == id){
-            var parent = gantt.getTask(o.taskToDelete.parent),
+            var parent = gantt.getTask(gantt.getTask(o.taskToDelete.parent)),
                 children = gantt.getChildren(o.taskToDelete.parent);
             if(children.length == 0){
                 parent.type = 'task';

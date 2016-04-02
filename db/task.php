@@ -95,8 +95,8 @@ class Task
             ':progress'     => $task['progress'] ? $task['progress'] : 0,
             ':parent'       => $task['parent'] ? $task['parent'] : 0,
             ':open'         => $task['open'] ? 1 : 0,
-            ':buffer'       => $task['buffer'] ? $task['buffer'] : 0,
-            ':id'           => (int)$task['id']
+            ':buffer'       => $task['buffer'] ? "{$task['buffer']}" : "0",
+            ':id'           => (int) $task['id']
         ]);
     }
 
@@ -105,7 +105,7 @@ class Task
      * @return \Doctrine\DBAL\Driver\Statement|int
      */
     public function insertWithId($data) {
-
+        $result = null;
         $task['id'] = $data['id'];
         $task['is_project'] = $data['is_project'];
         $task['type'] = $data['type'] ? $data['type'] : 'task';
@@ -119,8 +119,11 @@ class Task
         $task['sortorder'] = $data['sortorder'] ? $data['sortorder'] : 0;
         $task['parent'] = $data['parent'] ? $data['parent'] : 1;
 
-        $result = $this->connect->db->insertIfNotExist($this->tableName, $task);
-
+        try{
+            $result = $this->connect->db->insertIfNotExist($this->tableName, $task);
+        }catch(\Exception $e){
+            $result = 'error:' . $e->getMessage();
+        }
 
         if($result)
             return $this->connect->db->lastInsertId();
