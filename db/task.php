@@ -110,7 +110,7 @@ class Task
         $task['is_project'] = $data['is_project'];
         $task['type'] = $data['type'] ? $data['type'] : 'task';
         $task['text'] = $data['text'];
-        $task['users'] = $data['users'];
+        $task['users'] = $task['users'] ? $task['users'] : '';
         $task['start_date'] = Helper::toTimeFormat($data['start_date']);
         $task['end_date'] = Helper::toTimeFormat($data['end_date']);
         $task['duration'] = $data['duration'] ? $data['duration'] : 0;
@@ -125,8 +125,8 @@ class Task
             $result = 'error:' . $e->getMessage();
         }
 
-        if($result)
-            return $this->connect->db->lastInsertId();
+        //if($result)
+        //    return $this->connect->db->lastInsertId();
         return $result;
     }
 
