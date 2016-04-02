@@ -183,6 +183,7 @@ class ApiController extends Controller {
 
                 $result = $this->connect->task()->insertWithId($task);
                 $params['error'] = $result ? null : 'Server insert error, on task';
+                $params['errorMessage'] = $result;
                 $params['lasttaskid'] = $result;
 
             }else if($worker == 'update'){
