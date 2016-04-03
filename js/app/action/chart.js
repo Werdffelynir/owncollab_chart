@@ -138,10 +138,12 @@
 
         try{
             // run parse data
-            gantt.parse({
+            var _filerData = {
                 data:   dataTaskFiltering,
                 links:  app.data.links
-            });
+            };
+            console.log('_filerData',_filerData);
+            //gantt.parse(_filerData);
         }catch (e){
             console.log(e);
             app.action.error.page('Gantt.parse data have error');

@@ -106,7 +106,7 @@ class Task
      */
     public function insertWithId($data) {
         $result = null;
-        $task['id'] = $data['id'];
+        $task['id'] = $data['id'] > 10000 ? 10000 : (int) $data['id'];
         $task['is_project'] = $data['is_project'];
         $task['type'] = $data['type'] ? $data['type'] : 'task';
         $task['text'] = $data['text'];
