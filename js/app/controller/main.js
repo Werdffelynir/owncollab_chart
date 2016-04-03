@@ -59,7 +59,7 @@
      */
     function onProjectLoaded(response){
 
-        //console.log(response);
+        console.log('response:',response);
 
         if(typeof response === 'object' &&
             response.project &&
