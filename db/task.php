@@ -82,7 +82,7 @@ class Task
      */
     public function update($task) {
        $sql = "UPDATE {$this->tableName} SET
-                  type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, open = :open, buffer = :buffer
+                  type = :type, text = :text, users = :users, start_date = :start_date, end_date = :end_date, duration = :duration, progress = :progress, parent = :parent, buffer = :buffer
                   WHERE id = :id";
 
         return  $this->connect->db->executeUpdate($sql, [
@@ -93,8 +93,7 @@ class Task
             ':end_date'     => Helper::toTimeFormat($task['end_date']),
             ':duration'     => $task['duration'] ? $task['duration'] : 0,
             ':progress'     => $task['progress'] ? $task['progress'] : 0,
-            ':parent'       => $task['parent'] ? $task['parent'] : 0,
-            ':open'         => $task['open'] ? 1 : 0,
+            ':parent'       => $task['parent'] ? $task['parent'] : 1,
             ':buffer'       => $task['buffer'] ? "{$task['buffer']}" : "0",
             ':id'           => (int) $task['id']
         ]);
@@ -127,6 +126,27 @@ class Task
 
         //if($result)
         //    return $this->connect->db->lastInsertId();
+        return $result;
+    }
+
+
+    public function insertTask($data) {
+        $result = null;
+        $task['type'] = $data['type'] ? $data['type'] : 'task';
+        $task['text'] = $data['text'];
+        $task['start_date'] = Helper::toTimeFormat($data['start_date']);
+        $task['end_date'] = Helper::toTimeFormat($data['end_date']);
+        $task['open'] = 1;
+        $task['parent'] = $data['parent'] ? (int) $data['parent'] : 1;
+
+        try{
+            $_result = $this->connect->insert($this->tableName, $task);
+            if($_result)
+                return $this->connect->db->lastInsertId();
+        }catch(\Exception $e){
+            $result = 'error:' . $e->getMessage();
+        }
+
         return $result;
     }
 

@@ -107,16 +107,21 @@
         var dataTaskFiltering = app.data.tasks.map(function(_task) {
             if(_task['type'] == 'project'){
                 // Cloning project task to property app.action.chart.baseProjectTask
-                if(_task['id'] == 1)
+                if(_task['id'] == 1){
                     app.data.baseProjectTask = o.baseProjectTask = app.u.objClone(_task);
+                }
 
                 //delete _task['start_date'];
                 //delete _task['end_date'];
                 //delete _task['duration'];
             }
+
+
+
             if(_task['duration'] < 1){
                 _task['duration'] = 1;
             }
+
 
             // todo buffer
             /*
@@ -142,8 +147,8 @@
                 data:   dataTaskFiltering,
                 links:  app.data.links
             };
-            console.log('_filerData',_filerData);
-            //gantt.parse(_filerData);
+            //console.log('_filerData',_filerData);
+            gantt.parse(_filerData);
         }catch (e){
             console.log(e);
             app.action.error.page('Gantt.parse data have error');

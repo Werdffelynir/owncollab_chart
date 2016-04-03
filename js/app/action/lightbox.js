@@ -373,15 +373,19 @@
 
         // after entry in the database, you need to update the id
         if(is_new === true){
-            _id = app.data.lasttaskid ++;
-            gantt.changeTaskId(id, _id);
-            task.id = o.task.id = _id;
-            task.is_new = true;
+            //_id = app.data.lasttaskid ++;
+            //gantt.changeTaskId(id, _id);
+            //task.id = o.task.id = _id;
+            o.task.id_origin = task.id;
+            o.task.start_date_timestamp = task.start_date.getTime();
+            o.task.end_date_timestamp = task.end_date.getTime();
+            o.task.id_origin = task.id;
+            o.task.is_new = true;
         }
 
         // updates all the properties editing task with the current internal object
         app.u.objMerge(task, o.task);
-        gantt.updateTask((_id)?_id:id);
+        gantt.updateTask(id);
         return true;
     };
     o.onLightboxCancel = function (){

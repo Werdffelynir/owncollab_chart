@@ -183,6 +183,17 @@
      */
     o._undo_redo_timer = 0;
     o.onGanttRender = function (){
+
+
+        // change type
+        //var children = gantt.getChildren(_task.parent);
+        //
+        //if(children.length == 0 && _task.id != 1){
+        //    _task.type = 'task';
+        //}else{
+        //    _task.type = 'project';
+        //}
+
         // checked and re-visual buttons Undo and Redo
         //To get the stack of the stored undo commands, use the getUndoStack method:
         //To return the stack of the stored redo commands, apply the getRedoStack method:
@@ -287,7 +298,7 @@
 
         // update the parent task type, if it does not have children
         if(typeof o.taskToDelete === 'object' && o.taskToDelete.id == id){
-            var parent = gantt.getTask(gantt.getTask(o.taskToDelete.parent)),
+            var parent = gantt.getTask(o.taskToDelete.parent),
                 children = gantt.getChildren(o.taskToDelete.parent);
             if(children.length == 0){
                 parent.type = 'task';
@@ -329,15 +340,22 @@
     o.requestTaskUpdater = function (worker, id, task) {
         //console.log(task);
         app.api('updatetask', function(response) {
-            //console.log(response);
+
+            console.log('updatetask:',response);
+            // gantt.changeTaskId(id, _id);
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
+
                 app.requesttoken = response.requesttoken;
+
                 if(worker == 'insert') {
-                    if(response.lasttaskid)
+                    if(response.lasttaskid){
                         app.data.lasttaskid = response.lasttaskid;
+                        gantt.changeTaskId(response.data.id, parseInt(response.lasttaskid));
+                    }
                     else
                         app.action.error.inline('Error Request: ' + worker + '. Inset ID not response.');
                 }
+
             } else {
                 app.action.error.inline('Error Request: ' + worker );
             }

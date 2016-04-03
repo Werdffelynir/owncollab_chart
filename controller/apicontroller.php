@@ -167,12 +167,13 @@ class ApiController extends Controller {
     public function updatetask($data) {
 
         $params = [
+            'data'     => $data,
             'error'     => null,
+            'worker'     => $data['worker'],
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lasttaskid'    => null
         ];
 
-        $params['data'] = $data;
         if($this->isAdmin && isset($data['worker']) && isset($data['task'])){
 
             $worker = trim(strip_tags($data['worker']));
@@ -181,10 +182,14 @@ class ApiController extends Controller {
 
             if($worker == 'insert'){
 
-                $result = $this->connect->task()->insertWithId($task);
-                $params['error'] = $result ? null : 'Server insert error, on task';
-                $params['errorMessage'] = $result;
-                $params['lasttaskid'] = $result;
+                $result = $this->connect->task()->insertTask($task);
+
+                if(is_numeric($result))
+                    $params['lasttaskid'] = $result;
+                else{
+                    $params['error'] = $result ? null : 'Server insert error, on task ';
+                    $params['errorMessage'] = $result;
+                }
 
             }else if($worker == 'update'){
 
@@ -192,9 +197,12 @@ class ApiController extends Controller {
                 $params['error'] = $result ? null : 'Server update error, on task';
 
             }else if($worker == 'delete'){
-
-                $result = $this->connect->task()->deleteById($id);
-                $params['error'] = $result ? null : 'Server delete error, on task';
+                if( (int) $id !== 1){
+                    $result = $this->connect->task()->deleteById($id);
+                    $params['error'] = $result ? null : 'Server delete error, on task';
+                }else{
+                    $params['error'] = 'The main project can not be deleted';
+                }
 
             }
         }
