@@ -69,7 +69,6 @@
                 task.start_date = app.addDaysToDate(buffer, task.start_date);
                 task.end_date = app.addDaysToDate(buffer, task.end_date);
                 task.is_buffered = true;
-
             }
         });
 
@@ -300,9 +299,10 @@
     };
 
 
-    o.showUserColor = function (show){
-
-    };
+    /**
+     * @param show
+     */
+    o.showUserColor = function (show){};
 
 
     o.showCriticalPath = function (show){
@@ -421,6 +421,45 @@
     o.durationDisplay = function (task) {
         var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
         return ((days%1==0) ? Math.round(days) : days) + ' d';
-    }
+    };
+
+
+    /**
+     * Use app.action.chart.getTaskPredecessor(id);
+     * @param id
+     * @returns {boolean}
+     */
+    o.getTaskPredecessor = function (id) {
+        var links = gantt.getLinks(),
+            predecessor = false;
+        for(var i = 0; i < links.length; i ++){
+            var item = links[i];
+            if(item.target == id){
+                predecessor = gantt.getTask(item.source);
+                break;
+            }
+        }
+        return predecessor;
+    };
+
+
+    /**
+     * Use app.action.chart.getTaskSuccessor(id);
+     * @param id
+     * @returns {boolean}
+     */
+    o.getTaskSuccessor = function (id) {
+        var links = gantt.getLinks(),
+            predecessor = false;
+        for(var i = 0; i < links.length; i ++){
+            var item = links[i];
+            if(item.source == id){
+                predecessor = gantt.getTask(item.target);
+                break;
+            }
+        }
+        return predecessor;
+    };
+
 
 })(jQuery, OC, app);

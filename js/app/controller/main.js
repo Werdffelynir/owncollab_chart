@@ -145,13 +145,14 @@
 
     }
 
+
     /**
      * Applying external handlers libraries and plug-ins
      */
     function enablePlugins(){
 
-
     }
+
 
     /**
      * Query Base DOM Elements
@@ -198,6 +199,10 @@
             return elem;
     };
 
+
+    /**
+     * Accept data from local storage
+     */
     o.dataStorageAccept = function(){
 
         var show_today_line = app.storageGetItem('show_today_line'),

@@ -323,12 +323,42 @@
                 gantt.updateTask(parent.id);
             }
         }
+
+        // fixed position for buffer padding
+        var taskPredecessor, taskSuccessor;
+        if(taskPredecessor = app.action.chart.getTaskPredecessor(id)) {
+            if( taskPredecessor.buffer > 0 &&
+                task.start_date < app.addDaysToDate(taskPredecessor.buffer, taskPredecessor.end_date))
+            {
+                task.end_date = app.addDaysToDate(taskPredecessor.buffer, task.end_date_origin);
+                task.start_date = app.addDaysToDate(taskPredecessor.buffer, taskPredecessor.end_date);
+                task.is_buffered = true;
+                gantt.updateTask(task.id);
+            }
+        }
+
+        if(taskSuccessor = app.action.chart.getTaskSuccessor(id)) {
+            if( task.buffer > 0 &&
+                taskSuccessor.start_date < app.addDaysToDate(task.buffer, task.end_date))
+            {
+                taskSuccessor.start_date = app.addDaysToDate(task.buffer, task.end_date_origin);
+                taskSuccessor.end_date = app.addDaysToDate(task.buffer, taskSuccessor.end_date_origin);
+                taskSuccessor.is_buffered = true;
+                gantt.updateTask(taskSuccessor.id);
+            }
+            /**/
+        }
+
+/*        console.log('getTaskPredecessor ---------------------- FIX');
+        console.log('getTaskPredecessor ---------------------- START');
+        console.log('getTaskPredecessor ---------------------- END');*/
+
         return true;
     };
 
 
-
     o.requestIsProcessed = false;
+
 
     /**
      * Common task operation for insert, delete or update
@@ -371,18 +401,14 @@
             console.log('updatelink:',response);
 
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
-
                 app.requesttoken = response.requesttoken;
-
                 if(worker == 'insert') {
-
                     // todo link
                     if(response.lastlinkid)
                         app.data.lastlinkid = (parseInt(response.lastlinkid) + 1);
                     else
                         app.action.error.inline('Error Request: ' + worker + '. Inset ID not response.');
                 }
-
             } else {
                 app.action.error.inline('Error Request: ' + worker );
             }
