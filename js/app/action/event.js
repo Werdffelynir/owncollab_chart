@@ -371,6 +371,7 @@
 
                 app.requesttoken = response.requesttoken;
                 if(worker == 'insert') {
+                    // todo link
                     if(response.lastlinkid)
                         app.data.lastlinkid = (parseInt(response.lastlinkid) + 1);
                     else

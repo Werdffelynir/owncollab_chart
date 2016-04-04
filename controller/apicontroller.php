@@ -100,16 +100,22 @@ class ApiController extends Controller {
         ];
 
         $tasks = $this->connect->task()->get();
+        $taskCount = count($tasks);
 
+        // reset autoincrement
+        if($taskCount === 1 && $tasks[0]['id'] == 1)
+            $this->connect->task()->resetAutoIncrement(2);
+
+        // filtring tasks
         if($tasks){
             $taskProject = null;
-            for($i=0;$i<count($tasks);$i++){
+            for($i=0; $i < $taskCount; $i++){
                 if($tasks[$i]['is_project'] == 1 && $tasks[$i]['type'] == 'project')
                     $taskProject = $tasks[$i];
                 continue;
             }
             if($taskProject){
-                for($j=0;$j<count($tasks);$j++){
+                for($j=0; $j < $taskCount; $j++){
                     if(strtotime($tasks[$j]['start_date']) < strtotime($taskProject['start_date']))
                         $tasks[$j]['start_date'] = $taskProject['start_date'];
                     if(strtotime($tasks[$j]['end_date']) < strtotime($taskProject['start_date']))
@@ -119,16 +125,18 @@ class ApiController extends Controller {
         }
 
         $links = $this->connect->link()->get();
+        $linkCount = count($links);
+
         // links cleaner
         $linksTrash = [];
-        for($li = 0; $li < count($links); $li ++ ){
+        for($li = 0; $li < $linkCount; $li ++ ){
 
             $_hasTaskTarget = $_hasTaskSource = false;
 
             $_linkTarget = $links[$li]['target'];
             $_linkSource = $links[$li]['source'];
 
-            for($ti = 0; $ti < count($tasks); $ti ++ ){
+            for($ti = 0; $ti < $linkCount; $ti ++ ){
 
                 $_taskId = $tasks[$ti]['id'];
 

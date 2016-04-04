@@ -45,6 +45,7 @@
         // grant of initialized
         o.opt.ganttIsInit = true;
 
+        // Catcher of gantt events
         //gantt.attachEvent("onGanttRender", onGanttReady);
         //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
         gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
@@ -58,79 +59,48 @@
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
         gantt.attachEvent("onAfterTaskUpdate", app.action.event.onAfterTaskUpdate);
 
-
-// todo buffer
-        /*
-        // buffer listener
-        gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){
-            task.isBuffered = false;
-        });
+        // todo not used now.
+        //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
         gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
-            if(parseFloat(predecessor.buffer) > 0){
-                task.start_date = app.addDaysToDate(parseFloat(predecessor.buffer), startDate)
-            }
-            if(task.buffer > 0 && !task.isBuffered){
-                app.injectBufferToDate(task, parseFloat(task.buffer), true);
-                task.isBuffered = true;
-            }
-        });
 
-        // After task drag update date position to time with buffer
-        gantt.attachEvent("onAfterTaskDrag", function(id, parent, tindex){
-            var task = gantt.getTask(id);
-            if(task.buffer > 0){
-                app.injectBufferToDate(task, parseFloat(task.buffer), true);
-                task.isBuffered = true;
-                gantt.render();
-            }
-        });*/
-
-        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
-            //console.log(task);
-            //console.log(link);
-            //console.log(startDate);
-            //console.log(predecessor);
-            //console.log(predecessor.buffer);
-            //console.log(predecessor.start_date);
             var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
             if(buffer > 0) {
                 task.start_date = app.addDaysToDate(buffer, task.start_date);
                 task.end_date = app.addDaysToDate(buffer, task.end_date);
                 task.is_buffered = true;
-                //console.log(task.start_date);
+
             }
         });
 
         // Этот фильтр удаляет с таска проэкта даты,
         // для того что бы таск был интерактивен по отношеню к детям
         var dataTaskFiltering = app.data.tasks.map(function(_task) {
-            if(_task['type'] == 'project'){
+
+            if(_task['id'] == 1){
+
                 // Cloning project task to property app.action.chart.baseProjectTask
-                if(_task['id'] == 1){
-                    app.data.baseProjectTask = o.baseProjectTask = app.u.objClone(_task);
+                app.data.baseProjectTask = o.baseProjectTask = app.u.objClone(_task);
+
+                _task['parent'] = '0';
+                _task['is_project'] = '1';
+
+                if(app.data.tasks.length === 1)
+                    _task['type'] = 'task';
+                else {
+                    _task['type'] = 'project';
+
+                    //delete _task['start_date'];
+                    //delete _task['end_date'];
+                    //delete _task['duration'];
                 }
-
-                //delete _task['start_date'];
-                //delete _task['end_date'];
-                //delete _task['duration'];
             }
-
-
 
             if(_task['duration'] < 1){
                 _task['duration'] = 1;
             }
 
-
-            // todo buffer
-            /*
             // Buffer update date position to time with buffer
-            if(_task.buffer > 0){
-                _task.isBuffered = true;
-                _task.start_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer), app.timeStrToDate(_task.start_date)) );
-                _task.end_date = app.timeDateToStr( app.addDaysToDate(parseFloat(_task.buffer),  app.timeStrToDate(_task.end_date)) );
-            }*/
             _task.is_buffered = false;
             _task.start_date_origin = app.timeStrToDate(_task.start_date);
             _task.end_date_origin = app.timeStrToDate(_task.end_date);
@@ -150,14 +120,12 @@
             //console.log('_filerData',_filerData);
             gantt.parse(_filerData);
         }catch (e){
-            console.log(e);
+            console.log('gantt.parse catch error: ' , e);
             app.action.error.page('Gantt.parse data have error');
         }
+
         // Dynamic chart resize when change window
         o.ganttDynamicResize();
-
-        // Catcher of gantt events
-        //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
 
         app.dom.actionUndo.addEventListener('click',function(){gantt.undo()});
         app.dom.actionRedo.addEventListener('click',function(){gantt.redo()});

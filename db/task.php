@@ -164,6 +164,19 @@ class Task
         return $this->connect->queryAll($sql);
     }
 
+    /**
+     * @param int $next
+     * @return mixed
+     */
+    public function resetAutoIncrement($next = 2){
+        try{
+            $sql = "ALTER TABLE `{$this->tableName}` AUTO_INCREMENT = $next";
+            $result = $this->connect->db->executeQuery($sql)->execute();
+        }catch(\Exception $e){
+            $result = 'error:' . $e->getMessage();
+        }
+        return $result;
+    }
 
 
 }
