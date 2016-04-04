@@ -106,7 +106,7 @@ class ApiController extends Controller {
         if($taskCount === 1 && $tasks[0]['id'] == 1)
             $this->connect->task()->resetAutoIncrement(2);
 
-        // filtring tasks
+        // filtering tasks
         if($tasks){
             $taskProject = null;
             for($i=0; $i < $taskCount; $i++){
@@ -126,28 +126,11 @@ class ApiController extends Controller {
 
         $links = $this->connect->link()->get();
         $linkCount = count($links);
-
-        // links cleaner
         $linksTrash = [];
+
         for($li = 0; $li < $linkCount; $li ++ ){
-
-            $_hasTaskTarget = $_hasTaskSource = false;
-
-            $_linkTarget = $links[$li]['target'];
-            $_linkSource = $links[$li]['source'];
-
-            for($ti = 0; $ti < $linkCount; $ti ++ ){
-
-                $_taskId = $tasks[$ti]['id'];
-
-                if($_taskId == $_linkTarget){
-                    $_hasTaskTarget = true;
-                }
-                if($_taskId == $_linkSource){
-                    $_hasTaskSource = true;
-                }
-            }
-            if(!$_hasTaskTarget || !$_hasTaskSource){
+            if( !$this->findTask($tasks, $links[$li]['target']) ||
+                !$this->findTask($tasks, $links[$li]['source']) ){
                 array_push($linksTrash, $links[$li]['id']);
                 unset($links[$li]);
             }
@@ -170,6 +153,20 @@ class ApiController extends Controller {
 
         return new DataResponse($params);
 	}
+
+
+    public function findTask($tasks, $id) {
+        $c = count($tasks);
+        $r = false;
+        for($i = 0; $i < $c; $i ++ )
+        {
+            if($tasks[$i]['id'] == $id){
+                $r = true;
+                break;
+            }
+        }
+        return $r;
+    }
 
 
     public function updatetask($data) {
@@ -221,6 +218,7 @@ class ApiController extends Controller {
     public function updatelink($data) {
 
         $params = [
+            'data'     => $data,
             'error'     => null,
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lastlinkid'    => null
@@ -241,8 +239,8 @@ class ApiController extends Controller {
 
             }else if($worker == 'update'){
 
-                //$result = $this->connect->task()->update($task);
-                //$params['error'] = $result ? null : 'Server update error, on task';
+                $result = $this->connect->task()->update($task);
+                $params['error'] = $result ? null : 'Server update error, on task';
 
             }else if($worker == 'delete'){
 

@@ -342,7 +342,7 @@
         app.api('updatetask', function(response) {
 
             console.log('updatetask:',response);
-            // gantt.changeTaskId(id, _id);
+
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
                 app.requesttoken = response.requesttoken;
@@ -367,10 +367,15 @@
     o.requestLinkUpdater = function (worker, id, link) {
 
         app.api('updatelink', function(response) {
+
+            console.log('updatelink:',response);
+
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
                 app.requesttoken = response.requesttoken;
+
                 if(worker == 'insert') {
+
                     // todo link
                     if(response.lastlinkid)
                         app.data.lastlinkid = (parseInt(response.lastlinkid) + 1);
