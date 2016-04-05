@@ -20,7 +20,8 @@ class Sharedchart {
     }
 
 	public function match() {
-        if(!self::$close){
+        if(!self::$close) {
+            self::$close = true;
             $uriArr = explode('/',$this->uri);
             $link = $uriArr[count($uriArr)-1];
             $s = $uriArr[count($uriArr)-2];
@@ -34,6 +35,5 @@ class Sharedchart {
                 }
             }
         }
-        self::$close = true;
     }
 }

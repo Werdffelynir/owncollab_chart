@@ -196,16 +196,24 @@ class Helper
             : '';
 
         $mail = new PHPMailer();
-        if(filter_var($to, FILTER_VALIDATE_EMAIL)){
+
+        if(filter_var($to, FILTER_VALIDATE_EMAIL))
+        {
             $mail->setFrom($from, $nameFrom);
             $mail->addAddress($to, $nameTo);
             $mail->Subject = $subject;
             $mail->Body    = $body;
             $mail->isHTML();
 
-            if (!$mail->send()) return $mail->ErrorInfo;
-            else return true;
+            if (!$mail->send())
+                return $mail->ErrorInfo;
+            else
+                return true;
         }
     }
+
+
+
+
 
 }

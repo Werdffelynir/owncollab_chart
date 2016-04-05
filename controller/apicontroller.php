@@ -316,92 +316,106 @@ class ApiController extends Controller {
     public function sendshareemails($data)
     {
         $params = [
+            'data'     => $data,
             'error'     => null,
+            'errorInfo'     => '',
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ?: \OC_Util::callRegister()
         ];
 
-        if(!$this->isAdmin && empty($data['emails'])){return new DataResponse($params);}
+        if(!$this->isAdmin && empty($data['emails'])){
+            $params['errorInfo'] = 'Request not auth or emails data is empty';
+            return new DataResponse($params);
+        }
+
+        //$projectSubDomain = $data['projemail'];$projectSubDomain . '.' .
 
         $groupsusers = $this->connect->project()->getGroupsUsersList();
         $resources = is_array($data['resources']) ? $data['resources'] : [];
         $emails = $data['emails'];
-        $sharedLink = $this->connect->project()->getShare();
         $serverHost = \OC::$server->getRequest()->getServerHost();
-        $sharedALink = '<a href="'.$sharedLink.'">'.$sharedLink.'</a>';
+        $serverProtocol = \OC::$server->getRequest()->getServerProtocol();
+        $sharedLink = $this->connect->project()->getShare();
+        $sharedALink = ' <a href="'.$serverProtocol.'://'.$serverHost.'/index.php/s/'.$sharedLink.'">'.$serverProtocol.'//'.$serverHost.'/index.php/s/'.$sharedLink.'</a> ';
         $mailSendResult = false;
 
-        //$params['groupsusers'] = $groupsusers;
-        //sleep(1);
+        $params['TEST'] = [];
+        //sleep(1); http://owncloud.loc/index.php/s/zAOe9xvgFplhwaBS
 
-        try{
-            foreach ($emails as $email) {
-                $_emArr = explode(':',$email);
-                $_type = $_emArr[0];
-                $_id = $_emArr[1];
+        foreach ($emails as $email) {
+            $_emArr = explode(':',$email);
+            $_type = $_emArr[0];
+            $_id = $_emArr[1];
 
-                if($_type == 'static') {
-                    if($_id == 'support'){
-                        $_mail_from_address = \OC::$server->getConfig()->getSystemValue('mail_from_address');
-                        $_mail_domain = \OC::$server->getConfig()->getSystemValue('mail_domain');
-                        $mailSendResult = Helper::mailSend([
-                            'to'        => $_mail_from_address .'@'. $_mail_domain,
-                            'name_to'   => '',
-                            'from'      => 'no-reply@' . $_mail_domain,
-                            'name_from' => 'ownCollab chart',
-                            'subject'   => $_id,
-                            'body'      => 'Access to the project ownCollab chart '.$sharedALink
-                        ]);
-                    }
-                    else if($_id == 'team') {
-                        foreach ($resources as $_res_uid) {
-                            $_user_email = $this->connect->project()->getUserEmail($_res_uid);
-                            if(!empty($_user_email)){
-                                $mailSendResult = Helper::mailSend([
-                                    'to'        => $_user_email,
-                                    'name_to'   => '',
-                                    'from'      => 'no-reply@' . $serverHost,
-                                    'name_from' => 'ownCollab chart',
-                                    'subject'   => 'Access to the project ownCollab chart',
-                                    'body'      => 'Access to the project ownCollab chart '.$sharedALink
-                                ]);
-                            }
+            if($_type == 'static') {
+                if($_id == 'support'){
+                    $_mail_from_address = \OC::$server->getConfig()->getSystemValue('mail_from_address');
+                    $_mail_domain = \OC::$server->getConfig()->getSystemValue('mail_domain');
+                    $_mail_data = [
+                        'to'        => $_mail_from_address .'@'. $_mail_domain,
+                        'name_to'   => 'Support '.$_mail_domain,
+                        'from'      => 'no-reply@' . $serverHost,
+                        'name_from' => 'ownCollab chart',
+                        'subject'   => $_id,
+                        'body'      => 'Access to the project ownCollab chart - '.$sharedALink
+                    ];
+                    //$params['TEST'][] = $_mail_data;
+                    $mailSendResult = Helper::mailSend($_mail_data);
+
+                }
+                else if($_id == 'team') {
+                    foreach ($resources as $_res_uid) {
+                        $_user_email = $this->connect->project()->getUserEmail($_res_uid);
+                        if(!empty($_user_email['configvalue'])){
+                            $_mail_data = [
+                                'to'        => $_user_email['configvalue'],
+                                'name_to'   => $_user_email['userid'],
+                                'from'      => 'no-reply@' . $serverHost,
+                                'name_from' => 'ownCollab chart',
+                                'subject'   => 'Access to the project ownCollab chart',
+                                'body'      => 'Access to the project ownCollab chart '.$sharedALink
+                            ];
+                            //$params['TEST'][] = $_mail_data;
+                            $mailSendResult = Helper::mailSend($_mail_data);
                         }
                     }
                 }
-                else if($_type == 'group') {
-                    $_group = !empty($groupsusers[$_type]) ? $groupsusers[$_id] : [];
-                    foreach ($_group as $_uid) {
-                        $_user_email = $this->connect->project()->getUserEmail($_uid);
-                        $mailSendResult = Helper::mailSend([
-                            'to'        => $_user_email,
-                            'name_to'   => '',
-                            'from'      => 'no-reply@' . $serverHost,
+            }
+            else if($_type == 'group') {
+                $_group = !empty($groupsusers[$_type]) ? $groupsusers[$_id] : [];
+                foreach ($_group as $_uid) {
+                    $_user_email = $this->connect->project()->getUserEmail($_uid);
+                    if(!empty($_user_email['configvalue'])) {
+                        $_mail_data = [
+                            'to' => $_user_email['configvalue'],
+                            'name_to' => $_user_email['userid'],
+                            'from' => 'no-reply@' . $serverHost,
                             'name_from' => 'ownCollab chart',
-                            'subject'   => 'Access to the project ownCollab chart',
-                            'body'      => 'Access to the project ownCollab chart'.$sharedALink
-                        ]);
+                            'subject' => 'Access to the project ownCollab chart',
+                            'body' => 'Access to the project ownCollab chart' . $sharedALink
+                        ];
+                        //$params['TEST'][] = $_mail_data;
+                        $mailSendResult = Helper::mailSend($_mail_data);
                     }
                 }
-                else if($_type == 'user') {
-                    $_user_email = $this->connect->project()->getUserEmail($_id);
-                    $mailSendResult = Helper::mailSend([
-                        'to'        => $_user_email,
-                        'name_to'   => '',
-                        'from'      => 'no-reply@' . $serverHost,
+            }
+            else if($_type == 'user') {
+                $_user_email = $this->connect->project()->getUserEmail($_id);
+                if(!empty($_user_email['configvalue'])) {
+                    $_mail_data = [
+                        'to' => $_user_email['configvalue'],
+                        'name_to' => $_user_email['userid'],
+                        'from' => 'no-reply@' . $serverHost,
                         'name_from' => 'ownCollab chart',
-                        'subject'   => 'Access to the project ownCollab chart',
-                        'body'      => 'Access to the project ownCollab chart'.$sharedALink
-                    ]);
+                        'subject' => 'Access to the project ownCollab chart',
+                        'body' => 'Access to the project ownCollab chart' . $sharedALink
+                    ];
+                    //$params['TEST'][] = $_mail_data;
+                    $mailSendResult = Helper::mailSend($_mail_data);
                 }
             }
-
-            $params['result'] = $mailSendResult;
-
-        } catch(\Exception $e) {
-            $params['result'] = 'error';
         }
 
-        $m = new PHPMailer();
+        $params['result'] = $mailSendResult;
 
         return new DataResponse($params);
     }

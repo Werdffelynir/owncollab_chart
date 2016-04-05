@@ -7,13 +7,13 @@
     var o = app.controller.public;
 
     if(window.location.href.indexOf('apps/owncollab_chart/s/') !== -1){
-        window.history.replaceState({}, document.title, window.location.href.replace(/apps\/owncollab_chart\//,''));
+        //window.history.replaceState({}, document.title, window.location.href.replace(/apps\/owncollab_chart\//,''));
     }
+
     /**
      * Construct call first when this controller run
      */
     o.construct = function() {
-
 
         /**
          * First we need to select all the elements necessary for work.
@@ -26,13 +26,14 @@
 
         var jData = false;
 
-        /**
-         * Query DOM Elements
-         */
-        queryDomElements();
+        app.dom.gantt           = $('#gantt-chartpublic')[0];
+        app.dom.ganttdatajson   = $('#ganttdatajson')[0];
+
+        //jData = JSON.parse($(app.dom.ganttdatajson).text());
 
         try{
             jData = JSON.parse($(app.dom.ganttdatajson).text());
+            //console.log(jData);
 
             if(typeof jData === 'object' && jData['tasks'] && jData['links'] && jData['project']){
 
@@ -50,22 +51,18 @@
                     app.action.chart.ganttFullSize();
                 });
 
-                /**
-                 * Configuration public set
-                 */
                 app.action.config.init();
                 app.action.config.external();
 
                 // parse data
-                gantt.parse({
-                    data: app.data.tasks,
-                    links: app.data.links
-                });
-
+                //gantt.parse({
+                //    data: app.data.tasks,
+                //    links: app.data.links
+                //});
             }
 
         }catch(error){
-            window.location = '/';
+            //window.location = '/';
         }
 
     }
@@ -74,12 +71,7 @@
      * Query Base DOM Elements
      * Appointment links DOM Elements necessary for use
      */
-    function queryDomElements(){
-
-        app.dom.gantt           = $('#gantt-chartpublic')[0];
-        app.dom.ganttdatajson   = $('#ganttdatajson')[0];
-
-    }
+    function queryDomElements(){}
 
 
 })(jQuery, OC, app);

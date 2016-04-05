@@ -109,7 +109,7 @@
             app.data.isAdmin = response['isadmin'];
 
             // accept localStorage settings
-            o.dataStorageAccept();
+            app.dataStorageAccept();
 
             app.action.chart.ganttFullSize();
 
@@ -200,42 +200,6 @@
     };
 
 
-    /**
-     * Accept data from local storage
-     */
-    o.dataStorageAccept = function(){
 
-        var show_today_line = app.storageGetItem('show_today_line'),
-            show_task_name = app.storageGetItem('show_task_name'),
-            show_user_color = app.storageGetItem('show_user_color'),
-            scale_type = app.storageGetItem('scale_type'),
-            scale_fit = app.storageGetItem('scale_fit'),
-            critical_path = app.storageGetItem('critical_path');
-
-        if(show_today_line === 'true')          app.data.project['show_today_line'] = 1;
-        else if(show_today_line === 'false')    app.data.project['show_today_line'] = 0;
-
-        if(show_task_name === 'true')           app.data.project['show_task_name'] = 1;
-        else if(show_task_name === 'false')     app.data.project['show_task_name'] = 0;
-
-        if(show_user_color === 'true')          app.data.project['show_user_color'] = 1;
-        else if(show_user_color === 'false')    app.data.project['show_user_color'] = 0;
-
-        if(scale_fit === 'true')                app.data.project['scale_fit'] = 1;
-        else if(scale_fit === 'false')          app.data.project['scale_fit'] = 0;
-
-        if(critical_path === 'true')            app.data.project['critical_path'] = 1;
-        else if(critical_path === 'false')      app.data.project['critical_path'] = 0;
-
-        if(scale_type)
-            app.data.project['scale_type'] = scale_type;
-    };
-
-    app.taskIdIterator = function(){
-        return app.data.lasttaskid ++;
-    };
-    app.linkIdIterator = function(){
-        return app.data.lastlinkid ++;
-    };
 
 })(jQuery, OC, app);

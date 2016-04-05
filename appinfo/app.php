@@ -40,6 +40,8 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 // Create public accept, only redirecting
 $shred = new Sharedchart();
 $shred->match();
+//var_dump($shred);
+//die;
 
 /**
  * Loading translations

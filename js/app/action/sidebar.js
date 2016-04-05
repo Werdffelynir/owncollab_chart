@@ -68,7 +68,8 @@
                         list.push({
                             value: all[group][userIter]['uid'],
                             type: 'user',
-                            email: all[group][userIter]['uid'] + '@' + project + '.' + domain
+                            email: all[group][userIter]['uid'] + '@' + domain
+                            //email: all[group][userIter]['uid'] + '@' + project + '.' + domain
                         });
                     }
                 }
@@ -77,7 +78,8 @@
                     list.push({
                         value: group,
                         type: 'group',
-                        email: group + '@' + project + '.' + domain
+                        email: group + '@' + domain
+                        //email: group + '@' + project + '.' + domain
                     });
                 }
             }
@@ -85,12 +87,14 @@
             list.push({
                 value: 'team',
                 type: 'static',
-                email: 'team@' + project + '.' + domain
+                email: 'team@' + domain
+                //email: 'team@' + project + '.' + domain
             });
             list.push({
                 value: 'support',
                 type: 'static',
-                email: 'support@' + project + '.' + domain
+                email: 'support@' + domain
+                //email: 'support@' + project + '.' + domain
             });
             return list;
         };

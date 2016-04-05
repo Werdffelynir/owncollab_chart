@@ -346,12 +346,7 @@
                 taskSuccessor.is_buffered = true;
                 gantt.updateTask(taskSuccessor.id);
             }
-            /**/
         }
-
-/*        console.log('getTaskPredecessor ---------------------- FIX');
-        console.log('getTaskPredecessor ---------------------- START');
-        console.log('getTaskPredecessor ---------------------- END');*/
 
         return true;
     };
@@ -423,15 +418,21 @@
         $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center');
 
         app.api('sendshareemails', function(response) {
+
+            console.log('sendshareemails:',response);
+
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
+
                 app.requesttoken = response.requesttoken;
+
                 $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
+
                 //console.log('response: ', response);
             } else {
                 app.action.error.inline('Error Request on send share emails');
             }
 
-        },{ emails:emails, resources:resources, link:link });
+        },{ emails:emails, resources:resources, link:link, projemail:app.action.chart.getProjectUrlName() });
 
     };
 
