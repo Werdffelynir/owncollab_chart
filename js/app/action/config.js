@@ -35,11 +35,21 @@
         //gantt.config.task_date = "%Y-%m-%d %H:%i";
         //gantt.config.date_grid = "%Y-%m-%d %H:%i";
 
-        gantt.config.grid_resize = true;
+        // enables/disables multi-task selection in the Gantt chart
+        //gantt.config.multiselect = false;
+        //gantt.config.multiselect_one_level = true;
 
         // reordering tasks within the whole gantt
-        gantt.config.order_branch = true;
+        //gantt.config.order_branch = true;
         //gantt.config.order_branch_free = true;
+
+        // gantt.setSizes();
+        //gantt.config.show_chart = false;
+
+
+
+        gantt.config.grid_resize = true;
+
 
         gantt.config.undo = true;
         gantt.config.redo = true;

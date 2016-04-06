@@ -64,12 +64,13 @@
 
         gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
 
-            var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
-            if(buffer > 0) {
-                task.start_date = app.addDaysToDate(buffer, task.start_date);
-                task.end_date = app.addDaysToDate(buffer, task.end_date);
-                task.is_buffered = true;
-            }
+            // todo buffer recalculate
+            //var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+            //if(buffer > 0) {
+            //    task.start_date = app.addDaysToDate(buffer, task.start_date);
+            //    task.end_date = app.addDaysToDate(buffer, task.end_date);
+            //    task.is_buffered = true;
+            //}
         });
 
         // Этот фильтр удаляет с таска проэкта даты,
@@ -460,6 +461,27 @@
         }
         return predecessor;
     };
+
+
+    o.addBufferFS = function (predecessor, successor, buffer) {
+        return predecessor;
+    };
+
+    o.addBufferSS = function (predecessor, successor, buffer) {
+        return predecessor;
+    };
+
+    o.addBufferSF = function (predecessor, successor, buffer) {
+        return predecessor;
+    };
+
+    o.addBufferFF = function (predecessor, successor, buffer) {
+        return predecessor;
+    };
+
+
+
+
 
 
 })(jQuery, OC, app);

@@ -268,7 +268,7 @@
                     break;
             }
         }
-
+        // important
         return event;
     };
 

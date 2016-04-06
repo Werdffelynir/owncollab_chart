@@ -4,11 +4,8 @@ var app = app || {
         name: 'owncollab_chart',
 
         /*url address to current application*/
-        /*OC.webroot + '/index.php' + OC.appswebroots['owncollab_chart']*/
         url: OC.generateUrl('/apps/owncollab_chart'),
-
         host: OC.getHost(),
-
         protocol: OC.getProtocol(),
 
         /*user is admin*/
@@ -260,8 +257,12 @@ var app = app || {
         return window.localStorage.removeItem(name);
     };
 
-
-    app.t = function (name, params) {
+    /**
+     * make translate
+     * @param name
+     * @param params
+     */
+    app.t = app.translate = function (name, params) {
         params = typeof params === 'object' ? params : {};
         return t('owncollab_chart', name, params)
     };
@@ -294,24 +295,46 @@ var app = app || {
         }
     };
 
+    /**
+     * get days between Dates
+     * @param date1
+     * @param date2
+     * @returns {number}
+     */
     app.daysBetween = function (date1, date2) {
         var date1_ms = date1.getTime(),
             date2_ms = date2.getTime();
         return Math.round((Math.abs(date1_ms - date2_ms))/86400000)
     };
 
+    /**
+     * get timestamp of Date
+     * @param date
+     * @returns {number}
+     */
+    app.dateTime = function(date){
+        return date instanceof Date ? date.getTime() : (new Date).getTime();
+    };
 
+    /**
+     * todo: not uses
+     * internal iterator for tasks
+     * @returns {number}
+     */
     app.taskIdIterator = function(){
         return app.data.lasttaskid ++;
     };
 
-
+    /**
+     * internal iterator for links
+     * @returns {number}
+     */
     app.linkIdIterator = function(){
         return app.data.lastlinkid ++;
     };
 
     /**
-     * Accept data from local storage
+     * Accept saved data from local storage
      */
     app.dataStorageAccept = function(){
 

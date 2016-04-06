@@ -14,58 +14,18 @@
     /**
      * Dynamic action options
      */
-    o.opt = {
+    o.opt = {};
 
-    };
+    o.init = function(){};
 
+    o.transactionBegin = function(){};
 
-    /**
-     * Run action chart
-     */
-    o.init = function(){
+    o.transactionCommit = function(){};
 
-    };
+    o.addToStart = function(){};
 
-    o.transactionBegin = function(){
+    o.addToEnd = function(){};
 
-    };
-
-    o.transactionCommit = function(){
-
-    };
-
-
-    o.addToStart = function(){
-
-    };
-    o.addToEnd = function(){
-
-    };
-
-    o.reset = function(){
-
-    };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    o.reset = function(){};
 
 })(jQuery, OC, app);
