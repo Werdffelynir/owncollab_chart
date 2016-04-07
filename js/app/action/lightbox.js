@@ -745,7 +745,8 @@
                 setTimeout(function(){
                     app.action.buffer.set(task.id, bufferSeconds);
                     inputElem.value = bufferValue;
-                    //o.task['buffer'] = _value;
+                    task['buffer'] = bufferSeconds;
+                    gantt.updateTask(task.id);
                 },300);
 
                 //task.buffer = parseFloat(this.value);
