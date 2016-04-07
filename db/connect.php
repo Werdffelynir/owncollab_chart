@@ -141,6 +141,4 @@ class Connect
     public function link() {
         return $this->link;
     }
-
-
 }

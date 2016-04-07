@@ -90,12 +90,14 @@ class ApiController extends Controller {
 
 		//return new DataResponse($_POST);
 		$uid = $this->userIdAPI;
+        $lang = $this->connect->project()->getCurrentLang($uid);
 
         $params = [
             'access' 	    => 'deny',
             'errorinfo'     => '',
             'isadmin' 	    => $this->isAdmin,
             'uid' 		    => $uid,
+            'lang' 		    => is_array($lang) ? $lang['configvalue']:'en',
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 

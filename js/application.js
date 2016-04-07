@@ -7,6 +7,7 @@ var app = app || {
         url: OC.generateUrl('/apps/owncollab_chart'),
         host: OC.getHost(),
         protocol: OC.getProtocol(),
+        locale: OC.getLocale(),
 
         /*user is admin*/
         isAdmin: null,
@@ -77,6 +78,13 @@ var app = app || {
 
     var inc = new Inc(),
         path = '/apps/' + app.name;
+
+    console.log('locale:', app.locale);
+
+    if(app.locale.toLowerCase().indexOf('de') !== -1)
+        inc.require(path + '/js/dhtmlxgantt/locale/locale_de.js');
+    else if(app.locale=='ru')
+        inc.require(path + '/js/dhtmlxgantt/locale/locale_ru.js');
 
     inc.require(path + '/js/app/module/db.js');
     inc.require(path + '/js/app/module/util.js');
@@ -295,60 +303,6 @@ var app = app || {
         }
     };
 
-
-    // formats string to DD/HH:MM:SS = '0/00:00:00'
-    /**
-     *
-     * @param seconds
-     * @return {*} Object {toString:null, days:null, hours:null, minutes:null, seconds:null}
-     */
-    app.toDayHHMMSS = function (seconds) {
-        var proto = { toString:null, days:null, hours:null, minutes:null, seconds:null },
-            func = function(sec){
-                var toStr ={},
-                    originSeconds = parseInt(sec),
-                    dateNow = new Date(0),
-                    date = new Date(originSeconds * 1000);
-                this.hours = date.getUTCHours();
-                this.minutes = date.getUTCMinutes();
-                this.seconds = date.getSeconds();
-                this.days = date.getUTCDay() - dateNow.getUTCDay();
-                toStr = { dd:this.days, hh:this.hours, mm:this.minutes, ss:this.seconds };
-                if (toStr.hh < 10) toStr.hh = "0"+toStr.hh;
-                if (toStr.mm < 10) toStr.mm = "0"+toStr.mm;
-                if (toStr.ss < 10) toStr.ss = "0"+toStr.ss;
-                this.toString = toStr.dd+"/"+toStr.hh+":"+toStr.mm+":"+toStr.ss;
-                return this;
-            };
-        return func.call(proto, seconds);
-    };
-
-    /**
-     * Convert buffer type "1d 1h" to seconds
-     * @param bufferString
-     * @returns {number}
-     */
-    app.convertBufferToSeconds = function (bufferString) {
-        var min, s = 0, d, h, bs = bufferString.trim();
-        if(d = bs.match(/^-/)){min = true}
-        if(d = bs.match(/(\d+)d/)){s += parseInt(d) * 86400}
-        if(h = bs.match(/(\d+)h/)){s += parseInt(h) * 3600}
-        if(bs.indexOf('d') === -1 && bs.indexOf('h') === -1 && !isNaN(bs)){
-            s = parseInt(bs) * 3600;
-            if(s < 0) min = false;
-        }
-        return min ? -s : s;
-    };
-
-    /**
-     * Convert seconds to buffer type "1d 1h"
-     * @param seconds
-     * @returns {string}
-     */
-    app.convertSecondsToBuffer = function (seconds) {
-        var dHMS = toDayHHMMSS(seconds);
-        return dHMS.days + "d " + dHMS.hours + "h";
-    };
 
     /**
      * get days between Dates

@@ -46,14 +46,16 @@
         o.opt.ganttIsInit = true;
 
         // Catcher of gantt events
-        //gantt.attachEvent("onGanttRender", onGanttReady);
-        //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
+        gantt.attachEvent("onParse", function(){
+            // buffer config setup
+            app.action.buffer.init();
+        });
         gantt.attachEvent("onGanttRender", app.action.event.onGanttRender);
+        //gantt.attachEvent("onGanttReady", app.action.event.onGanttReady);
         //gantt.attachEvent("onBeforeTaskAdd", app.action.event.onBeforeTaskAdd);
         //gantt.attachEvent("onAfterTaskAdd", app.action.event.onAfterTaskAdd);
         //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
         //gantt.attachEvent("onBeforeTaskDelete", app.action.event.onBeforeTaskDelete);
-
         gantt.attachEvent("onTaskClick", app.action.event.onTaskClick);
         gantt.attachEvent("onBeforeTaskUpdate", app.action.event.onBeforeTaskUpdate);
         gantt.attachEvent("onAfterTaskDelete", app.action.event.onAfterTaskDelete);
@@ -65,12 +67,31 @@
         gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
 
             // todo buffer recalculate
-            //var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
-            //if(buffer > 0) {
-            //    task.start_date = app.addDaysToDate(buffer, task.start_date);
-            //    task.end_date = app.addDaysToDate(buffer, task.end_date);
-            //    task.is_buffered = true;
-            //}
+            var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+
+            console.log(parseInt(link.type));
+            console.log(parseInt(gantt.config.links.start_to_start));
+
+            if(!isNaN(buffer)) {
+
+                buffer *= 1000;
+
+                switch (parseInt(link.type)){
+                    case parseInt(gantt.config.links.finish_to_start):
+                        app.action.buffer.addBufferFS(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_start):
+                        app.action.buffer.addBufferSS(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_finish):
+                        app.action.buffer.addBufferSF(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.finish_to_finish):
+                        app.action.buffer.addBufferFF(predecessor, task, buffer);
+                        break;
+                }
+            }
+
         });
 
         // Этот фильтр удаляет с таска проэкта даты,
@@ -127,6 +148,7 @@
         // Dynamic chart resize when change window
         o.ganttDynamicResize();
 
+        // enabled undo and redo button functions
         app.dom.actionUndo.addEventListener('click',function(){gantt.undo()});
         app.dom.actionRedo.addEventListener('click',function(){gantt.redo()});
     };
@@ -423,62 +445,6 @@
         var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
         return ((days%1==0) ? Math.round(days) : days) + ' d';
     };
-
-
-    /**
-     * Use app.action.chart.getTaskPredecessor(id);
-     * @param id
-     * @returns {boolean}
-     */
-    o.getTaskPredecessor = function (id) {
-        var links = gantt.getLinks(),
-            predecessor = false;
-        for(var i = 0; i < links.length; i ++){
-            var item = links[i];
-            if(item.target == id){
-                predecessor = gantt.getTask(item.source);
-                break;
-            }
-        }
-        return predecessor;
-    };
-
-
-    /**
-     * Use app.action.chart.getTaskSuccessor(id);
-     * @param id
-     * @returns {boolean}
-     */
-    o.getTaskSuccessor = function (id) {
-        var links = gantt.getLinks(),
-            predecessor = false;
-        for(var i = 0; i < links.length; i ++){
-            var item = links[i];
-            if(item.source == id){
-                predecessor = gantt.getTask(item.target);
-                break;
-            }
-        }
-        return predecessor;
-    };
-
-
-    o.addBufferFS = function (predecessor, successor, buffer) {
-        return predecessor;
-    };
-
-    o.addBufferSS = function (predecessor, successor, buffer) {
-        return predecessor;
-    };
-
-    o.addBufferSF = function (predecessor, successor, buffer) {
-        return predecessor;
-    };
-
-    o.addBufferFF = function (predecessor, successor, buffer) {
-        return predecessor;
-    };
-
 
 
 

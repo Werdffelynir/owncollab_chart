@@ -76,6 +76,17 @@ class Project
 
 
     /**
+     * Query core language for userid
+     * @param $uid
+     * @return mixed
+     */
+    public function getCurrentLang($uid) {
+        $sql = "SELECT * FROM *PREFIX*preferences WHERE userid = ? AND configkey = 'lang'";
+        return $this->connect->query($sql, [$uid]);
+    }
+
+
+    /**
      * Retrieve all records from Users
      *
      * @return mixed

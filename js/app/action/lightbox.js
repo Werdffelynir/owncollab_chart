@@ -279,7 +279,6 @@
         else if(target['name'] == 'lbox_predecessor'){
             o.predecessorViewGenerate();
 
-
             var view = o.predecessorView,
                 labels = document.createElement('div'),
                 btns = document.createElement('div');
@@ -620,10 +619,11 @@
             linksTarget = gantt.getTask(id).$target;
 
         _inpBuffer.setAttribute('placeholder', '0d 0h');
+        _inpBuffer.setAttribute('buffer', id);
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
         if(buffer > 0) {
-            _inpBuffer.value = buffer + ' d';
+            _inpBuffer.value = app.action.buffer.convertSecondsToBuffer(buffer);
         }
 
         _inpFS.id = 'plg_fs_' + id;
@@ -664,7 +664,7 @@
         _inpClear.value = 'clear';
         _inpClearLabel.setAttribute('for', 'plg_clear_' + id);
         _inpClearLabel.appendChild(_inpClearSpan);
-        _inpClearLabel.appendChild(document.createTextNode('rm'));
+        _inpClearLabel.appendChild(document.createTextNode('no'));
 
         // todo:linksTarget to linksSource, change _link.source to _link.target
         if(linksSource.length > 0){
@@ -695,19 +695,17 @@
         fragment.appendChild(_inpSS);
         fragment.appendChild(_inpSSLabel);
 
-        fragment.appendChild(_inpFF);
-        fragment.appendChild(_inpFFLabel);
-
         fragment.appendChild(_inpSF);
         fragment.appendChild(_inpSFLabel);
+
+        fragment.appendChild(_inpFF);
+        fragment.appendChild(_inpFFLabel);
 
         fragment.appendChild(_inpClear);
         fragment.appendChild(_inpClearLabel);
 
         return fragment;
     };
-
-
 
     o.predecessorOnClickListener = function  (popup, target){
         if(!o.task || !o.field) return;
@@ -732,6 +730,33 @@
         });
 
         // todo: buffer fix
+        $('input[type=text]', popup).on('change', function(event){
+            var id = this.name.split('_')[1],
+                task = gantt.getTask(id),
+                inputElem = this;
+
+            if(task){
+                var bufferSeconds = app.action.buffer.convertBufferToSeconds(this.value);
+                var bufferValue = app.action.buffer.convertSecondsToBuffer(bufferSeconds);
+
+                //console.log(this.value, bufferSeconds, bufferValue);
+                //console.log(task);
+
+                setTimeout(function(){
+                    app.action.buffer.set(task.id, bufferSeconds);
+                    inputElem.value = bufferValue;
+                    //o.task['buffer'] = _value;
+                },300);
+
+                //task.buffer = parseFloat(this.value);
+                //if(task.is_buffered === true){
+                    //app.injectBufferToDate(task, -task.buffer);
+                    //task.isBuffered = false;
+                //}
+                //gantt.updateTask(id);
+            }
+        });
+
         /*$('input[type=text]', popup).on('change', function(event){
             var id = this.name.split('_')[1],
                 task = gantt.getTask(id);
