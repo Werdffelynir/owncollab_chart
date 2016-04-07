@@ -239,11 +239,11 @@
                             text: "New Task",
                             predecessor: '',
                             buffer: 0,
+                            is_buffered: false,
                             start_date: _date,
                             end_date: app.addDaysToDate(7, _date),
                             progress: 0,
                             duration: 0,
-                            //parent: id,
                             type: gantt.config.types.task,
                             users: ''
                         };
@@ -258,7 +258,6 @@
 
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
-                        //text: gantt.locale.labels.confirm_deleting,
                         text: _task.text + " " +(_task.id)+ " - " + app.t('will be deleted permanently, are you sure?'),
                         callback: function(res){
                             if(res)
@@ -324,8 +323,9 @@
             }
         }
 
+        // todo not used now.
         // fixed position for buffer padding
-        var taskPredecessor, taskSuccessor;
+        /*var taskPredecessor, taskSuccessor;
         if(taskPredecessor = app.action.chart.getTaskPredecessor(id)) {
             if( taskPredecessor.buffer > 0 &&
                 task.start_date < app.addDaysToDate(taskPredecessor.buffer, taskPredecessor.end_date))
@@ -346,7 +346,7 @@
                 taskSuccessor.is_buffered = true;
                 gantt.updateTask(taskSuccessor.id);
             }
-        }
+        }*/
 
         return true;
     };

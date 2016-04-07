@@ -359,6 +359,9 @@
     o.onLightboxSave = function (id, task, is_new){
         var _id = null;
 
+
+        // todo not used now.
+        /*
         app.eachLinksById(id, 'target', function(link){
             var predecessor = gantt.getTask(link.source);
             var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
@@ -370,12 +373,10 @@
                 gantt.autoSchedule(predecessor.id);
             }
         });
+        */
 
         // after entry in the database, you need to update the id
         if(is_new === true){
-            //_id = app.data.lasttaskid ++;
-            //gantt.changeTaskId(id, _id);
-            //task.id = o.task.id = _id;
             o.task.id_origin = task.id;
             o.task.start_date_timestamp = task.start_date.getTime();
             o.task.end_date_timestamp = task.end_date.getTime();
@@ -592,6 +593,7 @@
             fragment = document.createDocumentFragment(),
 
             _isChecked = false,
+
             _inpBuffer = document.createElement('input'),
 
             _inpFS = document.createElement('input'),
@@ -617,9 +619,12 @@
             linksSource = gantt.getTask(id).$source,
             linksTarget = gantt.getTask(id).$target;
 
+        _inpBuffer.setAttribute('placeholder', '0d 0h');
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        _inpBuffer.value = (buffer ? buffer +'':'0') + ' ' +app.t('d');
+        if(buffer > 0) {
+            _inpBuffer.value = buffer + ' d';
+        }
 
         _inpFS.id = 'plg_fs_' + id;
         _inpFS.name = 'plg_' + id;
@@ -751,7 +756,9 @@
             this.select();
         });
         $('input[type=text]', popup).on('keyup', function(event){
-            var id = this.name.split('_')[1],
+
+            // todo not used now.
+            /*var id = this.name.split('_')[1],
                 task = gantt.getTask(id),
                 elem = this,
                 buffer = parseInt(elem.value);
@@ -765,7 +772,7 @@
                 task.buffer = buffer;
                 elem.select();
                 gantt.updateTask(id);
-            },300);
+            },300);*/
 
             //console.log(task);
             //console.log(task);

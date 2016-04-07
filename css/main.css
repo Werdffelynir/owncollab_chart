@@ -456,7 +456,19 @@ html, body {
 /*.gantt_buffer_line{
     background-color: #FFF;
 }*/
-
+.box_buffer{
+    text-align: center;
+}
+.show_buffer{
+    width: 60px;
+    display: inline-block;
+    background-color: #F2F2F2;
+}
+.change_buffer{
+    width: 16px;
+    height: 12px;
+    display: inline-block;
+}
 
 
 
