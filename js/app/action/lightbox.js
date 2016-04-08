@@ -386,6 +386,19 @@
         // updates all the properties editing task with the current internal object
         app.u.objMerge(task, o.task);
         gantt.updateTask(id);
+
+
+
+        // Accept buffer if it set
+        var predecessor, successor;
+        if(predecessor = app.action.buffer.getTaskPredecessor(id)) {
+            if(!isNaN(predecessor.buffer) && predecessor.buffer != 0){
+                setTimeout(function(){
+                    gantt.autoSchedule(predecessor.id);
+                },300);
+            }
+        }
+
         return true;
     };
     o.onLightboxCancel = function (){
@@ -831,9 +844,9 @@
         }
     };
 
-    o.deleteLinksWithSource = function  (source){
+    o.deleteLinksWithSource = function  (source) {
         var task = gantt.getTask(source), links = task.$source;
-        if(links.length > 0){
+        if(links.length > 0) {
             links.map(function(linkId){
                 gantt.deleteLink(linkId);
             });

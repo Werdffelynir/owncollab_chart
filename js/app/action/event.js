@@ -290,7 +290,8 @@
         if(task.end_date > app.addDaysToDate(maxLimit, app.data.baseProjectTask.end_date))
             task.end_date = app.addDaysToDate(7, task.end_date);
 
-            o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
+        o.requestTaskUpdater((task.$new === true) ? 'insert' : 'update', id, task);
+
     };
 
     o.onAfterTaskDelete = function(id, task){
@@ -309,8 +310,8 @@
 
     o.onAfterTaskUpdate = function(id, task){
 
-        task.start_date_origin = task.start_date;
-        task.end_date_origin = task.end_date;
+        task.start_date_origin = app.u.objClone(task.start_date);
+        task.end_date_origin = app.u.objClone(task.end_date);
 
         // change types task and project by nesting
         if(task.is_project != 1){
@@ -323,35 +324,7 @@
             }
         }
 
-        // Accept buffer if it set
-
-
-        // todo not used now.
-        // fixed position for buffer padding
-        /*var taskPredecessor, taskSuccessor;
-        if(taskPredecessor = app.action.chart.getTaskPredecessor(id)) {
-            if( taskPredecessor.buffer > 0 &&
-                task.start_date < app.addDaysToDate(taskPredecessor.buffer, taskPredecessor.end_date))
-            {
-                task.end_date = app.addDaysToDate(taskPredecessor.buffer, task.end_date_origin);
-                task.start_date = app.addDaysToDate(taskPredecessor.buffer, taskPredecessor.end_date);
-                task.is_buffered = true;
-                gantt.updateTask(task.id);
-            }
-        }
-
-        if(taskSuccessor = app.action.chart.getTaskSuccessor(id)) {
-            if( task.buffer > 0 &&
-                taskSuccessor.start_date < app.addDaysToDate(task.buffer, task.end_date))
-            {
-                taskSuccessor.start_date = app.addDaysToDate(task.buffer, task.end_date_origin);
-                taskSuccessor.end_date = app.addDaysToDate(task.buffer, taskSuccessor.end_date_origin);
-                taskSuccessor.is_buffered = true;
-                gantt.updateTask(taskSuccessor.id);
-            }
-        }*/
-
-        return true;
+        return false;
     };
 
 

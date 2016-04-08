@@ -69,9 +69,6 @@
             // todo buffer recalculate
             var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
 
-            console.log(parseInt(link.type));
-            console.log(parseInt(gantt.config.links.start_to_start));
-
             if(!isNaN(buffer)) {
 
                 buffer *= 1000;
@@ -90,8 +87,9 @@
                         app.action.buffer.addBufferFF(predecessor, task, buffer);
                         break;
                 }
+                task.is_buffered = true;
             }
-
+            return false
         });
 
         // Этот фильтр удаляет с таска проэкта даты,
@@ -447,6 +445,17 @@
     };
 
 
+    /**
+     * Uses: app.action.chart.getLinkOnTask(task_id)
+     * @param task_id
+     * @returns {{source: Array, target: (Array|*)}}
+     */
+    o.getLinkOnTask = function(task_id){
+        return {
+            source:gantt.getTask(task_id).$source,
+            target:gantt.getTask(task_id).$target
+        }
+    };
 
 
 

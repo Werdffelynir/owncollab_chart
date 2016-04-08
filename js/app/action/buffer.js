@@ -124,38 +124,52 @@
     /**
      * Uses: app.action.buffer.getTaskPredecessor(id);
      * @param id
-     * @returns {boolean}
+     * @returns {null|object}
      */
     o.getTaskPredecessor = function (id) {
         var links = gantt.getLinks(),
+            link = false,
             predecessor = false;
         for(var i = 0; i < links.length; i ++){
             var item = links[i];
             if(item.target == id){
+                link = item;
                 predecessor = gantt.getTask(item.source);
                 break;
             }
         }
         return predecessor;
+        /*if(predecessor)
+            return {
+                predecessor: predecessor,
+                link: link
+            };*/
     };
 
 
     /**
      * Uses: app.action.buffer.getTaskSuccessor(id);
      * @param id
-     * @returns {boolean}
+     * @returns {null|object}
      */
     o.getTaskSuccessor = function (id) {
         var links = gantt.getLinks(),
-            predecessor = false;
+            link = false,
+            successor = false;
         for(var i = 0; i < links.length; i ++){
             var item = links[i];
             if(item.source == id){
-                predecessor = gantt.getTask(item.target);
+                link = item;
+                successor = gantt.getTask(item.target);
                 break;
             }
         }
-        return predecessor;
+        return successor;
+        /*if(successor)
+            return {
+                successor: successor,
+                link: link
+            };*/
     };
 
     /**
@@ -216,10 +230,76 @@
 
     o.reset = function(){};
 
+
+
+    /**
+     * Uses: app.action.buffer.accept(predecessor, successor, linkType, buffer)
+     * @param predecessor
+     * @param successor
+     * @param buffer
+     */
+    o.accept = function(predecessor, successor, buffer){
+
+        var link = o.getTargetLink(successor.id);
+
+        if(link && link.source == predecessor.id){
+
+            console.log('accept predecessor:', predecessor);
+            console.log('accept successor:', successor);
+            console.log('accept buffer:', buffer);
+            console.log('accept link.type:', link.type);
+
+
+
+           // setTimeout(function(){
+                switch (parseInt(link.type)){
+                    case parseInt(gantt.config.links.finish_to_start):
+                        o.addBufferFS(predecessor, successor, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_start):
+                        o.addBufferSS(predecessor, successor, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_finish):
+                        o.addBufferSF(predecessor, successor, buffer);
+                        break;
+                    case parseInt(gantt.config.links.finish_to_finish):
+                        o.addBufferFF(predecessor, successor, buffer);
+                        break;
+                }
+           // },500);
+        }
+
+    };
+
+    /**
+     * Uses: app.action.buffer.calcBuffer(task_date, buffer)
+     * @param task_date
+     * @param buffer
+     * @returns {Date}
+     */
     o.calcBuffer = function(task_date, buffer){
         var d = new Date(task_date);
         d.setTime(d.getTime() + buffer);
         return d;
+    };
+
+
+    /**
+     *
+     * @param id
+     * @returns {boolean}
+     */
+    o.getTargetLink = function(id){
+        var links = gantt.getLinks(),
+            link = false;
+        for(var i = 0; i < links.length; i ++){
+            var item = links[i];
+            if(item.target == id){
+                link = item;
+                break;
+            }
+        }
+        return link;
     };
 
 })(jQuery, OC, app);
