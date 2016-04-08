@@ -241,10 +241,10 @@ class ApiController extends Controller {
 
             }else if($worker == 'update'){
 
-                //$result = $this->connect->task()->update($task);
-                //$params['error'] = $result ? null : 'Server update error, on task';
+                // $result = $this->connect->task()->update($task);
+                // $params['error'] = $result ? null : 'Server update error, on task';
 
-            }else if($worker == 'delete'){
+            }else if($worker == 'delete') {
 
                 $result = $this->connect->link()->deleteById($id);
                 $params['error'] = $result ? null : 'Server delete error, on task';

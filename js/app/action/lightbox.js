@@ -605,7 +605,6 @@
             fragment = document.createDocumentFragment(),
 
             _isChecked = false,
-
             _inpBuffer = document.createElement('input'),
 
             _inpFS = document.createElement('input'),
@@ -635,6 +634,7 @@
         _inpBuffer.setAttribute('buffer', id);
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
+
         if(!isNaN(buffer)) {
             _inpBuffer.value = app.action.buffer.convertSecondsToBuffer(buffer);
         }

@@ -352,6 +352,9 @@
                     if(response.lasttaskid){
                         app.data.lasttaskid = response.lasttaskid;
                         gantt.changeTaskId(response.data.id, parseInt(response.lasttaskid));
+
+                        app.action.chart.scrollToTask(parseInt(response.lasttaskid));
+
                     }
                     else
                         app.action.error.inline('Error Request: ' + worker + '. Inset ID not response.');

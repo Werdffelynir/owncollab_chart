@@ -457,6 +457,14 @@
         }
     };
 
+    /**
+     * Uses: app.action.chart.scrollToTask(task_id)
+     * @param task_id
+     */
+    o.scrollToTask = function(task_id){
+        var pos = $(gantt.getTaskNode(task_id)).position();
+        gantt.scrollTo(pos.left, pos.top)
+    };
 
 
 })(jQuery, OC, app);
