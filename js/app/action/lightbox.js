@@ -635,7 +635,7 @@
         _inpBuffer.setAttribute('buffer', id);
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
-        if(buffer > 0) {
+        if(!isNaN(buffer)) {
             _inpBuffer.value = app.action.buffer.convertSecondsToBuffer(buffer);
         }
 
