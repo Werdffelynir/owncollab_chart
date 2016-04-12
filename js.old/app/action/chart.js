@@ -149,6 +149,7 @@
         // enabled undo and redo button functions
         app.dom.actionUndo.addEventListener('click',function(){gantt.undo()});
         app.dom.actionRedo.addEventListener('click',function(){gantt.redo()});
+
     };
 
 

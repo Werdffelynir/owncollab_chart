@@ -53,14 +53,17 @@ Util::addTranslations($appName);
 /**
  * Application styles and scripts
  */
-if(Helper::isAppPage($appName)){
+if(Helper::isAppPage($appName)) {
+
 	Util::addStyle($appName, 'main');
-	Util::addStyle($appName, 'jquery-ui-timepicker');
-	Util::addStyle($appName, 'jquery.custom-scrollbar');
-	Util::addScript($appName,'jquery-ui-timepicker');
-	Util::addScript($appName, 'jquery.custom-scrollbar');
-	Util::addScript($appName, 'inc');
-	Util::addScript($appName, 'application');
+    Util::addScript($appName, 'libs/ns.application');
+    Util::addScript($appName, 'init');
+
+
+//	Util::addStyle($appName, 'jquery-ui-timepicker');
+//	Util::addStyle($appName, 'jquery.custom-scrollbar');
+//	Util::addScript($appName,'jquery-ui-timepicker');
+//	Util::addScript($appName, 'jquery.custom-scrollbar');
 
 	// dhtmlxGantt v.4.0.0 Standard
     Util::addStyle($appName, 'dhtmlxgantt');
@@ -68,12 +71,12 @@ if(Helper::isAppPage($appName)){
 	//Util::addScript($appName,'dhtmlxgantt/ext/dhtmlxgantt_marker');
 
 	// dhtmlxGantt v.4.0.0 Professional
-	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
-	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_undo');
-	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
-	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
-	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');
-	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_auto_scheduling');
+//	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
+//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_undo');
+//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
+//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
+//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');
+//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_auto_scheduling');
 
     // dhtmlxGantt v.4.0.0 Common
 	Util::addScript($appName,'dhtmlxgantt/api');
