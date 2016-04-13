@@ -6,13 +6,13 @@ if(App.namespace) { App.namespace('Module.DataStore', function(App) {
      */
     var dataStore = {},
         /**
-         * @namespace App.Controller.DataStore
+         * @namespace App.Module.DataStore
          * @type {*}
          */
         store = {};
 
     /**
-     * @namespace App.Controller.DataStore.put
+     * @namespace App.Module.DataStore.put
      * @param name
      * @param data
      * @returns {*}
@@ -23,7 +23,7 @@ if(App.namespace) { App.namespace('Module.DataStore', function(App) {
 
 
     /**
-     * @namespace App.Controller.DataStore.get
+     * @namespace App.Module.DataStore.get
      * @param name
      * @returns {*}
      */
@@ -33,14 +33,14 @@ if(App.namespace) { App.namespace('Module.DataStore', function(App) {
 
 
     /**
-     * @namespace App.Controller.DataStore.getAll
+     * @namespace App.Module.DataStore.getAll
      */
     store.getAll = function(){
         return dataStore;
     };
 
     /**
-     * @namespace App.Controller.DataStore.delete
+     * @namespace App.Module.DataStore.delete
      * @param name
      */
     store.delete = function(name){

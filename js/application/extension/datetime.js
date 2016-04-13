@@ -1,20 +1,20 @@
-if(App.namespace) { App.namespace('Extension.Date', function(App) {
+if(App.namespace) { App.namespace('Extension.DateTime', function(App) {
 
     /**
-     * @namespace App.Extension.Date
+     * @namespace App.Extension.DateTime
      */
-    var date = {
+    var dateTime = {
         stack: [],
         stackError: []
     };
 
     /**
      * Convert date to gantt time format
-     * @namespace App.Extension.Date.toString
+     * @namespace App.Extension.DateTime.dateToStr
      * @param date
      * @param mask
      */
-    date.toString = function (date, mask) {
+    dateTime.dateToStr = function (date, mask) {
         mask = mask || "%d.%m.%Y %H:%i";
         var formatFunc = gantt.date.date_to_str(mask);
         return formatFunc(date);
@@ -22,11 +22,11 @@ if(App.namespace) { App.namespace('Extension.Date', function(App) {
 
     /**
      * Convert string format to date object
-     * @namespace App.Extension.Date.fromString
+     * @namespace App.Extension.DateTime.strToDate
      * @param date
      * @param mask
      */
-    date.fromString = function (date, mask) {
+    dateTime.strToDate = function (date, mask) {
         mask = mask || "%d.%m.%Y %H:%i";
         var formatFunc = gantt.date.str_to_date(mask);
         return formatFunc(date);
@@ -34,12 +34,12 @@ if(App.namespace) { App.namespace('Extension.Date', function(App) {
 
     /**
      * Added days to date
-     * @namespace App.Extension.Date.addDays
+     * @namespace App.Extension.DateTime.addDays
      * @param day       day - 0.04, 1, .5, 10
      * @param startDate
      * @returns {Date}
      */
-    date.addDays = function (day, startDate){
+    dateTime.addDays = function (day, startDate){
         var date = startDate ? new Date(startDate) : new Date();
         date.setTime(date.getTime() + (day * 86400000));
         return date;
@@ -48,12 +48,12 @@ if(App.namespace) { App.namespace('Extension.Date', function(App) {
 
     /**
      * Get days between Dates
-     * @namespace App.Extension.Date.daysBetween
+     * @namespace App.Extension.DateTime.daysBetween
      * @param date1
      * @param date2
      * @returns {number}
      */
-    date.daysBetween = function (date1, date2) {
+    dateTime.daysBetween = function (date1, date2) {
         var date1_ms = date1.getTime(),
             date2_ms = date2.getTime();
         return Math.round((Math.abs(date1_ms - date2_ms))/86400000)
@@ -61,14 +61,14 @@ if(App.namespace) { App.namespace('Extension.Date', function(App) {
 
     /**
      * get timestamp of Date
-     * @namespace App.Extension.Date.time
+     * @namespace App.Extension.DateTime.time
      * @param date
      * @returns {number}
      */
-    date.time = function(date){
+    dateTime.time = function(date){
         return date instanceof Date ? date.getTime() : (new Date).getTime();
     };
 
-    return date
+    return dateTime
 
 })}

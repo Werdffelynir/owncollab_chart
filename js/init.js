@@ -16,12 +16,6 @@ window.App = new NamespaceApplication({
     constructsType: false
 });
 
-// loadings styles
-//App.style(App.url + 'css/desktop.css', null,initError);
-//App.style(App.url + 'css/mobile.css',null,initError);
-//App.script(App.url + 'js/test.js',null,initError);
-
-
 App.require('libs',
     [
         App.urlScript + 'libs/util.js',
@@ -33,15 +27,20 @@ App.require('dependence',
     [
         // App Extensions
         App.urlScript + 'application/extension/dom.js',
-        App.urlScript + 'application/extension/date.js',
         App.urlScript + 'application/extension/linker.js',
+        App.urlScript + 'application/extension/datetime.js',
 
         // Modules
         App.urlScript + 'application/module/datastore.js',
 
+        // Config
+        App.urlScript + 'application/config/ganttconfig.js',
+
         // Actions
         App.urlScript + 'application/action/api.js',
         App.urlScript + 'application/action/error.js',
+        App.urlScript + 'application/action/ganttext.js',
+        App.urlScript + 'application/action/sidebar.js',
         App.urlScript + 'application/action/chart.js',
 
         // Controllers
@@ -64,6 +63,14 @@ function initLibrary(list){
 
 function initDependence(list){
     console.log('Gantt Application start!');
+
+    /**
+     * @namespace App.t
+     */
+    App.t = function(name, params) {
+        params = typeof params === 'object' ? params : {};
+        return t('owncollab_chart', name, params)
+    };
 
     App.Controller.Page.construct();
 }

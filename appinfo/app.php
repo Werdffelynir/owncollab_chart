@@ -79,7 +79,7 @@ if(Helper::isAppPage($appName)) {
 //	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_auto_scheduling');
 
     // dhtmlxGantt v.4.0.0 Common
-	Util::addScript($appName,'dhtmlxgantt/api');
+//	Util::addScript($appName,'dhtmlxgantt/api');
 }
 
 /**

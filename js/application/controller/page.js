@@ -9,11 +9,10 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         Linker = App.Extension.Linker,
         Dom = App.Extension.Dom,
 
+        Api = App.Action.Api,
         Error = App.Action.Error,
         Chart = App.Action.Chart,
-
-        Api = App.Controller.Api,
-        DataStore = App.Controller.DataStore;
+        DataStore = App.Module.DataStore;
 
 
     ctrl.construct = function(){
@@ -117,7 +116,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        Chart.init(node.gantt, DataStore);
+        Chart.init(node.gantt);
     }
 
 

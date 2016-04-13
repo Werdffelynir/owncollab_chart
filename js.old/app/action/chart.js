@@ -291,6 +291,7 @@
         }
     };
 
+
     /**
      * Adds a marker "today" to the timeline area
      */
