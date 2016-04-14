@@ -33,19 +33,48 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
             },
 
             error: function (error) {
-                //console.error("API request error to the key: [" + key + "] Error message: ", error);
                 Error.page("API request error to the key: [" + key + "] Error message");
             },
 
             complete: function (jqXHR, status) {
-                //console.log("API request complete, status: " + status);
-
                 if (status == 'timeout') {
                     Error.page("You have exceeded the request time. possible problems with the Internet, or an error on the server");
                 }
             }
         });
     };
+
+
+    /**
+     * @namespace App.Action.Api.sendEmails
+     * @param emails
+     * @param resources
+     * @param link
+     */
+    api.sendEmails = function(emails, resources, link){
+
+        // change all icon to loading emails
+        $('.share_email_butn')
+            .css('background', 'url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center');
+
+        app.api('sendshareemails', function(response) {
+            if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
+
+                app.requesttoken = response.requesttoken;
+                $('.share_email_butn')
+                    .css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
+
+            } else {
+                Error.inline('Error Request on send share emails');
+            }
+        } , {
+            emails: emails,
+            resources: resources,
+            link: link,
+            projemail: App.Action.Project.urlName()
+        });
+    };
+
 
     return api;
 

@@ -10,7 +10,24 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
         elemFields: null
     };
 
+    /** @type {App.Action.Chart} */
+    var ActChart = null;
+    /** @type {App.Action.Project} */
+    var ActProject = null;
+    /** @type {*} */
+    var dataStoreProject = null;
+    /** @type {*} */
+    var dataStoreGroupsusers = null;
+
+    /**
+     * @namespace App.Action.Sidebar.init
+     */
     sidebar.init = function(){
+
+        ActChart = App.Action.Chart;
+        ActProject = App.Action.Project;
+        dataStoreProject = App.Module.DataStore.get('project');
+        dataStoreGroupsusers = App.Module.DataStore.get('groupsusers');
 
         // Open/Close of sidebar block
         sidebar.toggle();
@@ -23,6 +40,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
         // Element for locking the side panel
         sidebar.elemLocker = sidebar.createLocker();
+
 
         // put project settings to sidebar fields
         //sidebar.putProjectSettings();
@@ -46,13 +64,13 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
         // autocomplete for email sends
         var usersEmails = function(){
-            var resources = app.action.chart.getProjectResources(true),
+            var resources = ActProject.resources(true),
                 group,
                 userIter = 0,
-                project = app.action.chart.getProjectUrlName(),
+                project = ActProject.urlName(),
                 domain = OC.getHost(),
                 list = [],
-                all = app.data.groupsusers;
+                all = dataStoreGroupsusers;
 
             for(group in all){
                 var inGroup = false;
@@ -114,20 +132,25 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
         $('input[name=share_email_submit]').click(function(event){
             event.preventDefault();
             var emailsList = [];
-            $('.share_email', app.dom.sidebar).each(function(index, item){
+            $('.share_email', App.node('sidebar')).each(function(index, item){
                 var id = item.getAttribute('data-id');
                 var type = item.getAttribute('data-type');
                 var email = item.getAttribute('data-email');
                 emailsList.push(type+ ':' +id);
             });
-            app.action.event.sendShareEmails(
-                app.u.uniqueArr(emailsList),
-                app.action.chart.getProjectResources(true)
+            App.Action.Api.sendEmails(
+                Util.uniqueArr(emailsList),
+                ActProject.resources(true)
             );
         });
 
     };
 
+    /**
+     *
+     * @namespace App.Action.Sidebar.emailsList
+     * @param item
+     */
     sidebar.emailsList = function(item){
         var wrap = document.createElement('div');
         var icon = document.createElement('div');
@@ -157,27 +180,34 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
     /**
      * Toggle sidebar
+     * @namespace App.Action.Sidebar.toggle
      */
     sidebar.toggle = function(){
-        $(app.dom.sidebarToggle).click(function(e){
-            if($(app.dom.sidebar).hasClass('disappear')){
+        var sidebar = App.node('sidebar');
+        var sidebarToggle = App.node('sidebarToggle');
+        var appContent = App.node('appContent');
+
+        $(sidebarToggle).click(function(e){
+            if($(sidebar).hasClass('disappear')){
                 sidebar.active = true;
-                $(app.dom.appContent).css('overflowX','hidden');
-                OC.Apps.showAppSidebar($(app.dom.sidebar));
+                $(appContent).css('overflowX','hidden');
+                OC.Apps.showAppSidebar($(sidebar));
             }else{
                 sidebar.active = false;
-                $(app.dom.appContent).css('overflowX','auto');
-                OC.Apps.hideAppSidebar($(app.dom.sidebar));
-
+                $(appContent).css('overflowX','auto');
+                OC.Apps.hideAppSidebar($(sidebar));
             }
         });
     };
 
     /**
      * Switch tabs on sidebar
+     * @namespace App.Action.Sidebar.tabsClick
      */
     sidebar.tabsClick = function(){
-        $(app.dom.sidebarTabs).click(function(event){
+        var sidebarTabs = App.node('sidebarTabs');
+
+        $(sidebarTabs).click(function(event){
             if(event.target.nodeName == 'SPAN' && event.target.id){
                 var tab = event.target;
                 $('#sidebar-content>div').each(function(index,item){
@@ -197,11 +227,13 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
      * Get number index active tab, starts with 1. If sidebar or tab not active return 0
      * app.action.sidebar.getActiveTabIndex()
      *
+     * @namespace App.Action.Sidebar.getActiveTabIndex
      * @returns {number}
      */
     sidebar.getActiveTabIndex = function(){
         var tabElem = 0;
-        $('#' + app.dom.sidebarTabs.id + '>span').each(function(index,item){
+        var sidebarTabs = App.node('sidebarTabs');
+        $('#sidebar_tabs>span').each(function(index,item){
             if(item.classList.contains('sidebar_tab_active'))
                 tabElem = item;
         });
@@ -211,19 +243,19 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
     /**
      * Blocked current active tab
-     * app.action.sidebar.lock()
+     * @namespace App.Action.Sidebar.lock
      */
     sidebar.lock = function(){
         if(sidebar.getActiveTabIndex() !== 0){
-            $(app.dom.sidebar).prepend(sidebar.elemLocker);
-            sidebar.elemLocker.style.height = $(app.dom.sidebar).outerHeight() + 'px';
+            $(App.node('sidebar')).prepend(sidebar.elemLocker);
+            sidebar.elemLocker.style.height = $(App.node('sidebar')).outerHeight() + 'px';
         }
     };
 
 
     /**
      * Unlock current active tab
-     * app.action.sidebar.unlock()
+     * @namespace App.Action.Sidebar.unlock
      */
     sidebar.unlock= function(){
         $(sidebar.elemLocker).remove();
@@ -232,6 +264,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
     /**
      * Return HTMLElement for sidebar-locker
+     * @namespace App.Action.Sidebar.createLocker
      * @returns {Element}
      */
     sidebar.createLocker = function(){
@@ -239,7 +272,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
             img = document.createElement('img');
         div.id = 'sidebar_locker';
         div.className = 'tbl';
-        img.src = OC.linkTo(app.name, 'img/loading.gif');
+        img.src = OC.linkTo(App.name, 'img/loading.gif');
         img.className = 'tbl_cell';
         div.appendChild(img);
         div.addEventListener('click', sidebar.unlock, false);
@@ -250,10 +283,11 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
     /**
      * Put project data params into form fields.
      * into all tabs: Share, Export, Settings
+     * @namespace App.Action.Sidebar.putProjectSettings
      */
     sidebar.putProjectSettings = function(){
 
-        var project = app.data.project,
+        var project = ActProject.dataProject,
 
             // all field of sidebar
             fields = sidebar.elemFields,
@@ -270,14 +304,13 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                 switch(String(tagType).toLowerCase()){
 
                     case 'checkbox':
-
                         if(parseInt(project[param])===1) {
                             fields[param].setAttribute('checked','checked');
                         } else {
                             fields[param].removeAttribute('checked');
                         }
 
-                        fields[param].addEventListener('change', app.action.event.changeValueProject, false);
+                        //fields[param].addEventListener('change', app.action.event.changeValueProject, false);
 
                         break;
 
@@ -287,7 +320,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                     case 'textarea':
 
                         if(param == 'share_expire_time' && project[param] != null && project[param].length > 8) {
-                            var dateTime = app.timeDateToStr(app.timeStrToDate(project[param]));
+                            //var dateTime = app.timeDateToStr(app.timeStrToDate(project[param]));
                             fields[param].value = dateTime;
                         }
                         else if(param == 'share_link') {
@@ -344,7 +377,11 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
     };
 
-
+    /**
+     *
+     * @namespace App.Action.Sidebar.definitionFields
+     * @returns {{}}
+     */
     sidebar.definitionFields = function (){
         var fieldsSettings = $('#chart_settings input'),
             fieldsShare = $('#chart_share input'),

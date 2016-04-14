@@ -1,5 +1,13 @@
 if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
+    var GanttEve = App.Event.GanttEve;
+    var GanttConfig = App.Config.GanttConfig;
+    var DataStore = App.Module.DataStore;
+    var DateTime = App.Extension.DateTime;
+    var Error = App.Action.Error;
+    var GanttExt = App.Action.GanttExt;
+    var Sidebar = App.Action.Sidebar;
+    var Lightbox = App.Action.Lightbox;
 
     /**
      * @namespace App.Action.Chart
@@ -12,24 +20,18 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         zoomValue: 2
     };
 
-    var GanttConfig = App.Config.GanttConfig;
-    var DataStore = App.Module.DataStore;
-    var DateTime = App.Extension.DateTime;
-    var Error = App.Action.Error;
-    var GanttExt = App.Action.GanttExt;
-    var Sidebar = App.Action.Sidebar;
-
-
     /**
      * @namespace App.Action.Chart.init
      * @param contentElement
+     * @param callbackGanttReady
      */
-    chart.init = function (contentElement){
+    chart.init = function (contentElement, callbackGanttReady){
+
         chart.contentElement = contentElement;
         chart.tasks = DataStore.get('tasks');
         chart.links = DataStore.get('links');
 
-        chart.ganttInit();
+        chart.ganttInit(callbackGanttReady);
     };
 
 
@@ -69,22 +71,39 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         });
     };
 
-    chart.ganttInit = function (){
+    chart.ganttInit = function (callbackGanttReady){
 
+        // Int first app parts modules
+        gantt.attachEvent('onGanttReady', callbackGanttReady);
+
+        // run gantt init
         gantt.init(chart.contentElement);
 
-        var filteringTasks = chart.filteringTasks();
+        // run gantt configs
+        GanttConfig.init();
 
-        // include gantt configs
-        GanttConfig.init(gantt, 'admin');
+        // run Sidebar
+        Sidebar.init();
+
+        // run Lightbox
+        Lightbox.init();
+
+
+
+
+
 
 
         // run parse data
+        var filteringTasks = chart.filteringTasks();
+
         gantt.parse({
             data: filteringTasks,
             links: chart.links
         });
+
     };
+
 
 
     /**

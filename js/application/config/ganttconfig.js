@@ -24,16 +24,15 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
     /**
      * @namespace App.Config.GanttConfig.init
-     * @param type
      */
-    conf.init = function (type) {
+    conf.init = function () {
 
         DateTime = App.Extension.DateTime;
         DataStore = App.Module.DataStore;
         GanttExt = App.Action.GanttExt;
         Error = App.Action.Error;
 
-        conf.type = type;
+        conf.type = App.Controller.Page.whoIs();
         conf.dataProject = DataStore.get('project');
 
         // base configs
@@ -249,7 +248,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
     /**
      * Setting up the gantt chart scale
-     * Use: app.action.chart.scale(type)
+     * @namespace App.Config.GanttConfig.scale
      * @param type scale size
      */
     conf.scale = function (type){

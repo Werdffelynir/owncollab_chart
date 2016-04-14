@@ -4,17 +4,25 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
      */
     var ctrl = {},
 
-        node = {},
+        node = {};
 
-        Linker = App.Extension.Linker,
-        Dom = App.Extension.Dom,
+    var Linker = App.Extension.Linker;
 
-        Api = App.Action.Api,
-        Error = App.Action.Error,
-        Chart = App.Action.Chart,
-        DataStore = App.Module.DataStore;
+    /**  @type {App.Action.Api} */
+    var Api = App.Action.Api;
 
+    /**  @type {App.Action.Error} */
+    var Error = App.Action.Error;
 
+    /**  @type {App.Action.Chart} */
+    var Chart = App.Action.Chart;
+
+    /**  @type {App.Module.DataStore} */
+    var DataStore = App.Module.DataStore;
+
+    /**
+     * @namespace App.Controller.Page.construct
+     */
     ctrl.construct = function(){
 
         App.domLoaded(build);
@@ -116,8 +124,30 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        Chart.init(node.gantt);
+        Chart.init(node.gantt, ganttReady);
     }
+    function ganttReady(){
+
+        console.log('ganttReady');
+
+    }
+
+
+    /**
+     * Return 'admin','user' or 'guest'
+     * @namespace App.Controller.Page.whoIs
+     * @returns {*}
+     */
+    ctrl.whoIs = function(){
+        if(App.uid){
+            return App.isAdmin ? 'admin' : 'user';
+        }else
+            return 'guest';
+    };
+
+
+
+
 
 
     return ctrl;

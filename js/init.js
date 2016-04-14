@@ -2,7 +2,7 @@
 
 window.App = new NamespaceApplication({
     debug: true,
-    name: 'ownCollab Chart',
+    name: 'owncollab_chart',
     url: OC.generateUrl('/apps/owncollab_chart'),
     urlScript: '/apps/owncollab_chart/js/',
     urlGantt: '/apps/owncollab_chart/js/commercial/',
@@ -36,11 +36,16 @@ App.require('dependence',
         // Config
         App.urlScript + 'application/config/ganttconfig.js',
 
+        // Events
+        App.urlScript + 'application/event/gantteve.js',
+
         // Actions
         App.urlScript + 'application/action/api.js',
         App.urlScript + 'application/action/error.js',
         App.urlScript + 'application/action/ganttext.js',
         App.urlScript + 'application/action/sidebar.js',
+        App.urlScript + 'application/action/lightbox.js',
+        App.urlScript + 'application/action/project.js',
         App.urlScript + 'application/action/chart.js',
 
         // Controllers
