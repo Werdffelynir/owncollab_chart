@@ -10,6 +10,11 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         popup:null
     };
 
+    /** @type {App.Extension.DateTime} */
+    var DateTime = App.Extension.DateTime;
+    /** @type {App.Module.DataStore} */
+    var DataStore = App.Module.DataStore;
+
     /**
      * @namespace App.Action.Lightbox.init
      */
@@ -23,17 +28,21 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
          * gantt.config.lightbox.milestone_sections - for milestones.
          * @type {*[]}
          */
-        gantt.config.lightbox.sections = gantt.config.lightbox.project_sections = gantt.config.lightbox.milestone_sections = [
+        gantt.config.lightbox.sections =
+            gantt.config.lightbox.project_sections =
+                gantt.config.lightbox.milestone_sections = [
             {name:"template", height:260, type:"template", map_to:"base_template"}
         ];
 
-        //Set the label for the section:
+        // Set the label for the section:
         gantt.locale.labels.section_template = "Edit task detail";
 
-        //Set the content of the control with the help of some event, e.g. the onBeforeLightbox event:
+        // Set the content of the control with the help of some event, e.g. the onBeforeLightbox event:
         gantt.attachEvent("onBeforeLightbox", lbox.onBeforeLightbox);
 
-        //gantt.attachEvent("onLightbox", lbox.onLightbox);
+        // Set
+        gantt.attachEvent("onLightbox", lbox.onLightbox);
+
         //gantt.attachEvent("onAfterLightbox", lbox.onAfterLightbox);
         //gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
         //gantt.attachEvent("onLightboxCancel", lbox.onLightboxCancel);
@@ -48,18 +57,11 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @returns {boolean}
      */
     lbox.onBeforeLightbox = function (id){
+        // added task ti edit
         lbox.task = gantt.getTask(id);
         lbox.task.base_template = '<div id="generate-lbox-wrapper">' + App.node('lbox').innerHTML + '</div>';
         return true;
     };
-
-
-
-
-
-
-
-
 
 
     lbox.onLightbox = function (id){
@@ -109,7 +111,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
                         case 'start_date':
                         case 'end_date':
-                            fso[_name].value = App.Extension.dateTime.dateToStr(lbox.task[_name]); // app.timeDateToStr(lbox.task[_name]);
+                            fso[_name].value = DateTime.dateToStr(lbox.task[_name]);
                             break;
 
                         default:
@@ -122,11 +124,11 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         })();
 
 
-/*        var startDate = app.timeStrToDate(app.data.baseProjectTask.start_date);
+        var startDate = DataStore.get('projectTask').start_date;
 
         $('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             minDate: startDate,
-            maxDate: app.addDaysToDate(365, startDate),
+            maxDate: DateTime.addDays(365, startDate),
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
@@ -137,15 +139,15 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         $('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             minDate: (function(){
                 var fsd = $('input[name=lbox_start_date]').val();
-                return app.timeStrToDate(fsd?fsd:startDate);
+                return DateTime.strToDate(fsd?fsd:startDate);
             })(),
-            maxDate: app.addDaysToDate(365, startDate),
+            maxDate: DateTime.addDays(365, startDate),
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
             onSelect: lbox.onChangeLightboxInputDate
-        });*/
+        });
 
     };
 
@@ -184,16 +186,10 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     lbox.onChangeLightboxInputDate = function (date, picObj){
         if(!lbox.task || !lbox.field) return;
         var name = this['name'].substr(5);
-
-        /*if(name == 'start_date')
-         lbox._tmpCurrentMinDate = app.timeStrToDate(date);
-         else if(name == 'end_date')
-         picObj.settings.minDate = lbox._tmpCurrentMinDate ? lbox._tmpCurrentMinDate : picObj.settings.minDate;*/
-
-        lbox.task[name] = app.timeStrToDate(date);
+        lbox.task[name] = DateTime.strToDate(date);
     };
 
-    lbox.onClickLightboxInputMilestone = function (event){
+    lbox.onClickLightboxInputMilestone = function (event) {
         if(!lbox.task || !lbox.field) return;
         var target = event.target;
 
@@ -203,7 +199,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             lbox.task.type = gantt.config.types.task;
 
             // date fix for task
-            lbox.task.end_date = app.addDaysToDate(7, lbox.task.start_date);
+            lbox.task.end_date = DateTime.addDays(7, lbox.task.start_date);
         }
     };
 
@@ -238,10 +234,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         // todo buffer
         /*else if(target['name'] == 'lbox_buffer'){
-
-         target.select();
-
-         }*/
+            target.select();
+        }*/
         else if(target['name'] == 'lbox_end_date'){
 
             //app.timeStrToDate($('input[name=lbox_start_date]').val())
@@ -256,9 +250,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
             labels.className = 'predecessor_labels';
             labels.innerHTML = '<span class="lbox_pl_id">ID</span>' +
-                '<span class="lbox_pl_name">' + app.t('Taskname') + '</span>' +
-                '<span class="lbox_pl_buffer">' + app.t('Buffer') + '</span>' +
-                '<span class="lbox_pl_link">' + app.t('Link type') + '</span>';
+                '<span class="lbox_pl_name">' + App.t('Taskname') + '</span>' +
+                '<span class="lbox_pl_buffer">' + App.t('Buffer') + '</span>' +
+                '<span class="lbox_pl_link">' + App.t('Link type') + '</span>';
 
             view.insertBefore(labels, view.firstChild);
 
@@ -329,22 +323,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     lbox.onLightboxSave = function (id, task, is_new){
         var _id = null;
 
-
-        // todo not used now.
-        /*
-         app.eachLinksById(id, 'target', function(link){
-         var predecessor = gantt.getTask(link.source);
-         var buffer = app.u.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
-         if(buffer > 0) {
-         lbox.task.start_date = app.addDaysToDate(buffer, predecessor.end_date);
-         lbox.task.end_date = app.addDaysToDate(buffer+app.daysBetween(task.start_date,task.end_date), predecessor.end_date);
-         lbox.task.is_buffered = true;
-         }else{
-         gantt.autoSchedule(predecessor.id);
-         }
-         });
-         */
-
         // after entry in the database, you need to update the id
         if(is_new === true){
             lbox.task.id_origin = task.id;
@@ -355,14 +333,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         }
 
         // updates all the properties editing task with the current internal object
-        app.u.objMerge(task, lbox.task);
+        Util.objMerge(task, lbox.task);
         gantt.updateTask(id);
-
-
 
         // Accept buffer if it set
         var predecessor, successor;
-        if(predecessor = app.action.buffer.getTaskPredecessor(id)) {
+        if(predecessor = App.Action.Buffer.getTaskPredecessor(id)) {
             if(!isNaN(predecessor.buffer) && predecessor.buffer != 0){
                 setTimeout(function(){
                     gantt.autoSchedule(predecessor.id);
@@ -389,15 +365,16 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
     lbox.resourcesViewGenerate = function (){
         var fragment = document.createDocumentFragment();
+        var groupsusers = DataStore.get('groupsusers');
 
-        for(var groupName in app.data.groupsusers){
+        for(var groupName in groupsusers){
 
             var _lineGroup = document.createElement('div'),
                 _lineUsers = document.createElement('div'),
                 _inputGroup = document.createElement('input'),
                 _inputLabel = document.createElement('label'),
                 _inputSpan = document.createElement('span'),
-                users = app.data.groupsusers[groupName],
+                users = groupsusers[groupName],
                 usersCount =  users.length;
 
             _inputGroup.name = String(groupName).trim();
@@ -411,7 +388,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
             _inputGroup.id = 'group' + groupName;
             _inputLabel.setAttribute('for', 'group' + groupName);
-            _inputLabel.innerHTML += ' <strong>' + app.u.ucfirst(groupName) + '</strong>';
+            _inputLabel.innerHTML += ' <strong>' + Util.ucfirst(groupName) + '</strong>';
 
             for(var i=0; i<usersCount; i++){
                 var _inlineUser = document.createElement('span'),
@@ -444,6 +421,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     };
 
     lbox.resourcesAppoint = function (popup){
+        var groupsusers = DataStore.get('groupsusers');
         var usersTask = lbox.getResources();
         if(usersTask.length > 0){
             var inputs = popup.querySelectorAll('input[type=checkbox][data-type=user]'),
@@ -460,7 +438,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             }
             // checked groups
             for(var k in groupIn){
-                if(app.data.groupsusers[k] && app.data.groupsusers[k].length === groupIn[k])
+                if(groupsusers[k] && groupsusers[k].length === groupIn[k])
                     $('input[name='+k+'][data-type=group]', popup).prop('checked', true);
             }
         }
@@ -468,6 +446,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
 
     lbox.resourceOnClickListener = function (popup, fieldUsers) {
+        var groupsusers = DataStore.get('groupsusers');
         popup.addEventListener('click', function(event) {
             if(event.target.tagName == 'INPUT'){
                 var target = event.target,
@@ -486,7 +465,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                     }
                 }
                 else if(type === 'group') {
-                    var _users = app.data.groupsusers[name].map(function(e){return e['uid']});
+                    var _users = groupsusers[name].map(function(e){return e['uid']});
                     if(checked) {
                         $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
                         fieldUsers.value = lbox.addResource(_users);
@@ -516,12 +495,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         var users = lbox.getResources(),
             usersString = '';
         if(typeof user === 'string') user = [user];
-        if(app.u.isArr(user) && user.length > 0){
+        if(Util.isArr(user) && user.length > 0){
             for(var i=0; i<user.length; i ++)
                 users.push(user[i]);
 
             lbox.field['users'] = lbox.task['users'] = usersString =
-                app.u.cleanArr(app.u.uniqueArr(users)).join(', ');
+                Util.cleanArr(Util.uniqueArr(users)).join(', ');
         }
         return usersString;
     };
@@ -529,13 +508,13 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         var users = lbox.getResources(),
             usersString = '';
         if(typeof user === 'string') user = [user];
-        if(app.u.isArr(user) && user.length > 0){
+        if(Util.isArr(user) && user.length > 0){
             for(var i=0; i<user.length; i ++){
                 if(users.indexOf(user[i]) !== -1)
                     users.splice(users.indexOf(user[i]),1);
             }
             lbox.field['users'] = lbox.task['users'] = usersString =
-                app.u.cleanArr(app.u.uniqueArr(users)).join(', ');
+                Util.cleanArr(Util.uniqueArr(users)).join(', ');
         }
         return usersString;
     };
@@ -607,7 +586,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         _inpBuffer.type = 'text';
 
         if(!isNaN(buffer)) {
-            _inpBuffer.value = app.action.buffer.convertSecondsToBuffer(buffer);
+            _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
         }
 
         _inpFS.id = 'plg_fs_' + id;
@@ -705,7 +684,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 //lbox.deleteLinksWithTarget(id);
                 lbox.deleteLinksWithSource(id);
                 var linkId = gantt.addLink({
-                    id: app.linkIdIterator(),
+                    id: App.Action.Chart.linkIdIterator(),
                     source:  id,
                     target: lbox.task['id'],
                     type: type
@@ -720,89 +699,37 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 inputElem = this;
 
             if(task){
-                var bufferSeconds = app.action.buffer.convertBufferToSeconds(this.value);
-                var bufferValue = app.action.buffer.convertSecondsToBuffer(bufferSeconds);
-
-                //console.log(this.value, bufferSeconds, bufferValue);
-                //console.log(task);
+                var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(this.value);
+                var bufferValue = App.Action.Buffer.convertSecondsToBuffer(bufferSeconds);
 
                 setTimeout(function(){
-                    app.action.buffer.set(task.id, bufferSeconds);
+                    App.Action.Buffer.set(task.id, bufferSeconds);
                     inputElem.value = bufferValue;
                     task['buffer'] = bufferSeconds;
                     gantt.updateTask(task.id);
                 },300);
-
-                //task.buffer = parseFloat(this.value);
-                //if(task.is_buffered === true){
-                //app.injectBufferToDate(task, -task.buffer);
-                //task.isBuffered = false;
-                //}
-                //gantt.updateTask(id);
             }
         });
 
-        /*$('input[type=text]', popup).on('change', function(event){
-         var id = this.name.split('_')[1],
-         task = gantt.getTask(id);
-
-         if(task){
-         task.buffer = parseFloat(this.value);
-         if(task.isBuffered === true){
-         app.injectBufferToDate(task, -task.buffer);
-         task.isBuffered = false;
-         }
-         gantt.updateTask(id);
-         }
-         });
-         var _value = parseInt(value);
-         if(_value > 100) _value = 100;
-         setTimeout(function(){
-         target.value = _value + ' days';
-         lbox.task['buffer'] = _value;
-         },300);
-         */
         $('input[type=text]', popup).on('click', function(event){
             this.select();
         });
-        $('input[type=text]', popup).on('keyup', function(event){
 
-            // todo not used now.
-            /*var id = this.name.split('_')[1],
-             task = gantt.getTask(id),
-             elem = this,
-             buffer = parseInt(elem.value);
-
-             if(buffer > 90) buffer = 90;
-             else if(buffer < 0) buffer = 0;
-             else if(isNaN(buffer)) buffer = 0;
-
-             setTimeout(function(){
-             elem.value = buffer + ' d';
-             task.buffer = buffer;
-             elem.select();
-             gantt.updateTask(id);
-             },300);*/
-
-            //console.log(task);
-            //console.log(task);
-            //console.log(value);
-        });
+        $('input[type=text]', popup).on('keyup', function(event){});
 
     };
 
-
     lbox.onAfterLinkAdd = function  (id, item){
-        gantt.changeLinkId(id, app.linkIdIterator());
-        app.action.event.requestLinkUpdater('insert', id, item);
+        //gantt.changeLinkId(id, app.linkIdIterator());
+        //app.action.event.requestLinkUpdater('insert', id, item);
     };
 
     lbox.onAfterLinkUpdate = function  (id, item){
-        app.action.event.requestLinkUpdater('update', id, item);
+        //app.action.event.requestLinkUpdater('update', id, item);
     };
 
     lbox.onAfterLinkDelete = function  (id, item){
-        app.action.event.requestLinkUpdater('delete', id, item);
+        //app.action.event.requestLinkUpdater('delete', id, item);
     };
 
     lbox.deleteLinksWithTarget = function  (target){

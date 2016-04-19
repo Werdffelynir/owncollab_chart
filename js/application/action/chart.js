@@ -1,9 +1,10 @@
 if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
-    var GanttEve = App.Event.GanttEve;
+    //var GanttEve = App.Event.GanttEve;
     var GanttConfig = App.Config.GanttConfig;
     var DataStore = App.Module.DataStore;
     var DateTime = App.Extension.DateTime;
+    var Project = App.Action.Project;
     var Error = App.Action.Error;
     var GanttExt = App.Action.GanttExt;
     var Sidebar = App.Action.Sidebar;
@@ -15,6 +16,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     var chart = {
         contentElement:null,
+        lastLinkId:0,
         tasks:null,
         links:null,
         zoomValue: 2
@@ -24,19 +26,20 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      * @namespace App.Action.Chart.init
      * @param contentElement
      * @param callbackGanttReady
+     * @param callbackGanttLoaded
      */
-    chart.init = function (contentElement, callbackGanttReady){
+    chart.init = function (contentElement, callbackGanttReady, callbackGanttLoaded){
 
         chart.contentElement = contentElement;
         chart.tasks = DataStore.get('tasks');
         chart.links = DataStore.get('links');
 
-        chart.ganttInit(callbackGanttReady);
+        chart.ganttInit(callbackGanttReady, callbackGanttLoaded);
     };
 
 
     /**
-     *
+     * @namespace App.Action.Chart.filteringTasks
      * @returns {*}
      */
     chart.filteringTasks = function (){
@@ -71,13 +74,30 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         });
     };
 
-    chart.ganttInit = function (callbackGanttReady){
+    /**
+     *
+     * @namespace App.Action.Chart.ganttInit
+     * @param callbackGanttReady
+     * @param callbackGanttLoaded
+     */
+    chart.ganttInit = function (callbackGanttReady, callbackGanttLoaded){
 
         // Int first app parts modules
         gantt.attachEvent('onGanttReady', callbackGanttReady);
+        gantt.attachEvent('onParse', callbackGanttLoaded);
 
         // run gantt init
         gantt.init(chart.contentElement);
+
+
+        // run parse data
+        var filteringTasks = chart.filteringTasks();
+
+        // Project Control
+        Project.init();
+
+        // run Sort
+        App.Action.Sort.init();
 
         // run gantt configs
         GanttConfig.init();
@@ -87,15 +107,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         // run Lightbox
         Lightbox.init();
-
-
-
-
-
-
-
-        // run parse data
-        var filteringTasks = chart.filteringTasks();
 
         gantt.parse({
             data: filteringTasks,
@@ -108,7 +119,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     /**
      * Run ZoomSlider
-     * Uses: app.action.chart.enableZoomSlider()
+     * @namespace App.Action.Chart.enableZoomSlider
      */
     chart.enableZoomSlider = function () {
 
@@ -136,6 +147,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             });
     };
 
+    /**
+     *
+     * @namespace App.Action.Chart.changeScaleByStep
+     */
     chart.changeScaleByStep = function(){
         var value = parseInt(chart.zoomValue);
         if(value > 3) value = 0;
@@ -156,8 +171,14 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
 
-
-
+    /**
+     * internal iterator for links
+     * @namespace App.Action.Chart.linkIdIterator
+     * @returns {number}
+     */
+    chart.linkIdIterator = function(){
+        return chart.lastLinkId ++;
+    };
 
 
     return chart

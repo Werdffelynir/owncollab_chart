@@ -92,6 +92,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
+        Chart.lastLinkId = response['lastlinkid'];
         App.isAdmin = response['isadmin'];
         App.lang = response['lang'];
 
@@ -113,6 +114,10 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             initGantt, initGanttError).requireStart();
 
         //console.log(response);
+
+
+        // display elements
+        App.node('topbar').style['display'] = 'block';
     }
 
     function initGanttError(){
@@ -124,10 +129,14 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        Chart.init(node.gantt, ganttReady);
+        Chart.init(node.gantt, ganttBefore, ganttReady);
     }
-    function ganttReady(){
+    function ganttBefore(){
+        console.log('ganttBefore');
 
+    }
+
+    function ganttReady(){
         console.log('ganttReady');
 
     }

@@ -2,6 +2,7 @@ if(App.namespace) { App.namespace('Module.DataStore', function(App) {
 
     /**
      * Internal data store
+     * Object { groupsusers: Object, project: Object, tasks: Array[39], links: Array[2], projectTask: Object }
      * @type {{}}
      */
     var dataStore = {},

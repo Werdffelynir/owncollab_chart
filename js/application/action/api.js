@@ -16,6 +16,21 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
     };
 
     /**
+     * Save all tasks, links and project data
+     * @namespace App.Action.Api.saveAll
+     */
+    api.saveAll = function() {
+        var store = App.Module.DataStore,
+            data = {
+                tasks: gantt._get_tasks_data(),
+                links: gantt.getLinks(),
+                project: store.get('project')
+            };
+        data.re = 0;
+        return data;
+    };
+
+    /**
      * @namespace App.Action.Api.request
      */
     api.request = function(key, func, args) {

@@ -30,4 +30,7 @@ $appName = 'owncollab_chart';
     </div>
 
     <div id="sidebar-toggle"></div>
+    <div id="ganttsave"></div>
+    <div id="ganttsaveloading"></div>
+
 </div>

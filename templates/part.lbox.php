@@ -7,6 +7,14 @@
     <div>
         <div class="lbox_title"><?=$l->t('Assign to resources')?></div>
         <input name="lbox_users" type="text">
+<!--        <div class="resources_tags">
+            <div class="rtag">
+                <div class="tbl">
+                    <div class="rtag_name tbl_cell">user1</div>
+                    <div class="rtag_delete icon-close tbl_cell"></div>
+                </div>
+            </div>
+        </div>-->
     </div>
 
     <div class="tbl">

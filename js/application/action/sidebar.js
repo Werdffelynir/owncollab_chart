@@ -10,12 +10,24 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
         elemFields: null
     };
 
+    /** @type {App.Extension.DateTime} */
+    var DateTime = null;
+
+    /** @type {App.Action.Error} */
+    var Error = null;
+
     /** @type {App.Action.Chart} */
-    var ActChart = null;
+    var Chart = null;
+
     /** @type {App.Action.Project} */
-    var ActProject = null;
+    var Project = null;
+
+    /** @type {App.Module.DataStore} */
+    var DataStore = null;
+
     /** @type {*} */
     var dataStoreProject = null;
+
     /** @type {*} */
     var dataStoreGroupsusers = null;
 
@@ -24,10 +36,13 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
      */
     sidebar.init = function(){
 
-        ActChart = App.Action.Chart;
-        ActProject = App.Action.Project;
-        dataStoreProject = App.Module.DataStore.get('project');
-        dataStoreGroupsusers = App.Module.DataStore.get('groupsusers');
+        DateTime = App.Extension.DateTime;
+        Error = App.Action.Error;
+        Chart = App.Action.Chart;
+        Project = App.Action.Project;
+        DataStore = App.Module.DataStore;
+        dataStoreProject = DataStore.get('project');
+        dataStoreGroupsusers = DataStore.get('groupsusers');
 
         // Open/Close of sidebar block
         sidebar.toggle();
@@ -43,7 +58,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
 
         // put project settings to sidebar fields
-        //sidebar.putProjectSettings();
+        sidebar.putProjectSettings();
 
         // enabled jquery plugin datetimepicker for all elements with class name 'datetimepic'
 /*        $('.datetimepic').datetimepicker({
@@ -64,10 +79,10 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
         // autocomplete for email sends
         var usersEmails = function(){
-            var resources = ActProject.resources(true),
+            var resources = Project.resources(true),
                 group,
                 userIter = 0,
-                project = ActProject.urlName(),
+                project = Project.urlName(),
                 domain = OC.getHost(),
                 list = [],
                 all = dataStoreGroupsusers;
@@ -140,7 +155,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
             });
             App.Action.Api.sendEmails(
                 Util.uniqueArr(emailsList),
-                ActProject.resources(true)
+                Project.resources(true)
             );
         });
 
@@ -192,6 +207,14 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                 sidebar.active = true;
                 $(appContent).css('overflowX','hidden');
                 OC.Apps.showAppSidebar($(sidebar));
+
+                // todo kostil
+                if(!sidebar.exportInit){
+                    sidebar.exportInit = true;
+                    // Run Export settings
+                    App.Action.Export.init();
+                }
+
             }else{
                 sidebar.active = false;
                 $(appContent).css('overflowX','auto');
@@ -287,7 +310,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
      */
     sidebar.putProjectSettings = function(){
 
-        var project = ActProject.dataProject,
+        var project = Project.dataProject,
 
             // all field of sidebar
             fields = sidebar.elemFields,
@@ -304,13 +327,12 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                 switch(String(tagType).toLowerCase()){
 
                     case 'checkbox':
-                        if(parseInt(project[param])===1) {
+                        if(parseInt(project[param]) === 1)
                             fields[param].setAttribute('checked','checked');
-                        } else {
+                        else
                             fields[param].removeAttribute('checked');
-                        }
 
-                        //fields[param].addEventListener('change', app.action.event.changeValueProject, false);
+                        fields[param].addEventListener('change', sidebar.onChangeValueProject, false);
 
                         break;
 
@@ -321,10 +343,11 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
                         if(param == 'share_expire_time' && project[param] != null && project[param].length > 8) {
                             //var dateTime = app.timeDateToStr(app.timeStrToDate(project[param]));
-                            fields[param].value = dateTime;
+                            var _date = DateTime.dateToStr(DateTime.strToDate(project[param]));
+                            fields[param].value = _date;
                         }
                         else if(param == 'share_link') {
-                            fields[param].value = app.action.chart.generateShareLink(project[param]);
+                            fields[param].value = App.Action.GanttExt.generateShareLink(project[param]);
                             fields[param].onclick =  function() {
                                 this.focus();
                                 this.select();
@@ -332,7 +355,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                         }
                         else {
                             if(project[param] !== undefined){
-                                fields[param].addEventListener('change', app.action.event.changeValueProject, false);
+                                fields[param].addEventListener('change', sidebar.onChangeValueProject, false);
                                 fields[param].value = project[param];
                             }
                         }
@@ -343,7 +366,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                 if(param === 'radio'){
                     fields['radio'][project['scale_type']].setAttribute('checked','checked');
                     for(var radioInp in fields['radio']){
-                        fields['radio'][radioInp].addEventListener('change', app.action.event.changeValueProject, false);
+                        fields['radio'][radioInp].addEventListener('change', sidebar.onChangeValueProject, false);
                     }
                 }
 
@@ -370,12 +393,98 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
         }
         catch(error){
-
-            app.action.error.inline("Error assignment value fields, the project parameters. Error message: " + error.message);
+            console.log(error);
+            Error.inline("Error assignment value fields, the project parameters. Error message: " + error.message);
 
         }
 
     };
+
+    /**
+     * Event on execute when change setting param
+     * @namespace App.Action.Sidebar.onChangeValueProject
+     * @param event
+     * @returns {boolean}
+     */
+    sidebar.onChangeValueProject = function (event){
+
+        var target  = event.target,
+            name    = target.name,
+            type    = target.type,
+            value   = target.value;
+
+
+
+
+        // local saved some params
+        //    localParams = ['show_today_line','show_task_name','show_user_color','scale_type','scale_fit','critical_path'];
+        //
+        //if(localParams.indexOf(name) !== -1){
+        //
+        //    // Dynamic show today line in gantt chart
+        //    if(name === 'show_today_line'){
+        //
+        //        app.action.chart.showMarkers(target.checked);
+        //        app.storageSetItem('show_today_line', target.checked);
+        //        gantt.refreshData();
+        //
+        //    }else
+        //
+        //    // Dynamic show user color in gantt chart tasks an resources
+        //    if(name === 'show_user_color'){
+        //
+        //        app.action.chart.showUserColor(target.checked);
+        //        app.storageSetItem('show_user_color', target.checked);
+        //        gantt.refreshData();
+        //
+        //    }else
+        //
+        //    // Dynamic show task name in gantt chart
+        //    if(name === 'show_task_name'){
+        //
+        //        app.action.chart.showTaskNames(target.checked);
+        //        app.storageSetItem('show_task_name', target.checked);
+        //        gantt.refreshData();
+        //
+        //    }else
+        //
+        //    // Dynamic scale type gantt chart
+        //    if(name === 'scale_type'){
+        //
+        //        app.action.chart.scale(value);
+        //        //if(value == 'week') app.action.chart.enableZoomSlider(1);
+        //        //if(value == 'day') app.action.chart.enableZoomSlider(2);
+        //        //if(value == 'hour') app.action.chart.enableZoomSlider(3);
+        //        app.storageSetItem('scale_type', value);
+        //        gantt.render();
+        //
+        //    }else
+        //
+        //    // Dynamic resize scale fit gantt chart
+        //    if(name === 'scale_fit'){
+        //
+        //        //app.action.chart.showTaskNames(target.checked);
+        //        app.action.fitmode.toggle(target.checked);
+        //        gantt.render();
+        //        app.storageSetItem('scale_fit', target.checked);
+        //
+        //    }else
+        //
+        //    // Dynamic resize scale fit gantt chart
+        //    if(name === 'critical_path'){
+        //
+        //        app.action.chart.showCriticalPath(target.checked);
+        //        app.storageSetItem('critical_path', target.checked);
+        //        gantt.render();
+        //
+        //    }
+        //
+        //    return false;
+        //}
+
+    };
+
+
 
     /**
      *

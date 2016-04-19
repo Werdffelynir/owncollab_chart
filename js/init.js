@@ -19,7 +19,9 @@ window.App = new NamespaceApplication({
 App.require('libs',
     [
         App.urlScript + 'libs/util.js',
-        App.urlScript + 'libs/timer.js'
+        App.urlScript + 'libs/timer.js',
+        App.urlScript + 'libs/jquery-ui-timepicker.js',
+        App.urlScript + 'libs/jquery.custom-scrollbar.js'
     ],
     initLibrary, initError);
 
@@ -41,11 +43,14 @@ App.require('dependence',
 
         // Actions
         App.urlScript + 'application/action/api.js',
+        App.urlScript + 'application/action/sort.js',
+        App.urlScript + 'application/action/buffer.js',
         App.urlScript + 'application/action/error.js',
         App.urlScript + 'application/action/ganttext.js',
         App.urlScript + 'application/action/sidebar.js',
         App.urlScript + 'application/action/lightbox.js',
         App.urlScript + 'application/action/project.js',
+        App.urlScript + 'application/action/export.js',
         App.urlScript + 'application/action/chart.js',
 
         // Controllers
