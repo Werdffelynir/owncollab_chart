@@ -127,6 +127,7 @@ class ApiController extends Controller {
         }
 
         $links = $this->connect->link()->get();
+        $params['origin_links'] = $links;
         $linkCount = count($links);
         $linksTrash = [];
 
@@ -169,6 +170,56 @@ class ApiController extends Controller {
         }
         return $r;
     }
+
+
+    /**
+     * Common updater, save all task and links
+     * @param $data
+     * @return DataResponse
+     */
+    public function savealltaskslinks($data) {
+
+        $params = [
+            'data'     => $data,
+            'error'     => null,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            'lastlinkid'    => null
+        ];
+
+        $params['data'] = $data;
+        if($this->isAdmin && isset($data['tasks']) && isset($data['links'])){
+            $params['isadmin'] = true;
+
+            $this->connect->db->beginTransaction();
+
+            if(is_array($data['tasks']) && !empty($data['tasks'])){
+
+                $this->connect->task()->clear();
+                $params['SQL_tasks'] = $this->connect->task()->add($data['tasks']);
+                $params['SQL_tasks_Error'] = $this->connect->db->errorInfo();
+
+            }
+
+            // delete all tasks
+            // save all tasks
+
+            // delete all links
+            //
+            // save all links
+            if(is_array($data['links']) && !empty($data['links'])){
+
+                $this->connect->link()->clear();
+                $params['SQL_links'] = $this->connect->link()->add($data['links']);
+                $params['SQL_links_Error'] = $this->connect->db->errorInfo();
+            }
+
+
+            $this->connect->db->commit();
+        }
+
+        return new DataResponse($params);
+    }
+
 
 
     public function updatetask($data) {

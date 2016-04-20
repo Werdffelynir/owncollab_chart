@@ -341,7 +341,6 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
 
 
-
     return conf;
 
 })}

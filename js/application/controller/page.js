@@ -54,7 +54,9 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             zoomSliderPlus:  App.query('#zoom_plus'),
             zoomSliderFit:   App.query('#zoom_fit_btn'),
             actionUndo:      App.query('#act_undo'),
-            actionRedo:      App.query('#act_redo')
+            actionRedo:      App.query('#act_redo'),
+            ganttSave:       App.query('#ganttsave'),
+            ganttSaveLoadIco:App.query('#ganttsaveloading')
         });
 
 
@@ -76,6 +78,8 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
+        console.log(response);
+
         if(response.errorinfo.length > 2) {
             Error.inline('Response error info [' + response.errorinfo + ']');
         }
@@ -92,10 +96,14 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        Chart.lastLinkId = response['lastlinkid'];
+        //Chart.lastlinkid = response['lastlinkid'];
+        //Chart.linkIdIterator(response.links.length);
+        Chart.linkIdIterator((function(){ return response.links[response.links.length-1].id })());
+        Chart.taskIdIterator((function(){ return response.tasks[response.tasks.length-1].id })());
         App.isAdmin = response['isadmin'];
         App.lang = response['lang'];
 
+        DataStore.put('data', response);
         DataStore.put('groupsusers', response.groupsusers);
         DataStore.put('project', response.project);
         DataStore.put('tasks', response.tasks);
@@ -115,7 +123,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         //console.log(response);
 
-
         // display elements
         App.node('topbar').style['display'] = 'block';
     }
@@ -128,7 +135,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             initGanttError();
             return;
         }
-
         Chart.init(node.gantt, ganttBefore, ganttReady);
     }
     function ganttBefore(){

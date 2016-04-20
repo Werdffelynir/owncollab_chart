@@ -88,7 +88,7 @@ class Connect
      * @param null $bind
      * @return \Doctrine\DBAL\Driver\Statement
      */
-    public function delete($table, $where, $bind=null) {
+    public function delete($table, $where, $bind = null) {
         $sql = "DELETE FROM " . $table . " WHERE " . $where . ";";
         return $this->db->executeQuery($sql, $bind);
     }

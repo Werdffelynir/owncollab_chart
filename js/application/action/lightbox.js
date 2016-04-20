@@ -47,9 +47,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         //gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
         //gantt.attachEvent("onLightboxCancel", lbox.onLightboxCancel);
         //gantt.attachEvent("onLightboxDelete", lbox.onLightboxDelete);
-        //gantt.attachEvent("onAfterLinkAdd", lbox.onAfterLinkAdd);
-        //gantt.attachEvent("onAfterLinkDelete", lbox.onAfterLinkDelete);
-        //gantt.attachEvent("onAfterLinkUpdate", lbox.onAfterLinkUpdate);
     };
 
     /**
@@ -717,19 +714,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         $('input[type=text]', popup).on('keyup', function(event){});
 
-    };
-
-    lbox.onAfterLinkAdd = function  (id, item){
-        //gantt.changeLinkId(id, app.linkIdIterator());
-        //app.action.event.requestLinkUpdater('insert', id, item);
-    };
-
-    lbox.onAfterLinkUpdate = function  (id, item){
-        //app.action.event.requestLinkUpdater('update', id, item);
-    };
-
-    lbox.onAfterLinkDelete = function  (id, item){
-        //app.action.event.requestLinkUpdater('delete', id, item);
     };
 
     lbox.deleteLinksWithTarget = function  (target){

@@ -22,7 +22,7 @@ class Task
     /** @var string $fields table fields name in database */
     private $fields = [
         'id',
-        'is_project',
+//        'is_project',
         'type',
         'text',
         'users',
@@ -36,6 +36,7 @@ class Task
         'open',
         'buffer',
     ];
+
 
     /**
      * Task constructor.
@@ -57,6 +58,7 @@ class Task
         else return false;
     }
 
+
     /**
      * Get last id
      * @return mixed
@@ -65,6 +67,120 @@ class Task
         $result = $this->connect->query("SELECT id FROM `{$this->tableName}` ORDER BY id DESC LIMIT 1");
         return (!$result) ? 1 : $result['id'];
     }
+
+
+    /**
+     * Retrieve tasks-data of project
+     * Database query selects all opened records, and all columns of type timestamp output
+     * formatting for JavaScript identification
+     * @return array|null
+     */
+    public function get(){
+        $sql = "SELECT *,
+                DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date,
+                DATE_FORMAT( `end_date`, '%d-%m-%Y %H:%i:%s') as end_date
+                FROM `{$this->tableName}` WHERE open = 1";
+        return $this->connect->queryAll($sql);
+    }
+
+    public function clear() {
+        return $this->connect->delete($this->tableName, 'id != 999999');
+    }
+
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function add(array $data) {
+        $SQL = "INSERT INTO $this->tableName (`id`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`, `open`, `buffer`) VALUES ";
+
+        $rowData = [];
+        for($iRow=0; $iRow < count($data); $iRow++) {
+
+            $SQL .= (empty($rowData)?'':',') . "( :id_$iRow, :type_$iRow, :text_$iRow, :users_$iRow, :start_date_$iRow, :end_date_$iRow, :duration_$iRow, :order_$iRow, :progress_$iRow, :sortorder_$iRow, :parent_$iRow, :open_$iRow, :buffer_$iRow )";
+
+            for($i = 0; $i < count($this->fields); $i++) {
+                $field = $this->fields[$i];
+
+                if(isset($data[$iRow][$field])) {
+                    $value = $data[$iRow][$field];
+
+                    if($field == 'id')              $value = (int) $value;
+                    if($field == 'type')            $value = (string) $value;
+                    if($field == 'text')            $value = (string) $value;
+                    if($field == 'users')           $value = (string) $value;
+                    if($field == 'start_date')      $value = date("Y-m-d H:i:s", strtotime($value));
+                    if($field == 'end_date')        $value = date("Y-m-d H:i:s", strtotime($value));
+                    if($field == 'duration')        $value = (int) $value;
+                    if($field == 'order')           $value = (int) $value;
+                    if($field == 'progress')        $value = (float) $value;
+                    if($field == 'sortorder')       $value = (int) $value;
+                    if($field == 'parent')          $value = (int) $value;
+                    if($field == 'open')            $value = (int) $value;
+                    if($field == 'buffer')          $value = (int) $value;
+
+                    $rowData[":{$field}_{$iRow}"] = $value;
+                }else{
+                    $rowData[":{$field}_{$iRow}"] = null;
+                }
+            }
+        }
+        return $this->connect->db->prepare($SQL)->execute($rowData);
+        //return [$SQL, $rowData];
+    }
+
+
+    /**
+     * @param int $next
+     * @return mixed
+     */
+    public function resetAutoIncrement($next = 2){
+        try{
+            $sql = "ALTER TABLE `{$this->tableName}` AUTO_INCREMENT = $next";
+            $result = $this->connect->db->executeQuery($sql)->execute();
+        }catch(\Exception $e){
+            $result = 'error:' . $e->getMessage();
+        }
+        return $result;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     /**
      * @param $id
@@ -150,33 +266,7 @@ class Task
         return $result;
     }
 
-    /**
-     * Retrieve tasks-data of project
-     * Database query selects all opened records, and all columns of type timestamp output
-     * formatting for JavaScript identification
-     * @return array|null
-     */
-    public function get(){
-        $sql = "SELECT *,
-                DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date,
-                DATE_FORMAT( `end_date`, '%d-%m-%Y %H:%i:%s') as end_date
-                FROM `{$this->tableName}` WHERE open = 1";
-        return $this->connect->queryAll($sql);
-    }
 
-    /**
-     * @param int $next
-     * @return mixed
-     */
-    public function resetAutoIncrement($next = 2){
-        try{
-            $sql = "ALTER TABLE `{$this->tableName}` AUTO_INCREMENT = $next";
-            $result = $this->connect->db->executeQuery($sql)->execute();
-        }catch(\Exception $e){
-            $result = 'error:' . $e->getMessage();
-        }
-        return $result;
-    }
 
 
 }

@@ -18,22 +18,30 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
     /**
      * Save all tasks, links and project data
      * @namespace App.Action.Api.saveAll
+     * @param callback
      */
-    api.saveAll = function() {
+    api.saveAll = function(callback) {
         var store = App.Module.DataStore,
-            data = {
+            dataSend = {
                 tasks: gantt._get_tasks_data(),
                 links: gantt.getLinks(),
                 project: store.get('project')
             };
-        data.re = 0;
-        return data;
+
+        api.request('savealltaskslinks', function(response){
+
+            callback.call(this, response);
+
+        }, dataSend);
     };
 
     /**
      * @namespace App.Action.Api.request
+     * @param key
+     * @param callback
+     * @param args
      */
-    api.request = function(key, func, args) {
+    api.request = function(key, callback, args) {
         $.ajax({
             url: App.url + '/api',
             data: {key: key, uid: App.uid, data: args},
@@ -42,8 +50,8 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
             headers: {requesttoken: App.requesttoken},
 
             success: function (response) {
-                if (typeof func === 'function') {
-                    func.call(App, response);
+                if (typeof callback === 'function') {
+                    callback.call(App, response);
                 }
             },
 

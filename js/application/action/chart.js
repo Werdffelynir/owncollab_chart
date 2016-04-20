@@ -12,11 +12,14 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     /**
      * @namespace App.Action.Chart
+     * App.Action.Chart.lastlinkid
+     * App.Action.Chart.lasttaskid
      * @type {*}
      */
     var chart = {
         contentElement:null,
-        lastLinkId:0,
+        lastlinkid:0,
+        lasttaskid:0,
         tasks:null,
         links:null,
         zoomValue: 2
@@ -85,6 +88,14 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // Int first app parts modules
         gantt.attachEvent('onGanttReady', callbackGanttReady);
         gantt.attachEvent('onParse', callbackGanttLoaded);
+        gantt.attachEvent("onAfterLinkAdd", chart.onAfterLinkAdd);
+        //gantt.attachEvent("onAfterLinkDelete", lbox.onAfterLinkDelete);
+        //gantt.attachEvent("onAfterLinkUpdate", lbox.onAfterLinkUpdate);
+
+        // tasks events
+        gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
+
+
 
         // run gantt init
         gantt.init(chart.contentElement);
@@ -108,6 +119,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // run Lightbox
         Lightbox.init();
 
+        // inti function save data
+        chart.savedButtonInit();
+
         gantt.parse({
             data: filteringTasks,
             links: chart.links
@@ -123,17 +137,17 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     chart.enableZoomSlider = function () {
 
-        $(app.dom.zoomSliderMin).click(function(){
+        $(App.node('zoomSliderMin')).click(function(){
             chart.zoomValue --;
             chart.changeScaleByStep();
         });
-        $(app.dom.zoomSliderPlus).click(function(){
+        $(App.node('zoomSliderPlus')).click(function(){
             chart.zoomValue ++;
             chart.changeScaleByStep();
         });
-        $(app.dom.zoomSliderFit).click(GanttExt.scaleFit);
+        $(App.node('zoomSliderFit')).click(GanttExt.scaleFit);
 
-        $(app.dom.zoomSlider)
+        $(App.node('zoomSlider'))
             .show()
             .slider({
                 min: 1,
@@ -174,12 +188,118 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     /**
      * internal iterator for links
      * @namespace App.Action.Chart.linkIdIterator
+     * @param index
      * @returns {number}
      */
-    chart.linkIdIterator = function(){
-        return chart.lastLinkId ++;
+    chart.linkIdIterator = function(index){
+        if(index) chart.lastlinkid = index;
+        return chart.lastlinkid ++;
     };
 
+    /**
+     * internal iterator for tasks
+     * @namespace App.Action.Chart.taskIdIterator
+     * @param index
+     * @returns {number}
+     */
+    chart.taskIdIterator = function(index){
+        if(index) chart.lasttaskid = index;
+        return chart.lasttaskid ++;
+    };
+
+
+
+    chart.savedButtonInit = function(){
+        var ganttSave = App.node('ganttSave');
+        var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
+
+        ganttSaveLoadIco.style.visibility = 'hidden';
+
+
+        ganttSave.onclick = function(event){
+            ganttSaveLoadIco.style.visibility = 'visible';
+
+            App.Action.Api.saveAll(function(response){
+                console.log(response);
+            });
+
+            //setTimeout(function(){
+            //    ganttSaveLoadIco.style.visibility = 'hidden';
+            //},2000);
+        };
+
+    };
+
+
+
+
+    /**
+     * @namespace App.Action.Chart.durationDisplay
+     * @param task
+     * @returns {string}
+     */
+    chart.durationDisplay = function (task) {
+        var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
+        return ((days%1==0) ? Math.round(days) : days) + ' d';
+    };
+
+
+    /**
+     * @namespace App.Action.Chart.getLinkOnTask
+     * @param task_id
+     * @returns {{source: Array, target: (Array|*)}}
+     */
+    chart.getLinkOnTask = function(task_id){
+        return {
+            source:gantt.getTask(task_id).$source,
+            target:gantt.getTask(task_id).$target
+        }
+    };
+
+    /**
+     * @namespace App.Action.Chart.scrollToTask
+     * @param task_id
+     */
+    chart.scrollToTask = function(task_id){
+        var pos = $(gantt.getTaskNode(task_id)).position();
+        gantt.scrollTo(pos.left, pos.top)
+    };
+
+
+
+    // Gantt events
+
+
+    chart.onAfterLinkAdd = function  (id, item){
+        gantt.changeLinkId(id, chart.linkIdIterator());
+    };
+
+    chart.onAfterLinkUpdate = function  (id, item){
+        //app.action.event.requestLinkUpdater('update', id, item);
+    };
+
+    chart.onAfterLinkDelete = function  (id, item){
+        //app.action.event.requestLinkUpdater('delete', id, item);
+    };
+
+    chart.onAfterTaskUpdate = function(id, task){
+
+        task.start_date_origin = Util.objClone(task.start_date);
+        task.end_date_origin = Util.objClone(task.end_date);
+
+        gantt.changeTaskId(id, chart.taskIdIterator());
+
+        // change types task and project by nesting
+        if(task.id != 1){
+            var parent = gantt.getTask(task.parent);
+            if(parent.type != 'project'){
+                parent.type = 'project';
+                gantt.updateTask(parent.id);
+            }
+        }
+
+        return false;
+    };
 
     return chart
 
