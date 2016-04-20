@@ -111,7 +111,8 @@ $appName = 'owncollab_chart';
         </div>
 
         <div>
-            <input type="submit">
+            <input type="submit" value="Export">
         </div>
+
     </form>
 </div>

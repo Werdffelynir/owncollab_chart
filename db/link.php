@@ -20,7 +20,7 @@ class Link
         'source',
         'target',
         'type',
-        'delete',
+        'deleted',
     ];
 
     /**
@@ -56,13 +56,41 @@ class Link
 
     /**
      * Retrieve all date of links project-tasks
-     *
      * @return array|null
      */
-    public function get(){
-        return $this->connect->select('*', $this->tableName, 'deleted != 1');
+    public function get() {
+        return $this->connect->select('*', $this->tableName);
     }
 
+    public function clear() {
+        return $this->connect->delete($this->tableName, 'id != 999999');
+    }
+
+    public function add(array $data) {
+        $SQL = "INSERT INTO oc_collab_links (id, source, target, type, deleted) VALUES ";
+        $rowData = [];
+        for($iRow=0; $iRow < count($data); $iRow++) {
+
+            $SQL .= (empty($rowData)?'':',') . "( :id_$iRow, :source_$iRow, :target_$iRow, :type_$iRow, :deleted_$iRow )";
+
+            for($i = 0; $i < count($this->fields); $i++) {
+                $field = $this->fields[$i];
+
+                if(isset($data[$iRow][$field])) {
+                    $rowData[":{$field}_{$iRow}"] = $data[$iRow][$field];
+                }else{
+                    $rowData[":{$field}_{$iRow}"] = null;
+                }
+            }
+        }
+        return $this->connect->db->prepare($SQL)->execute($rowData);
+        //return [$SQL, $rowData];
+    }
+
+
+
+
+/*
     public function insertWithId($data) {
 
         $task['id'] = $data['id'];
@@ -81,12 +109,12 @@ class Link
         $result = false;
         try{
             $result = $this->connect->delete($this->tableName, 'id = :id', [':id' => $id]);
-            if($result){
+            if($result) {
                 $result = $result->rowCount();
             }
         }catch(\AbstractDriverException $error ){}
         return $result;
-    }
+    }*/
 
     public function deleteAllById(array $ids) {
         $result = false;

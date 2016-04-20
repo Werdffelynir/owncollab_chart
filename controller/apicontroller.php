@@ -90,26 +90,34 @@ class ApiController extends Controller {
 
 		//return new DataResponse($_POST);
 		$uid = $this->userIdAPI;
+        $lang = $this->connect->project()->getCurrentLang($uid);
 
         $params = [
             'access' 	    => 'deny',
             'errorinfo'     => '',
             'isadmin' 	    => $this->isAdmin,
             'uid' 		    => $uid,
+            'lang' 		    => is_array($lang) ? $lang['configvalue']:'en',
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 
         $tasks = $this->connect->task()->get();
+        $taskCount = count($tasks);
 
+        // reset autoincrement
+        if($taskCount === 1 && $tasks[0]['id'] == 1)
+            $this->connect->task()->resetAutoIncrement(2);
+
+        // filtering tasks
         if($tasks){
             $taskProject = null;
-            for($i=0;$i<count($tasks);$i++){
+            for($i=0; $i < $taskCount; $i++){
                 if($tasks[$i]['is_project'] == 1 && $tasks[$i]['type'] == 'project')
                     $taskProject = $tasks[$i];
                 continue;
             }
             if($taskProject){
-                for($j=0;$j<count($tasks);$j++){
+                for($j=0; $j < $taskCount; $j++){
                     if(strtotime($tasks[$j]['start_date']) < strtotime($taskProject['start_date']))
                         $tasks[$j]['start_date'] = $taskProject['start_date'];
                     if(strtotime($tasks[$j]['end_date']) < strtotime($taskProject['start_date']))
@@ -119,27 +127,13 @@ class ApiController extends Controller {
         }
 
         $links = $this->connect->link()->get();
-        // links cleaner
+        $params['origin_links'] = $links;
+        $linkCount = count($links);
         $linksTrash = [];
-        for($li = 0; $li < count($links); $li ++ ){
 
-            $_hasTaskTarget = $_hasTaskSource = false;
-
-            $_linkTarget = $links[$li]['target'];
-            $_linkSource = $links[$li]['source'];
-
-            for($ti = 0; $ti < count($tasks); $ti ++ ){
-
-                $_taskId = $tasks[$ti]['id'];
-
-                if($_taskId == $_linkTarget){
-                    $_hasTaskTarget = true;
-                }
-                if($_taskId == $_linkSource){
-                    $_hasTaskSource = true;
-                }
-            }
-            if(!$_hasTaskTarget || !$_hasTaskSource){
+        for($li = 0; $li < $linkCount; $li ++ ){
+            if( !$this->findTask($tasks, $links[$li]['target']) ||
+                !$this->findTask($tasks, $links[$li]['source']) ){
                 array_push($linksTrash, $links[$li]['id']);
                 unset($links[$li]);
             }
@@ -162,6 +156,70 @@ class ApiController extends Controller {
 
         return new DataResponse($params);
 	}
+
+
+    public function findTask($tasks, $id) {
+        $c = count($tasks);
+        $r = false;
+        for($i = 0; $i < $c; $i ++ )
+        {
+            if($tasks[$i]['id'] == $id){
+                $r = true;
+                break;
+            }
+        }
+        return $r;
+    }
+
+
+    /**
+     * Common updater, save all task and links
+     * @param $data
+     * @return DataResponse
+     */
+    public function savealltaskslinks($data) {
+
+        $params = [
+            'data'     => $data,
+            'error'     => null,
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            'lastlinkid'    => null
+        ];
+
+        $params['data'] = $data;
+        if($this->isAdmin && isset($data['tasks']) && isset($data['links'])){
+            $params['isadmin'] = true;
+
+            $this->connect->db->beginTransaction();
+
+            if(is_array($data['tasks']) && !empty($data['tasks'])){
+
+                $this->connect->task()->clear();
+                $params['SQL_tasks'] = $this->connect->task()->add($data['tasks']);
+                $params['SQL_tasks_Error'] = $this->connect->db->errorInfo();
+
+            }
+
+            // delete all tasks
+            // save all tasks
+
+            // delete all links
+            //
+            // save all links
+            if(is_array($data['links']) && !empty($data['links'])){
+
+                $this->connect->link()->clear();
+                $params['SQL_links'] = $this->connect->link()->add($data['links']);
+                $params['SQL_links_Error'] = $this->connect->db->errorInfo();
+            }
+
+
+            $this->connect->db->commit();
+        }
+
+        return new DataResponse($params);
+    }
+
 
 
     public function updatetask($data) {
@@ -213,6 +271,7 @@ class ApiController extends Controller {
     public function updatelink($data) {
 
         $params = [
+            'data'     => $data,
             'error'     => null,
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lastlinkid'    => null
@@ -233,10 +292,10 @@ class ApiController extends Controller {
 
             }else if($worker == 'update'){
 
-                //$result = $this->connect->task()->update($task);
-                //$params['error'] = $result ? null : 'Server update error, on task';
+                // $result = $this->connect->task()->update($task);
+                // $params['error'] = $result ? null : 'Server update error, on task';
 
-            }else if($worker == 'delete'){
+            }else if($worker == 'delete') {
 
                 $result = $this->connect->link()->deleteById($id);
                 $params['error'] = $result ? null : 'Server delete error, on task';
@@ -310,92 +369,106 @@ class ApiController extends Controller {
     public function sendshareemails($data)
     {
         $params = [
+            'data'     => $data,
             'error'     => null,
+            'errorInfo'     => '',
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ?: \OC_Util::callRegister()
         ];
 
-        if(!$this->isAdmin && empty($data['emails'])){return new DataResponse($params);}
+        if(!$this->isAdmin && empty($data['emails'])){
+            $params['errorInfo'] = 'Request not auth or emails data is empty';
+            return new DataResponse($params);
+        }
+
+        //$projectSubDomain = $data['projemail'];$projectSubDomain . '.' .
 
         $groupsusers = $this->connect->project()->getGroupsUsersList();
         $resources = is_array($data['resources']) ? $data['resources'] : [];
         $emails = $data['emails'];
-        $sharedLink = $this->connect->project()->getShare();
         $serverHost = \OC::$server->getRequest()->getServerHost();
-        $sharedALink = '<a href="'.$sharedLink.'">'.$sharedLink.'</a>';
+        $serverProtocol = \OC::$server->getRequest()->getServerProtocol();
+        $sharedLink = $this->connect->project()->getShare();
+        $sharedALink = ' <a href="'.$serverProtocol.'://'.$serverHost.'/index.php/s/'.$sharedLink.'">'.$serverProtocol.'//'.$serverHost.'/index.php/s/'.$sharedLink.'</a> ';
         $mailSendResult = false;
 
-        //$params['groupsusers'] = $groupsusers;
-        //sleep(1);
+        $params['TEST'] = [];
+        //sleep(1); http://owncloud.loc/index.php/s/zAOe9xvgFplhwaBS
 
-        try{
-            foreach ($emails as $email) {
-                $_emArr = explode(':',$email);
-                $_type = $_emArr[0];
-                $_id = $_emArr[1];
+        foreach ($emails as $email) {
+            $_emArr = explode(':',$email);
+            $_type = $_emArr[0];
+            $_id = $_emArr[1];
 
-                if($_type == 'static') {
-                    if($_id == 'support'){
-                        $_mail_from_address = \OC::$server->getConfig()->getSystemValue('mail_from_address');
-                        $_mail_domain = \OC::$server->getConfig()->getSystemValue('mail_domain');
-                        $mailSendResult = Helper::mailSend([
-                            'to'        => $_mail_from_address .'@'. $_mail_domain,
-                            'name_to'   => '',
-                            'from'      => 'no-reply@' . $_mail_domain,
-                            'name_from' => 'ownCollab chart',
-                            'subject'   => $_id,
-                            'body'      => 'Access to the project ownCollab chart '.$sharedALink
-                        ]);
-                    }
-                    else if($_id == 'team') {
-                        foreach ($resources as $_res_uid) {
-                            $_user_email = $this->connect->project()->getUserEmail($_res_uid);
-                            if(!empty($_user_email)){
-                                $mailSendResult = Helper::mailSend([
-                                    'to'        => $_user_email,
-                                    'name_to'   => '',
-                                    'from'      => 'no-reply@' . $serverHost,
-                                    'name_from' => 'ownCollab chart',
-                                    'subject'   => 'Access to the project ownCollab chart',
-                                    'body'      => 'Access to the project ownCollab chart '.$sharedALink
-                                ]);
-                            }
+            if($_type == 'static') {
+                if($_id == 'support'){
+                    $_mail_from_address = \OC::$server->getConfig()->getSystemValue('mail_from_address');
+                    $_mail_domain = \OC::$server->getConfig()->getSystemValue('mail_domain');
+                    $_mail_data = [
+                        'to'        => $_mail_from_address .'@'. $_mail_domain,
+                        'name_to'   => 'Support '.$_mail_domain,
+                        'from'      => 'no-reply@' . $serverHost,
+                        'name_from' => 'ownCollab chart',
+                        'subject'   => $_id,
+                        'body'      => 'Access to the project ownCollab chart - '.$sharedALink
+                    ];
+                    //$params['TEST'][] = $_mail_data;
+                    $mailSendResult = Helper::mailSend($_mail_data);
+
+                }
+                else if($_id == 'team') {
+                    foreach ($resources as $_res_uid) {
+                        $_user_email = $this->connect->project()->getUserEmail($_res_uid);
+                        if(!empty($_user_email['configvalue'])){
+                            $_mail_data = [
+                                'to'        => $_user_email['configvalue'],
+                                'name_to'   => $_user_email['userid'],
+                                'from'      => 'no-reply@' . $serverHost,
+                                'name_from' => 'ownCollab chart',
+                                'subject'   => 'Access to the project ownCollab chart',
+                                'body'      => 'Access to the project ownCollab chart '.$sharedALink
+                            ];
+                            //$params['TEST'][] = $_mail_data;
+                            $mailSendResult = Helper::mailSend($_mail_data);
                         }
                     }
                 }
-                else if($_type == 'group') {
-                    $_group = !empty($groupsusers[$_type]) ? $groupsusers[$_id] : [];
-                    foreach ($_group as $_uid) {
-                        $_user_email = $this->connect->project()->getUserEmail($_uid);
-                        $mailSendResult = Helper::mailSend([
-                            'to'        => $_user_email,
-                            'name_to'   => '',
-                            'from'      => 'no-reply@' . $serverHost,
+            }
+            else if($_type == 'group') {
+                $_group = !empty($groupsusers[$_type]) ? $groupsusers[$_id] : [];
+                foreach ($_group as $_uid) {
+                    $_user_email = $this->connect->project()->getUserEmail($_uid);
+                    if(!empty($_user_email['configvalue'])) {
+                        $_mail_data = [
+                            'to' => $_user_email['configvalue'],
+                            'name_to' => $_user_email['userid'],
+                            'from' => 'no-reply@' . $serverHost,
                             'name_from' => 'ownCollab chart',
-                            'subject'   => 'Access to the project ownCollab chart',
-                            'body'      => 'Access to the project ownCollab chart'.$sharedALink
-                        ]);
+                            'subject' => 'Access to the project ownCollab chart',
+                            'body' => 'Access to the project ownCollab chart' . $sharedALink
+                        ];
+                        //$params['TEST'][] = $_mail_data;
+                        $mailSendResult = Helper::mailSend($_mail_data);
                     }
                 }
-                else if($_type == 'user') {
-                    $_user_email = $this->connect->project()->getUserEmail($_id);
-                    $mailSendResult = Helper::mailSend([
-                        'to'        => $_user_email,
-                        'name_to'   => '',
-                        'from'      => 'no-reply@' . $serverHost,
+            }
+            else if($_type == 'user') {
+                $_user_email = $this->connect->project()->getUserEmail($_id);
+                if(!empty($_user_email['configvalue'])) {
+                    $_mail_data = [
+                        'to' => $_user_email['configvalue'],
+                        'name_to' => $_user_email['userid'],
+                        'from' => 'no-reply@' . $serverHost,
                         'name_from' => 'ownCollab chart',
-                        'subject'   => 'Access to the project ownCollab chart',
-                        'body'      => 'Access to the project ownCollab chart'.$sharedALink
-                    ]);
+                        'subject' => 'Access to the project ownCollab chart',
+                        'body' => 'Access to the project ownCollab chart' . $sharedALink
+                    ];
+                    //$params['TEST'][] = $_mail_data;
+                    $mailSendResult = Helper::mailSend($_mail_data);
                 }
             }
-
-            $params['result'] = $mailSendResult;
-
-        } catch(\Exception $e) {
-            $params['result'] = 'error';
         }
 
-        $m = new PHPMailer();
+        $params['result'] = $mailSendResult;
 
         return new DataResponse($params);
     }

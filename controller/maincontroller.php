@@ -93,12 +93,16 @@ class MainController extends Controller {
 	public function publicChart($share){
 
         $project = $this->connect->project()->getShare($share);
+
         $params = [
             'template' => 'guest',
             'protected' => false,
             'wrongpw' => false,
             'requesttoken' => false,
         ];
+
+        //return new DataResponse($params);
+        //exit;
 
         if( $project['open'] == 1  && $project['is_share'] == 1){
 
@@ -160,12 +164,15 @@ class MainController extends Controller {
             unset($project['share_password']);
             unset($project['share_is_expire']);
             unset($project['share_expire_time']);
+
+            $jsonData = [
+                'project' => $project,
+                'tasks' => $this->connect->task()->get(),
+                'links' => $this->connect->link()->get()
+            ];
+
             return new TemplateResponse($this->appName, 'public', [
-                'json' => [
-                    'project' => $project,
-                    'tasks' => $this->connect->task()->get(),
-                    'links' => $this->connect->link()->get()
-                ]
+                'json' => $jsonData
             ]);
         }
 

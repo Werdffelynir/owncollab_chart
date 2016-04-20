@@ -10,7 +10,7 @@ $appName = 'owncollab_chart';
 
 <div id="app-content-inline-error"></div>
 
-<div class="topbar">
+<div id="topbar">
 
     <div id="sortedfilters">
 
@@ -30,4 +30,7 @@ $appName = 'owncollab_chart';
     </div>
 
     <div id="sidebar-toggle"></div>
+    <div id="ganttsave"></div>
+    <div id="ganttsaveloading"></div>
+
 </div>

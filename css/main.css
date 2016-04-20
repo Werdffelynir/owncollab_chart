@@ -45,6 +45,9 @@ html, body {
     overflow: hidden;
     height:100%;
 }
+#topbar{
+    height: 30px;
+}
 
 
 .child_preview {
@@ -100,15 +103,36 @@ html, body {
 #sortedfilters>span{
     display: inline-block;
 }
-
-#sidebar-toggle {
+#ganttsave {
     display: inline-block;
-    background: url("/core/img/actions/menu.png") no-repeat center center;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQTDSoDkwbhUgAAAONJREFUSMftlT0KwkAQRl9ixB9UsLZSsLGysbLzEJ5DPIeVV9HKa1h7AQsFoyBoXJtZWNIkZJMVZD8ICQlf3uzMzix4eXmVpJqFdwYkwMNlwBNAAVsgcAUdA1cBK2DjAhoBRwOqJN2rKqF1YJ+CKuADxMC8KnATmAJr4G2AL8AQGFSd7iXwMsDnIj8Jf9XHUcb3vtxvsom0x/S1Up420JByxEUD0+lcGO+60lL6GqUG0kE8J5sVayXGc5yxEj3J7mWAVc4RG0p7WddYayc1C3IE2CkT3HO9q7E4fZ7+8Pfy+m99AdllMdTKmGCYAAAAAElFTkSuQmCC')
+                no-repeat center center;
     width: 30px;
     height: 30px;
     float: right;
 }
-
+#ganttsave:hover {
+    background-color: #E7E7E7;
+}
+#ganttsaveloading{
+    display: inline-block;
+    background: url('/apps/owncollab_chart/img/loading-small.gif')
+    no-repeat center center;
+    width: 30px;
+    height: 30px;
+    float: right;
+}
+#sidebar-toggle {
+    display: inline-block;
+    background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAQMAAAAlPW0iAAAABlBMVEX///8AAABVwtN+AAAAAXRSTlMAQObYZgAAABJJREFUCNdjYAAD+z8gBAe4uQCvKQdj5EQSJQAAAABJRU5ErkJggg==')
+                no-repeat center center;
+    width: 30px;
+    height: 30px;
+    float: right;
+}
+#sidebar-toggle:hover {
+    background-color: #E7E7E7;
+}
 #sidebar-wrapper {
     padding: 10px;
 }
@@ -456,7 +480,19 @@ html, body {
 /*.gantt_buffer_line{
     background-color: #FFF;
 }*/
-
+.box_buffer{
+    text-align: center;
+}
+.show_buffer{
+    width: 60px;
+    display: inline-block;
+    background-color: #F2F2F2;
+}
+.change_buffer{
+    width: 16px;
+    height: 12px;
+    display: inline-block;
+}
 
 
 
@@ -566,6 +602,7 @@ html, body {
 }
 #generate-lbox-wrapper>div:nth-child(2) input[name=lbox_users]{
     width: 515px;
+    font-weight: bold;
 }
 #generate-lbox-wrapper>div:nth-child(n+3)>div:nth-child(odd){
     /*width: 10%;*/
@@ -657,13 +694,13 @@ input[type="checkbox"] + label span {
     margin:0px 0px 0 0;
     vertical-align:middle;
     /*background:url(/apps/owncollab_chart/img/check_radio_sheet.png) left top no-repeat;*/
-    background:url(/apps/owncollab_chart/img/checkbox.png) left top no-repeat;
+    background:url('/apps/owncollab_chart/img/checkbox.png') left top no-repeat;
     cursor:pointer;
 }
 
 input[type="checkbox"]:checked + label span {
     /*background:url(/apps/owncollab_chart/img/check_radio_sheet.png) -19px top no-repeat;*/
-    background:url(/apps/owncollab_chart/img/checkbox-checked.png) left top no-repeat;
+    background:url('/apps/owncollab_chart/img/checkbox-checked.png') left top no-repeat;
 }
 
 
@@ -709,7 +746,26 @@ input[type="radio"]:checked + label span {
 }
 .lbox_popup{ /*opacity: 0.85;*/}
 .lbox_popup:hover{ /*opacity: 1;*/}
-
+.resources_tags{
+    padding: 4px 6px 0px;
+    font-size: 13px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #ddd;
+    outline: none;
+    border-radius: 3px;
+}
+.rtag{
+    display: inline-block;
+    background-color: rgb(242, 242, 242);
+    color: #111;
+    outline: none;
+    border-radius: 3px;
+    padding: 0 3px;
+    margin-right: 3px;
+}
+.rtag_name{padding-right: 4px;}
+.rtag_delete{}
 
 
 
