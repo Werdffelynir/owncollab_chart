@@ -134,6 +134,7 @@ class Task
         $result = null;
         $task['type'] = $data['type'] ? $data['type'] : 'task';
         $task['text'] = $data['text'];
+        $task['users'] = $task['users'] ? $task['users'] : '';
         $task['start_date'] = Helper::toTimeFormat($data['start_date']);
         $task['end_date'] = Helper::toTimeFormat($data['end_date']);
         $task['open'] = 1;
