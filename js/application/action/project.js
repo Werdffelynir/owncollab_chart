@@ -30,7 +30,6 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
     };
 
 
-
     /**
      * @namespace App.Action.Project.tasks
      * @returns {Array}

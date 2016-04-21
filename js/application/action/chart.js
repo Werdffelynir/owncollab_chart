@@ -77,6 +77,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         });
     };
 
+
     /**
      *
      * @namespace App.Action.Chart.ganttInit
@@ -96,6 +97,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // tasks events
         gantt.attachEvent("onAfterTaskAdd", chart.onAfterTaskAdd);
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
+
+        gantt.attachEvent("onGanttRender", chart.onGanttRender);
 
 
 
@@ -266,7 +269,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     chart.scrollToTask = function(task_id){
         var pos = $(gantt.getTaskNode(task_id)).position();
         console.log(task_id, pos);
-        //gantt.scrollTo(pos.left, pos.top)
+        if(typeof pos === 'object')
+            gantt.scrollTo(pos.left, pos.top)
     };
 
 
@@ -370,11 +374,48 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
 
+    /**
+     * Dynamic change size of chart, when browser window on resize
+     */
+    chart.ganttDynamicResize = function(){
+        window.addEventListener('resize', function onWindowResize(event){
+            chart.ganttFullSize();
+            gantt.render();
+        }, false);
+    };
+
+    /**
+     * Performs resize the HTML Element - gantt chart, establishes the dimensions to a full page by width and height
+     * Use: app.action.chart.ganttFullSize()
+     */
+    chart.ganttFullSize = function (){
+        $(app.dom.gantt)
+            .css('height',(window.innerHeight-100) + 'px')
+            .css('width',(window.innerWidth) + 'px');
+    };
+
+    /**
+     * Performs resize the HTMLElement - gantt chart, establishes the dimensions to a size HTMLElement - #content
+     * @namespace App.Action.Chart.ganttInblockSize
+     */
+    chart.ganttInblockSize = function (){
+        $(App.node('gantt'))
+            .css('height',(window.innerHeight-100) + 'px')
+            .css('width', $(App.node('content')).outerHeight() + 'px');
+    };
+
+
+
     chart.onAfterTaskAdd = function  (id, item){
         chart.scrollToTask(id);
         gantt.showLightbox(id);
     };
 
+
+    chart.onGanttRender = function () {
+        // Dynamic chart resize when change window
+        //chart.ganttDynamicResize();
+    };
 
     return chart
 
