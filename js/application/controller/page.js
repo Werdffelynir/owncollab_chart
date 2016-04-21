@@ -96,10 +96,13 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        //Chart.lastlinkid = response['lastlinkid'];
-        //Chart.linkIdIterator(response.links.length);
-        Chart.linkIdIterator((function(){ return response.links[response.links.length-1].id })());
-        Chart.taskIdIterator((function(){ return response.tasks[response.tasks.length-1].id })());
+        Chart.linkIdIterator(Math.max.apply( Math, response.links.map(function(item){
+            return item.id;
+        })));
+        Chart.taskIdIterator(Math.max.apply( Math, response.tasks.map(function(item){
+            return item.id;
+        })));
+
         App.isAdmin = response['isadmin'];
         App.lang = response['lang'];
 

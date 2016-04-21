@@ -79,7 +79,7 @@ class Task
         $sql = "SELECT *,
                 DATE_FORMAT( `start_date`, '%d-%m-%Y %H:%i:%s') as start_date,
                 DATE_FORMAT( `end_date`, '%d-%m-%Y %H:%i:%s') as end_date
-                FROM `{$this->tableName}` WHERE open = 1";
+                FROM `{$this->tableName}`"; // WHERE `open` != 0
         return $this->connect->queryAll($sql);
     }
 
@@ -111,13 +111,13 @@ class Task
                     if($field == 'users')           $value = (string) $value;
                     if($field == 'start_date')      $value = date("Y-m-d H:i:s", strtotime($value));
                     if($field == 'end_date')        $value = date("Y-m-d H:i:s", strtotime($value));
-                    if($field == 'duration')        $value = (int) $value;
-                    if($field == 'order')           $value = (int) $value;
-                    if($field == 'progress')        $value = (float) $value;
-                    if($field == 'sortorder')       $value = (int) $value;
-                    if($field == 'parent')          $value = (int) $value;
-                    if($field == 'open')            $value = (int) $value;
-                    if($field == 'buffer')          $value = (int) $value;
+                    if($field == 'duration')        $value = (int) (empty($value)?0:$value);
+                    if($field == 'order')           $value = (int) (empty($value)?0:$value);
+                    if($field == 'progress')        $value = (float) (empty($value)?0:$value);
+                    if($field == 'sortorder')       $value = (int) (empty($value)?0:$value);
+                    if($field == 'parent')          $value = (int) (empty($value)?1:$value);
+                    if($field == 'open')            $value = (int) (empty($value)?1:$value);
+                    if($field == 'buffer')          $value = (int) (empty($value)?0:$value);
 
                     $rowData[":{$field}_{$iRow}"] = $value;
                 }else{

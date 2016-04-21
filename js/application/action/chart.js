@@ -91,8 +91,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onAfterLinkAdd", chart.onAfterLinkAdd);
         //gantt.attachEvent("onAfterLinkDelete", lbox.onAfterLinkDelete);
         //gantt.attachEvent("onAfterLinkUpdate", lbox.onAfterLinkUpdate);
+        gantt.attachEvent("onTaskClick", chart.onTaskClick);
 
         // tasks events
+        gantt.attachEvent("onAfterTaskAdd", chart.onAfterTaskAdd);
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
 
 
@@ -220,6 +222,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             ganttSaveLoadIco.style.visibility = 'visible';
 
             App.Action.Api.saveAll(function(response){
+                ganttSaveLoadIco.style.visibility = 'hidden';
                 console.log(response);
             });
 
@@ -262,7 +265,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     chart.scrollToTask = function(task_id){
         var pos = $(gantt.getTaskNode(task_id)).position();
-        gantt.scrollTo(pos.left, pos.top)
+        console.log(task_id, pos);
+        //gantt.scrollTo(pos.left, pos.top)
     };
 
 
@@ -287,7 +291,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         task.start_date_origin = Util.objClone(task.start_date);
         task.end_date_origin = Util.objClone(task.end_date);
 
-        gantt.changeTaskId(id, chart.taskIdIterator());
+        if(task.is_new == 1)
+            gantt.changeTaskId(id, chart.taskIdIterator());
 
         // change types task and project by nesting
         if(task.id != 1){
@@ -300,6 +305,76 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         return false;
     };
+
+
+    chart.onTaskClick = function (id, event){
+        var target = event.target;
+
+        // control buttons
+        if(target.tagName == 'A' && target.getAttribute('data-control')){
+            event.preventDefault();
+            //app.action.chart.opt.isNewTask = false;
+            var action = target.getAttribute('data-control');
+            switch (action) {
+
+                case "edit":
+                    gantt.showLightbox(id);
+                    break;
+
+                case "add":
+                    //app.action.chart.opt.isNewTask = true;
+                    var _id = chart.taskIdIterator();
+                    console.log(_id);
+                    console.log(id);
+                    var _date = new Date(gantt.getTask(id).start_date);
+                    var _task = {
+                        id: _id,
+                        type: gantt.config.types.task,
+                        text: "New Task",
+                        users: '',
+                        start_date: _date,
+                        end_date: DateTime.addDays(5, _date),
+                        predecessor: '',
+                        is_buffered: false,
+                        is_new: true,
+                        progress: 0,
+                        duration: 0,
+                        order: 0,
+                        sortorder: 0,
+                        open: 0,
+                        buffer: 0
+                    };
+                    gantt.addTask(_task, id);
+                    break;
+
+                case "remove":
+                    var _task = gantt.getTask(id);
+
+                    // binding for find parent after delete
+                    //o.taskToDelete = {id:_task.id, parent:_task.parent};
+
+                    gantt.confirm({
+                        title: gantt.locale.labels.confirm_deleting_title,
+                        text: _task.text + " " +(_task.id)+ " - " + App.t('will be deleted permanently, are you sure?'),
+                        callback: function(res){
+                            if(res)
+                                gantt.deleteTask(id);
+                        }
+                    });
+                    break;
+            }
+            return false;
+        }
+        // important
+        return event;
+    };
+
+
+    chart.onAfterTaskAdd = function  (id, item){
+        chart.scrollToTask(id);
+        gantt.showLightbox(id);
+    };
+
 
     return chart
 
