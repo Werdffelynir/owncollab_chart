@@ -77,6 +77,26 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         });
     };
 
+    /**
+     *
+     * @namespace App.Action.Chart.onBeforeTaskDelete
+     * @param id
+     * @param task
+     * @returns {boolean}
+     */
+    chart.onBeforeTaskDelete = function (id, task){
+        //console.log(this, this);
+        //console.log(task.type, task.id);
+        //
+        //dhtmlx.message({type:"error", text:"Enter task description!"});
+        //return false;
+
+
+        //if(task.type == 'project')
+            //return true;
+        //else
+        //    return true;
+    };
 
     /**
      *
@@ -95,6 +115,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onTaskClick", chart.onTaskClick);
 
         // tasks events
+        //gantt.attachEvent("onBeforeTaskDelete", chart.onBeforeTaskDelete);
         gantt.attachEvent("onAfterTaskAdd", chart.onAfterTaskAdd);
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
 
@@ -126,6 +147,11 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         // Enable zoom slider
         chart.enableZoomSlider();
+
+        // Gantt attachEvent OnAfterTaskAutoSchedule
+        //App.Action.Buffer.attachEventOnAfterTaskAutoSchedule();
+
+        gantt.attachEvent("onAfterTaskAutoSchedule", App.Action.Buffer.onAfterTaskAutoSchedule);
 
         gantt.parse({
             data: filteringTasks,
@@ -290,6 +316,12 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //app.action.event.requestLinkUpdater('delete', id, item);
     };
 
+    /**
+     * @namespace App.Action.Chart.bufferReady
+     * @type {boolean}
+     */
+    //chart.bufferReady = true;
+
     chart.onAfterTaskUpdate = function(id, task){
 
         task.start_date_origin = Util.objClone(task.start_date);
@@ -307,6 +339,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             }
         }
 
+        task.is_buffered = false;
         return false;
     };
 
@@ -355,7 +388,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                     var _task = gantt.getTask(id);
 
                     // binding for find parent after delete
-                    //o.taskToDelete = {id:_task.id, parent:_task.parent};
+                    if(_task.type == 'project' && id == 1)
+                        break;
 
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
@@ -415,6 +449,16 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     chart.onGanttRender = function () {
         // Dynamic chart resize when change window
         //chart.ganttDynamicResize();
+    };
+
+    /**
+     * @namespace App.Action.Chart.taskReplace
+     * @param task_id
+     */
+    chart.taskReplace = function (task_id) {
+        var task = gantt.getTask(task_id);
+        var ds = DateTime.addDays(-1.6, task.start_date);
+        var de = DateTime.addDays(-1.6, task.end_date);
     };
 
     return chart

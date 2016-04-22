@@ -67,7 +67,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.config.auto_scheduling = true;
 
         // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
-        gantt.config.auto_scheduling_strict = true;
+        gantt.config.auto_scheduling_strict = false;
 
         // Defines whether gantt will do autoscheduling on data loading
         gantt.config.auto_scheduling_initial = false;

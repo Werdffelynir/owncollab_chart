@@ -20,35 +20,6 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
         gantt.eachTask(function(task){
             if(task.buffer > 0) act.set(task.id, task.buffer);
         });
-
-
-        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
-
-            // todo buffer recalculate
-            var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
-
-            if(!isNaN(buffer)) {
-
-                buffer *= 1000;
-
-                switch (parseInt(link.type)){
-                    case parseInt(gantt.config.links.finish_to_start):
-                        act.addBufferFS(predecessor, task, buffer);
-                        break;
-                    case parseInt(gantt.config.links.start_to_start):
-                        act.addBufferSS(predecessor, task, buffer);
-                        break;
-                    case parseInt(gantt.config.links.start_to_finish):
-                        act.addBufferSF(predecessor, task, buffer);
-                        break;
-                    case parseInt(gantt.config.links.finish_to_finish):
-                        act.addBufferFF(predecessor, task, buffer);
-                        break;
-                }
-                task.is_buffered = true;
-            }
-            return false
-        });
     };
 
     /**
@@ -312,6 +283,78 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
     };
 
 
-    return act;
+    /**
+     *
+     * @namespace App.Action.Buffer.attachEventOnAfterTaskAutoSchedule
+     */
+/*    act.attachEventOnAfterTaskAutoSchedule = function(){
+
+        //gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){});
+        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
+
+            // todo buffer recalculate
+            var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+
+            if(!isNaN(buffer) && !task.is_buffered ) {
+
+                buffer *= 1000;
+
+                switch (parseInt(link.type)){
+                    case parseInt(gantt.config.links.finish_to_start):
+                        act.addBufferFS(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_start):
+                        act.addBufferSS(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_finish):
+                        act.addBufferSF(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.finish_to_finish):
+                        act.addBufferFF(predecessor, task, buffer);
+                        break;
+                }
+                task.is_buffered = true;
+            }
+            return false
+        });
+    };*/
+
+
+    /**
+     * @namespace App.Action.Buffer.onAfterTaskAutoSchedule
+     */
+    act.onAfterTaskAutoSchedule = function(task, startDate, link, predecessor){
+
+        // todo buffer recalculate
+        var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+
+        if(!isNaN(buffer) && !task.is_buffered ) {
+
+            buffer *= 1000;
+
+            switch (parseInt(link.type)){
+                case parseInt(gantt.config.links.finish_to_start):
+                    act.addBufferFS(predecessor, task, buffer);
+                    break;
+                case parseInt(gantt.config.links.start_to_start):
+                    act.addBufferSS(predecessor, task, buffer);
+                    break;
+                case parseInt(gantt.config.links.start_to_finish):
+                    act.addBufferSF(predecessor, task, buffer);
+                    break;
+                case parseInt(gantt.config.links.finish_to_finish):
+                    act.addBufferFF(predecessor, task, buffer);
+                    break;
+            }
+            task.is_buffered = true;
+        }
+        return false
+
+    };
+
+
+
+
+    return act
 
 })}

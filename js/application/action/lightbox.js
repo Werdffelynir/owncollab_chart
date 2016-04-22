@@ -44,9 +44,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         gantt.attachEvent("onLightbox", lbox.onLightbox);
 
         //gantt.attachEvent("onAfterLightbox", lbox.onAfterLightbox);
-        //gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
+        gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
         //gantt.attachEvent("onLightboxCancel", lbox.onLightboxCancel);
-        //gantt.attachEvent("onLightboxDelete", lbox.onLightboxDelete);
+        gantt.attachEvent("onLightboxDelete", lbox.onLightboxDelete);
     };
 
     /**
@@ -71,6 +71,10 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         }
         if(t.type == 'project'){
             $('#generate-lbox-wrapper .lbox_buffer_wrapp').remove();
+        }else if(t.type == 'milestone'){
+            $('#generate-lbox-wrapper input[name=lbox_users]').parent().remove();
+            $('#generate-lbox-wrapper input[name=lbox_progress]').parent().parent().remove();
+            $('#generate-lbox-wrapper input[name=lbox_end_date]').parent().parent().remove();
         }
 
         lbox.field = (function(){
@@ -318,7 +322,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @returns {boolean}
      */
     lbox.onLightboxSave = function (id, task, is_new){
-        var _id = null;
+        /*        var _id = null;
 
         // after entry in the database, you need to update the id
         if(is_new === true){
@@ -331,15 +335,17 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         // updates all the properties editing task with the current internal object
         Util.objMerge(task, lbox.task);
-        gantt.updateTask(id);
+        gantt.updateTask(id);*/
 
         // Accept buffer if it set
+        task.is_buffered = false;
         var predecessor, successor;
         if(predecessor = App.Action.Buffer.getTaskPredecessor(id)) {
             if(!isNaN(predecessor.buffer) && predecessor.buffer != 0){
-                setTimeout(function(){
+                //App.Action.Chart.taskReplace(id);
+                //setTimeout(function(){
                     gantt.autoSchedule(predecessor.id);
-                },300);
+                //},300);
             }
         }
 
@@ -349,11 +355,15 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         lbox.task = lbox.field = null;
         return true;
     };
-    lbox.onLightboxDelete = function (id, task){
-        var _task = gantt.getTask(id);
-        gantt.locale.labels.confirm_deleting = _task.text + " " + (_task.id) + " - will be deleted permanently, are you sure?";
-        lbox.task = lbox.field = null;
-        return true;
+    lbox.onLightboxDelete = function (id){
+        var task = gantt.getTask(id);
+        if(task.type == 'project' && id == 1)
+            return false;
+        else {
+            gantt.locale.labels.confirm_deleting = task.text + " " + (task.id) + " - will be deleted permanently, are you sure?";
+            lbox.task = lbox.field = null;
+            return true;
+        }
     };
 
 
