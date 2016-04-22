@@ -149,6 +149,9 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
     function ganttReady(){
         console.log('ganttReady');
 
+        // Buffer enabled
+        App.Action.Buffer.init();
+
     }
 
 

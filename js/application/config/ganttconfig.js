@@ -124,9 +124,6 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         // Apply scaling chart
         conf.scale(conf.dataProject['scale_type']);
 
-        // Enable zoom slider
-        //GanttExt.enableZoomSlider(conf.dataProject['scale_type']);
-
         // Enables automatic adjusting of the grid's columns to the grid's width
         gantt.config.autofit = true;
 
@@ -310,8 +307,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                     conf.option.weekCount = 0;
                     gantt.templates.date_scale = function(date) {
                         if(!conf.option.weekRecount) {
-                            conf.option.weekRecount = app.timeDateToStr(date);
-                        }else if(conf.option.weekRecount == app.timeDateToStr(date)){
+                            conf.option.weekRecount = DateTime.dateToStr(date);
+                        }else if(conf.option.weekRecount == DateTime.dateToStr(date)){
                             conf.option.weekCount = 0;
                         }
                         return "<strong>" + ( ++ conf.option.weekCount ) + " Week</strong>";

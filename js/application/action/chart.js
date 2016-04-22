@@ -100,11 +100,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
 
-
-
         // run gantt init
         gantt.init(chart.contentElement);
-
 
         // run parse data
         var filteringTasks = chart.filteringTasks();
@@ -124,8 +121,11 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // run Lightbox
         Lightbox.init();
 
-        // inti function save data
+        // Enable function save gantt data
         chart.savedButtonInit();
+
+        // Enable zoom slider
+        chart.enableZoomSlider();
 
         gantt.parse({
             data: filteringTasks,

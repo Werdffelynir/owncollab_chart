@@ -20,10 +20,39 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
         gantt.eachTask(function(task){
             if(task.buffer > 0) act.set(task.id, task.buffer);
         });
+
+
+        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
+
+            // todo buffer recalculate
+            var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+
+            if(!isNaN(buffer)) {
+
+                buffer *= 1000;
+
+                switch (parseInt(link.type)){
+                    case parseInt(gantt.config.links.finish_to_start):
+                        act.addBufferFS(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_start):
+                        act.addBufferSS(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.start_to_finish):
+                        act.addBufferSF(predecessor, task, buffer);
+                        break;
+                    case parseInt(gantt.config.links.finish_to_finish):
+                        act.addBufferFF(predecessor, task, buffer);
+                        break;
+                }
+                task.is_buffered = true;
+            }
+            return false
+        });
     };
 
     /**
-     * Set temp param app.action.buffer.temp[task_id] = buffer seconds time
+     * Set temp param App.Action.Buffer.temp[task_id] = buffer seconds time
      * @namespace App.Action.Buffer.set
      * @param task_id
      * @param buffer
@@ -134,11 +163,6 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
             }
         }
         return predecessor;
-        /*if(predecessor)
-            return {
-                predecessor: predecessor,
-                link: link
-            };*/
     };
 
 
