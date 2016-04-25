@@ -1,5 +1,7 @@
 if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
+    'use strict';
+
     //var GanttEve = App.Event.GanttEve;
     var GanttConfig = App.Config.GanttConfig;
     var DataStore = App.Module.DataStore;
@@ -339,7 +341,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 parent.type = 'project';
                 gantt.updateTask(parent.id);
             }
-            if(gantt.getChildren(id).length == 0 && (task.type == 'project' ||  task.type == 'milestone')){
+            if(gantt.getChildren(id).length == 0 && task.type == 'project'){
                 task.type = 'task';
                 gantt.updateTask(parent.id);
             }

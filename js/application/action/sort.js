@@ -43,6 +43,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             task: App.query('#ganttfilter_task'),
             resource: App.query('#ganttfilter_resource')
         };
+
         sort.icoSort.id.direction = false;
         sort.icoSort.id.addEventListener('click', sort.onSortById, false);
         sort.icoSort.task.direction = false;
@@ -169,6 +170,11 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         inner += '<div class="tbl_cell ico_clear"></div>';
         inner += '</div>';
 
+        inner += '<div class="tbl">';
+        inner += '<div class="tbl_cell"><input id="gantt_filter_group" type="text" placeholder="'+App.t('Enter passphrase to be part of group name')+'" value="' + sort.filtersNames + '"></div>';
+        inner += '<div class="tbl_cell ico_clear_group"></div>';
+        inner += '</div>';
+
         div.innerHTML = inner;
 
         var popup = App.Action.Lightbox.showPopup(sort.icoFilter.task, div);
@@ -177,18 +183,24 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         popup.style.left = '110px';
 
         var gantt_filter_name = document.getElementById('gantt_filter_name'),
-            clear_btn = document.querySelector('.ico_clear');
+            clear_btn = document.querySelector('.ico_clear'),
+            clear_btn_group = document.querySelector('.ico_clear_group');
 
         gantt_filter_name.addEventListener('keyup', function(event){
             sort.filtersNames = event.target.value;
             gantt.refreshData();
         }, false);
 
+        // -------------------------------------------------------------
+        // clear fields
         clear_btn.addEventListener('click', function(event){
             sort.filtersNames = gantt_filter_name.value = '';
             gantt.refreshData();
         }, false);
-
+        clear_btn_group.addEventListener('click', function(event){
+            sort.filtersNames = gantt_filter_name.value = '';
+            gantt.refreshData();
+        }, false);
     };
 
     // this variables consists filter words
