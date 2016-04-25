@@ -83,7 +83,7 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
     ganttExt.showTaskNames = function (show){
         gantt.templates.task_text = function(start, end, task){
             if(show)
-                return task.text;//"<strong>"+task.text+"</strong>";
+                return task.text;
             else
                 return "";
         };

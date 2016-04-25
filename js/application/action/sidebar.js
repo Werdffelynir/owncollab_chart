@@ -413,6 +413,64 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
             type    = target.type,
             value   = target.value;
 
+        // Project.dataProject
+        console.log(Project);
+        console.log(target, name, type, value);
+
+        // Dynamic show today line in gantt chart
+        if(name === 'show_today_line'){
+
+            App.Action.GanttExt.showMarkers(target.checked);
+            Util.Storage('show_today_line', target.checked);
+            gantt.refreshData();
+
+        }else
+
+        // Dynamic show user color in gantt chart tasks an resources
+        if(name === 'show_user_color'){
+
+            App.Action.GanttExt.showUserColor(target.checked);
+            Util.Storage('show_user_color', target.checked);
+            gantt.refreshData();
+
+        }else
+
+        // Dynamic show task name in gantt chart
+        if(name === 'show_task_name'){
+
+            App.Action.GanttExt.showTaskNames(target.checked);
+            Util.Storage('show_task_name', target.checked);
+            gantt.refreshData();
+
+        }else
+
+        // Dynamic scale type gantt chart
+        if(name === 'scale_type'){
+
+            App.Config.GanttConfig.scale(value);
+            Util.Storage('scale_type', value);
+            gantt.render();
+
+        }else
+
+        // Dynamic resize scale fit gantt chart
+        if(name === 'scale_fit'){
+
+            //app.action.chart.showTaskNames(target.checked);
+            App.Action.Fitmode.toggle(target.checked);
+            gantt.render();
+            Util.Storage('scale_fit', target.checked);
+
+        }else
+
+        // Dynamic resize scale fit gantt chart
+        if(name === 'critical_path'){
+
+            App.Action.GanttExt.showCriticalPath(target.checked);
+            Util.Storage('critical_path', target.checked);
+            gantt.render();
+
+        }
 
 
 

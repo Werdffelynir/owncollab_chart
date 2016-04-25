@@ -261,7 +261,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
             popup = lbox.showPopup(target, view);
 
-            popup.style.width = '510px';f
+            popup.style.width = '510px';
             popup.style.zIndex = '999';
             popup.style.left = '10px';
             //popup.style.top = '10px';
