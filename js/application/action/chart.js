@@ -327,6 +327,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         task.start_date_origin = Util.objClone(task.start_date);
         task.end_date_origin = Util.objClone(task.end_date);
 
+        gantt.autoSchedule(id);
+
         if(task.is_new == 1)
             gantt.changeTaskId(id, chart.taskIdIterator());
 
@@ -335,6 +337,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             var parent = gantt.getTask(task.parent);
             if(parent.type != 'project'){
                 parent.type = 'project';
+                gantt.updateTask(parent.id);
+            }
+            if(gantt.getChildren(id).length == 0 && (task.type == 'project' ||  task.type == 'milestone')){
+                task.type = 'task';
                 gantt.updateTask(parent.id);
             }
         }
@@ -480,6 +486,17 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         };
         timer.start();
     };
+
+    /**
+     * @namespace App.Action.Chart.saveConfirmExit
+     * @param switcher
+     * @returns {boolean}
+     */
+    chart.saveConfirmExit = function (switcher) {
+        console.log('Switcher Confirm Exit! ' + switcher);
+        return false;
+    };
+
 
     return chart
 

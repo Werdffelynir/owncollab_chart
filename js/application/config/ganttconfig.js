@@ -67,13 +67,13 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.config.auto_scheduling = true;
 
         // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
-        gantt.config.auto_scheduling_strict = false;
+        gantt.config.auto_scheduling_strict = true;
 
         // Defines whether gantt will do autoscheduling on data loading
-        gantt.config.auto_scheduling_initial = false;
+        gantt.config.auto_scheduling_initial = true;
 
         // allows or forbids creation of links from parent tasks (projects) to their children
-        gantt.config.auto_scheduling_descendant_links = false;
+        gantt.config.auto_scheduling_descendant_links = true;
 
         // Making the Gantt chart to display the critical path
         if(conf.dataProject['critical_path'] == 1) {
@@ -156,7 +156,11 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 return item.id;
             }},
 
-            {name:"text", label: App.t('Taskname'), tree:true, width: columnWidth.name, resize:true},
+            {name:"text", label: App.t('Taskname'), tree:true, width: columnWidth.name, resize:true,template: function(item) {
+                if(gantt.getChildren(item.id).length > 0)
+                    return '<strong>'+item.text+'</strong>';
+                return item.text;
+            }},
 
             {name:"start_date", label: App.t('Start'), align: "center", width: columnWidth.start, template: function(item) {
                 return DateTime.dateToStr(item.start_date, "%d.%m.%Y");

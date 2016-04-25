@@ -150,6 +150,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             onSelect: lbox.onChangeLightboxInputDate
         });
 
+        $('#generate-lbox-wrapper [name=lbox_text]').select().focus();
     };
 
 
