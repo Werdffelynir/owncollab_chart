@@ -461,6 +461,30 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         var de = DateTime.addDays(-1.6, task.end_date);
     };
 
+
+    /**
+     * @namespace App.Action.Chart.taskReplace
+     * @param ms
+     */
+    chart.saveTimerStart = function (ms) {
+        ms = parseInt(ms) < 5000 ? 5000 : parseInt(ms);
+        var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
+        var timer = new Timer(ms);
+
+        timer.onprogress = function(){
+            ganttSaveLoadIco.style.visibility = 'visible';
+            App.Action.Api.saveAll(function(response){
+                ganttSaveLoadIco.style.visibility = 'hidden';
+                console.log('Auto save complete! ' + timer.iterator);
+            });
+        };
+        timer.start();
+    };
+
     return chart
 
 })}
+
+
+
+

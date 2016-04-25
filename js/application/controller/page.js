@@ -152,6 +152,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         // Buffer enabled
         App.Action.Buffer.init();
 
+        //Chart.saveTimerStart(300000);
     }
 
 
