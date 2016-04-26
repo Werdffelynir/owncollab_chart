@@ -7,7 +7,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     var lbox = {
         task:null,
         field:null,
-        popup:null
+        popup:null,
+        datetimepickerEnd:null
     };
 
     /** @type {App.Extension.DateTime} */
@@ -66,6 +67,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         // delete predecessor button if task is first child in the project
         var t = gantt.getTask(id);
 
+        // Clean view for types
         if(t.parent == 0){
             $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
         }
@@ -137,7 +139,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             onSelect: lbox.onChangeLightboxInputDate
         });
 
-        $('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+        lbox.datetimepickerEnd = $('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             minDate: (function(){
                 var fsd = $('input[name=lbox_start_date]').val();
                 return DateTime.strToDate(fsd?fsd:startDate);
@@ -188,6 +190,14 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     lbox.onChangeLightboxInputDate = function (date, picObj){
         if(!lbox.task || !lbox.field) return;
         var name = this['name'].substr(5);
+
+        // change end date
+        if(name == 'start_date'){
+            var newEndDate = DateTime.addDays(7, DateTime.strToDate(date));
+            lbox.task.end_date = newEndDate;
+            $('input[name=lbox_end_date]').val(DateTime.dateToStr(newEndDate));
+        }
+
         lbox.task[name] = DateTime.strToDate(date);
     };
 
@@ -349,6 +359,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 //},300);
             }
         }
+
+        //App.Action.Chart.scrollToTask(id);
 
         return true;
     };

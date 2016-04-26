@@ -113,9 +113,18 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         DataStore.put('tasks', response.tasks);
         DataStore.put('links', response.links);
 
+
+        // Language
+        var languagePathScript = null;
+        if(App.locale.toLowerCase().indexOf('de') !== -1)
+            languagePathScript = App.urlGantt + 'locale/locale_de.js';
+        else if(App.locale=='ru')
+            languagePathScript = App.urlGantt + 'locale/locale_ru.js';
+
         App.require('gantt',
             [
                 App.urlGantt + 'dhtmlxgantt.js',
+                languagePathScript,
                 App.urlGantt + 'ext/dhtmlxgantt_undo.js',
                 App.urlGantt + 'ext/dhtmlxgantt_marker.js',
                 App.urlGantt + 'ext/dhtmlxgantt_critical_path.js',
@@ -124,8 +133,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
                 App.urlGantt + 'api.js'
             ],
             initGantt, initGanttError).requireStart();
-
-        //console.log(response);
 
         // display elements
         App.node('topbar').style['display'] = 'block';
@@ -139,11 +146,12 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             initGanttError();
             return;
         }
+
+
         Chart.init(node.gantt, ganttBefore, ganttReady);
     }
     function ganttBefore(){
         console.log('ganttBefore');
-
     }
 
     function ganttReady(){
@@ -151,7 +159,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         // Buffer enabled
         App.Action.Buffer.init();
-
+        Chart.enabledZoomFit(App.node('zoomSliderFit'));
         //window.onbeforeunload = Chart.saveConfirmExit;
         //Chart.saveTimerStart(300000);
     }
@@ -168,10 +176,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         }else
             return 'guest';
     };
-
-
-
-
 
 
     return ctrl;

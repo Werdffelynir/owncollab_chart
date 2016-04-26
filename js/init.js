@@ -69,6 +69,7 @@ function initError(error){
 App.requireStart('libs');
 
 function initLibrary(list){
+
     App.requireStart('dependence');
 }
 

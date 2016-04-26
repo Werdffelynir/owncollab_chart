@@ -187,12 +187,15 @@
 
         if (source.src[i]) {
             if(!Array.isArray(source.node)) source.node = [];
+
             source.node.push(this.script(source.src[i], function(){
                 self._recursive_load_script(++i, key);
             }, source.onerror));
+
         } else if (i ===  source.src.length)
             source.oncomplete.call(self, source.node);
-
+        else
+            self._recursive_load_script(++i, key);
     };
 
     /**
@@ -203,8 +206,9 @@
      * @returns {Element}
      */
     proto.script = function  (src, onload, onerror) {
-        var
-            script = document.createElement('script'),
+        if(!src) return null;
+
+        var script = document.createElement('script'),
             id = "src-" + Math.random().toString(32).slice(2);
 
         script.src = (src.substr(-3) === '.js') ? src : src + '.js';

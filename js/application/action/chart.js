@@ -100,6 +100,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //    return true;
     };
 
+    chart.onBeforeTaskUpdate = function (id, item) {
+
+        console.log(item);
+    };
     /**
      *
      * @namespace App.Action.Chart.ganttInit
@@ -120,6 +124,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //gantt.attachEvent("onBeforeTaskDelete", chart.onBeforeTaskDelete);
         gantt.attachEvent("onAfterTaskAdd", chart.onAfterTaskAdd);
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
+        gantt.attachEvent("onBeforeTaskUpdate", chart.onBeforeTaskUpdate);
 
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
 
@@ -295,10 +300,13 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      * @param task_id
      */
     chart.scrollToTask = function(task_id){
-        var pos = $(gantt.getTaskNode(task_id)).position();
-        console.log(task_id, pos);
-        if(typeof pos === 'object')
-            gantt.scrollTo(pos.left, pos.top)
+        var pos = gantt.getTaskNode(task_id); //$(gantt.getTaskNode(task_id)).position();
+        // offsetLeft // offsetTop
+        if(typeof pos === 'object'){
+            console.log(task_id, pos, pos.offsetLeft, pos.offsetTop);
+            //gantt.scrollTo(pos.left, pos.top)
+            gantt.scrollTo(pos.offsetLeft, pos.offsetTop)
+        }
     };
 
 
@@ -446,7 +454,14 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             .css('width', $(App.node('content')).outerHeight() + 'px');
     };
 
-
+    /**
+     * @namespace App.Action.Chart.enabledZoomFit
+     */
+    chart.enabledZoomFit = function (btnElem){
+        $(btnElem).click(function(){
+            App.Action.Fitmode.toggle();
+        });
+    };
 
     chart.onAfterTaskAdd = function  (id, item){
         chart.scrollToTask(id);
