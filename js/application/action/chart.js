@@ -102,7 +102,17 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     chart.onBeforeTaskUpdate = function (id, item) {
 
-        console.log(item);
+        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+        if(predecessor){
+            console.log(item.start_date_origin);
+            //setTimeout(function(){
+            item.start_date = item.start_date_origin;
+            //gantt.updateTask(item.id);
+            gantt.refreshTask(item.id);
+            return false;
+            //},500);
+        }
+        return true;
     };
     /**
      *
