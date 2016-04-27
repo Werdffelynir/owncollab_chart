@@ -56,7 +56,8 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             actionUndo:      App.query('#act_undo'),
             actionRedo:      App.query('#act_redo'),
             ganttSave:       App.query('#ganttsave'),
-            ganttSaveLoadIco:App.query('#ganttsaveloading')
+            ganttSaveLoadIco:App.query('#ganttsaveloading'),
+            sortedfilters:   App.query('#sortedfilters')
         });
 
 
@@ -78,7 +79,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        console.log(response);
+        //console.log(response);
 
         if(response.errorinfo.length > 2) {
             Error.inline('Response error info [' + response.errorinfo + ']');
@@ -160,6 +161,13 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         // Buffer enabled
         App.Action.Buffer.init();
         Chart.enabledZoomFit(App.node('zoomSliderFit'));
+
+        // Alignment sorting and filter icon buttons
+        if(!Chart.isInit){
+            Chart.isInit = true;
+            //App.Action.Sort.onEventGridResizeEnd();
+        }
+
         //window.onbeforeunload = Chart.saveConfirmExit;
         //Chart.saveTimerStart(300000);
     }

@@ -149,6 +149,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         // Styling the gantt chart. Tasks column grid width size
         gantt.config.grid_width = 550;
 
+        // Icons
+        // var sortIco = '<span id="ganttsort_id"><img src="/apps/owncollab_chart/img/sort30.png" alt=""></span>';
+
         gantt.config.columns = [
 
             {name:"id", label:"ID", width: columnWidth.id, template: function(item) {

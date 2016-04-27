@@ -24,7 +24,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         lasttaskid:0,
         tasks:null,
         links:null,
-        zoomValue: 2
+        zoomValue: 2,
+        isInit: false
     };
 
     /**
@@ -103,15 +104,18 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     chart.onBeforeTaskUpdate = function (id, item) {
 
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+
         if(predecessor){
-            console.log(item.start_date_origin);
-            //setTimeout(function(){
-            item.start_date = item.start_date_origin;
-            //gantt.updateTask(item.id);
-            gantt.refreshTask(item.id);
-            return false;
-            //},500);
+            console.log('predecessor:', item.predecessor);
+
+
+
+            //item.start_date = item.start_date_origin;
+            //gantt.refreshTask(item.id);
+
+            //return false;
         }
+
         return true;
     };
     /**
@@ -478,8 +482,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.showLightbox(id);
     };
 
-
     chart.onGanttRender = function () {
+
+
         // Dynamic chart resize when change window
         //chart.ganttDynamicResize();
     };

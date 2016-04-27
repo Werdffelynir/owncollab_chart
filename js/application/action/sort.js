@@ -24,11 +24,15 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
      */
     sort.dataGroupsusers = {};
 
+
     /**
      *
      * @namespace App.Action.Sort.init
      */
     sort.init = function(){
+
+        gantt.attachEvent("onColumnResizeEnd", sort.onEventGridResizeEnd);
+        gantt.attachEvent("onGridResizeEnd", sort.onEventGridResizeEnd);
 
         sort.dataGroupsusers = App.Module.DataStore.get('groupsusers');
 
@@ -61,14 +65,47 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     };
 
     sort.applyStyle = function(){
-        sort.icoSort.id.style.width = '80px';
-        sort.icoSort.task.style.width = '15px';
-        sort.icoSort.start.style.width = '200px';
-        sort.icoSort.resource.style.width = '15px';
 
-        sort.icoFilter.task.style.width = '105px';
-        sort.icoFilter.resource.style.width = '90px';
+        App.node('sortedfilters').style.display = 'block';
+
+        sort.icoSort.id.style.left = '5px';
+        sort.icoSort.task.style.left = '87px';
+        sort.icoSort.start.style.left = '210px';
+        sort.icoSort.resource.style.left = '410px';
+
+        sort.icoFilter.task.style.left = '107px';
+        sort.icoFilter.resource.style.left = '430px';
     };
+
+    /**
+     * change icons position
+     * @namespace App.Action.Sort.onEventGridResizeEnd
+     * @param column_id
+     * @param column_target
+     */
+
+    sort.onEventGridResizeEnd = function () {
+        setTimeout(function(){
+            sort.icoSort.id.style.left = sort.getColumnPosition('id') + 'px';
+            sort.icoSort.task.style.left = sort.getColumnPosition('text') + 'px';
+            sort.icoSort.start.style.left = sort.getColumnPosition('start_date') + 'px';
+            sort.icoSort.resource.style.left = sort.getColumnPosition('users') + 'px';
+
+            sort.icoFilter.task.style.left = sort.getColumnPosition('text') + 20 + 'px';
+            sort.icoFilter.resource.style.left = sort.getColumnPosition('users') + 20 + 'px';
+        }, 600);
+    };
+
+    /**
+     * @namespace App.Action.Sort.getColumnPosition
+     * @param column_id
+     * @returns {*}
+     */
+    sort.getColumnPosition = function(column_id) {
+        var selector = 'div[column_id='+column_id+']';
+        return ($(selector).width() / 2 + $(selector).position().left) - 15
+    };
+
 
     /**
      * Sorted Event By Id
@@ -167,12 +204,12 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         inner += '<div class="tbl">';
         inner += '<div class="tbl_cell"><input id="gantt_filter_name" type="text" placeholder="'+App.t('Enter passphrase to be part of task name')+'" value="' + sort.filtersNames + '"></div>';
-        inner += '<div class="tbl_cell ico_clear"></div>';
+        //inner += '<div class="tbl_cell ico_clear"></div>';
         inner += '</div>';
 
         inner += '<div class="tbl">';
         inner += '<div class="tbl_cell"><input id="gantt_filter_group" type="text" placeholder="'+App.t('Enter passphrase to be part of group name')+'" value="' + sort.filtersNames + '"></div>';
-        inner += '<div class="tbl_cell ico_clear_group"></div>';
+        inner += '<div class="tbl_cell ico_clear"></div>';
         inner += '</div>';
 
         div.innerHTML = inner;
@@ -183,24 +220,31 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         popup.style.left = '110px';
 
         var gantt_filter_name = document.getElementById('gantt_filter_name'),
+            gantt_filter_group = document.getElementById('gantt_filter_group'),
             clear_btn = document.querySelector('.ico_clear'),
             clear_btn_group = document.querySelector('.ico_clear_group');
 
+
+        // -------------------------------------------------------------
+        // events sotrings
         gantt_filter_name.addEventListener('keyup', function(event){
             sort.filtersNames = event.target.value;
             gantt.refreshData();
         }, false);
 
+        gantt_filter_group.addEventListener('keyup', function(event){
+            sort.filtersGroups = event.target.value;
+            gantt.refreshData();
+        }, false);
+
+
         // -------------------------------------------------------------
         // clear fields
         clear_btn.addEventListener('click', function(event){
-            sort.filtersNames = gantt_filter_name.value = '';
+            sort.filtersNames = sort.filtersGroups = gantt_filter_group.value = gantt_filter_name.value = '';
             gantt.refreshData();
         }, false);
-        clear_btn_group.addEventListener('click', function(event){
-            sort.filtersNames = gantt_filter_name.value = '';
-            gantt.refreshData();
-        }, false);
+
     };
 
     // this variables consists filter words
@@ -208,9 +252,11 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     sort.filtersNames = '';
     sort.filtersGroups = '';
     sort.filtersResourceNames = '';
-    sort.filtersResourceGroups = '';
+    sort.filtersResourceGroups = [];
 
     function onBeforeTaskDisplayFilters(id, task){
+
+        //console.log('gantt_filter_group', id, task);
 
         if(sort.filteringType === null){
             return true;
@@ -256,6 +302,9 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
                 return true;
             }
 
+            //console.log('resourceName', resourceName);
+            //console.log('resourceGroup', resourceGroup);
+
             // clear filter
             if(resourceName.trim().length == 0 && resourceGroup.length == 0) return true;
 
@@ -271,6 +320,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
      * @param event
      */
     sort.onFilterForResource = function(event){
+
         var div = document.createElement('div'),
             inner = '<p>'+App.t('Filter by task groups or resource')+'</p>';
 
@@ -287,6 +337,21 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     };
 
     sort.getViewFilterResource = function(){
+
+        // calculation already checked items
+        var groupFilter = [];
+        var usersFilter = Util.isArr(sort.filtersResourceGroups) && sort.filtersResourceGroups.length > 0
+            ? sort.filtersResourceGroups.map(function(item){
+                groupFilter.push(item['gid']);
+                return item['uid']})
+            : [];
+        if(!Util.isEmpty(sort.filtersResourceNames.length)){
+            var _users = sort.filtersResourceNames.split(',');
+            _users.map(function(item){
+                if(typeof item === 'string' && item.length > 2)
+                    usersFilter.push(item.trim())
+            });
+        }
 
         var fragment = document.createDocumentFragment();
         for(var groupName in sort.dataGroupsusers){
@@ -312,6 +377,10 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             _inputLabel.setAttribute('for', 'sort_g_' + groupName);
             _inputLabel.innerHTML += ' <strong>' + Util.ucfirst(groupName) + '</strong>';
 
+            // checked for groupName to reopen
+            if(groupFilter.indexOf(groupName) !== -1)
+                _inputGroup.checked = true;
+
             for(var i=0; i<usersCount; i++){
                 var _inlineUser = document.createElement('span'),
                     _inputUser = document.createElement('input'),
@@ -326,8 +395,13 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
                 _inputUser.id = 'sort_u_' + users[i]['uid'];
                 _inputUserLabel.setAttribute('for', 'sort_u_' + users[i]['uid']);
+                _inputUserLabel.setAttribute('data-group', users[i]['gid']);
                 _inputUserLabel.appendChild(_inputUserSpan);
                 _inputUserLabel.innerHTML += users[i]['uid'];
+
+                // checked for users to reopen
+                if(usersFilter.indexOf(users[i]['uid']) !== -1)
+                    _inputUser.checked = true;
 
                 _inlineUser.appendChild(_inputUser);
                 _inlineUser.appendChild(_inputUserLabel);
@@ -371,6 +445,9 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
                 gantt.refreshData();
             }
             else if(type == 'group'){
+                //console.log('group', this.checked);
+                //$('input[data-gid='+name+']').prop('checked');
+                //$('label[data-group='+name+']').click();
 
                 if(sort.dataGroupsusers[name]){
                     if(checked) sort.filtersResourceGroups = sort.dataGroupsusers[name];

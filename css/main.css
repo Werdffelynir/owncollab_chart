@@ -98,10 +98,12 @@ html, body {
     height: 30px;
 }
 #sortedfilters{
-    display: inline-block;
+    /*display: inline-block;*/
+    display: none;
 }
 #sortedfilters>span{
-    display: inline-block;
+    /*display: inline-block;*/
+    position: absolute;
 }
 #ganttsave {
     display: inline-block;
@@ -739,13 +741,14 @@ input[type="radio"]:checked + label span {
     cursor: pointer;
 }
 
-.ico_clear{
+.ico_clear, .ico_clear_group{
     background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACzJYIvAAAAFXRSTlMAAxYiIy87PEdIVGBhYmNmZ215eoCuiavIAAAASklEQVQYGXXBWRZAMAADwLR2tZXc/6weCc9HzeBHIhMeC18zLvxA2UHbIZmWIRMtQUbaCBloPaSjtZCG1kBqWgWJtAgJG29rQMEJpDMI8I1jH0oAAAAASUVORK5CYII=')
     right center no-repeat;
     width: 24px;
 }
-.lbox_popup{ /*opacity: 0.85;*/}
-.lbox_popup:hover{ /*opacity: 1;*/}
+
+/*.lbox_popup{ opacity: 0.75}
+.lbox_popup:hover{opacity: 1}*/
 .resources_tags{
     padding: 4px 6px 0px;
     font-size: 13px;
