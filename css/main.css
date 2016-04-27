@@ -49,7 +49,9 @@ html, body {
     height: 30px;
 }
 
-
+/*.gantt_grid_column_resize{
+    margin-left: 1px;
+}*/
 .child_preview {
     box-sizing: border-box;
     margin-top: 2px;

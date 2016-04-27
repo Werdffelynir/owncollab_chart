@@ -213,43 +213,6 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
 
 
 
-    /**
-     * @namespace App.Action.Buffer.accept
-     * @param predecessor
-     * @param successor
-     * @param buffer
-     */
-    act.accept = function(predecessor, successor, buffer){
-
-        var link = act.getTargetLink(successor.id);
-
-        if(link && link.source == predecessor.id){
-
-            console.log('accept predecessor:', predecessor);
-            console.log('accept successor:', successor);
-            console.log('accept buffer:', buffer);
-            console.log('accept link.type:', link.type);
-
-
-           // setTimeout(function(){
-            switch (parseInt(link.type)){
-                case parseInt(gantt.config.links.finish_to_start):
-                    act.addBufferFS(predecessor, successor, buffer);
-                    break;
-                case parseInt(gantt.config.links.start_to_start):
-                    act.addBufferSS(predecessor, successor, buffer);
-                    break;
-                case parseInt(gantt.config.links.start_to_finish):
-                    act.addBufferSF(predecessor, successor, buffer);
-                    break;
-                case parseInt(gantt.config.links.finish_to_finish):
-                    act.addBufferFF(predecessor, successor, buffer);
-                    break;
-            }
-           // },500);
-        }
-
-    };
 
     /**
      * @namespace App.Action.Buffer.calcBuffer
@@ -284,41 +247,39 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
 
 
     /**
-     *
-     * @namespace App.Action.Buffer.attachEventOnAfterTaskAutoSchedule
+     * @namespace App.Action.Buffer.accept
+     * @param predecessor
+     * @param successor
      */
-/*    act.attachEventOnAfterTaskAutoSchedule = function(){
+    act.accept = function(predecessor, successor){
 
-        //gantt.attachEvent("onBeforeTaskAutoSchedule",function(task, startDate, link, predecessor){});
-        gantt.attachEvent("onAfterTaskAutoSchedule",function(task, startDate, link, predecessor){
+        var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+        var link = act.getTargetLink(successor.id);
 
-            // todo buffer recalculate
-            var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+        if(link && link.source == predecessor.id && !isNaN(buffer) && !successor.is_buffered){
 
-            if(!isNaN(buffer) && !task.is_buffered ) {
+            buffer *= 1000;
 
-                buffer *= 1000;
-
-                switch (parseInt(link.type)){
-                    case parseInt(gantt.config.links.finish_to_start):
-                        act.addBufferFS(predecessor, task, buffer);
-                        break;
-                    case parseInt(gantt.config.links.start_to_start):
-                        act.addBufferSS(predecessor, task, buffer);
-                        break;
-                    case parseInt(gantt.config.links.start_to_finish):
-                        act.addBufferSF(predecessor, task, buffer);
-                        break;
-                    case parseInt(gantt.config.links.finish_to_finish):
-                        act.addBufferFF(predecessor, task, buffer);
-                        break;
-                }
-                task.is_buffered = true;
+            switch (parseInt(link.type)){
+                case parseInt(gantt.config.links.finish_to_start):
+                    act.addBufferFS(predecessor, successor, buffer);
+                    break;
+                case parseInt(gantt.config.links.start_to_start):
+                    act.addBufferSS(predecessor, successor, buffer);
+                    break;
+                case parseInt(gantt.config.links.start_to_finish):
+                    act.addBufferSF(predecessor, successor, buffer);
+                    break;
+                case parseInt(gantt.config.links.finish_to_finish):
+                    act.addBufferFF(predecessor, successor, buffer);
+                    break;
             }
-            return false
-        });
-    };*/
+            successor.is_buffered = true;
+            //gantt.updateTask(successor.id)
 
+        }
+
+    };
 
     /**
      * @namespace App.Action.Buffer.onAfterTaskAutoSchedule

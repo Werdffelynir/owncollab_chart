@@ -70,7 +70,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         sort.icoSort.id.style.left = '5px';
         sort.icoSort.task.style.left = '87px';
-        sort.icoSort.start.style.left = '210px';
+        sort.icoSort.start.style.left = '208px';
         sort.icoSort.resource.style.left = '410px';
 
         sort.icoFilter.task.style.left = '107px';

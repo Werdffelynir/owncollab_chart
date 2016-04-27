@@ -80,44 +80,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         });
     };
 
-    /**
-     *
-     * @namespace App.Action.Chart.onBeforeTaskDelete
-     * @param id
-     * @param task
-     * @returns {boolean}
-     */
-    chart.onBeforeTaskDelete = function (id, task){
-        //console.log(this, this);
-        //console.log(task.type, task.id);
-        //
-        //dhtmlx.message({type:"error", text:"Enter task description!"});
-        //return false;
 
-
-        //if(task.type == 'project')
-            //return true;
-        //else
-        //    return true;
-    };
-
-    chart.onBeforeTaskUpdate = function (id, item) {
-
-        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
-
-        if(predecessor){
-            console.log('predecessor:', item.predecessor);
-
-
-
-            //item.start_date = item.start_date_origin;
-            //gantt.refreshTask(item.id);
-
-            //return false;
-        }
-
-        return true;
-    };
     /**
      *
      * @namespace App.Action.Chart.ganttInit
@@ -340,6 +303,18 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //app.action.event.requestLinkUpdater('delete', id, item);
     };
 
+    chart.onBeforeTaskUpdate = function (id, item) {
+        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+        if(predecessor){
+            //console.log('predecessor:', predecessor);
+            //App.Action.Buffer.accept(predecessor, item, predecessor.buffer);
+            //item.start_date = item.start_date_origin;
+            //gantt.refreshTask(item.id);
+            //return false;
+        }
+        return true;
+    };
+
     /**
      * @namespace App.Action.Chart.bufferReady
      * @type {boolean}
@@ -352,6 +327,22 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         task.end_date_origin = Util.objClone(task.end_date);
 
         gantt.autoSchedule(id);
+
+        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+        if(predecessor && !task.is_buffered){
+            //gantt._updateTaskPosition(task, newStart.date, task.duration);
+            /*gantt._updateTaskPosition(
+                task,
+                App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer),
+                task.duration
+            );*/
+            //App.Action.Buffer.accept(predecessor, task);
+            //gantt.updateTask(task.id);
+            //console.log(new Date(task.start_date));
+            //console.log(predecessor.buffer);
+            console.log(App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer));
+        }
+
 
         if(task.is_new == 1)
             gantt.changeTaskId(id, chart.taskIdIterator());
@@ -371,6 +362,28 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         task.is_buffered = false;
         return false;
+    };
+
+
+
+    /**
+     *
+     * @namespace App.Action.Chart.onBeforeTaskDelete
+     * @param id
+     * @param task
+     * @returns {boolean}
+     */
+    chart.onBeforeTaskDelete = function (id, task){
+        //console.log(this, this);
+        //console.log(task.type, task.id);
+        //
+        //dhtmlx.message({type:"error", text:"Enter task description!"});
+        //return false;
+
+        //if(task.type == 'project')
+        //return true;
+        //else
+        //    return true;
     };
 
 
