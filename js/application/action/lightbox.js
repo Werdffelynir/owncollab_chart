@@ -333,8 +333,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @returns {boolean}
      */
     lbox.onLightboxSave = function (id, task, is_new){
-        /*        var _id = null;
-
+        /*
+        var _id = null;
         // after entry in the database, you need to update the id
         if(is_new === true){
             lbox.task.id_origin = task.id;
@@ -352,11 +352,11 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         task.is_buffered = false;
         var predecessor, successor;
         if(predecessor = App.Action.Buffer.getTaskPredecessor(id)) {
-            if(!isNaN(predecessor.buffer) && predecessor.buffer != 0){
+            if(!isNaN(predecessor.buffer) && predecessor.buffer != 0) {
                 //App.Action.Chart.taskReplace(id);
-                //setTimeout(function(){
-                    gantt.autoSchedule(predecessor.id);
-                //},300);
+                //setTimeout(function(){ //},300);
+                gantt.autoSchedule(predecessor.id);
+
             }
         }
 

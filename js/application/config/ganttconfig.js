@@ -140,14 +140,14 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         var columnWidth = {
             id: 25,
             name: 150,
-            start: 70,
-            end: 70,
+            start: 95,
+            end: 95,
             duration: 50,
             resources: 100
         };
 
         // Styling the gantt chart. Tasks column grid width size
-        gantt.config.grid_width = 550;
+        gantt.config.grid_width = 600;
 
         // Icons
         // var sortIco = '<span id="ganttsort_id"><img src="/apps/owncollab_chart/img/sort30.png" alt=""></span>';
@@ -161,16 +161,16 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
             {name:"text", label: App.t('Taskname'), tree:true, width: columnWidth.name, resize:true,template: function(item) {
                 if(gantt.getChildren(item.id).length > 0)
-                    return '<strong>'+item.text+'</strong>';
+                    return '<b>'+item.text+'</b>';
                 return item.text;
             }},
 
             {name:"start_date", label: App.t('Start'), align: "center", width: columnWidth.start, template: function(item) {
-                return DateTime.dateToStr(item.start_date, "%d.%m.%Y");
+                return DateTime.dateToStr(item.start_date, "%d.%m.%Y %H:%i");
             }},
 
             {name:"end_date", label: App.t('End'), align: "center", width: columnWidth.end, template: function(item) {
-                return DateTime.dateToStr(item.end_date, "%d.%m.%Y");
+                return DateTime.dateToStr(item.end_date, "%d.%m.%Y %H:%i");
             }},
 
             {name:"duration", label: App.t('Duration'), align: "center", width: columnWidth.duration, template: function(item) {
@@ -288,7 +288,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 event = gantt.attachEvent("onBeforeGanttRender", function(){
                     gantt.templates.date_scale = function(date) {
                         var h = gantt.date.date_to_str("%G");
-                        return "<strong>" + (parseInt(h(date)) + 1) + "</strong>";
+                        return "<b>" + (parseInt(h(date)) + 1) + "</b>";
                     };
                     gantt.detachEvent(event);
                 });
@@ -318,7 +318,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                         }else if(conf.option.weekRecount == DateTime.dateToStr(date)){
                             conf.option.weekCount = 0;
                         }
-                        return "<strong>" + ( ++ conf.option.weekCount ) + " Week</strong>";
+                        return "<b>" + ( ++ conf.option.weekCount ) + " Week</b>";
                     };
                     gantt.detachEvent(event);
                 });

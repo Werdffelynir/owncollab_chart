@@ -65,6 +65,12 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 else {
                     task['type'] = 'project';
                 }
+
+            }
+
+            // fixed date if
+            if(DateTime.strToDate(task.start_date).getTime() >= DateTime.strToDate(task.end_date).getTime()) {
+                task.end_date = DateTime.dateToStr( DateTime.addDays(7, DateTime.strToDate(task.start_date)) );
             }
 
             if(task['duration'] < 1){
@@ -103,6 +109,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
         gantt.attachEvent("onBeforeTaskUpdate", chart.onBeforeTaskUpdate);
 
+        gantt.attachEvent("onBeforeGanttRender", chart.onBeforeGanttRender);
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
 
         // run gantt init
@@ -495,9 +502,21 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.showLightbox(id);
     };
 
+    chart.onBeforeGanttRender = function () {
+
+        //gantt.eachTask(function(task){
+        //
+        //    console.log(gantt.getChildren(task.id));
+        //}, 1);
+
+        //else if( gantt.getChildren(task.id).length > 0 )
+        //    task['type'] = 'project';
+        //else {
+        //    task['type'] = 'task';
+        //}
+
+    };
     chart.onGanttRender = function () {
-
-
         // Dynamic chart resize when change window
         //chart.ganttDynamicResize();
     };

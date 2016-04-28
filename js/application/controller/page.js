@@ -148,7 +148,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-
         Chart.init(node.gantt, ganttBefore, ganttReady);
     }
     function ganttBefore(){

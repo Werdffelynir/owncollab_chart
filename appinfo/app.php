@@ -12,12 +12,23 @@
 namespace OCA\Owncollab_Chart\AppInfo;
 
 use OCA\Owncollab_Chart\Helper;
+use OCA\Owncollab_Chart\AppInfo\Aliaser;
 use OCP\AppFramework\App;
 use OCP\Util;
 
 $appName = 'owncollab_chart';
 $app = new App($appName);
 $container = $app->getContainer();
+//$app->getContainer()->query('Aliaser')->register();
+//$container->query('OCA\Owncollab_Chart\AppInfo\Aliaser')->register();
+//$container->registerService('Aliaser', function($c) {
+//    return new Aliaser(
+//        $c->query('ServerContainer')->getUserManager()
+//    );
+//});
+
+//var_dump($container);
+//die;
 
 //$l = \OC::$server->getL10N('owncollab_chart', 'de_DE');
 
@@ -40,8 +51,8 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 // Create public accept, only redirecting
 $shred = new Sharedchart();
 $shred->match();
-//var_dump(\OC::$server->l);
-//die;
+
+$aliaser = new Aliaser();
 
 /**
  * Loading translations
@@ -63,26 +74,8 @@ if(Helper::isAppPage($appName)) {
     Util::addScript($appName, 'libs/ns.application');
     Util::addScript($appName, 'init');
 
-
-//	Util::addStyle($appName, 'jquery.custom-scrollbar');
-//	Util::addScript($appName,'jquery-ui-timepicker');
-//	Util::addScript($appName, 'jquery.custom-scrollbar');
-
 	// dhtmlxGantt v.4.0.0 Standard
     Util::addStyle($appName, 'dhtmlxgantt');
-	//Util::addScript($appName,'dhtmlxgantt/dhtmlxgantt');
-	//Util::addScript($appName,'dhtmlxgantt/ext/dhtmlxgantt_marker');
-
-	// dhtmlxGantt v.4.0.0 Professional
-//	Util::addScript($appName,'dhtmlxganttpro/dhtmlxgantt');
-//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_undo');
-//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_marker');
-//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_critical_path');
-//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_grouping');
-//	Util::addScript($appName,'dhtmlxganttpro/ext/dhtmlxgantt_auto_scheduling');
-
-    // dhtmlxGantt v.4.0.0 Common
-//	Util::addScript($appName,'dhtmlxgantt/api');
 }
 
 /**
