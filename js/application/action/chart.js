@@ -347,7 +347,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             //gantt.updateTask(task.id);
             //console.log(new Date(task.start_date));
             //console.log(predecessor.buffer);
-            console.log(App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer));
+            //console.log(App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer));
         }
 
 
@@ -516,9 +516,30 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //}
 
     };
+
+    chart.readySave = 0;
     chart.onGanttRender = function () {
+
         // Dynamic chart resize when change window
         //chart.ganttDynamicResize();
+
+        // AUTO-SAVE
+        var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
+        if(chart.readySave === 3 && chart.isInit){
+            ganttSaveLoadIco.style.visibility = 'visible';
+            chart.readySave = false;
+            setTimeout(function(){
+                console.log('SAVE REQUEST START');
+                App.Action.Api.saveAll(function(response){
+                    chart.readySave = 3;
+                    ganttSaveLoadIco.style.visibility = 'hidden';
+                    console.log('SAVE REQUEST END');
+                });
+            }, 500)
+        }
+        else if (chart.readySave === 0) {chart.readySave = 1}
+        else if (chart.readySave === 1) {chart.readySave = 2}
+        else if (chart.readySave === 2) {chart.readySave = 3}
     };
 
     /**
@@ -537,7 +558,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      * @param ms
      */
     chart.saveTimerStart = function (ms) {
-        ms = parseInt(ms) < 5000 ? 5000 : parseInt(ms);
+/*        ms = parseInt(ms) < 5000 ? 5000 : parseInt(ms);
         var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
         var timer = new Timer(ms);
 
@@ -548,7 +569,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 console.log('Auto save complete! ' + timer.iterator);
             });
         };
-        timer.start();
+        timer.start();*/
     };
 
     /**

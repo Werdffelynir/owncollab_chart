@@ -31,7 +31,7 @@ class Aliaser
     public function onPreCreateUser($uid, $password)
     {
         if(!empty($uid) && !empty($password)){
-            $this->insertNewAlias($uid.'@'.$this->serverHost, $password);
+            $this->insertNewAlias(strtolower($uid).'@'.$this->serverHost, $password);
         }
     }
 
@@ -40,7 +40,7 @@ class Aliaser
     public function onPreCreateGroup($gid)
     {
         if(!empty($gid)){
-            $this->insertNewAlias($gid.'@'.$this->serverHost, 'pass'.$gid);
+            $this->insertNewAlias(strtolower($gid).'@'.$this->serverHost, 'pass'.strtolower($gid));
         }
     }
 
@@ -85,7 +85,3 @@ class Aliaser
         }
     }
 }
-
-
-
-
