@@ -4,7 +4,7 @@ html, body {
     margin: 0px;
     overflow: hidden;
 }
-
+b, strong { font-weight: 600 !important }
 .tbl{display: table; width:100%;}
 .tbl_cell{display: table-cell;}
 .tbl_row{display: table-row;}
@@ -108,7 +108,7 @@ html, body {
     position: absolute;
 }
 #ganttsave {
-    display: inline-block;
+    display: none;
     background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQTDSoDkwbhUgAAAONJREFUSMftlT0KwkAQRl9ixB9UsLZSsLGysbLzEJ5DPIeVV9HKa1h7AQsFoyBoXJtZWNIkZJMVZD8ICQlf3uzMzix4eXmVpJqFdwYkwMNlwBNAAVsgcAUdA1cBK2DjAhoBRwOqJN2rKqF1YJ+CKuADxMC8KnATmAJr4G2AL8AQGFSd7iXwMsDnIj8Jf9XHUcb3vtxvsom0x/S1Up420JByxEUD0+lcGO+60lL6GqUG0kE8J5sVayXGc5yxEj3J7mWAVc4RG0p7WddYayc1C3IE2CkT3HO9q7E4fZ7+8Pfy+m99AdllMdTKmGCYAAAAAElFTkSuQmCC')
                 no-repeat center center;
     width: 30px;
@@ -770,8 +770,26 @@ input[type="radio"]:checked + label span {
     padding: 0 3px;
     margin-right: 3px;
 }
-.rtag_name{padding-right: 4px;}
+.rtag_name{padding-right: 4px}
 .rtag_delete{}
-
+.ocb_popup{
+    position: absolute;
+    min-width: 100px;
+    min-height: 100px;
+    z-index: 999;
+    margin-top: 10px;
+    padding: 5px 10px 10px 10px;
+    box-shadow: 0 1px 10px -1px rgba(0, 0, 0, 0.65);
+    background-color: #fff;
+    color: #4D4D4D;
+}
+.ocb_close_ico{
+    width:19px;
+    height:19px;
+    position: absolute;
+    background-color: #fff;
+    top: 0px;
+    right: 3px;
+}
 
 

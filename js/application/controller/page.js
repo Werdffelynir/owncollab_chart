@@ -161,6 +161,9 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         App.Action.Buffer.init();
         Chart.enabledZoomFit(App.node('zoomSliderFit'));
 
+        // Dynamic chart resize when change window
+        //App.Action.GanttExt.ganttDynamicResize();
+
         // Alignment sorting and filter icon buttons
         if(!Chart.isInit){
             Chart.isInit = true;

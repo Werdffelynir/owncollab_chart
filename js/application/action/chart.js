@@ -99,8 +99,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent('onGanttReady', callbackGanttReady);
         gantt.attachEvent('onParse', callbackGanttLoaded);
         gantt.attachEvent("onAfterLinkAdd", chart.onAfterLinkAdd);
-        //gantt.attachEvent("onAfterLinkDelete", lbox.onAfterLinkDelete);
-        //gantt.attachEvent("onAfterLinkUpdate", lbox.onAfterLinkUpdate);
+        gantt.attachEvent("onAfterLinkDelete", chart.onAfterLinkDelete);
+        //gantt.attachEvent("onAfterLinkUpdate", chart.onAfterLinkUpdate);
         gantt.attachEvent("onTaskClick", chart.onTaskClick);
 
         // tasks events
@@ -303,11 +303,11 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
     chart.onAfterLinkUpdate = function  (id, item){
-        //app.action.event.requestLinkUpdater('update', id, item);
+        chart.readySave = true;
     };
 
     chart.onAfterLinkDelete = function  (id, item){
-        //app.action.event.requestLinkUpdater('delete', id, item);
+        chart.readySave = true;
     };
 
     chart.onBeforeTaskUpdate = function (id, item) {
@@ -329,6 +329,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     //chart.bufferReady = true;
 
     chart.onAfterTaskUpdate = function(id, task){
+
+        chart.readySave = true;
 
         task.start_date_origin = Util.objClone(task.start_date);
         task.end_date_origin = Util.objClone(task.end_date);
@@ -517,29 +519,26 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     };
 
-    chart.readySave = 0;
+    chart.readySave = false;
+    chart.readyRequest = true;
     chart.onGanttRender = function () {
-
-        // Dynamic chart resize when change window
-        //chart.ganttDynamicResize();
 
         // AUTO-SAVE
         var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
-        if(chart.readySave === 3 && chart.isInit){
+        if(chart.readySave === true && chart.readyRequest === true){
             ganttSaveLoadIco.style.visibility = 'visible';
             chart.readySave = false;
+            chart.readyRequest = false;
             setTimeout(function(){
                 console.log('SAVE REQUEST START');
                 App.Action.Api.saveAll(function(response){
-                    chart.readySave = 3;
+                    chart.readyRequest = true;
                     ganttSaveLoadIco.style.visibility = 'hidden';
                     console.log('SAVE REQUEST END');
                 });
-            }, 500)
+            }, 1000)
         }
-        else if (chart.readySave === 0) {chart.readySave = 1}
-        else if (chart.readySave === 1) {chart.readySave = 2}
-        else if (chart.readySave === 2) {chart.readySave = 3}
+
     };
 
     /**

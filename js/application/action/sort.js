@@ -61,7 +61,6 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         sort.icoFilter.resource.addEventListener('click', sort.onFilterForResource, false);
 
         sort.applyStyle();
-
     };
 
     sort.applyStyle = function(){
@@ -70,20 +69,17 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         sort.icoSort.id.style.left = '5px';
         sort.icoSort.task.style.left = '87px';
-        sort.icoSort.start.style.left = '208px';
-        sort.icoSort.resource.style.left = '410px';
+        sort.icoSort.start.style.left = '220px';
+        sort.icoSort.resource.style.left = '455px';
 
         sort.icoFilter.task.style.left = '107px';
-        sort.icoFilter.resource.style.left = '430px';
+        sort.icoFilter.resource.style.left = '475px';
     };
 
     /**
      * change icons position
      * @namespace App.Action.Sort.onEventGridResizeEnd
-     * @param column_id
-     * @param column_target
      */
-
     sort.onEventGridResizeEnd = function () {
         setTimeout(function(){
             sort.icoSort.id.style.left = sort.getColumnPosition('id') + 'px';
@@ -187,280 +183,69 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         }
     }
 
-    /**
-     * Filter Event For Task
-     * @param event
-     */
-    sort.onFilterForTask = function(event){
+    sort.createPopup = function(content, specialClass){
+        var popup = document.createElement('div'),
+            icoClose = document.createElement('i');
+        icoClose.className = 'icon-close ocb_close_ico';
+        icoClose.onclick = function(e){ $(popup).remove() };
+        popup.className = 'ocb_popup' + (specialClass?' '+specialClass:'');
 
-        // save all tasks
-        sort.filteringType = 'text';
+        if(typeof content === 'object') popup.appendChild(content);
+        else popup.innerHTML = content;
 
-        // apply filtering
-        gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplayFilters);
+        popup.appendChild(icoClose);
+        return popup;
+    };
 
-        var div = document.createElement('div'),
+    function filterTaskView(){
+        var placeholderName = App.t('Enter passphrase to be part of task name'),
+            placeholderGroup = App.t('Enter passphrase to be part of group name'),
             inner = '<p>' +App.t('Filter by task groups or tasks')+ '</p>';
 
         inner += '<div class="tbl">';
-        inner += '<div class="tbl_cell"><input id="gantt_filter_name" type="text" placeholder="'+App.t('Enter passphrase to be part of task name')+'" value="' + sort.filtersNames + '"></div>';
-        //inner += '<div class="tbl_cell ico_clear"></div>';
+        inner += '<div class="tbl_cell"><input id="gantt_filter_name" type="text" placeholder="' +
+            placeholderName + '" value="' + '' + '"></div>';
         inner += '</div>';
 
         inner += '<div class="tbl">';
-        inner += '<div class="tbl_cell"><input id="gantt_filter_group" type="text" placeholder="'+App.t('Enter passphrase to be part of group name')+'" value="' + sort.filtersNames + '"></div>';
+        inner += '<div class="tbl_cell"><input id="gantt_filter_group" type="text" placeholder="' +
+            placeholderGroup + '" value="' + '' + '"></div>';
         inner += '<div class="tbl_cell ico_clear"></div>';
         inner += '</div>';
 
-        div.innerHTML = inner;
-
-        var popup = App.Action.Lightbox.showPopup(sort.icoFilter.task, div);
-        popup.style.width = '350px';
-        popup.style.zIndex = '999';
-        popup.style.left = '110px';
-
-        var gantt_filter_name = document.getElementById('gantt_filter_name'),
-            gantt_filter_group = document.getElementById('gantt_filter_group'),
-            clear_btn = document.querySelector('.ico_clear'),
-            clear_btn_group = document.querySelector('.ico_clear_group');
-
-
-        // -------------------------------------------------------------
-        // events sotrings
-        gantt_filter_name.addEventListener('keyup', function(event){
-            sort.filtersNames = event.target.value;
-            gantt.refreshData();
-        }, false);
-
-        gantt_filter_group.addEventListener('keyup', function(event){
-            sort.filtersGroups = event.target.value;
-            gantt.refreshData();
-        }, false);
-
-
-        // -------------------------------------------------------------
-        // clear fields
-        clear_btn.addEventListener('click', function(event){
-            sort.filtersNames = sort.filtersGroups = gantt_filter_group.value = gantt_filter_name.value = '';
-            gantt.refreshData();
-        }, false);
-
-    };
-
-    // this variables consists filter words
-    sort.filteringType = null;
-    sort.filtersNames = '';
-    sort.filtersGroups = '';
-    sort.filtersResourceNames = '';
-    sort.filtersResourceGroups = [];
-
-    function onBeforeTaskDisplayFilters(id, task){
-
-        //console.log('gantt_filter_group', id, task);
-
-        if(sort.filteringType === null){
-            return true;
-        }
-
-        // filter task name - text field
-        else if(sort.filteringType == 'text'){
-            var child = gantt.getChildren(id),
-                text = task.text.toLowerCase(),
-                filterName = sort.filtersNames.toLowerCase(),
-                filterGroup = sort.filtersGroups.toLowerCase();
-
-            if(filterName.length > 0 && text.indexOf(filterName) !== -1 && child.length == 0) {
-                return true;
-            }
-            if(filterGroup.length > 0 && text.indexOf(filterGroup) !== -1 && child.length > 0) {
-                return true;
-            }
-
-            if(filterName.length == 0 && filterGroup.length == 0) return true;
-
-            // filter over
-            return false;
-        }
-
-        // filter task with resources - users field
-        else if(sort.filteringType == 'users'){
-            var users = task.users.split(',').map(function(item){return item.trim()}),
-                usersArr = (Util.isArr(users)) ? users : [],
-                resourceName = sort.filtersResourceNames.toLowerCase(),
-                resourceGroup = (sort.filtersResourceGroups instanceof Array)
-                    ? sort.filtersResourceGroups.map(function(item){return item['uid'].trim()})
-                    : [];
-
-            if(resourceName.length > 0 && users.indexOf(resourceName) !== -1) {
-                return true;
-            }
-            if(usersArr.length > 0 && resourceGroup.length > 0 &&
-                    usersArr instanceof Array &&
-                    resourceGroup instanceof Array &&
-                    Util.arrDiff(usersArr, resourceGroup).length === 0) {
-
-                return true;
-            }
-
-            //console.log('resourceName', resourceName);
-            //console.log('resourceGroup', resourceGroup);
-
-            // clear filter
-            if(resourceName.trim().length == 0 && resourceGroup.length == 0) return true;
-
-            // filter over
-            return false;
-        }
-
-        return false;
+        //div.insertAdjacentHTML('afterbegin', inner);
+        return inner
     }
 
-    /**
-     * Filter Event For Resource
-     * @param event
-     */
+
+    function filterGroupView(){
+        var inner = '<p>'+App.t('Filter by task groups or resource')+'</p>';
+
+        inner += '';
+
+
+
+
+        return inner
+    }
+    function createG(){}
+
+
+
+    sort.onFilterForTask = function(event){
+        var popup = sort.createPopup(filterTaskView(), 'filterTasks');
+        popup.style.width = '350px';
+        popup.style.left = '110px';
+        App.node('topbar').appendChild(popup);
+    };
+
     sort.onFilterForResource = function(event){
+        var popup = sort.createPopup(filterTaskView(), 'filterTasks');
+        popup.style.width = '350px';
+        popup.style.left = '480px';
+        App.node('topbar').appendChild(popup);
 
-        var div = document.createElement('div'),
-            inner = '<p>'+App.t('Filter by task groups or resource')+'</p>';
-
-        var viewFilterResource = sort.getViewFilterResource();
-        div.innerHTML = inner;
-        div.appendChild(viewFilterResource);
-
-        var popup = App.Action.Lightbox.showPopup(sort.icoFilter.task, div);
-        popup.style.width = '450px';
-        popup.style.zIndex = '999';
-        popup.style.left = '440px';
-
-        sort.filterResourceOnClickListener(popup);
-    };
-
-    sort.getViewFilterResource = function(){
-
-        // calculation already checked items
-        var groupFilter = [];
-        var usersFilter = Util.isArr(sort.filtersResourceGroups) && sort.filtersResourceGroups.length > 0
-            ? sort.filtersResourceGroups.map(function(item){
-                groupFilter.push(item['gid']);
-                return item['uid']})
-            : [];
-        if(!Util.isEmpty(sort.filtersResourceNames.length)){
-            var _users = sort.filtersResourceNames.split(',');
-            _users.map(function(item){
-                if(typeof item === 'string' && item.length > 2)
-                    usersFilter.push(item.trim())
-            });
-        }
-
-        var fragment = document.createDocumentFragment();
-        for(var groupName in sort.dataGroupsusers){
-
-            var _lineGroup = document.createElement('div'),
-                _lineUsers = document.createElement('div'),
-                _inputGroup = document.createElement('input'),
-                _inputLabel = document.createElement('label'),
-                _inputSpan = document.createElement('span'),
-                users = sort.dataGroupsusers[groupName],
-                usersCount =  users.length;
-
-            _inputGroup.name = String(groupName).trim();
-            _inputGroup.type = 'checkbox';
-            _inputGroup.className = 'group';
-            _inputGroup.setAttribute('data-type', 'group');
-
-            _lineGroup.appendChild(_inputGroup);
-            _inputLabel.appendChild(_inputSpan);
-            _lineGroup.appendChild(_inputLabel);
-
-            _inputGroup.id = 'sort_g_' + groupName;
-            _inputLabel.setAttribute('for', 'sort_g_' + groupName);
-            _inputLabel.innerHTML += ' <strong>' + Util.ucfirst(groupName) + '</strong>';
-
-            // checked for groupName to reopen
-            if(groupFilter.indexOf(groupName) !== -1)
-                _inputGroup.checked = true;
-
-            for(var i=0; i<usersCount; i++){
-                var _inlineUser = document.createElement('span'),
-                    _inputUser = document.createElement('input'),
-                    _inputUserLabel = document.createElement('label'),
-                    _inputUserSpan = document.createElement('span');
-
-                _inputUser.name = users[i]['uid'];
-                _inputUser.type = 'checkbox';
-                _inputUser.className = 'user';
-                _inputUser.setAttribute('data-type', 'user');
-                _inputUser.setAttribute('data-gid', users[i]['gid']);
-
-                _inputUser.id = 'sort_u_' + users[i]['uid'];
-                _inputUserLabel.setAttribute('for', 'sort_u_' + users[i]['uid']);
-                _inputUserLabel.setAttribute('data-group', users[i]['gid']);
-                _inputUserLabel.appendChild(_inputUserSpan);
-                _inputUserLabel.innerHTML += users[i]['uid'];
-
-                // checked for users to reopen
-                if(usersFilter.indexOf(users[i]['uid']) !== -1)
-                    _inputUser.checked = true;
-
-                _inlineUser.appendChild(_inputUser);
-                _inlineUser.appendChild(_inputUserLabel);
-
-                _lineUsers.appendChild(_inlineUser);
-
-/*                _inlineUser.appendChild(_inputUser);
-                _lineUsers.appendChild(_inlineUser);
-                _lineUsers.innerHTML += ' <strong>' + users[i]['uid'] + '</strong>';*/
-            }
-
-            fragment.appendChild(_lineGroup);
-            fragment.appendChild(_lineUsers);
-        }
-        return fragment;
-    };
-
-    /**
-     * @param popup
-     */
-    sort.filterResourceOnClickListener = function  (popup){
-
-        $('input', popup).on('change', function(event){
-
-            sort.filteringType = 'users';
-
-            // apply filtering
-            gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplayFilters);
-
-            var input = event.target,
-                name = input.name,
-                checked = input.checked,
-                gid = input.getAttribute('data-gid'),
-                type = input.getAttribute('data-type');
-
-            if(type == 'user'){
-
-                if(checked) sort.filtersResourceNames = name;
-                else sort.filtersResourceNames = '';
-
-                gantt.refreshData();
-            }
-            else if(type == 'group'){
-                //console.log('group', this.checked);
-                //$('input[data-gid='+name+']').prop('checked');
-                //$('label[data-group='+name+']').click();
-
-                if(sort.dataGroupsusers[name]){
-                    if(checked) sort.filtersResourceGroups = sort.dataGroupsusers[name];
-                    else sort.filtersResourceGroups = '';
-                }
-
-                gantt.refreshData();
-            }
-
-            //console.log(name);
-            //console.log(sort.filtersResourceNames);
-
-        });
+        //console.log(event);
     };
 
     return sort
