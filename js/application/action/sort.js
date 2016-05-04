@@ -224,17 +224,51 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
 
     function filterGroupView(){
+
         //var groupUsers = Project.
-        var inner = '<p>'+App.t('Filter by task groups or resource')+'</p>';
+        // inner += '';
+        //console.log(Project);
+        //fragment = ''; //Util.createElement('div',{},'asd'); //document.createElement('div');
+        //'<p>'+App.t('Filter by task groups or resource')+'</p>';
 
-        inner += '';
-        console.log(Project);
+        var dataGroupsusers = sort.dataGroupsusers;
+        var inner = Util.createElement('p', {}, App.t('Filter by task groups or resource'));
 
-
+        for(var groupName in dataGroupsusers){
+            var fragment = createUsersGroup(groupName, dataGroupsusers[groupName]);
+            inner.appendChild(fragment);
+        }
 
         return inner
     }
-    function createG(){}
+
+    function createUsersGroup(group, users){
+        var oneElement = document.createDocumentFragment();
+        oneElement.appendChild(createInputWrapper(false, group));
+        //var iterator = 1;
+        //console.log(users);
+        for(var i = 0; i < users.length; i ++){
+            oneElement.appendChild(createInputWrapper(users[i]['uid'], group))
+        }
+        return oneElement
+    }
+
+
+    function createInputWrapper(user, group) {
+        var attr_id = user ? 'user_' + group + '_' + user : 'group_' + group;
+        var attr_gid = group;
+        var attr_type = user ? 'user' : 'group';
+        var attr_name = user ? user : '<b>'+group+'</b>';
+
+        return Util.createElement( user ? 'span' : 'div',  null,
+            '<input id="'+attr_id+'" data-gid="'+attr_gid+'" data-type="'+attr_type+'" class="" name="'+attr_name+'" type="checkbox">' +
+            '<label for="'+attr_id+'"><span></span>'+attr_name+'</label>'
+        );
+    }
+
+
+
+
 
 
 
@@ -246,8 +280,8 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     };
 
     sort.onFilterForResource = function(event){
-        var popup = sort.createPopup('', 'filter_resources');
-        popup.style.width = '350px';
+        var popup = sort.createPopup(filterGroupView(), 'filter_resources');
+        popup.style.width = '500px';
         popup.style.left = '480px';
         App.node('topbar').appendChild(popup);
 

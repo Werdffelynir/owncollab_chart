@@ -710,13 +710,19 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         $('input[type=radio]', popup).on('click', function(event){
             var id = this.name.split('_')[1];
             var type = this.value;
+            var inpBuffer = $('input[type=text][name=buffer_'+id+']');
 
             if(type == 'clear'){
                 //lbox.deleteLinksWithTarget(id);
                 lbox.deleteLinksWithSource(id);
+                inpBuffer.val(App.Action.Buffer.convertSecondsToBuffer(0));
             }else{
                 //lbox.deleteLinksWithTarget(id);
                 lbox.deleteLinksWithSource(id);
+
+                if(parseInt(inpBuffer.attr('data-buffer-value')) > 0)
+                    inpBuffer.val(App.Action.Buffer.convertSecondsToBuffer(inpBuffer.attr('data-buffer-value')));
+
                 var linkId = gantt.addLink({
                     id: App.Action.Chart.linkIdIterator(),
                     source:  id,
@@ -736,8 +742,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             if(task){
 
                 var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(this.value);
-                //var bufferDataValue = this.getAttribute('data-buffer-value');
-                //var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(bufferDataValue>0?bufferDataValue:0);
                 var bufferValue = App.Action.Buffer.convertSecondsToBuffer(bufferSeconds);
 
                 setTimeout(function(){
