@@ -6,6 +6,10 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
      */
     var sort = {};
 
+    /** @type {App.Action.Project} Project */
+    var Project = null;
+
+
     /**
      * button for sorting columns grid
      * @type {{}}
@@ -30,6 +34,8 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
      * @namespace App.Action.Sort.init
      */
     sort.init = function(){
+
+        Project = App.Action.Project;
 
         gantt.attachEvent("onColumnResizeEnd", sort.onEventGridResizeEnd);
         gantt.attachEvent("onGridResizeEnd", sort.onEventGridResizeEnd);
@@ -213,16 +219,16 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         inner += '<div class="tbl_cell ico_clear"></div>';
         inner += '</div>';
 
-        //div.insertAdjacentHTML('afterbegin', inner);
         return inner
     }
 
 
     function filterGroupView(){
+        //var groupUsers = Project.
         var inner = '<p>'+App.t('Filter by task groups or resource')+'</p>';
 
         inner += '';
-
+        console.log(Project);
 
 
 
@@ -233,14 +239,14 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
 
     sort.onFilterForTask = function(event){
-        var popup = sort.createPopup(filterTaskView(), 'filterTasks');
+        var popup = sort.createPopup(filterTaskView(), 'filter_tasks');
         popup.style.width = '350px';
         popup.style.left = '110px';
         App.node('topbar').appendChild(popup);
     };
 
     sort.onFilterForResource = function(event){
-        var popup = sort.createPopup(filterTaskView(), 'filterTasks');
+        var popup = sort.createPopup('', 'filter_resources');
         popup.style.width = '350px';
         popup.style.left = '480px';
         App.node('topbar').appendChild(popup);

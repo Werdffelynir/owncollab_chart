@@ -602,11 +602,13 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         _inpBuffer.setAttribute('placeholder', '0d 0h');
         _inpBuffer.setAttribute('buffer', id);
+        _inpBuffer.setAttribute('data-buffer-value', buffer);
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
 
         if(!isNaN(buffer)) {
-            _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
+            //_inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
+            _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(0);
         }
 
         _inpFS.id = 'plg_fs_' + id;
@@ -651,9 +653,16 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         // todo:linksTarget to linksSource, change _link.source to _link.target
         if(linksSource.length > 0){
+            var linkTarget = null;
             linksSource.map(function(_item){
                 var _link = gantt.getLink(_item);
+
+                // 18 19 Object {id: "54", source: "18", target: "19", type: "0", deleted: null}
+                //console.log(id, lbox.task.id, _link);
+                if(_link.target == lbox.task.id && _link.source == id && linkTarget == null) linkTarget = _link;
+
                 if(_link.target == lbox.task.id) {
+
                     _isChecked = true;
                     switch (_link.type){
                         case '0': _inpFS.checked = true; break;
@@ -664,7 +673,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 }
             });
 
-            if(!_isChecked) _inpClear.checked = true;
+            //console.log('link ----- ', linkTarget);
+            if(!_isChecked) {
+                _inpClear.checked = true;
+            }else if (typeof linkTarget === 'object' && !isNaN(buffer) ){
+                _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
+            }
 
         } else {
             _inpClear.checked = true;
@@ -718,8 +732,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 task = gantt.getTask(id),
                 inputElem = this;
 
+
             if(task){
+
                 var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(this.value);
+                //var bufferDataValue = this.getAttribute('data-buffer-value');
+                //var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(bufferDataValue>0?bufferDataValue:0);
                 var bufferValue = App.Action.Buffer.convertSecondsToBuffer(bufferSeconds);
 
                 setTimeout(function(){
