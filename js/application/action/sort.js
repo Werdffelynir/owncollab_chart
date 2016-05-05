@@ -47,8 +47,6 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         gantt.attachEvent("onGridResizeEnd", sort.onEventGridResizeEnd);
 
         sort.dataGroupsusers = App.Module.DataStore.get('groupsusers');
-        //App.Module.DataStore.get('groupsusers');
-        console.log(sort.dataGroupsusers);
 
         sort.icoSort = {
             id: App.query('#ganttsort_id'),
@@ -265,7 +263,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         var attr_id = user ? 'user_' + group + '_' + user : 'group_' + group;
         var attr_gid = group;
         var attr_type = user ? 'user' : 'group';
-        var attr_name = user ? user : '<b>'+group+'</b>';
+        var attr_name = user ? user : group;
 
         var wrap = Util.createElement( user ? 'span' : 'div' );
         var input = Util.createElement( 'input', {
@@ -278,7 +276,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         });
         input.addEventListener('click', onFilterClickResource);
 
-        var label = Util.createElement( 'label', {'for':attr_id},'<span></span>'+attr_name);
+        var label = Util.createElement( 'label', {'for':attr_id},'<span></span>'+ (attr_type == 'user' ? attr_name : '<b>'+attr_name+'</b>' ));
 
         wrap.appendChild(input);
         wrap.appendChild(label);
@@ -306,13 +304,13 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
             if(checked && sort.dynamic.resGroup.indexOf(name) === -1) {
                 sort.dynamic.resGroup.push(name);
-                var newResUsers = Util.arrMerge(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
+                sort.dynamic.resUsers = Util.arrMerge(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
                 // sort.dynamic.resUsers
-                console.log(sort.dynamic.resUsers, sort.dataGroupsusers, newResUsers);
+                //console.log(sort.dynamic.resUsers, sort.dataGroupsusers);
 
             }else if(!checked && sort.dynamic.resGroup.indexOf(name) !== -1) {
                 sort.dynamic.resGroup = Util.rmItArr(name, sort.dynamic.resGroup);
-                //sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
+                sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
             }
 
         }
@@ -384,6 +382,9 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         gantt.refreshData();
 
         console.log(sort.dynamic);
+    };
+    sort.getUsersIdsByGroup = function(gid){
+        // ................
     };
 
     return sort
