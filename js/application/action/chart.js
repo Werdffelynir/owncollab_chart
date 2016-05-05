@@ -293,11 +293,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         }
     };
 
-
-
     // Gantt events
-
-
     chart.onAfterLinkAdd = function  (id, item){
         gantt.changeLinkId(id, chart.linkIdIterator());
     };
