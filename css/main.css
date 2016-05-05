@@ -749,6 +749,11 @@ input[type="radio"]:checked + label span {
     right center no-repeat;
     width: 24px;
 }
+.clear_filter{
+    min-width: 20px;
+    min-height: 20px;
+    position: absolute;
+}
 
 /*.lbox_popup{ opacity: 0.75}
 .lbox_popup:hover{opacity: 1}*/

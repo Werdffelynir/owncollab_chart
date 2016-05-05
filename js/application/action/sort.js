@@ -28,6 +28,12 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
      */
     sort.dataGroupsusers = {};
 
+    /**
+     *
+     * @type {{taskGroup: Array, taskUsers: Array, resGroup: Array, resUsers: Array}}
+     */
+    sort.dynamic = {taskGroup:[],taskUsers:[],resGroup:[],resUsers:[]};
+
 
     /**
      *
@@ -41,6 +47,8 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         gantt.attachEvent("onGridResizeEnd", sort.onEventGridResizeEnd);
 
         sort.dataGroupsusers = App.Module.DataStore.get('groupsusers');
+        //App.Module.DataStore.get('groupsusers');
+        console.log(sort.dataGroupsusers);
 
         sort.icoSort = {
             id: App.query('#ganttsort_id'),
@@ -204,67 +212,139 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     };
 
     function filterTaskView(){
-        var placeholderName = App.t('Enter passphrase to be part of task name'),
-            placeholderGroup = App.t('Enter passphrase to be part of group name'),
-            inner = '<p>' +App.t('Filter by task groups or tasks')+ '</p>';
 
-        inner += '<div class="tbl">';
-        inner += '<div class="tbl_cell"><input id="gantt_filter_name" type="text" placeholder="' +
-            placeholderName + '" value="' + '' + '"></div>';
-        inner += '</div>';
+        var wrap = Util.createElement( 'div', null, '<p><b>' +App.t('Filter by task groups or tasks')+ '</b><span class="ico_clear clear_filter"></span></p>');
 
-        inner += '<div class="tbl">';
-        inner += '<div class="tbl_cell"><input id="gantt_filter_group" type="text" placeholder="' +
-            placeholderGroup + '" value="' + '' + '"></div>';
-        inner += '<div class="tbl_cell ico_clear"></div>';
-        inner += '</div>';
+        var inputName = Util.createElement( 'input', {
+            'id':           'gantt_filter_name',
+            'type':         'text',
+            'placeholder':  App.t('Enter passphrase to be part of task name'),
+            'value':        ''
+        } );
+        inputName.addEventListener('keyup', onFilterClickTask);
 
-        return inner
+        var inputGroup = Util.createElement( 'input', {
+            'id':           'gantt_filter_group',
+            'type':         'text',
+            'placeholder':  App.t('Enter passphrase to be part of group name'),
+            'value':        ''
+        } );
+        inputGroup.addEventListener('keyup', onFilterClickTask);
+
+        var clearFields = Util.createElement( 'div', {'class':'ico_clear'});
+
+        wrap.appendChild(inputName);
+        wrap.appendChild(inputGroup);
+        wrap.appendChild(clearFields);
+
+        return wrap;
     }
 
 
     function filterGroupView(){
-
-        //var groupUsers = Project.
-        // inner += '';
-        //console.log(Project);
-        //fragment = ''; //Util.createElement('div',{},'asd'); //document.createElement('div');
-        //'<p>'+App.t('Filter by task groups or resource')+'</p>';
-
         var dataGroupsusers = sort.dataGroupsusers;
-        var inner = Util.createElement('p', {}, App.t('Filter by task groups or resource'));
-
+        var inner = Util.createElement('p', {}, '<p><b>' +App.t('Filter by task groups or resource')+ '</b><span class="ico_clear clear_filter"></span></p>');
         for(var groupName in dataGroupsusers){
             var fragment = createUsersGroup(groupName, dataGroupsusers[groupName]);
             inner.appendChild(fragment);
         }
-
         return inner
     }
 
     function createUsersGroup(group, users){
         var oneElement = document.createDocumentFragment();
         oneElement.appendChild(createInputWrapper(false, group));
-        //var iterator = 1;
-        //console.log(users);
         for(var i = 0; i < users.length; i ++){
             oneElement.appendChild(createInputWrapper(users[i]['uid'], group))
         }
         return oneElement
     }
 
-
     function createInputWrapper(user, group) {
+
         var attr_id = user ? 'user_' + group + '_' + user : 'group_' + group;
         var attr_gid = group;
         var attr_type = user ? 'user' : 'group';
         var attr_name = user ? user : '<b>'+group+'</b>';
 
-        return Util.createElement( user ? 'span' : 'div',  null,
-            '<input id="'+attr_id+'" data-gid="'+attr_gid+'" data-type="'+attr_type+'" class="" name="'+attr_name+'" type="checkbox">' +
-            '<label for="'+attr_id+'"><span></span>'+attr_name+'</label>'
-        );
+        var wrap = Util.createElement( user ? 'span' : 'div' );
+        var input = Util.createElement( 'input', {
+            'id':           attr_id,
+            'name':         attr_name,
+            'type':         'checkbox',
+            'class':        '',
+            'data-gid':     attr_gid,
+            'data-type':    attr_type
+        });
+        input.addEventListener('click', onFilterClickResource);
+
+        var label = Util.createElement( 'label', {'for':attr_id},'<span></span>'+attr_name);
+
+        wrap.appendChild(input);
+        wrap.appendChild(label);
+        return wrap;
     }
+
+    function onFilterClickResource(event){
+        var id = this.id.split('_')[1];
+        var name = this.getAttribute('name');
+        var type = this.getAttribute('data-type');
+        var group = this.getAttribute('data-gid');
+        var checked = this.checked;
+
+        console.log(id, name, checked, type, group);
+
+        if(type === 'user') {
+
+            if(checked && sort.dynamic.resUsers.indexOf(name) === -1) {
+                sort.dynamic.resUsers.push(name);
+            }else if(!checked && sort.dynamic.resUsers.indexOf(name) !== -1) {
+                sort.dynamic.resUsers = Util.rmItArr(name, sort.dynamic.resUsers);
+            }
+
+        } else {
+
+            if(checked && sort.dynamic.resGroup.indexOf(name) === -1) {
+                sort.dynamic.resGroup.push(name);
+                var newResUsers = Util.arrMerge(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
+                // sort.dynamic.resUsers
+                console.log(sort.dynamic.resUsers, sort.dataGroupsusers, newResUsers);
+
+            }else if(!checked && sort.dynamic.resGroup.indexOf(name) !== -1) {
+                sort.dynamic.resGroup = Util.rmItArr(name, sort.dynamic.resGroup);
+                //sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
+            }
+
+        }
+
+        // handler for filtering
+        if(sort.startFilteringReady){
+            sort.startFilteringReady = false;
+            Timer.after(2000, sort.startFiltering);
+        }
+    }
+
+
+
+
+    function onFilterClickTask(event){
+        var type = this.id == 'gantt_filter_name' ? 'task' : 'group';
+        var value = this.value;
+
+        if(type === 'task')
+            sort.dynamic.taskUsers[0] = value;
+        else
+            sort.dynamic.taskGroup[0] = value;
+
+
+
+        // handler for filtering
+        if(sort.startFilteringReady){
+            sort.startFilteringReady = false;
+            Timer.after(2000, sort.startFiltering);
+        }
+    }
+
 
 
 
@@ -286,6 +366,24 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         App.node('topbar').appendChild(popup);
 
         //console.log(event);
+    };
+
+
+
+
+
+    sort.startFilteringReady = true;
+    sort.startFiltering = function(){
+
+        sort.startFilteringReady = true;
+
+        // apply filtering
+        gantt.attachEvent("onBeforeTaskDisplay", function(id, task){
+
+        });
+        gantt.refreshData();
+
+        console.log(sort.dynamic);
     };
 
     return sort

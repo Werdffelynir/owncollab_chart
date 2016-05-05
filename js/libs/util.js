@@ -105,6 +105,22 @@
     };
 
     /**
+     * Merge an array `src` into the array `arrBase`
+     * @param arrBase
+     * @param src
+     * @returns {*}
+     */
+    util.arrMerge = function (arrBase, src) {
+        if( !Array.isArray(arrBase) || !Array.isArray(src) )
+            return false;
+
+        for (var i = 0; i < src.length; i++)
+            arrBase.push(src[i])
+
+        return arrBase;
+    };
+
+    /**
      * Computes the difference of arrays
      * Compares arr1 against one or more other arrays and returns the values in arr1
      * that are not present in any of the other arrays.
@@ -849,7 +865,22 @@
 		};
 		internalCallback();
 	};
-    
+
+    /**
+     * Remove item from array
+     * @param item
+     * @param stack
+     * @returns {Array}
+     */
+	util.rmItArr = function(item, stack) {
+        var newStack = [];
+        for(var i = 0; i < stack.length; i ++) {
+            if(stack[i] && stack[i] != item)
+                newStack.push(stack[i]);
+        }
+        return newStack;
+    };
+
 
     window.Util = util;
 

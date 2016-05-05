@@ -107,7 +107,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         App.isAdmin = response['isadmin'];
         App.lang = response['lang'];
-
+//console.log(response.groupsusers);
         DataStore.put('data', response);
         DataStore.put('groupsusers', response.groupsusers);
         DataStore.put('project', response.project);

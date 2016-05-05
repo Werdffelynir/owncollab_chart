@@ -80,6 +80,18 @@
         };
 
 
+    timer.after = function(ms, callback, args, proto){
+        args = args || [];
+        proto = proto || callback.prototype;
+        setTimeout(function(){callback.apply(proto, args)}, ms);
+    };
+
+    timer.interval = function(ms, callback, args, proto){
+        args = args || [];
+        proto = proto || callback.prototype;
+        setInterval(function(){callback.apply(proto, args)}, ms);
+    };
+
     timer.START = 'start';
     timer.PROGRESS = 'progress';
     timer.COMPLETE = 'complete';
