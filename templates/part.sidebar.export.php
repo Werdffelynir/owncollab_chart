@@ -50,7 +50,7 @@ $appName = 'owncollab_chart';
             <div class="tbl_cell"><span>Start</span> <input name="pdf_start_date" type="text" class="."></div>
             <div class="tbl_cell txt_right"><span>End</span> <input name="pdf_end_date" type="text"></div>
         </div>
-
+<!--
         <div class="tbl">
             <div class="tbl_cell width20">Paper size</div>
             <div class="tbl_cell">
@@ -70,7 +70,7 @@ $appName = 'owncollab_chart';
                 </select>
             </div>
         </div>
-
+-->
         <p>Define Header</p>
 
         <div class="tbl">

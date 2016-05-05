@@ -7,7 +7,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     var lbox = {
         task:null,
         field:null,
-        popup:null
+        popup:null,
+        datetimepickerEnd:null
     };
 
     /** @type {App.Extension.DateTime} */
@@ -44,9 +45,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         gantt.attachEvent("onLightbox", lbox.onLightbox);
 
         //gantt.attachEvent("onAfterLightbox", lbox.onAfterLightbox);
-        //gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
+        gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
         //gantt.attachEvent("onLightboxCancel", lbox.onLightboxCancel);
-        //gantt.attachEvent("onLightboxDelete", lbox.onLightboxDelete);
+        gantt.attachEvent("onLightboxDelete", lbox.onLightboxDelete);
     };
 
     /**
@@ -66,11 +67,16 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         // delete predecessor button if task is first child in the project
         var t = gantt.getTask(id);
 
+        // Clean view for types
         if(t.parent == 0){
             $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
         }
         if(t.type == 'project'){
             $('#generate-lbox-wrapper .lbox_buffer_wrapp').remove();
+        }else if(t.type == 'milestone'){
+            $('#generate-lbox-wrapper input[name=lbox_users]').parent().remove();
+            $('#generate-lbox-wrapper input[name=lbox_progress]').parent().parent().remove();
+            $('#generate-lbox-wrapper input[name=lbox_end_date]').parent().parent().remove();
         }
 
         lbox.field = (function(){
@@ -133,7 +139,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             onSelect: lbox.onChangeLightboxInputDate
         });
 
-        $('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+        lbox.datetimepickerEnd = $('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             minDate: (function(){
                 var fsd = $('input[name=lbox_start_date]').val();
                 return DateTime.strToDate(fsd?fsd:startDate);
@@ -146,6 +152,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             onSelect: lbox.onChangeLightboxInputDate
         });
 
+        $('#generate-lbox-wrapper [name=lbox_text]').select().focus();
     };
 
 
@@ -183,6 +190,14 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     lbox.onChangeLightboxInputDate = function (date, picObj){
         if(!lbox.task || !lbox.field) return;
         var name = this['name'].substr(5);
+
+        // change end date
+        if(name == 'start_date'){
+            var newEndDate = DateTime.addDays(7, DateTime.strToDate(date));
+            lbox.task.end_date = newEndDate;
+            $('input[name=lbox_end_date]').val(DateTime.dateToStr(newEndDate));
+        }
+
         lbox.task[name] = DateTime.strToDate(date);
     };
 
@@ -318,8 +333,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @returns {boolean}
      */
     lbox.onLightboxSave = function (id, task, is_new){
+        /*
         var _id = null;
-
         // after entry in the database, you need to update the id
         if(is_new === true){
             lbox.task.id_origin = task.id;
@@ -331,17 +346,21 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         // updates all the properties editing task with the current internal object
         Util.objMerge(task, lbox.task);
-        gantt.updateTask(id);
+        gantt.updateTask(id);*/
 
         // Accept buffer if it set
+        task.is_buffered = false;
         var predecessor, successor;
         if(predecessor = App.Action.Buffer.getTaskPredecessor(id)) {
-            if(!isNaN(predecessor.buffer) && predecessor.buffer != 0){
-                setTimeout(function(){
-                    gantt.autoSchedule(predecessor.id);
-                },300);
+            if(!isNaN(predecessor.buffer) && predecessor.buffer != 0) {
+                //App.Action.Chart.taskReplace(id);
+                //setTimeout(function(){ //},300);
+                gantt.autoSchedule(predecessor.id);
+
             }
         }
+
+        //App.Action.Chart.scrollToTask(id);
 
         return true;
     };
@@ -349,11 +368,15 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         lbox.task = lbox.field = null;
         return true;
     };
-    lbox.onLightboxDelete = function (id, task){
-        var _task = gantt.getTask(id);
-        gantt.locale.labels.confirm_deleting = _task.text + " " + (_task.id) + " - will be deleted permanently, are you sure?";
-        lbox.task = lbox.field = null;
-        return true;
+    lbox.onLightboxDelete = function (id){
+        var task = gantt.getTask(id);
+        if(task.type == 'project' && id == 1)
+            return false;
+        else {
+            gantt.locale.labels.confirm_deleting = task.text + " " + (task.id) + " - will be deleted permanently, are you sure?";
+            lbox.task = lbox.field = null;
+            return true;
+        }
     };
 
 
@@ -579,11 +602,13 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         _inpBuffer.setAttribute('placeholder', '0d 0h');
         _inpBuffer.setAttribute('buffer', id);
+        _inpBuffer.setAttribute('data-buffer-value', buffer);
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
 
         if(!isNaN(buffer)) {
-            _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
+            //_inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
+            _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(0);
         }
 
         _inpFS.id = 'plg_fs_' + id;
@@ -628,9 +653,16 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         // todo:linksTarget to linksSource, change _link.source to _link.target
         if(linksSource.length > 0){
+            var linkTarget = null;
             linksSource.map(function(_item){
                 var _link = gantt.getLink(_item);
+
+                // 18 19 Object {id: "54", source: "18", target: "19", type: "0", deleted: null}
+                //console.log(id, lbox.task.id, _link);
+                if(_link.target == lbox.task.id && _link.source == id && linkTarget == null) linkTarget = _link;
+
                 if(_link.target == lbox.task.id) {
+
                     _isChecked = true;
                     switch (_link.type){
                         case '0': _inpFS.checked = true; break;
@@ -641,7 +673,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 }
             });
 
-            if(!_isChecked) _inpClear.checked = true;
+            //console.log('link ----- ', linkTarget);
+            if(!_isChecked) {
+                _inpClear.checked = true;
+            }else if (typeof linkTarget === 'object' && !isNaN(buffer) ){
+                _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
+            }
 
         } else {
             _inpClear.checked = true;
@@ -673,13 +710,19 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         $('input[type=radio]', popup).on('click', function(event){
             var id = this.name.split('_')[1];
             var type = this.value;
+            var inpBuffer = $('input[type=text][name=buffer_'+id+']');
 
             if(type == 'clear'){
                 //lbox.deleteLinksWithTarget(id);
                 lbox.deleteLinksWithSource(id);
+                inpBuffer.val(App.Action.Buffer.convertSecondsToBuffer(0));
             }else{
                 //lbox.deleteLinksWithTarget(id);
                 lbox.deleteLinksWithSource(id);
+
+                if(parseInt(inpBuffer.attr('data-buffer-value')) > 0)
+                    inpBuffer.val(App.Action.Buffer.convertSecondsToBuffer(inpBuffer.attr('data-buffer-value')));
+
                 var linkId = gantt.addLink({
                     id: App.Action.Chart.linkIdIterator(),
                     source:  id,
@@ -695,7 +738,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 task = gantt.getTask(id),
                 inputElem = this;
 
+
             if(task){
+
                 var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(this.value);
                 var bufferValue = App.Action.Buffer.convertSecondsToBuffer(bufferSeconds);
 

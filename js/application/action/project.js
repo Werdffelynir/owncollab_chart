@@ -5,6 +5,7 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
      * @type {*}
      */
     var proj = {
+        dataGroupsUsers:null,
         dataProjectTask:null,
         dataProject: null,
         dataTasks: null,
@@ -22,13 +23,13 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
     proj.init = function(){
         DataStore = App.Module.DataStore;
 
+        proj.dataGroupsUsers = DataStore.get('groupsusers');
         proj.dataProjectTask = DataStore.get('projectTask');
         proj.dataProject = DataStore.get('project');
         proj.dataTasks = DataStore.get('tasks');
         proj.dataLinks = DataStore.get('links');
 
     };
-
 
 
     /**

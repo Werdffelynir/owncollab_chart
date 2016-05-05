@@ -16,6 +16,13 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
     };
 
     /**
+     * identifier ready the request to the server
+     * @type {boolean}
+     */
+    api.saveAllReady = true;
+
+
+    /**
      * Save all tasks, links and project data
      * @namespace App.Action.Api.saveAll
      * @param callback
@@ -23,16 +30,21 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
     api.saveAll = function(callback) {
         var store = App.Module.DataStore,
             dataSend = {
-                tasks: gantt._get_tasks_data(),
-                links: gantt.getLinks(),
-                project: store.get('project')
+                tasks: JSON.stringify( gantt._get_tasks_data() ),
+                links: JSON.stringify( gantt.getLinks() ),
+                project: JSON.stringify( store.get('project') )
             };
 
-        api.request('savealltaskslinks', function(response){
+        //console.log('dataSend', dataSend);
+        //console.log('lastlinkid', App.Action.Chart.lastlinkid);
 
-            callback.call(this, response);
+        if(api.saveAllReady){ api.saveAllReady = false;
+            api.request('saveall', function(response){
+                api.saveAllReady = true;
+                callback.call(this, response);
+            }, dataSend);
+        }
 
-        }, dataSend);
     };
 
     /**
@@ -42,11 +54,12 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
      * @param args
      */
     api.request = function(key, callback, args) {
+        console.log('dataSend-request', args);
         $.ajax({
             url: App.url + '/api',
             data: {key: key, uid: App.uid, data: args},
             type: 'POST',
-            timeout: 10000,
+            timeout: 60000,
             headers: {requesttoken: App.requesttoken},
 
             success: function (response) {

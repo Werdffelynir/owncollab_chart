@@ -4,7 +4,7 @@ html, body {
     margin: 0px;
     overflow: hidden;
 }
-
+b, strong { font-weight: 600 !important }
 .tbl{display: table; width:100%;}
 .tbl_cell{display: table-cell;}
 .tbl_row{display: table-row;}
@@ -49,7 +49,9 @@ html, body {
     height: 30px;
 }
 
-
+/*.gantt_grid_column_resize{
+    margin-left: 1px;
+}*/
 .child_preview {
     box-sizing: border-box;
     margin-top: 2px;
@@ -98,13 +100,15 @@ html, body {
     height: 30px;
 }
 #sortedfilters{
-    display: inline-block;
+    /*display: inline-block;*/
+    display: none;
 }
 #sortedfilters>span{
-    display: inline-block;
+    /*display: inline-block;*/
+    position: absolute;
 }
 #ganttsave {
-    display: inline-block;
+    display: none;
     background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH4AQTDSoDkwbhUgAAAONJREFUSMftlT0KwkAQRl9ixB9UsLZSsLGysbLzEJ5DPIeVV9HKa1h7AQsFoyBoXJtZWNIkZJMVZD8ICQlf3uzMzix4eXmVpJqFdwYkwMNlwBNAAVsgcAUdA1cBK2DjAhoBRwOqJN2rKqF1YJ+CKuADxMC8KnATmAJr4G2AL8AQGFSd7iXwMsDnIj8Jf9XHUcb3vtxvsom0x/S1Up420JByxEUD0+lcGO+60lL6GqUG0kE8J5sVayXGc5yxEj3J7mWAVc4RG0p7WddYayc1C3IE2CkT3HO9q7E4fZ7+8Pfy+m99AdllMdTKmGCYAAAAAElFTkSuQmCC')
                 no-repeat center center;
     width: 30px;
@@ -233,6 +237,7 @@ html, body {
     background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABHNCSVQICAgIfAhkiAAAA1xJREFUSInNlU2IHEUUx//VXa+mtj+qZ6amp51ZiCwIkmXZhehJiEFkQ85eRYSAiOTgyauXHAJezFFcEDEQBXHNTRD2oLeAiBpyWDBEMBqQnZ5NsgNT21NVHtxeZpf9iMsK/qGhXlW993v18aqB/4PiOFZJkmQn8WWHDaRpep6IrlhrL4zH45wxBinlhnNujXP+SVmWayfKNooiXRTF14wxB8AD8GEY+jAMfW0zxly3270lhPh3q4qiSLfb7TsAPBFN8jy/0Wq1lpMkeSaO46Ldbi9rrT/lnFcAfFEU60R0JCScNtrt9s2NjY2X0zTF3NzcSlVVa0QUW2utc44lSfIc5/xev98fGGNeLMtS53l+djQafXFs9kqp84wxR0SThYWFj+rt2Pk+BvDudF+/378mhLCMMdfpdC4eFpfvNji/4r1nSZLc2Nzc/B7A271e7wNjzG1jzH1r7eMoin5njC0NBoP3B4PBd3Ecd4fD4WXv/VsAvj0SMJlMLuw0bwLIAcAYc7ssy9V6zng8vielfFLb1trPAFy21ta+BwPiOFbGmDwMQ1RVdWc0Gp0BsGKMub/fwVr7B4AVa+2DyWTyMAgCjEajHP9ceb9/fgAAjLHdenDO+aqqHgG4a619vN/BObcF4K73/olzzh2W+R7A1tbWIynlhrUWUsrFZrP5AoDrURQt7XcgoucBXOecn42i6JxzDkqp8qDsdwE7qivz9brDe78khFjmnM+HYXhGCLEcBMG5epxz/iYAVFV14AHvkdb6VcaY45xXi4uLKzjmmna73atEVAVB4LMse+VYAAAURXELgE/T1Pd6vWtSyktSyktEtBCG4bO13e12r8ZxPAHgtdarR8XcU8lVVX2T5/lrZVnq7e3tl6SUlRDiZ+/9r0EQjKMoKqSUbwyHw3eMMfUNrBqNRsta+4tzzhy7CiLKOp3OV9OPXRAEPgiC6cfOa61XtdY/1n1Zlv2UJMnsU20VAHQ6nYta6y9brdZfROSJyGutB0qpz+s9bzab72HqXJRS60KIp4dMieGAfwcRKaXUD/sgD5RS8yeBHKg0TWezLFufhjSbzT+JSJwapNFozCZJ8lsNmJmZmURRlJ4aAACyLJtXSj0kItvv9z881eC1hBAzjUaj+Z8EP0x/Ay67P/m4eOlRAAAAAElFTkSuQmCC')
     center center no-repeat;
 }
+
 /*
 #zoom_min{
     width: 24px;
@@ -355,7 +360,7 @@ html, body {
     background-color: #FFF;
     /*position: absolute;*/
     width:100%;
-    height:100%;
+    height: calc(100% - 58px);
 }
 .gantt_grid_data, .gantt_ver_scroll {
     height: auto;
@@ -739,13 +744,14 @@ input[type="radio"]:checked + label span {
     cursor: pointer;
 }
 
-.ico_clear{
+.ico_clear, .ico_clear_group{
     background:url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAMAAAAoLQ9TAAAAP1BMVEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACzJYIvAAAAFXRSTlMAAxYiIy87PEdIVGBhYmNmZ215eoCuiavIAAAASklEQVQYGXXBWRZAMAADwLR2tZXc/6weCc9HzeBHIhMeC18zLvxA2UHbIZmWIRMtQUbaCBloPaSjtZCG1kBqWgWJtAgJG29rQMEJpDMI8I1jH0oAAAAASUVORK5CYII=')
     right center no-repeat;
     width: 24px;
 }
-.lbox_popup{ /*opacity: 0.85;*/}
-.lbox_popup:hover{ /*opacity: 1;*/}
+
+/*.lbox_popup{ opacity: 0.75}
+.lbox_popup:hover{opacity: 1}*/
 .resources_tags{
     padding: 4px 6px 0px;
     font-size: 13px;
@@ -764,8 +770,26 @@ input[type="radio"]:checked + label span {
     padding: 0 3px;
     margin-right: 3px;
 }
-.rtag_name{padding-right: 4px;}
+.rtag_name{padding-right: 4px}
 .rtag_delete{}
-
+.ocb_popup{
+    position: absolute;
+    min-width: 100px;
+    min-height: 100px;
+    z-index: 999;
+    margin-top: 10px;
+    padding: 5px 10px 10px 10px;
+    box-shadow: 0 1px 10px -1px rgba(0, 0, 0, 0.65);
+    background-color: #fff;
+    color: #4D4D4D;
+}
+.ocb_close_ico{
+    width:19px;
+    height:19px;
+    position: absolute;
+    background-color: #fff;
+    top: 0px;
+    right: 3px;
+}
 
 

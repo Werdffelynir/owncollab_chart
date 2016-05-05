@@ -127,6 +127,8 @@ class ApiController extends Controller {
         }
 
         $links = $this->connect->link()->get();
+
+/**/
         $params['origin_links'] = $links;
         $linkCount = count($links);
         $linksTrash = [];
@@ -141,6 +143,7 @@ class ApiController extends Controller {
         if(!empty($linksTrash)) {
             $this->connect->link()->deleteAllById($linksTrash);
         }
+
 
         if($uid){
             $params['isadmin'] 		= $this->isAdmin;
@@ -177,42 +180,47 @@ class ApiController extends Controller {
      * @param $data
      * @return DataResponse
      */
-    public function savealltaskslinks($data) {
+    public function saveall($data) {
 
         $params = [
             'data'     => $data,
             'error'     => null,
+            'errorinfo'     => '',
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lastlinkid'    => null
         ];
+        $project = false;
+        $tasks = false;
+        $links = false;
 
-        $params['data'] = $data;
-        if($this->isAdmin && isset($data['tasks']) && isset($data['links'])){
+        try{
+            $tasks = isset($data['tasks']) ? json_decode($data['tasks'], true) : false;
+        }catch(\Exception $error){$params['errorinfo'] .= "tasks json_decode error";}
+        try{
+            $links = isset($data['links']) ? json_decode($data['links'], true) : false;
+        }catch(\Exception $error){$params['errorinfo'] .= "links json_decode error";}
+        try{
+            $project = isset($data['project']) ? json_decode($data['project'], true) : false;
+        }catch(\Exception $error){$params['errorinfo'] .= "project json_decode error";}
+
+        if($this->isAdmin && $tasks && $links){
             $params['isadmin'] = true;
 
             $this->connect->db->beginTransaction();
 
-            if(is_array($data['tasks']) && !empty($data['tasks'])){
+            if(is_array($tasks)){
 
                 $this->connect->task()->clear();
-                $params['SQL_tasks'] = $this->connect->task()->add($data['tasks']);
+                $params['SQL_tasks'] = $this->connect->task()->add($tasks);
                 $params['SQL_tasks_Error'] = $this->connect->db->errorInfo();
-
             }
 
-            // delete all tasks
-            // save all tasks
-
-            // delete all links
-            //
-            // save all links
-            if(is_array($data['links']) && !empty($data['links'])){
+            if(is_array($links)){
 
                 $this->connect->link()->clear();
-                $params['SQL_links'] = $this->connect->link()->add($data['links']);
+                $params['SQL_links'] = $this->connect->link()->add($links);
                 $params['SQL_links_Error'] = $this->connect->db->errorInfo();
             }
-
 
             $this->connect->db->commit();
         }
@@ -222,7 +230,7 @@ class ApiController extends Controller {
 
 
 
-    public function updatetask($data) {
+/*    public function updatetask($data) {
 
         $params = [
             'data'     => $data,
@@ -266,9 +274,9 @@ class ApiController extends Controller {
         }
 
         return new DataResponse($params);
-    }
+    }*/
 
-    public function updatelink($data) {
+/*    public function updatelink($data) {
 
         $params = [
             'data'     => $data,
@@ -304,14 +312,14 @@ class ApiController extends Controller {
         }
 
         return new DataResponse($params);
-    }
+    }*/
 
 
 
     /**
      * @param $data
      * @return DataResponse
-     */
+
     public function updateprojectsetting($data) {
 
         $params = [
@@ -354,7 +362,7 @@ class ApiController extends Controller {
 
         return new DataResponse($params);
     }
-
+*/
 
     /**
      * mail templates:
@@ -365,7 +373,7 @@ class ApiController extends Controller {
      *
      * @param $data
      * @return DataResponse
-     */
+
     public function sendshareemails($data)
     {
         $params = [
@@ -472,7 +480,7 @@ class ApiController extends Controller {
 
         return new DataResponse($params);
     }
-
+*/
 
 
 

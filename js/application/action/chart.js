@@ -1,5 +1,7 @@
 if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
+    'use strict';
+
     //var GanttEve = App.Event.GanttEve;
     var GanttConfig = App.Config.GanttConfig;
     var DataStore = App.Module.DataStore;
@@ -22,7 +24,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         lasttaskid:0,
         tasks:null,
         links:null,
-        zoomValue: 2
+        zoomValue: 2,
+        isInit: false
     };
 
     /**
@@ -62,6 +65,12 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 else {
                     task['type'] = 'project';
                 }
+
+            }
+
+            // fixed date if
+            if(DateTime.strToDate(task.start_date).getTime() >= DateTime.strToDate(task.end_date).getTime()) {
+                task.end_date = DateTime.dateToStr( DateTime.addDays(7, DateTime.strToDate(task.start_date)) );
             }
 
             if(task['duration'] < 1){
@@ -77,6 +86,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         });
     };
 
+
     /**
      *
      * @namespace App.Action.Chart.ganttInit
@@ -89,19 +99,21 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent('onGanttReady', callbackGanttReady);
         gantt.attachEvent('onParse', callbackGanttLoaded);
         gantt.attachEvent("onAfterLinkAdd", chart.onAfterLinkAdd);
-        //gantt.attachEvent("onAfterLinkDelete", lbox.onAfterLinkDelete);
-        //gantt.attachEvent("onAfterLinkUpdate", lbox.onAfterLinkUpdate);
+        gantt.attachEvent("onAfterLinkDelete", chart.onAfterLinkDelete);
+        //gantt.attachEvent("onAfterLinkUpdate", chart.onAfterLinkUpdate);
         gantt.attachEvent("onTaskClick", chart.onTaskClick);
 
         // tasks events
+        //gantt.attachEvent("onBeforeTaskDelete", chart.onBeforeTaskDelete);
         gantt.attachEvent("onAfterTaskAdd", chart.onAfterTaskAdd);
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
+        gantt.attachEvent("onBeforeTaskUpdate", chart.onBeforeTaskUpdate);
 
-
+        gantt.attachEvent("onBeforeGanttRender", chart.onBeforeGanttRender);
+        gantt.attachEvent("onGanttRender", chart.onGanttRender);
 
         // run gantt init
         gantt.init(chart.contentElement);
-
 
         // run parse data
         var filteringTasks = chart.filteringTasks();
@@ -121,8 +133,16 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // run Lightbox
         Lightbox.init();
 
-        // inti function save data
+        // Enable function save gantt data
         chart.savedButtonInit();
+
+        // Enable zoom slider
+        chart.enableZoomSlider();
+
+        // Gantt attachEvent OnAfterTaskAutoSchedule
+        //App.Action.Buffer.attachEventOnAfterTaskAutoSchedule();
+
+        gantt.attachEvent("onAfterTaskAutoSchedule", App.Action.Buffer.onAfterTaskAutoSchedule);
 
         gantt.parse({
             data: filteringTasks,
@@ -264,9 +284,13 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      * @param task_id
      */
     chart.scrollToTask = function(task_id){
-        var pos = $(gantt.getTaskNode(task_id)).position();
-        console.log(task_id, pos);
-        //gantt.scrollTo(pos.left, pos.top)
+        var pos = gantt.getTaskNode(task_id); //$(gantt.getTaskNode(task_id)).position();
+        // offsetLeft // offsetTop
+        if(typeof pos === 'object'){
+            console.log(task_id, pos, pos.offsetLeft, pos.offsetTop);
+            //gantt.scrollTo(pos.left, pos.top)
+            gantt.scrollTo(pos.offsetLeft, pos.offsetTop)
+        }
     };
 
     // Gantt events
@@ -275,17 +299,55 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
     chart.onAfterLinkUpdate = function  (id, item){
-        //app.action.event.requestLinkUpdater('update', id, item);
+        chart.readySave = true;
     };
 
     chart.onAfterLinkDelete = function  (id, item){
-        //app.action.event.requestLinkUpdater('delete', id, item);
+        chart.readySave = true;
     };
+
+    chart.onBeforeTaskUpdate = function (id, item) {
+        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+        if(predecessor){
+            //console.log('predecessor:', predecessor);
+            //App.Action.Buffer.accept(predecessor, item, predecessor.buffer);
+            //item.start_date = item.start_date_origin;
+            //gantt.refreshTask(item.id);
+            //return false;
+        }
+        return true;
+    };
+
+    /**
+     * @namespace App.Action.Chart.bufferReady
+     * @type {boolean}
+     */
+    //chart.bufferReady = true;
 
     chart.onAfterTaskUpdate = function(id, task){
 
+        chart.readySave = true;
+
         task.start_date_origin = Util.objClone(task.start_date);
         task.end_date_origin = Util.objClone(task.end_date);
+
+        gantt.autoSchedule(id);
+
+        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+        if(predecessor && !task.is_buffered){
+            //gantt._updateTaskPosition(task, newStart.date, task.duration);
+            /*gantt._updateTaskPosition(
+                task,
+                App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer),
+                task.duration
+            );*/
+            //App.Action.Buffer.accept(predecessor, task);
+            //gantt.updateTask(task.id);
+            //console.log(new Date(task.start_date));
+            //console.log(predecessor.buffer);
+            //console.log(App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer));
+        }
+
 
         if(task.is_new == 1)
             gantt.changeTaskId(id, chart.taskIdIterator());
@@ -297,9 +359,36 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 parent.type = 'project';
                 gantt.updateTask(parent.id);
             }
+            if(gantt.getChildren(id).length == 0 && task.type == 'project'){
+                task.type = 'task';
+                gantt.updateTask(parent.id);
+            }
         }
 
+        task.is_buffered = false;
         return false;
+    };
+
+
+
+    /**
+     *
+     * @namespace App.Action.Chart.onBeforeTaskDelete
+     * @param id
+     * @param task
+     * @returns {boolean}
+     */
+    chart.onBeforeTaskDelete = function (id, task){
+        //console.log(this, this);
+        //console.log(task.type, task.id);
+        //
+        //dhtmlx.message({type:"error", text:"Enter task description!"});
+        //return false;
+
+        //if(task.type == 'project')
+        //return true;
+        //else
+        //    return true;
     };
 
 
@@ -347,7 +436,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                     var _task = gantt.getTask(id);
 
                     // binding for find parent after delete
-                    //o.taskToDelete = {id:_task.id, parent:_task.parent};
+                    if(_task.type == 'project' && id == 1)
+                        break;
 
                     gantt.confirm({
                         title: gantt.locale.labels.confirm_deleting_title,
@@ -366,12 +456,132 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
 
+    /**
+     * Dynamic change size of chart, when browser window on resize
+     */
+    chart.ganttDynamicResize = function(){
+        window.addEventListener('resize', function onWindowResize(event){
+            chart.ganttFullSize();
+            gantt.render();
+        }, false);
+    };
+
+    /**
+     * Performs resize the HTML Element - gantt chart, establishes the dimensions to a full page by width and height
+     * Use: app.action.chart.ganttFullSize()
+     */
+    chart.ganttFullSize = function (){
+        $(app.dom.gantt)
+            .css('height',(window.innerHeight-100) + 'px')
+            .css('width',(window.innerWidth) + 'px');
+    };
+
+    /**
+     * Performs resize the HTMLElement - gantt chart, establishes the dimensions to a size HTMLElement - #content
+     * @namespace App.Action.Chart.ganttInblockSize
+     */
+    chart.ganttInblockSize = function (){
+        $(App.node('gantt'))
+            .css('height',(window.innerHeight-100) + 'px')
+            .css('width', $(App.node('content')).outerHeight() + 'px');
+    };
+
+    /**
+     * @namespace App.Action.Chart.enabledZoomFit
+     */
+    chart.enabledZoomFit = function (btnElem){
+        $(btnElem).click(function(){
+            App.Action.Fitmode.toggle();
+        });
+    };
+
     chart.onAfterTaskAdd = function  (id, item){
         chart.scrollToTask(id);
         gantt.showLightbox(id);
+    };
+
+    chart.onBeforeGanttRender = function () {
+
+        //gantt.eachTask(function(task){
+        //
+        //    console.log(gantt.getChildren(task.id));
+        //}, 1);
+
+        //else if( gantt.getChildren(task.id).length > 0 )
+        //    task['type'] = 'project';
+        //else {
+        //    task['type'] = 'task';
+        //}
+
+    };
+
+    chart.readySave = false;
+    chart.readyRequest = true;
+    chart.onGanttRender = function () {
+
+        // AUTO-SAVE
+        var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
+        if(chart.readySave === true && chart.readyRequest === true){
+            ganttSaveLoadIco.style.visibility = 'visible';
+            chart.readySave = false;
+            chart.readyRequest = false;
+            setTimeout(function(){
+                console.log('SAVE REQUEST START');
+                App.Action.Api.saveAll(function(response){
+                    chart.readyRequest = true;
+                    ganttSaveLoadIco.style.visibility = 'hidden';
+                    console.log('SAVE REQUEST END');
+                });
+            }, 1000)
+        }
+
+    };
+
+    /**
+     * @namespace App.Action.Chart.taskReplace
+     * @param task_id
+     */
+    chart.taskReplace = function (task_id) {
+        var task = gantt.getTask(task_id);
+        var ds = DateTime.addDays(-1.6, task.start_date);
+        var de = DateTime.addDays(-1.6, task.end_date);
+    };
+
+
+    /**
+     * @namespace App.Action.Chart.taskReplace
+     * @param ms
+     */
+    chart.saveTimerStart = function (ms) {
+/*        ms = parseInt(ms) < 5000 ? 5000 : parseInt(ms);
+        var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
+        var timer = new Timer(ms);
+
+        timer.onprogress = function(){
+            ganttSaveLoadIco.style.visibility = 'visible';
+            App.Action.Api.saveAll(function(response){
+                ganttSaveLoadIco.style.visibility = 'hidden';
+                console.log('Auto save complete! ' + timer.iterator);
+            });
+        };
+        timer.start();*/
+    };
+
+    /**
+     * @namespace App.Action.Chart.saveConfirmExit
+     * @param switcher
+     * @returns {boolean}
+     */
+    chart.saveConfirmExit = function (switcher) {
+        console.log('Switcher Confirm Exit! ' + switcher);
+        return false;
     };
 
 
     return chart
 
 })}
+
+
+
+

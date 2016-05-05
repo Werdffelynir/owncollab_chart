@@ -70,10 +70,10 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.config.auto_scheduling_strict = true;
 
         // Defines whether gantt will do autoscheduling on data loading
-        gantt.config.auto_scheduling_initial = false;
+        gantt.config.auto_scheduling_initial = true;
 
         // allows or forbids creation of links from parent tasks (projects) to their children
-        gantt.config.auto_scheduling_descendant_links = false;
+        gantt.config.auto_scheduling_descendant_links = true;
 
         // Making the Gantt chart to display the critical path
         if(conf.dataProject['critical_path'] == 1) {
@@ -124,9 +124,6 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         // Apply scaling chart
         conf.scale(conf.dataProject['scale_type']);
 
-        // Enable zoom slider
-        //GanttExt.enableZoomSlider(conf.dataProject['scale_type']);
-
         // Enables automatic adjusting of the grid's columns to the grid's width
         gantt.config.autofit = true;
 
@@ -143,14 +140,17 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         var columnWidth = {
             id: 25,
             name: 150,
-            start: 70,
-            end: 70,
+            start: 95,
+            end: 95,
             duration: 50,
             resources: 100
         };
 
         // Styling the gantt chart. Tasks column grid width size
-        gantt.config.grid_width = 550;
+        gantt.config.grid_width = 600;
+
+        // Icons
+        // var sortIco = '<span id="ganttsort_id"><img src="/apps/owncollab_chart/img/sort30.png" alt=""></span>';
 
         gantt.config.columns = [
 
@@ -159,14 +159,18 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 return item.id;
             }},
 
-            {name:"text", label: App.t('Taskname'), tree:true, width: columnWidth.name, resize:true},
+            {name:"text", label: App.t('Taskname'), tree:true, width: columnWidth.name, resize:true,template: function(item) {
+                if(gantt.getChildren(item.id).length > 0)
+                    return '<b>'+item.text+'</b>';
+                return item.text;
+            }},
 
             {name:"start_date", label: App.t('Start'), align: "center", width: columnWidth.start, template: function(item) {
-                return DateTime.dateToStr(item.start_date, "%d.%m.%Y");
+                return DateTime.dateToStr(item.start_date, "%d.%m.%Y %H:%i");
             }},
 
             {name:"end_date", label: App.t('End'), align: "center", width: columnWidth.end, template: function(item) {
-                return DateTime.dateToStr(item.end_date, "%d.%m.%Y");
+                return DateTime.dateToStr(item.end_date, "%d.%m.%Y %H:%i");
             }},
 
             {name:"duration", label: App.t('Duration'), align: "center", width: columnWidth.duration, template: function(item) {
@@ -284,7 +288,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 event = gantt.attachEvent("onBeforeGanttRender", function(){
                     gantt.templates.date_scale = function(date) {
                         var h = gantt.date.date_to_str("%G");
-                        return "<strong>" + (parseInt(h(date)) + 1) + "</strong>";
+                        return "<b>" + (parseInt(h(date)) + 1) + "</b>";
                     };
                     gantt.detachEvent(event);
                 });
@@ -310,11 +314,11 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                     conf.option.weekCount = 0;
                     gantt.templates.date_scale = function(date) {
                         if(!conf.option.weekRecount) {
-                            conf.option.weekRecount = app.timeDateToStr(date);
-                        }else if(conf.option.weekRecount == app.timeDateToStr(date)){
+                            conf.option.weekRecount = DateTime.dateToStr(date);
+                        }else if(conf.option.weekRecount == DateTime.dateToStr(date)){
                             conf.option.weekCount = 0;
                         }
-                        return "<strong>" + ( ++ conf.option.weekCount ) + " Week</strong>";
+                        return "<b>" + ( ++ conf.option.weekCount ) + " Week</b>";
                     };
                     gantt.detachEvent(event);
                 });

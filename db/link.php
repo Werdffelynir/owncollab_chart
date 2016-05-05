@@ -67,7 +67,7 @@ class Link
     }
 
     public function add(array $data) {
-        $SQL = "INSERT INTO oc_collab_links (id, source, target, type, deleted) VALUES ";
+        $SQL = "INSERT INTO oc_collab_links (`id`, `source`, `target`, `type`, `deleted`) VALUES ";
         $rowData = [];
         for($iRow=0; $iRow < count($data); $iRow++) {
 
@@ -77,7 +77,15 @@ class Link
                 $field = $this->fields[$i];
 
                 if(isset($data[$iRow][$field])) {
-                    $rowData[":{$field}_{$iRow}"] = $data[$iRow][$field];
+                    $value = $data[$iRow][$field];
+
+                    if($field == 'id')              $value = (int) $value;
+                    if($field == 'source')          $value = (int) $value;
+                    if($field == 'target')          $value = (int) $value;
+                    if($field == 'type')            $value = (int) ((empty($value) || $value < 0)?0:$value);
+                    if($field == 'deleted')         $value = (int) (empty($value)?0:$value);
+
+                    $rowData[":{$field}_{$iRow}"] = $value;
                 }else{
                     $rowData[":{$field}_{$iRow}"] = null;
                 }
