@@ -30,10 +30,11 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
     /**
      *
-     * @type {{taskGroup: Array, taskUsers: Array, resGroup: Array, resUsers: Array}}
+     * @type {{taskGroup: Array, taskName: Array, resGroup: Array, resUsers: Array}}
      */
-    sort.dynamic = {taskGroup:[],taskUsers:[],resGroup:[],resUsers:[]};
-
+    sort.dynamic = {taskGroup:[],taskName:[],resGroup:[],resUsers:[]};
+    sort.clearFilter = true;
+    sort.startFilteringReady = true;
 
     /**
      *
@@ -45,6 +46,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         gantt.attachEvent("onColumnResizeEnd", sort.onEventGridResizeEnd);
         gantt.attachEvent("onGridResizeEnd", sort.onEventGridResizeEnd);
+        gantt.attachEvent("onBeforeTaskDisplay", onBeforeTaskDisplay);
 
         sort.dataGroupsusers = App.Module.DataStore.get('groupsusers');
 
@@ -289,8 +291,9 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         var type = this.getAttribute('data-type');
         var group = this.getAttribute('data-gid');
         var checked = this.checked;
+        var uids = sort.getUsersIdsByGroup(name);
 
-        console.log(id, name, checked, type, group);
+        //console.log(id, name, checked, type, group, uids);
 
         if(type === 'user') {
 
@@ -304,13 +307,11 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
             if(checked && sort.dynamic.resGroup.indexOf(name) === -1) {
                 sort.dynamic.resGroup.push(name);
-                sort.dynamic.resUsers = Util.arrMerge(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
-                // sort.dynamic.resUsers
-                //console.log(sort.dynamic.resUsers, sort.dataGroupsusers);
+                sort.dynamic.resUsers = Util.arrMerge(sort.dynamic.resUsers, uids);
 
             }else if(!checked && sort.dynamic.resGroup.indexOf(name) !== -1) {
                 sort.dynamic.resGroup = Util.rmItArr(name, sort.dynamic.resGroup);
-                sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, sort.dataGroupsusers[name]);
+                sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, uids);
             }
 
         }
@@ -318,7 +319,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         // handler for filtering
         if(sort.startFilteringReady){
             sort.startFilteringReady = false;
-            Timer.after(2000, sort.startFiltering);
+            Timer.after(1000, sort.startFiltering);
         }
     }
 
@@ -330,16 +331,14 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         var value = this.value;
 
         if(type === 'task')
-            sort.dynamic.taskUsers[0] = value;
+            sort.dynamic.taskName[0] = value;
         else
             sort.dynamic.taskGroup[0] = value;
-
-
 
         // handler for filtering
         if(sort.startFilteringReady){
             sort.startFilteringReady = false;
-            Timer.after(2000, sort.startFiltering);
+            Timer.after(1000, sort.startFiltering);
         }
     }
 
@@ -362,30 +361,82 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         popup.style.width = '500px';
         popup.style.left = '480px';
         App.node('topbar').appendChild(popup);
-
         //console.log(event);
     };
 
 
-
-
-
-    sort.startFilteringReady = true;
+    /**
+     * Apply filtering
+     */
     sort.startFiltering = function(){
 
         sort.startFilteringReady = true;
 
-        // apply filtering
-        gantt.attachEvent("onBeforeTaskDisplay", function(id, task){
+        if( !!sort.dynamic.taskName[0] || !!sort.dynamic.taskGroup[0] || !Util.isEmpty(sort.dynamic.resUsers) ) {
+            console.log('Filtering enabled');
+            sort.clearFilter = false;
+            gantt.refreshData();
+        }else{
+            console.log('Filtering disabled');
+            sort.clearFilter = true;
+            gantt.refreshData();
+        }
 
-        });
-        gantt.refreshData();
-
-        console.log(sort.dynamic);
+        //Timer.after(300, function(){});
+        //console.log(sort.dynamic);
+        //console.log(taskName, taskGroup, resUsers, resGroup);
     };
+
+    function onBeforeTaskDisplay(id, task){
+/*
+        var taskName = sort.dynamic.taskName[0].toLowerCase();
+        var taskGroup = sort.dynamic.taskGroup[0].toLowerCase();
+        var resUsers = Util.uniqueArr(sort.dynamic.resUsers);
+        var resGroup = sort.dynamic.resGroup;
+        var show = false;
+
+        //console.log('--- show ---', show);
+
+        if(sort.clearFilter){
+            //console.log('Clear Filter');
+            return true;
+        }
+        //else if( !!taskName || !!taskGroup || !Util.isEmpty(resUsers) ){}
+
+        if(!!taskGroup && gantt.getChildren(id).length > 0 && task.text.toLowerCase().indexOf(taskGroup) !== -1 ) {
+            show = true;
+        }
+
+        if(!!taskName && gantt.getChildren(id).length == 0 && task.text.toLowerCase().indexOf(taskName) !== -1 ) {
+            show = true;
+        }
+
+        //show = true;
+
+        console.log('--- show ---', show);
+
+        //if( !!taskName || !!taskGroup || !Util.isEmpty(resUsers) ) {
+        //console.log(id, !!taskName, !!taskGroup, !Util.isEmpty(resUsers));
+        //resUsers.indexOf(task.users);
+        //return false;
+        return show;*/
+        return true;
+    }
+
+
+
+
     sort.getUsersIdsByGroup = function(gid){
-        // ................
+        var ids = [];
+        var groupsusers = Util.isArr(sort.dataGroupsusers[gid]) ? sort.dataGroupsusers[gid] : [];
+        for(var i = 0; i < groupsusers.length; i ++ ){
+            ids.push(groupsusers[i]['uid'])
+        }
+        return ids;
     };
+
+
+
 
     return sort
 
