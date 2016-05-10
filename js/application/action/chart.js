@@ -525,13 +525,13 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             ganttSaveLoadIco.style.visibility = 'visible';
             chart.readySave = false;
             chart.readyRequest = false;
+            console.log('SAVE REQUEST START');
             setTimeout(function(){
-                console.log('SAVE REQUEST START');
-                App.Action.Api.saveAll(function(response){
-                    chart.readyRequest = true;
-                    ganttSaveLoadIco.style.visibility = 'hidden';
-                    console.log('SAVE REQUEST END');
-                });
+                console.log('SAVE REQUEST END');
+                chart.readyRequest = true;
+                ganttSaveLoadIco.style.visibility = 'hidden';
+                /*App.Action.Api.saveAll(function(response){
+                });*/
             }, 1000)
         }
 

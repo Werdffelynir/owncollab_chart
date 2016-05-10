@@ -381,46 +381,33 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             sort.clearFilter = true;
             gantt.refreshData();
         }
-
-        //Timer.after(300, function(){});
-        //console.log(sort.dynamic);
-        //console.log(taskName, taskGroup, resUsers, resGroup);
     };
 
     function onBeforeTaskDisplay(id, task){
-/*
-        var taskName = sort.dynamic.taskName[0].toLowerCase();
-        var taskGroup = sort.dynamic.taskGroup[0].toLowerCase();
-        var resUsers = Util.uniqueArr(sort.dynamic.resUsers);
-        var resGroup = sort.dynamic.resGroup;
-        var show = false;
 
-        //console.log('--- show ---', show);
+        if(!sort.clearFilter) {
+            var taskName = sort.dynamic.taskName[0] ? sort.dynamic.taskName[0].toLowerCase() : false;
+            var taskGroup = sort.dynamic.taskGroup[0] ? sort.dynamic.taskGroup[0].toLowerCase() : false;
+            var resUsers = Util.uniqueArr(sort.dynamic.resUsers);
+            var resGroup = sort.dynamic.resGroup;
+            var show = false;
 
-        if(sort.clearFilter){
-            //console.log('Clear Filter');
+            if(!!taskName && gantt.getChildren(id).length == 0 && task.text.toLowerCase().indexOf(taskName) !== -1 ) {
+                show = true;
+            }
+            if(!!taskGroup && gantt.getChildren(id).length > 0 && task.text.toLowerCase().indexOf(taskGroup) !== -1 ) {
+                show = true;
+            }
+            if(!!resUsers && resUsers.indexOf(task.users) !== -1 ) {
+                show = true;
+            }
+
+
+
+            return show;
+
+        }else
             return true;
-        }
-        //else if( !!taskName || !!taskGroup || !Util.isEmpty(resUsers) ){}
-
-        if(!!taskGroup && gantt.getChildren(id).length > 0 && task.text.toLowerCase().indexOf(taskGroup) !== -1 ) {
-            show = true;
-        }
-
-        if(!!taskName && gantt.getChildren(id).length == 0 && task.text.toLowerCase().indexOf(taskName) !== -1 ) {
-            show = true;
-        }
-
-        //show = true;
-
-        console.log('--- show ---', show);
-
-        //if( !!taskName || !!taskGroup || !Util.isEmpty(resUsers) ) {
-        //console.log(id, !!taskName, !!taskGroup, !Util.isEmpty(resUsers));
-        //resUsers.indexOf(task.users);
-        //return false;
-        return show;*/
-        return true;
     }
 
 
