@@ -165,8 +165,8 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
      * @returns {*}
      */
     act.addBufferFS = function (predecessor, successor, buffer) {
-        successor.start_date = act.calcBuffer(successor.start_date, buffer);
-        successor.end_date = act.calcBuffer(successor.end_date, buffer);
+        successor.start_date = act.calcBuffer(predecessor.end_date, buffer);
+        successor.end_date = gantt.calculateEndDate(successor.start_date, successor.duration);
         successor.is_buffered = true;
     };
 
@@ -179,7 +179,7 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
      */
     act.addBufferSS = function (predecessor, successor, buffer) {
         successor.start_date = act.calcBuffer(predecessor.start_date, buffer);
-        successor.end_date = act.calcBuffer(successor.end_date, buffer);
+        successor.end_date = gantt.calculateEndDate(successor.start_date, successor.duration);
         successor.is_buffered = true;
     };
 
@@ -191,8 +191,8 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
      * @returns {*}
      */
     act.addBufferSF = function (predecessor, successor, buffer) {
-        successor.start_date = act.calcBuffer(successor.start_date, buffer);
-        successor.end_date = act.calcBuffer(predecessor.start_date, buffer);
+        successor.start_date = act.calcBuffer(predecessor.start_date, buffer);
+        successor.end_date = gantt.calculateEndDate(successor.start_date, successor.duration);
         successor.is_buffered = true;
     };
 
@@ -204,8 +204,8 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
      * @returns {*}
      */
     act.addBufferFF = function (predecessor, successor, buffer) {
-        successor.start_date = act.calcBuffer(successor.start_date, buffer);
         successor.end_date = act.calcBuffer(predecessor.end_date, buffer);
+        successor.start_date = gantt.calculateEndDate(successor.end_date, -successor.duration);
         successor.is_buffered = true;
     };
 
@@ -275,8 +275,6 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
                     break;
             }
             successor.is_buffered = true;
-            //gantt.updateTask(successor.id)
-
         }
 
     };

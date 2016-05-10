@@ -397,7 +397,7 @@
                 left = left + parseInt(elem.offsetLeft, 10);
                 elem = elem.offsetParent;
             }
-            return {y: top, x: left, width: elem.offsetWidth, height: elem.offsetHeight};
+            return {x: left, y: top, width: elem.offsetWidth, height: elem.offsetHeight};
         }
     };
 

@@ -98,6 +98,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // Int first app parts modules
         gantt.attachEvent('onGanttReady', callbackGanttReady);
         gantt.attachEvent('onParse', callbackGanttLoaded);
+        gantt.attachEvent("onBeforeLinkAdd", chart.onBeforeLinkAdd);
         gantt.attachEvent("onAfterLinkAdd", chart.onAfterLinkAdd);
         gantt.attachEvent("onAfterLinkDelete", chart.onAfterLinkDelete);
         //gantt.attachEvent("onAfterLinkUpdate", chart.onAfterLinkUpdate);
@@ -111,6 +112,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         gantt.attachEvent("onBeforeGanttRender", chart.onBeforeGanttRender);
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
+        gantt.attachEvent("onBeforeTaskDrag", chart.onBeforeTaskDrag);
 
         // run gantt init
         gantt.init(chart.contentElement);
@@ -142,7 +144,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // Gantt attachEvent OnAfterTaskAutoSchedule
         //App.Action.Buffer.attachEventOnAfterTaskAutoSchedule();
 
-        gantt.attachEvent("onAfterTaskAutoSchedule", App.Action.Buffer.onAfterTaskAutoSchedule);
+        //gantt.attachEvent("onAfterTaskAutoSchedule", App.Action.Buffer.onAfterTaskAutoSchedule);
 
         gantt.parse({
             data: filteringTasks,
@@ -287,13 +289,21 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         var pos = gantt.getTaskNode(task_id); //$(gantt.getTaskNode(task_id)).position();
         // offsetLeft // offsetTop
         if(typeof pos === 'object'){
-            console.log(task_id, pos, pos.offsetLeft, pos.offsetTop);
+            //console.log(task_id, pos, pos.offsetLeft, pos.offsetTop);
             //gantt.scrollTo(pos.left, pos.top)
             gantt.scrollTo(pos.offsetLeft, pos.offsetTop)
         }
     };
 
     // Gantt events
+    chart.onBeforeLinkAdd = function  (id, link){
+        /**
+         * Removed other links
+         */
+        var sourceTask = gantt.getTask(link.source);
+        if(sourceTask)
+            App.Action.Lightbox.deleteLinksWithSource(sourceTask.id);
+    };
     chart.onAfterLinkAdd = function  (id, item){
         gantt.changeLinkId(id, chart.linkIdIterator());
     };
@@ -307,14 +317,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
     chart.onBeforeTaskUpdate = function (id, item) {
-        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
-        if(predecessor){
-            //console.log('predecessor:', predecessor);
-            //App.Action.Buffer.accept(predecessor, item, predecessor.buffer);
-            //item.start_date = item.start_date_origin;
-            //gantt.refreshTask(item.id);
-            //return false;
-        }
+        //var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+        //if(predecessor){}
         return true;
     };
 
@@ -331,23 +335,19 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         task.start_date_origin = Util.objClone(task.start_date);
         task.end_date_origin = Util.objClone(task.end_date);
 
-        gantt.autoSchedule(id);
+        //gantt.autoSchedule(id);
 
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
-        if(predecessor && !task.is_buffered){
-            //gantt._updateTaskPosition(task, newStart.date, task.duration);
-            /*gantt._updateTaskPosition(
-                task,
-                App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer),
-                task.duration
-            );*/
-            //App.Action.Buffer.accept(predecessor, task);
-            //gantt.updateTask(task.id);
-            //console.log(new Date(task.start_date));
-            //console.log(predecessor.buffer);
-            //console.log(App.Action.Buffer.calcBuffer(task.start_date, predecessor.buffer));
+        if(predecessor && predecessor.buffer > 0 && !task.is_buffered){
+            chart.readySave = false;
+            App.Action.Buffer.accept(predecessor, task);
         }
-
+        var successor = App.Action.Buffer.getTaskSuccessor(id);
+        if(successor && successor.buffer > 0 && !successor.is_buffered){
+            chart.readySave = false;
+            gantt.updateTask(successor.id);
+            gantt.render();
+        }
 
         if(task.is_new == 1)
             gantt.changeTaskId(id, chart.taskIdIterator());
@@ -575,6 +575,26 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     chart.saveConfirmExit = function (switcher) {
         console.log('Switcher Confirm Exit! ' + switcher);
         return false;
+    };
+
+    /**
+     * Disabled drag-and-drop operation for task with predecessor
+     * @param id
+     * @param mode
+     * @param e
+     * @returns {boolean}
+     */
+    chart.onBeforeTaskDrag = function (id, mode, e) {
+        var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+
+        if(mode == 'move' && predecessor){
+            return false;
+        }
+        else if(mode == 'resize' && predecessor && e.target.className.indexOf('task_left') !== -1){
+            return false;
+        }
+
+        return true
     };
 
 

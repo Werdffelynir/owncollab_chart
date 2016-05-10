@@ -760,7 +760,10 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         $('input[type=text]', popup).on('keyup', function(event){});
 
     };
-
+    /**
+     * @namespace App.Action.Lightbox.deleteLinksWithTarget
+     * @param target
+     */
     lbox.deleteLinksWithTarget = function  (target){
         var task = gantt.getTask(target),
             links = task.$target;
@@ -771,6 +774,10 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         }
     };
 
+    /**
+     * @namespace App.Action.Lightbox.deleteLinksWithSource
+     * @param source
+     */
     lbox.deleteLinksWithSource = function  (source) {
         var task = gantt.getTask(source), links = task.$source;
         if(links.length > 0) {
@@ -784,7 +791,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
 
     /**
-     * Uses: app.action.lightbox.progressToPercent()
+     * @namespace App.Action.Lightbox.progressToPercent
      * @param num
      * @returns {Number}
      */
