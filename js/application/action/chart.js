@@ -534,6 +534,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
             console.log('SAVE REQUEST START');
 
+            //Timer.after(1000, function(){ });
             setTimeout(function(){
 
                 App.Action.Api.saveAll(function(response){

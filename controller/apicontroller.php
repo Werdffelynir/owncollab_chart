@@ -202,19 +202,36 @@ class ApiController extends Controller {
 
                 if(!$result)
                     $params['error'] = 'Error operation update project';
-                else{
+                else
                     $params['share_link'] = $share_link;
-                }
+
             }
-            else{
-                /*
+
+            else if ($field == 'share_is_protected' || $field == 'share_password'){
+
                 if($field == 'share_password') $value = md5(trim($value));
+
+                $params[$field] = $value;
 
                 $result = $this->connect->project()->updateField($field, $value);
                 if(!$result)
-                    $params['error'] = 'Error operation update project';
+                    $params['error'] = 'Error operation share protected password an update project table';
                 else
-                    $params['result'] = $result;*/
+                    $params['result'] = $result;
+
+            }
+            else if ($field == 'share_is_expire' || $field == 'share_expire_time'){
+
+                //if($field == 'share_expire_time') $value = ;
+
+                $params[$field] = $value;
+
+                $result = $this->connect->project()->updateField($field, $value);
+                if(!$result)
+                    $params['error'] = 'Error operation share protected password an update project table';
+                else
+                    $params['result'] = $result;
+
             }
 
         }else

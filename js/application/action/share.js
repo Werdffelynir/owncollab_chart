@@ -22,7 +22,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
                 if(this.name == "share_expire_time"){
                     var elemTime = $('input[name=share_expire_time]')[0];
                     elemTime.value = val;
-                    share.changeValue({target:elemTime});
+                    share.changeValue(elemTime);
                 }
             }
         });
@@ -144,7 +144,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
      */
     share.changeValue = function (target){
         var fieldName = target.name;
-
+console.log(fieldName);
         if(fieldName === 'is_share'){
 
             if(target.checked === true) $('.chart_share_on').show();
@@ -164,7 +164,9 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             if(target.checked === true) $('.chart_share_password').show();
             else $('.chart_share_password').hide();
 
-            share.requestUseShare(fieldName, target.checked);
+            share.requestUseShare(fieldName, target.checked, function(response) {
+
+            });
 
         }else
 
@@ -174,12 +176,30 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             if(target.checked === true) $('.chart_share_expiration').show();
             else $('.chart_share_expiration').hide();
 
-            share.requestUseShare(fieldName, target.checked);
+            share.requestUseShare(fieldName, target.checked, function(response) {
 
-        }/**/
+            });
+
+        }else
+
+        // Set expire timeout
+        if(fieldName === 'share_expire_time') {
+
+/*            if(share.readySaveShareExpireTime){
+                share.readySaveShareExpireTime = false;
+                Timer.after(1000, function(){
+                    share.requestUseShare(fieldName, target.checked, function(response) {
+                        share.readySaveShareExpireTime = true;
+                    });
+                });
+            }*/
+
+        }
 
     };
 
+
+    share.readySaveShareExpireTime = true;
 
     /**
      * Request to change value
