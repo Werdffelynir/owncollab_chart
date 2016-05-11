@@ -3,12 +3,12 @@
  * @var OCP\Template $this
  * @var array $_
  */
-
+$current_user = !empty($_['current_user']) ? !empty($_['current_user']) : null;
 if(!empty($_['current_user'])):
 ?>
+<?php endif; ?>
 
-
-    <div id="gantt-chart" data-id="<?php p($_['current_user'])?>">
+    <div id="gantt-chart" data-id="<?php p($current_user)?>">
         <div id="loading_page">loading ... </div>
     </div>
 
@@ -21,4 +21,4 @@ if(!empty($_['current_user'])):
         </div>
     </div>
 
-<?php endif; ?>
+

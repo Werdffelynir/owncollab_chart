@@ -68,6 +68,8 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
          * The next step is to load the project data via a special API
          */
         Api.request('getproject', onProjectLoaded);
+        //App.uid = $(App.node('gantt')).attr('data-id');
+        App.isPublic = Util.isEmpty($(App.node('gantt')).attr('data-id'));
     }
 
     function onProjectLoaded(response){
@@ -79,7 +81,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        //console.log(response);
+        console.log('onProjectLoaded --->>>', response);
 
         if(response.errorinfo.length > 2) {
             Error.inline('Response error info [' + response.errorinfo + ']');
@@ -92,7 +94,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        if(!response.uid || App.uid !== response.uid) {
+        if((!response.uid || App.uid !== response.uid) && !App.isPublic) {
             Error.page('Security at risk. Suspicious response from the server.');
             return;
         }
@@ -107,13 +109,14 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         App.isAdmin = response['isadmin'];
         App.lang = response['lang'];
-//console.log(response.groupsusers);
+
+        //console.log(response.groupsusers);
+
         DataStore.put('data', response);
         DataStore.put('groupsusers', response.groupsusers);
         DataStore.put('project', response.project);
         DataStore.put('tasks', response.tasks);
         DataStore.put('links', response.links);
-
 
         // Language
         var languagePathScript = null;
@@ -160,6 +163,9 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         // Buffer enabled
         App.Action.Buffer.init();
         Chart.enabledZoomFit(App.node('zoomSliderFit'));
+
+
+        App.Action.Share.init();
 
         // Dynamic chart resize when change window
         //App.Action.GanttExt.ganttDynamicResize();

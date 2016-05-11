@@ -135,7 +135,7 @@ class Project
             $clean = ", `share_is_protected` = 0, `share_password` = NULL, `share_email_recipient` = NULL, `share_is_expire` = 0, `share_expire_time` = NULL";
 
             $sql = "UPDATE `{$this->tableName}`
-                SET `is_share` = :is_share, `share_link` = :share_link " . ($value===0?$clean:'') . "
+                SET `is_share` = :is_share, `share_link` = :share_link " . ($value === 0 ? $clean : '') . "
                 WHERE `open` = 1";
 
             $result = $this->connect->db->executeUpdate($sql,[

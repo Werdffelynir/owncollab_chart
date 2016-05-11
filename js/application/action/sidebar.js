@@ -60,105 +60,6 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
         // put project settings to sidebar fields
         sidebar.putProjectSettings();
 
-        // enabled jquery plugin datetimepicker for all elements with class name 'datetimepic'
-/*        $('.datetimepic').datetimepicker({
-            //minDate: new Date((new Date()).getFullYear() - 1, 1, 1),
-            controlType: 'select',
-            oneLine: true,
-            dateFormat: 'dd.mm.yy',
-            timeFormat: 'HH:mm',
-            onSelect:function(val,eve){
-                if(this.name == "share_expire_time"){
-                    var elemTime = $('input[name=share_expire_time]')[0];
-                    elemTime.value = val;
-
-                    app.action.event.changeValueProject({target:elemTime});
-                }
-            }
-        });*/
-
-        // autocomplete for email sends
-        var usersEmails = function(){
-            var resources = Project.resources(true),
-                group,
-                userIter = 0,
-                project = Project.urlName(),
-                domain = OC.getHost(),
-                list = [],
-                all = dataStoreGroupsusers;
-
-            for(group in all){
-                var inGroup = false;
-                for(userIter = 0; userIter < all[group].length; userIter ++) {
-                    if(resources.indexOf(all[group][userIter]['uid']) !== -1) {
-                        inGroup = true;
-                        list.push({
-                            value: all[group][userIter]['uid'],
-                            type: 'user',
-                            email: all[group][userIter]['uid'] + '@' + domain
-                            //email: all[group][userIter]['uid'] + '@' + project + '.' + domain
-                        });
-                    }
-                }
-
-                if(inGroup){
-                    list.push({
-                        value: group,
-                        type: 'group',
-                        email: group + '@' + domain
-                        //email: group + '@' + project + '.' + domain
-                    });
-                }
-            }
-            // static emails
-            list.push({
-                value: 'team',
-                type: 'static',
-                email: 'team@' + domain
-                //email: 'team@' + project + '.' + domain
-            });
-            list.push({
-                value: 'support',
-                type: 'static',
-                email: 'support@' + domain
-                //email: 'support@' + project + '.' + domain
-            });
-            return list;
-        };
-
-        $(document).on('focus', "#owc_email_autocomplete", function (event) {
-            $( this ).autocomplete({
-                    minLength: 0,
-                    source: usersEmails(),
-                    select: function( event, ui ) {
-                        this.value = "";
-                        sidebar.emailsList(ui.item);
-                        return false;
-                    }
-            }).data("ui-autocomplete")._renderItem = function( ul, item ) {
-                var emailLabel = (item.type == 'user') ? item.email : "<strong>"  +item.email+ "</strong>";
-                return $('<li>')
-                    .append('<a>' +  emailLabel + '</a>' )
-                    .appendTo( ul );
-            };
-        });
-
-        // send email list to server
-        $('input[name=share_email_submit]').click(function(event){
-            event.preventDefault();
-            var emailsList = [];
-            $('.share_email', App.node('sidebar')).each(function(index, item){
-                var id = item.getAttribute('data-id');
-                var type = item.getAttribute('data-type');
-                var email = item.getAttribute('data-email');
-                emailsList.push(type+ ':' +id);
-            });
-            App.Action.Api.sendEmails(
-                Util.uniqueArr(emailsList),
-                Project.resources(true)
-            );
-        });
-
     };
 
     /**
@@ -370,24 +271,20 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                     }
                 }
 
+                // First show sets share settings
                 if(param == 'is_share'){
-                    if(fields[param].checked === true) {
-                        $('.chart_share_on').show();
-                    }
-                    else {
-                        $('.chart_share_on').hide();
-                    }
+                    if(fields[param].checked === true) $('.chart_share_on').show();
+                    else $('.chart_share_on').hide();
                 }
-                else
-                if(param === 'share_is_protected'){
+                else if(param === 'share_is_protected'){
                     if(fields[param].checked === true) $('.chart_share_password').show();
                     else $('.chart_share_password').hide();
                 }
-                else
-                if(param === 'share_is_expire'){
+                else if(param === 'share_is_expire'){
                     if(fields[param].checked === true) $('.chart_share_expiration').show();
                     else $('.chart_share_expiration').hide();
                 }
+
             }
 
 
@@ -414,8 +311,8 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
             value   = target.value;
 
         // Project.dataProject
-        console.log(Project);
-        console.log(target, name, type, value);
+        //console.log(Project);
+        //console.log(target, name, type, value);
 
         // Dynamic show today line in gantt chart
         if(name === 'show_today_line'){
@@ -472,73 +369,8 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
         }
 
-
-
-        // local saved some params
-        //    localParams = ['show_today_line','show_task_name','show_user_color','scale_type','scale_fit','critical_path'];
-        //
-        //if(localParams.indexOf(name) !== -1){
-        //
-        //    // Dynamic show today line in gantt chart
-        //    if(name === 'show_today_line'){
-        //
-        //        app.action.chart.showMarkers(target.checked);
-        //        app.storageSetItem('show_today_line', target.checked);
-        //        gantt.refreshData();
-        //
-        //    }else
-        //
-        //    // Dynamic show user color in gantt chart tasks an resources
-        //    if(name === 'show_user_color'){
-        //
-        //        app.action.chart.showUserColor(target.checked);
-        //        app.storageSetItem('show_user_color', target.checked);
-        //        gantt.refreshData();
-        //
-        //    }else
-        //
-        //    // Dynamic show task name in gantt chart
-        //    if(name === 'show_task_name'){
-        //
-        //        app.action.chart.showTaskNames(target.checked);
-        //        app.storageSetItem('show_task_name', target.checked);
-        //        gantt.refreshData();
-        //
-        //    }else
-        //
-        //    // Dynamic scale type gantt chart
-        //    if(name === 'scale_type'){
-        //
-        //        app.action.chart.scale(value);
-        //        //if(value == 'week') app.action.chart.enableZoomSlider(1);
-        //        //if(value == 'day') app.action.chart.enableZoomSlider(2);
-        //        //if(value == 'hour') app.action.chart.enableZoomSlider(3);
-        //        app.storageSetItem('scale_type', value);
-        //        gantt.render();
-        //
-        //    }else
-        //
-        //    // Dynamic resize scale fit gantt chart
-        //    if(name === 'scale_fit'){
-        //
-        //        //app.action.chart.showTaskNames(target.checked);
-        //        app.action.fitmode.toggle(target.checked);
-        //        gantt.render();
-        //        app.storageSetItem('scale_fit', target.checked);
-        //
-        //    }else
-        //
-        //    // Dynamic resize scale fit gantt chart
-        //    if(name === 'critical_path'){
-        //
-        //        app.action.chart.showCriticalPath(target.checked);
-        //        app.storageSetItem('critical_path', target.checked);
-        //        gantt.render();
-        //
-        //    }
-        //
-        //    return false;
-        //}
+        // Show sharing settings
+        App.Action.Share.changeValue(target, name, target.checked);
 
     };
 
@@ -549,13 +381,13 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
      * @namespace App.Action.Sidebar.definitionFields
      * @returns {{}}
      */
-    sidebar.definitionFields = function (){
+    sidebar.definitionFields = function () {
         var fieldsSettings = $('#chart_settings input'),
             fieldsShare = $('#chart_share input'),
             data = {};
 
-        for(var i = 0; i < fieldsSettings.length; i++){
-            if(fieldsSettings[i].type === 'radio'){
+        for(var i = 0; i < fieldsSettings.length; i++) {
+            if(fieldsSettings[i].type === 'radio') {
                 if(!data['radio'])
                     data['radio'] = {};
                 data['radio'][fieldsSettings[i]['value']] = fieldsSettings[i];
@@ -563,7 +395,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                 data[fieldsSettings[i]['name']] = fieldsSettings[i];
         }
 
-        for(var j = 0; j < fieldsShare.length; j ++){
+        for(var j = 0; j < fieldsShare.length; j ++) {
             data[fieldsShare[j]['name']] = fieldsShare[j];
         }
 

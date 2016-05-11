@@ -28,20 +28,22 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
      * @param callback
      */
     api.saveAll = function(callback) {
+
         var store = App.Module.DataStore,
+
             dataSend = {
-                tasks: JSON.stringify( gantt._get_tasks_data() ),
+                tasks: JSON.stringify( App.Action.Project.tasks() ),
                 links: JSON.stringify( gantt.getLinks() ),
                 project: JSON.stringify( store.get('project') )
             };
 
-        //console.log('dataSend', dataSend);
-        //console.log('lastlinkid', App.Action.Chart.lastlinkid);
-
-        if(api.saveAllReady){ api.saveAllReady = false;
+        if(api.saveAllReady){
+            api.saveAllReady = false;
             api.request('saveall', function(response){
+
                 api.saveAllReady = true;
                 callback.call(this, response);
+
             }, dataSend);
         }
 
@@ -96,7 +98,7 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
         app.api('sendshareemails', function(response) {
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
 
-                app.requesttoken = response.requesttoken;
+                App.requesttoken = response.requesttoken;
                 $('.share_email_butn')
                     .css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
 

@@ -37,9 +37,12 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
      * @returns {Array}
      */
     proj.tasks = function (){
-        return gantt._get_tasks_data();
+        return Util.realObjToArr(gantt._pull);
     };
 
+    proj.onlyVisiblyTasks = function (){
+        return gantt._get_tasks_data();
+    };
 
     /**
      * @namespace App.Action.Project.links
@@ -60,11 +63,9 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
 
     /**
      * @namespace App.Action.Project.resources
-     * @param unique     boolean
      * @returns {Array}
      */
-    proj.resources = function (unique){
-        unique = unique !== false;
+    proj.resources = function (){
         var res = [],
             mapper = function (item) {
                 if(item.users.length > 1){
@@ -72,7 +73,7 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
                 }
             };
         proj.tasks().map(mapper);
-        return (!!unique) ? Util.uniqueArr(res) : res
+        return Util.uniqueArr(res)
     };
 
 

@@ -215,20 +215,28 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         var wrap = Util.createElement( 'div', null, '<p><b>' +App.t('Filter by task groups or tasks')+ '</b><span class="ico_clear clear_filter"></span></p>');
 
+        var inputNameValue = sort.memory('taskname-task');
         var inputName = Util.createElement( 'input', {
             'id':           'gantt_filter_name',
             'type':         'text',
             'placeholder':  App.t('Enter passphrase to be part of task name'),
             'value':        ''
         } );
+        if(inputNameValue && inputNameValue.length > 0)
+            inputName.value = inputNameValue;
+
         inputName.addEventListener('keyup', onFilterClickTask);
 
+        var inputGroupValue = sort.memory('taskname-group');
         var inputGroup = Util.createElement( 'input', {
             'id':           'gantt_filter_group',
             'type':         'text',
             'placeholder':  App.t('Enter passphrase to be part of group name'),
             'value':        ''
         } );
+        if(inputGroupValue && inputGroupValue.length > 0)
+            inputGroup.value = inputGroupValue;
+
         inputGroup.addEventListener('keyup', onFilterClickTask);
 
         var clearFields = Util.createElement( 'div', {'class':'ico_clear'});
@@ -266,6 +274,8 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         var attr_gid = group;
         var attr_type = user ? 'user' : 'group';
         var attr_name = user ? user : group;
+        var is_checked = sort.memory('resource-' + attr_type + '-' + attr_name) ? true : false;
+
 
         var wrap = Util.createElement( user ? 'span' : 'div' );
         var input = Util.createElement( 'input', {
@@ -276,6 +286,10 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             'data-gid':     attr_gid,
             'data-type':    attr_type
         });
+
+        if(is_checked)
+            input.checked = true;
+
         input.addEventListener('click', onFilterClickResource);
 
         var label = Util.createElement( 'label', {'for':attr_id},'<span></span>'+ (attr_type == 'user' ? attr_name : '<b>'+attr_name+'</b>' ));
@@ -294,6 +308,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         var uids = sort.getUsersIdsByGroup(name);
 
         //console.log(id, name, checked, type, group, uids);
+        sort.memory('resource-' + type + '-' + name, checked);
 
         if(type === 'user') {
 
@@ -329,6 +344,8 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     function onFilterClickTask(event){
         var type = this.id == 'gantt_filter_name' ? 'task' : 'group';
         var value = this.value;
+
+        sort.memory('taskname-' + type, value);
 
         if(type === 'task')
             sort.dynamic.taskName[0] = value;
@@ -383,7 +400,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         }
     };
 
-    function onBeforeTaskDisplay(id, task){
+    function onBeforeTaskDisplay(id, task) {
 
         if(!sort.clearFilter) {
             var taskName = sort.dynamic.taskName[0] ? sort.dynamic.taskName[0].toLowerCase() : false;
@@ -402,8 +419,6 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
                 show = true;
             }
 
-
-
             return show;
 
         }else
@@ -420,6 +435,26 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             ids.push(groupsusers[i]['uid'])
         }
         return ids;
+    };
+
+    sort._memoryStore = {};
+
+    /**
+     * @namespace App.Action.Sort.memory
+     * @param key
+     * @param value
+     * @returns {*}
+     */
+    sort.memory = function(key, value){
+
+        if(key === undefined && value === undefined)
+            return sort._memoryStore;
+
+        if(value === undefined)
+            return sort._memoryStore[key]
+        else
+            return sort._memoryStore[key] = value
+
     };
 
 

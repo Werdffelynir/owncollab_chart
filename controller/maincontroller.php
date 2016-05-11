@@ -171,9 +171,14 @@ class MainController extends Controller {
                 'links' => $this->connect->link()->get()
             ];
 
-            return new TemplateResponse($this->appName, 'public', [
-                'json' => $jsonData
-            ]);
+            //return new TemplateResponse($this->appName, 'public', ['json' => $jsonData]);
+
+            $params = [
+                'json' => $jsonData,
+                'current_user' => null,
+            ];
+            return new TemplateResponse($this->appName, 'main', $params);
+
         }
 
 	}

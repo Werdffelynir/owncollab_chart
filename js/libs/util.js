@@ -138,7 +138,14 @@
     };
 
     util.objToArr = function (obj) {
-        return  [].slice.call(obj);
+        return [].slice.call(obj);
+    };
+
+    util.realObjToArr = function (obj) {
+        var arr = [];
+        for(var key in obj)
+            arr.push(obj[key])
+        return arr;
     };
 
     util.cloneFunction = function(func) {
@@ -755,7 +762,11 @@
     util.Storage.length = function () {
         return window.localStorage.length;
     };
-    
+
+
+
+
+
     /**
      * возвращает cookie с именем name, если есть, если нет, то undefined
      * @param name

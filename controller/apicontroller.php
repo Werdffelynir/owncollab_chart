@@ -60,6 +60,7 @@ class ApiController extends Controller {
 	}
 
 	/**
+     * @PublicPage
 	 * @NoAdminRequired
 	 * @NoCSRFRequired
 	 */
@@ -88,7 +89,6 @@ class ApiController extends Controller {
      */
 	public function getproject() {
 
-		//return new DataResponse($_POST);
 		$uid = $this->userIdAPI;
         $lang = $this->connect->project()->getCurrentLang($uid);
 
@@ -128,7 +128,6 @@ class ApiController extends Controller {
 
         $links = $this->connect->link()->get();
 
-/**/
         $params['origin_links'] = $links;
         $linkCount = count($links);
         $linksTrash = [];
@@ -145,7 +144,8 @@ class ApiController extends Controller {
         }
 
 
-        if($uid){
+//        if($uid){    }else
+//            $params['errorinfo'] 	= 'API method require uid';
             $params['isadmin'] 		= $this->isAdmin;
             $params['access'] 		= 'allow';
             $params['project'] 		= $this->connect->project()->get();
@@ -154,8 +154,7 @@ class ApiController extends Controller {
             $params['groupsusers'] 	= $this->connect->project()->getGroupsUsersList();
             $params['lasttaskid'] 	= $this->connect->task()->getLastId();
             $params['lastlinkid'] 	= $this->connect->link()->getLastId();
-        }else
-            $params['errorinfo'] 	= 'API method require uid';
+
 
         return new DataResponse($params);
 	}
@@ -174,6 +173,63 @@ class ApiController extends Controller {
         return $r;
     }
 
+
+    /**
+     * Common updater, save all task and links
+     * @param $data
+     * @return DataResponse
+     */
+    public function useshare($data) {
+
+        $params = [
+            'error'        => null,
+            'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
+        ];
+
+        if($this->isAdmin && isset($data['field']) && isset($data['value'])){
+
+            $field = trim(strip_tags($data['field']));
+            $value = trim(strip_tags($data['value']));
+
+            // value for bool param
+            if($value == 'true') $value = 1;
+            else if($value == 'false') $value = 0;
+
+            if($field == 'is_share'){
+
+                $share_link = $value ? Helper::randomString(16) : null;
+                $result = $this->connect->project()->updateShared($field, $value, $share_link);
+
+                if(!$result)
+                    $params['error'] = 'Error operation update project';
+                else{
+                    $params['share_link'] = $share_link;
+                }
+            }
+            else{
+                /*
+                if($field == 'share_password') $value = md5(trim($value));
+
+                $result = $this->connect->project()->updateField($field, $value);
+                if(!$result)
+                    $params['error'] = 'Error operation update project';
+                else
+                    $params['result'] = $result;*/
+            }
+
+        }else
+            $params['error'] = 'API method require - uid and request as admin';
+
+        return new DataResponse($params);
+
+
+
+        return new DataResponse([
+            'data' => $data,
+            'post' => $_POST
+        ]);
+
+    }
 
     /**
      * Common updater, save all task and links

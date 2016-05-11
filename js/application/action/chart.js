@@ -114,6 +114,11 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
         gantt.attachEvent("onBeforeTaskDrag", chart.onBeforeTaskDrag);
 
+        if(App.isPublic) {
+            gantt.config.readonly = true;
+            Error.inline('Read-only', 'Access ')
+        }
+
         // run gantt init
         gantt.init(chart.contentElement);
 
@@ -124,22 +129,26 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         Project.init();
 
         // run Sort
-        App.Action.Sort.init();
+        if(!App.isPublic)
+            App.Action.Sort.init();
 
         // run gantt configs
         GanttConfig.init();
 
         // run Sidebar
-        Sidebar.init();
+        if(!App.isPublic)
+            Sidebar.init();
 
         // run Lightbox
         Lightbox.init();
 
         // Enable function save gantt data
-        chart.savedButtonInit();
+        if(!App.isPublic)
+            chart.savedButtonInit();
 
         // Enable zoom slider
-        chart.enableZoomSlider();
+        if(!App.isPublic)
+            chart.enableZoomSlider();
 
         // Gantt attachEvent OnAfterTaskAutoSchedule
         //App.Action.Buffer.attachEventOnAfterTaskAutoSchedule();
@@ -239,7 +248,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         ganttSaveLoadIco.style.visibility = 'hidden';
 
-
         ganttSave.onclick = function(event){
             ganttSaveLoadIco.style.visibility = 'visible';
 
@@ -248,9 +256,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 console.log(response);
             });
 
-            //setTimeout(function(){
-            //    ganttSaveLoadIco.style.visibility = 'hidden';
-            //},2000);
         };
 
     };
@@ -339,7 +344,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
         if(predecessor && predecessor.buffer > 0 && !task.is_buffered){
-            chart.readySave = false;
+            //chart.readySave = false;
             App.Action.Buffer.accept(predecessor, task);
         }
         var successor = App.Action.Buffer.getTaskSuccessor(id);
@@ -522,17 +527,23 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // AUTO-SAVE
         var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
         if(chart.readySave === true && chart.readyRequest === true){
+
             ganttSaveLoadIco.style.visibility = 'visible';
             chart.readySave = false;
             chart.readyRequest = false;
+
             console.log('SAVE REQUEST START');
+
             setTimeout(function(){
-                console.log('SAVE REQUEST END');
-                chart.readyRequest = true;
-                ganttSaveLoadIco.style.visibility = 'hidden';
-                /*App.Action.Api.saveAll(function(response){
-                });*/
-            }, 1000)
+
+                App.Action.Api.saveAll(function(response){
+                    console.log('SAVE REQUEST END');
+                    chart.readyRequest = true;
+                    ganttSaveLoadIco.style.visibility = 'hidden';
+                });
+
+            }, 1000);
+
         }
 
     };

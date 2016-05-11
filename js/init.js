@@ -52,6 +52,7 @@ App.require('dependence',
         App.urlScript + 'application/action/project.js',
         App.urlScript + 'application/action/export.js',
         App.urlScript + 'application/action/fitmode.js',
+        App.urlScript + 'application/action/share.js',
         App.urlScript + 'application/action/chart.js',
 
         // Controllers
@@ -85,6 +86,12 @@ function initDependence(list){
     };
 
     App.Controller.Page.construct();
+
+   // App.Controller.Public.construct();
+/*    if(App.uid){
+
+    }else{
+    }*/
 }
 
 
