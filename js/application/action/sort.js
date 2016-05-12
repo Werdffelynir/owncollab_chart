@@ -415,8 +415,13 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             if(!!taskGroup && gantt.getChildren(id).length > 0 && task.text.toLowerCase().indexOf(taskGroup) !== -1 ) {
                 show = true;
             }
-            if(!!resUsers && resUsers.indexOf(task.users) !== -1 ) {
-                show = true;
+            if(!!resUsers) {
+                for(var iu=0; iu < resUsers.length; iu ++){
+                    if(task.users.indexOf(resUsers[iu]) !== -1){
+                        show = true;
+                        break;
+                    }
+                }
             }
 
             return show;
