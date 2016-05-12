@@ -156,6 +156,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
             {name:"id", label:"ID", width: columnWidth.id, template: function(item) {
                 //return (item.$index + 1);
+/*                if(item.is_new){
+                    return '';
+                }*/
                 return item.id;
             }},
 

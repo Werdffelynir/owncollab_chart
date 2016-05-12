@@ -234,11 +234,14 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      * internal iterator for tasks
      * @namespace App.Action.Chart.taskIdIterator
      * @param index
+     * @param is_init
      * @returns {number}
      */
     chart.taskIdIterator = function(index){
-        if(index) chart.lasttaskid = index;
-        return chart.lasttaskid ++;
+        if(index)
+            chart.lasttaskid = index;
+        else
+            return ++ chart.lasttaskid ;
     };
 
 
@@ -342,7 +345,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         task.end_date_origin = Util.objClone(task.end_date);
 
         //gantt.autoSchedule(id);
-
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
         if(predecessor && predecessor.buffer != 0 && !task.is_buffered){
             //chart.readySave = false;
@@ -355,8 +357,11 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             gantt.render();
         }
 
-        if(task.is_new == 1)
-            gantt.changeTaskId(id, chart.taskIdIterator());
+        // todo сделать проверку на идентичность ID
+        if(task.is_new == 1){
+            //gantt.changeTaskId(id, chart.lasttaskid);
+            //App.Action.Chart.taskIdIterator(id);
+        }
 
         // change types task and project by nesting
         if(task.id != 1){
@@ -419,8 +424,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 case "add":
                     //app.action.chart.opt.isNewTask = true;
                     var _id = chart.taskIdIterator();
-                    console.log(_id);
-                    console.log(id);
+                    console.log('_id', _id, 'parent-id', id);
+
                     var _date = new Date(gantt.getTask(id).start_date);
                     var _task = {
                         id: _id,

@@ -358,6 +358,14 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 gantt.autoSchedule(predecessor.id);
 
             }
+            return true;
+        }
+
+        console.log('Is new save', task.is_new);
+
+        if(task.is_new){
+            App.Action.Chart.readySave = true;
+            App.Action.Chart.onGanttRender();
         }
 
         //App.Action.Chart.scrollToTask(id);
