@@ -344,12 +344,12 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //gantt.autoSchedule(id);
 
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
-        if(predecessor && predecessor.buffer > 0 && !task.is_buffered){
+        if(predecessor && predecessor.buffer != 0 && !task.is_buffered){
             //chart.readySave = false;
             App.Action.Buffer.accept(predecessor, task);
         }
         var successor = App.Action.Buffer.getTaskSuccessor(id);
-        if(successor && successor.buffer > 0 && !successor.is_buffered){
+        if(successor && successor.buffer != 0 && !successor.is_buffered){
             chart.readySave = false;
             gantt.updateTask(successor.id);
             gantt.render();
