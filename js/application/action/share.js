@@ -144,7 +144,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
      */
     share.changeValue = function (target){
         var fieldName = target.name;
-console.log(fieldName);
+//console.log(fieldName);
         if(fieldName === 'is_share'){
 
             if(target.checked === true) $('.chart_share_on').show();

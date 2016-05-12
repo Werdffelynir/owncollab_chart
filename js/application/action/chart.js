@@ -108,6 +108,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //gantt.attachEvent("onBeforeTaskDelete", chart.onBeforeTaskDelete);
         gantt.attachEvent("onAfterTaskAdd", chart.onAfterTaskAdd);
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
+        gantt.attachEvent("onAfterTaskDelete", chart.onAfterTaskDelete);
         gantt.attachEvent("onBeforeTaskUpdate", chart.onBeforeTaskUpdate);
 
         gantt.attachEvent("onBeforeGanttRender", chart.onBeforeGanttRender);
@@ -396,6 +397,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //    return true;
     };
 
+    chart.onAfterTaskDelete = function (id, task){
+        chart.readySave = true;
+        chart.onGanttRender();
+    };
 
     chart.onTaskClick = function (id, event){
         var target = event.target;

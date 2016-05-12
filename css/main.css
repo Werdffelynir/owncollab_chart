@@ -634,7 +634,7 @@ b, strong { font-weight: 600 !important }
 }
 
 .predecessor_item_id, .lbox_pl_id{
-    min-width: 20px;
+    min-width: 30px;
     font-weight: bold;
     display: inline-block;
 }

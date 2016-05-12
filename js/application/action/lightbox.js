@@ -548,8 +548,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             fragment = document.createDocumentFragment();
 
         tasks.forEach(function(item){
-            if(item.id == lbox.task.id) return;
-            if(item.type == 'project') return;
+            if(item.id == lbox.task.id || item.id == 1) return;
+            //if(item.type == 'project') return;
 
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
@@ -559,7 +559,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
 
-            _name.innerHTML = '<span class="predecessor_item_id">' + (item.id) + '</span>' + item.text;
+            _name.innerHTML = '<span class="predecessor_item_id">' + (item.id) + '</span>' + (item.type == 'project'?'<b>'+item.text+'</b>':item.text);
             _link.appendChild(_linkElems);
 
             _line.appendChild(_name);
