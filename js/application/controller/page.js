@@ -81,7 +81,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        console.log('onProjectLoaded --->>>', response);
+        console.log('onProjectLoaded >>> ', response);
 
         if(response.errorinfo.length > 2) {
             Error.inline('Response error info [' + response.errorinfo + ']');

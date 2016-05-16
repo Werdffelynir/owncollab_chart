@@ -110,8 +110,11 @@ class MainController extends Controller {
             $params['requesttoken'] = md5($project['share_password'].md5($project['share_link']));
 
             // share time is over
-            if($project['share_is_expire'] == 1 && strtotime($project['share_expire_time']) < time()) {
-                //
+            if($project['share_is_expire'] == '1' && strtotime($project['share_expire_time']) < time()) {
+
+                $params['protected'] = true;
+                $params['template'] = 'guest';
+
             }
             else{
                 //
@@ -144,13 +147,13 @@ class MainController extends Controller {
             }
         }
 
-        if($params['template'] == 'guest'){
+        if($params['template'] == 'guest') {
             $template = new \OCP\Template('', '404', 'guest');
             $template->printPage();
             exit;
         }
 
-        if($params['template'] == 'authenticate'){
+        if($params['template'] == 'authenticate') {
             return new TemplateResponse($this->appName, 'authenticate', [
                 'wrongpw' => $params['wrongpw'],
                 'requesttoken' => $params['requesttoken']
@@ -172,9 +175,9 @@ class MainController extends Controller {
             ];
 
             //return new TemplateResponse($this->appName, 'public', ['json' => $jsonData]);
-
+            // strtotime($project['share_expire_time']) < time()
             $params = [
-                'json' => $jsonData,
+                //'json' => $jsonData,
                 'current_user' => null,
             ];
             return new TemplateResponse($this->appName, 'main', $params);

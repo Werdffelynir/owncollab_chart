@@ -297,10 +297,11 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     chart.scrollToTask = function(task_id){
         var pos = gantt.getTaskNode(task_id); //$(gantt.getTaskNode(task_id)).position();
         // offsetLeft // offsetTop
+        console.log('scrollToTask >>>', task_id, pos, pos.offsetLeft, pos.offsetTop);
         if(typeof pos === 'object'){
             //console.log(task_id, pos, pos.offsetLeft, pos.offsetTop);
             //gantt.scrollTo(pos.left, pos.top)
-            gantt.scrollTo(pos.offsetLeft, pos.offsetTop)
+            gantt.scrollTo(pos.offsetLeft - 100, pos.offsetTop + 100)
         }
     };
 
@@ -424,7 +425,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 case "add":
                     //app.action.chart.opt.isNewTask = true;
                     var _id = chart.taskIdIterator();
-                    console.log('_id', _id, 'parent-id', id);
+                    //console.log('_id', _id, 'parent-id', id);
 
                     var _date = new Date(gantt.getTask(id).start_date);
                     var _task = {
@@ -511,8 +512,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
     chart.onAfterTaskAdd = function  (id, item){
-        chart.scrollToTask(id);
-        gantt.showLightbox(id);
+        Timer.after(200, function(){
+            chart.scrollToTask(id);
+            gantt.showLightbox(id);
+        });
     };
 
     chart.onBeforeGanttRender = function () {
