@@ -305,6 +305,17 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         }
     };
 
+    /**
+     * @namespace App.Action.Chart.scrollToTaskOnlyHorizontal
+     * @param task_id
+     */
+    chart.scrollToTaskOnlyHorizontal = function(task_id){
+        var pos = gantt.getTaskNode(task_id);
+        console.log('scrollToTaskOnlyHorizontal >>>', pos.offsetLeft, pos.offsetTop);
+        gantt.scrollTo(pos.offsetLeft - 100, null)
+    };
+
+
     // Gantt events
     chart.onBeforeLinkAdd = function  (id, link){
         /**
@@ -410,6 +421,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     chart.onTaskClick = function (id, event){
         var target = event.target;
+
+        // scroll to Horizontal
+        //chart.scrollToTaskOnlyHorizontal(id);
 
         // control buttons
         if(target.tagName == 'A' && target.getAttribute('data-control')){

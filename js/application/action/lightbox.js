@@ -361,7 +361,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             return true;
         }
 
-        console.log('Is new save', task.is_new);
+        //console.log('Is new save', task.is_new);
 
         if(task.is_new){
             App.Action.Chart.readySave = true;
@@ -369,6 +369,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         }
 
         //App.Action.Chart.scrollToTask(id);
+        Timer.after(500, function(){
+            App.Action.Chart.scrollToTaskOnlyHorizontal(id)
+        });
 
         return true;
     };
