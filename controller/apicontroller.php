@@ -222,9 +222,9 @@ class ApiController extends Controller {
             }
             else if ($field == 'share_is_expire' || $field == 'share_expire_time'){
 
-                //if($field == 'share_expire_time') $value = ;
-
                 $params[$field] = $value;
+                if($field == 'share_expire_time')
+                    $value = Helper::toTimeFormat($value);
 
                 $result = $this->connect->project()->updateField($field, $value);
                 if(!$result)
@@ -233,6 +233,21 @@ class ApiController extends Controller {
                     $params['result'] = $result;
 
             }
+
+/*
+            // share_password:  123456789
+            else if ($field == 'share_password'){
+
+            }
+            else if ($field == 'share_is_expire'){
+
+            }*/
+
+
+
+
+
+
 
         }else
             $params['error'] = 'API method require - uid and request as admin';

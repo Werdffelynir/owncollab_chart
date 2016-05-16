@@ -144,7 +144,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
      */
     share.changeValue = function (target){
         var fieldName = target.name;
-//console.log(fieldName);
+
         if(fieldName === 'is_share'){
 
             if(target.checked === true) $('.chart_share_on').show();
@@ -171,6 +171,16 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
         }else
 
         // Set expire timeout
+        if(fieldName === 'share_password') {
+
+            //console.log('share_password: ', target.value);
+            share.requestUseShare(fieldName, target.value, function(response) {
+
+            });
+
+        }else
+
+        // Set expire timeout
         if(fieldName === 'share_is_expire') {
 
             if(target.checked === true) $('.chart_share_expiration').show();
@@ -185,14 +195,10 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
         // Set expire timeout
         if(fieldName === 'share_expire_time') {
 
-/*            if(share.readySaveShareExpireTime){
-                share.readySaveShareExpireTime = false;
-                Timer.after(1000, function(){
-                    share.requestUseShare(fieldName, target.checked, function(response) {
-                        share.readySaveShareExpireTime = true;
-                    });
-                });
-            }*/
+            //console.log('share_expire_time: ', target.value)
+            share.requestUseShare(fieldName, target.value, function(response) {
+
+            });
 
         }
 
