@@ -309,6 +309,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             case 'day':
                 gantt.templates.date_scale = null;
                 gantt.config.date_scale = "%j";
+                gantt.config.step = 1;
+                gantt.config.duration_unit = "day";
                 gantt.config.duration_step = 1;
                 gantt.config.subscales = [
                     {unit:"year", step:1, date:"%Y" },
@@ -321,6 +323,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 event = gantt.attachEvent(eventName, function(){
                     conf.option.ganttIsInit = true;
                     conf.option.weekCount = 0;
+                    gantt.config.step = 1;
+                    gantt.config.duration_unit = "week";
+                    gantt.config.duration_step = 1;
                     gantt.templates.date_scale = function(date) {
                         if(!conf.option.weekRecount) {
                             conf.option.weekRecount = DateTime.dateToStr(date);
