@@ -43,9 +43,6 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
             for (var prop in gantt._pull[key]){
                 if(prop.indexOf('$') === -1 && prop != 'start_date_origin' && prop != 'end_date_origin'){
                     cleanTask[prop] = gantt._pull[key][prop];
-
-                    //if(gantt._pull[key].id == 18)
-                    //    console.log("ID 18 : ", gantt._pull[key].start_date, gantt._pull[key].end_date);
                 }
             }
             cleanTasks.push(cleanTask)

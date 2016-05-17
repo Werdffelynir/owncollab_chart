@@ -285,7 +285,7 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
     act.onAfterTaskAutoSchedule = function(task, startDate, link, predecessor){
 
         // todo buffer recalculate
-        var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+        /*var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
 
         if(!isNaN(buffer) && !task.is_buffered ) {
 
@@ -307,7 +307,7 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
             }
             task.is_buffered = true;
         }
-        return false
+        return false*/
 
     };
 

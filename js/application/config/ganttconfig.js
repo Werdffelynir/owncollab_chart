@@ -67,13 +67,13 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.config.auto_scheduling = true;
 
         // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
-        gantt.config.auto_scheduling_strict = true;
+        gantt.config.auto_scheduling_strict = false;
 
         // Defines whether gantt will do autoscheduling on data loading
-        gantt.config.auto_scheduling_initial = true;
+        gantt.config.auto_scheduling_initial = false;
 
         // allows or forbids creation of links from parent tasks (projects) to their children
-        gantt.config.auto_scheduling_descendant_links = true;
+        gantt.config.auto_scheduling_descendant_links = false;
 
         // Making the Gantt chart to display the critical path
         if(conf.dataProject['critical_path'] == 1) {
@@ -127,10 +127,10 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         conf.scale(conf.dataProject['scale_type']);
 
         // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = true;
+        gantt.config.autofit = false;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = true;
+        gantt.config.fit_tasks = false;
 
         // Apply scale fit
         //if(conf.dataProject['scale_fit']) {
@@ -297,6 +297,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                     };
                     gantt.detachEvent(event);
                 });
+                gantt.config.step = 1;
+                gantt.config.duration_unit = "hour";
                 gantt.config.duration_step = 1;
                 gantt.config.subscales = [
                     {unit:"month", step:1, date:"%F %Y" },

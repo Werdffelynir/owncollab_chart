@@ -374,10 +374,12 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
         if(predecessor && predecessor.buffer != 0 && !task.is_buffered){
             //chart.readySave = false;
+            //console.log('onAfterTaskUpdate>>>predecessor');
             App.Action.Buffer.accept(predecessor, task);
         }
         var successor = App.Action.Buffer.getTaskSuccessor(id);
-        if(successor && successor.buffer != 0 && !successor.is_buffered){
+        if(successor && task.buffer != 0 && !task.is_buffered){
+            //console.log('onAfterTaskUpdate>>>successor', task.buffer);
             chart.readySave = false;
             gantt.updateTask(successor.id);
             gantt.render();
