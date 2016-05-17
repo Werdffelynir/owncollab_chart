@@ -292,11 +292,12 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             case 'hour':
                 event = gantt.attachEvent("onBeforeGanttRender", function(){
                     gantt.templates.date_scale = function(date) {
-                        var h = gantt.date.date_to_str("%G", true);
+                        var h = gantt.date.date_to_str("%G");
                         return "<b>" + (parseInt(h(date)) + 1) + "</b>";
                     };
                     gantt.detachEvent(event);
                 });
+                gantt.config.duration_step = 1;
                 gantt.config.subscales = [
                     {unit:"month", step:1, date:"%F %Y" },
                     {unit:"day", step:1, date:"%l, %j" }
@@ -306,6 +307,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             case 'day':
                 gantt.templates.date_scale = null;
                 gantt.config.date_scale = "%j";
+                gantt.config.duration_step = 1;
                 gantt.config.subscales = [
                     {unit:"year", step:1, date:"%Y" },
                     {unit:"month", step:1, date:"%F" }

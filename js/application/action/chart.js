@@ -121,6 +121,14 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             Error.inline('Read-only', 'Access ')
         }
 
+
+        // ------------------ configure ------------------
+        //gantt.config.work_time = true;
+        //gantt.config.correct_work_time = true;
+
+
+
+        gantt.config.initial_scroll = true;
         gantt.config.server_utc = true;
         //gantt.config.keep_grid_width = true;
         //gantt.config.drag_resize = false;
