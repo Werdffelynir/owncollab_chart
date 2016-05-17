@@ -86,8 +86,10 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
      * Base settings gantt.config
      * @namespace App.Config.GanttConfig.base
      */
-    conf.base = function(){
+    conf.base = function() {
 
+        gantt.config.preserve_scroll = true;
+        gantt.config.initial_scroll = true;
         gantt.config.grid_resize = true;
         gantt.config.undo = true;
         gantt.config.redo = true;
@@ -290,7 +292,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             case 'hour':
                 event = gantt.attachEvent("onBeforeGanttRender", function(){
                     gantt.templates.date_scale = function(date) {
-                        var h = gantt.date.date_to_str("%G");
+                        var h = gantt.date.date_to_str("%G", true);
                         return "<b>" + (parseInt(h(date)) + 1) + "</b>";
                     };
                     gantt.detachEvent(event);

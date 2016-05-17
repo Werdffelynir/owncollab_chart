@@ -37,7 +37,20 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
      * @returns {Array}
      */
     proj.tasks = function (){
-        return Util.realObjToArr(gantt._pull);
+        var cleanTasks = [];
+        for(var key in gantt._pull){
+            var cleanTask = {};
+            for (var prop in gantt._pull[key]){
+                if(prop.indexOf('$') === -1 && prop != 'start_date_origin' && prop != 'end_date_origin'){
+                    cleanTask[prop] = gantt._pull[key][prop];
+
+                    if(gantt._pull[key].id == 18)
+                        console.log("ID 18 : ", gantt._pull[key].start_date, gantt._pull[key].end_date);
+                }
+            }
+            cleanTasks.push(cleanTask)
+        }
+        return cleanTasks;
     };
 
     proj.onlyVisiblyTasks = function (){

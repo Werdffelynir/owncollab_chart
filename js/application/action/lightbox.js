@@ -130,12 +130,14 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         var startDate = DataStore.get('projectTask').start_date;
 
         $('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
-            minDate: startDate,
+            minDate: DateTime.addDays(-30, startDate),
             maxDate: DateTime.addDays(365, startDate),
+            timezone: '0000',
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
+            //showTimezone: true,
             onSelect: lbox.onChangeLightboxInputDate
         });
 
@@ -145,6 +147,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 return DateTime.strToDate(fsd?fsd:startDate);
             })(),
             maxDate: DateTime.addDays(365, startDate),
+            timezone: '0000',
             controlType: 'select',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
@@ -196,9 +199,13 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             var newEndDate = DateTime.addDays(7, DateTime.strToDate(date));
             lbox.task.end_date = newEndDate;
             $('input[name=lbox_end_date]').val(DateTime.dateToStr(newEndDate));
+
+            //lbox.task.end_date = gantt.calculateEndDate(lbox.task.start_date, lbox.task.duration);
+            //$('input[name=lbox_end_date]').val(DateTime.dateToStr(lbox.task.end_date));
         }
 
         lbox.task[name] = DateTime.strToDate(date);
+        console.log(name, lbox.task[name]);
     };
 
     lbox.onClickLightboxInputMilestone = function (event) {

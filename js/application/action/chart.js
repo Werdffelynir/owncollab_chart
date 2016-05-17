@@ -69,16 +69,17 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             }
 
             // fixed date if
-            if(DateTime.strToDate(task.start_date).getTime() >= DateTime.strToDate(task.end_date).getTime()) {
+            /*if(DateTime.strToDate(task.start_date).getTime() >= DateTime.strToDate(task.end_date).getTime()) {
                 task.end_date = DateTime.dateToStr( DateTime.addDays(7, DateTime.strToDate(task.start_date)) );
-            }
+            }*/
 
-            if(task['duration'] < 1){
+/*            if(task['duration'] < 1){
                 task['duration'] = 1;
-            }
+            }*/
 
             // Buffer update date position to time with buffer
             task.is_buffered = false;
+            //console.log('START INIT --------->>>>>>',task.start_date,DateTime.strToDate(task.start_date) );
             task.start_date_origin = DateTime.strToDate(task.start_date);
             task.end_date_origin = DateTime.strToDate(task.end_date);
 
@@ -120,7 +121,12 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             Error.inline('Read-only', 'Access ')
         }
 
-        // run gantt init
+        gantt.config.server_utc = true;
+        //gantt.config.keep_grid_width = true;
+        //gantt.config.drag_resize = false;
+        //gantt.config.autofit = false;
+
+        // ------------------ run gantt init ------------------
         gantt.init(chart.contentElement);
 
         // run parse data
@@ -257,7 +263,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
             App.Action.Api.saveAll(function(response){
                 ganttSaveLoadIco.style.visibility = 'hidden';
-                console.log(response);
+                console.log('saveAll >>>', response);
             });
 
         };
@@ -297,11 +303,11 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     chart.scrollToTask = function(task_id){
         var pos = gantt.getTaskNode(task_id); //$(gantt.getTaskNode(task_id)).position();
         // offsetLeft // offsetTop
-        console.log('scrollToTask >>>', task_id, pos, pos.offsetLeft, pos.offsetTop);
+        //console.log('scrollToTask >>>', task_id, pos, pos.offsetLeft, pos.offsetTop);
         if(typeof pos === 'object'){
             //console.log(task_id, pos, pos.offsetLeft, pos.offsetTop);
             //gantt.scrollTo(pos.left, pos.top)
-            gantt.scrollTo(pos.offsetLeft - 100, pos.offsetTop + 100)
+            gantt.scrollTo(pos.offsetLeft - 100, pos.offsetTop)
         }
     };
 
@@ -311,7 +317,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     chart.scrollToTaskOnlyHorizontal = function(task_id){
         var pos = gantt.getTaskNode(task_id);
-        console.log('scrollToTaskOnlyHorizontal >>>', pos.offsetLeft, pos.offsetTop);
+        //console.log('scrollToTaskOnlyHorizontal >>>', pos.offsetLeft, pos.offsetTop);
         gantt.scrollTo(pos.offsetLeft - 100, null)
     };
 

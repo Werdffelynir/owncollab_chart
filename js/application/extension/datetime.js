@@ -16,7 +16,7 @@ if(App.namespace) { App.namespace('Extension.DateTime', function(App) {
      */
     dateTime.dateToStr = function (date, mask) {
         mask = mask || "%d.%m.%Y %H:%i";
-        var formatFunc = gantt.date.date_to_str(mask);
+        var formatFunc = gantt.date.date_to_str(mask, true);
         return formatFunc(date);
     };
 
@@ -27,8 +27,8 @@ if(App.namespace) { App.namespace('Extension.DateTime', function(App) {
      * @param mask
      */
     dateTime.strToDate = function (date, mask) {
-        mask = mask || "%d.%m.%Y %H:%i";
-        var formatFunc = gantt.date.str_to_date(mask);
+        mask = mask || "%d.%m.%Y %H:%i:s";
+        var formatFunc = gantt.date.str_to_date(mask, true);
         return formatFunc(date);
     };
 

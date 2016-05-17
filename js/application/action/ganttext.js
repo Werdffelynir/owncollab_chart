@@ -65,7 +65,7 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
      * @namespace App.Action.GanttExt.showTodayLine
      */
     ganttExt.showTodayLine = function (){
-        var date_to_str = gantt.date.date_to_str(gantt.config.task_date),
+        var date_to_str = gantt.date.date_to_str(gantt.config.task_date, true),
             today = new Date();
 
         gantt.addMarker({
@@ -73,6 +73,7 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
             title:"Today: "+ date_to_str(today),
             start_date: today
         });
+
     };
 
     /**
