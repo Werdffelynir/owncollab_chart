@@ -291,7 +291,8 @@ class ApiController extends Controller {
             $project = isset($data['project']) ? json_decode($data['project'], true) : false;
         }catch(\Exception $error){$params['errorinfo'] .= "project json_decode error";}
 
-        if($this->isAdmin && $tasks && $links){
+        if($this->isAdmin && ( $tasks || $links )){
+
             $params['isadmin'] = true;
 
             $this->connect->db->beginTransaction();

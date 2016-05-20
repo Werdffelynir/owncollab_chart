@@ -337,25 +337,21 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         var sourceTask = gantt.getTask(link.source);
         var targetTask = gantt.getTask(link.target);
+
         var predecessor = App.Action.Buffer.getTaskPredecessor(link.target);
-        if(predecessor){
-            try{
-                var buffersObject = JSON.parse(targetTask.buffers);
-                buffersObject.p = sourceTask.id;
-
-                //console.log("buffersObject", targetTask, buffersObject);
-
-                targetTask.buffers = JSON.stringify(buffersObject);
-            }catch(error){}
-
+        if(predecessor && targetTask.id != predecessor.id) {
+            App.Action.Lightbox.predecessorLast = {dataTaskid:predecessor.id};
             App.Action.Lightbox.deleteLink(predecessor.id, link.target);
-            //console.log('targetTask', targetTask);
-            //gantt.updateTask(targetTask.id);
             gantt.render();
         }
 
-        //console.log('sourceTask >>>>>> ', sourceTask, predecessor);
-        //if(sourceTask) App.Action.Lightbox.deleteLinksWithSource(sourceTask.id);
+        try{
+            var buffersObject = JSON.parse(targetTask.buffers);
+            buffersObject.p = sourceTask.id;
+            targetTask.buffers = JSON.stringify(buffersObject);
+        }catch(error){}
+
+        return true;
     };
     chart.onAfterLinkAdd = function  (id, item){
         gantt.changeLinkId(id, chart.linkIdIterator());
