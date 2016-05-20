@@ -99,7 +99,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         // pdf_head_center: "", pdf_head_right: "", pdf_footer_left: "", pdf_footer_center: "", pdf_footer_right: "", pdf_size: ""
 
         //var styleLink = '<link rel="stylesheet" href="'+app.protocol+"://"+app.host+app.url+'/css/dhtmlxgantt.css">';
-        var styleLink = '<link rel="stylesheet" href="https://owncollab.andreasseiler.com/apps/owncollab_chart/css/dhtmlxgantt.css">';
+        var styleLink = '<link rel="stylesheet" type="text/css" href="https://owncollab.andreasseiler.com/apps/owncollab_chart/css/dhtmlxgantt.css">';
         var style = Util.createStyle();
 
         style.add('.tbl','display:table; width:100%');

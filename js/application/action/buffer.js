@@ -158,6 +158,22 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
     };
 
     /**
+     * @namespace App.Action.Buffer.getTaskSuccessors
+     * @param id
+     * @returns {*}
+     */
+    act.getTaskSuccessors = function (id) {
+        var links = gantt.getLinks(),
+            successor = [];
+        for(var i = 0; i < links.length; i ++) {
+            var item = links[i];
+            if(item.source == id) {
+                successor.push(gantt.getTask(item.target));
+            }
+        }
+        return successor.length > 0 ? successor : false;
+    };
+    /**
      * @namespace App.Action.Buffer.addBufferFS
      * @param predecessor
      * @param successor
@@ -191,8 +207,8 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
      * @returns {*}
      */
     act.addBufferSF = function (predecessor, successor, buffer) {
-        successor.start_date = act.calcBuffer(predecessor.start_date, buffer);
-        successor.end_date = gantt.calculateEndDate(successor.start_date, successor.duration);
+        successor.end_date = act.calcBuffer(predecessor.start_date, buffer);
+        successor.start_date = gantt.calculateEndDate(successor.end_date, -successor.duration);
         successor.is_buffered = true;
     };
 
@@ -253,7 +269,23 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
      */
     act.accept = function(predecessor, successor){
 
-        var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+        //console.log('predecessor.buffers',predecessor.buffers);
+        //console.log('successor.buffers',successor.buffers);
+        //console.log('JSON.parse',JSON.parse(successor.buffers));
+        //console.log('buffers', buffers);
+        //console.log('predecessor.id', predecessor.id);
+
+        try{
+            var buffers = JSON.parse(successor.buffers);
+            if(typeof buffers !== 'object' || buffers.p != predecessor.id){
+                return
+            }
+        }catch (error) {
+            return
+        }
+
+        //var buffer = Util.isNum(predecessor.buffer) ? parseInt(predecessor.buffer) : 0;
+        var buffer = Util.isNum(buffers.b) ? parseInt(buffers.b) : 0;
         var link = act.getTargetLink(successor.id);
 
         if(link && link.source == predecessor.id && !isNaN(buffer) && !successor.is_buffered){

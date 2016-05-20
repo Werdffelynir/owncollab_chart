@@ -193,19 +193,19 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     lbox.onChangeLightboxInputDate = function (date, picObj){
         if(!lbox.task || !lbox.field) return;
         var name = this['name'].substr(5);
+        var value_date = DateTime.strToDate(date);
 
         // change end date
-        if(name == 'start_date'){
-            var newEndDate = DateTime.addDays(7, DateTime.strToDate(date));
-            lbox.task.end_date = newEndDate;
-            $('input[name=lbox_end_date]').val(DateTime.dateToStr(newEndDate));
-
-            //lbox.task.end_date = gantt.calculateEndDate(lbox.task.start_date, lbox.task.duration);
-            //$('input[name=lbox_end_date]').val(DateTime.dateToStr(lbox.task.end_date));
+        if(name == 'start_date') {
+            if(lbox.task.end_date < value_date) {
+                var newEndDate = DateTime.addDays(7, value_date);
+                lbox.task.end_date = newEndDate;
+                $('input[name=lbox_end_date]').val(DateTime.dateToStr(newEndDate));
+            }
         }
 
         lbox.task[name] = DateTime.strToDate(date);
-        console.log(name, lbox.task[name]);
+
     };
 
     lbox.onClickLightboxInputMilestone = function (event) {
@@ -565,23 +565,35 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         var tasks = gantt._get_tasks_data(),
             fragment = document.createDocumentFragment();
 
+        var buffer = 0;
+        try{
+            buffer = JSON.parse(lbox.task.buffers).b;
+        }catch (error){}
+
         tasks.forEach(function(item){
+
             if(item.id == lbox.task.id || item.id == 1) return;
+
+
+
             //if(item.type == 'project') return;
+            //console.log('buffer before ---- >>>>> ',item.id, buffer);
 
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
                 _link = document.createElement('div'),
-                _linkElems = lbox.predecessorLinkGenerate2(item.id, item.buffer);
+                _linkElems = lbox.predecessorLinkGenerate2(item.id, buffer);
+                //_linkElems = lbox.predecessorLinkGenerate2(item.id, item.buffer);
+
 
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
 
             _name.innerHTML = '<span class="predecessor_item_id">' + (item.id) + '</span>' + (item.type == 'project'?'<b>'+item.text+'</b>':item.text);
             _link.appendChild(_linkElems);
-
             _line.appendChild(_name);
             _line.appendChild(_link);
+            _link.setAttribute('data-taskid', item.id);
             fragment.appendChild(_line);
         });
 
@@ -624,13 +636,14 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         _inpBuffer.name = 'buffer_' + id;
         _inpBuffer.type = 'text';
 
-        if(!isNaN(buffer)) {
+        //if(!isNaN(buffer)) {
             //_inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
-            _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(0);
-        }
+        //    _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(0);
+        //}
+        var inpsName = 'inpsname'; //'plg_' + id;
 
         _inpFS.id = 'plg_fs_' + id;
-        _inpFS.name = 'plg_' + id;
+        _inpFS.name = inpsName;
         _inpFS.type = 'radio';
         _inpFS.value = 0;
         _inpFSLabel.setAttribute('for', 'plg_fs_' + id);
@@ -638,7 +651,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         _inpFSLabel.appendChild(document.createTextNode('FS'));
 
         _inpSS.id = 'plg_ss_' + id;
-        _inpSS.name = 'plg_' + id;
+        _inpSS.name = inpsName;
         _inpSS.type = 'radio';
         _inpSS.value = 1;
         _inpSSLabel.setAttribute('for', 'plg_ss_' + id);
@@ -646,7 +659,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         _inpSSLabel.appendChild(document.createTextNode('SS'));
 
         _inpFF.id = 'plg_ff_' + id;
-        _inpFF.name = 'plg_' + id;
+        _inpFF.name = inpsName;
         _inpFF.type = 'radio';
         _inpFF.value = 2;
         _inpFFLabel.setAttribute('for', 'plg_ff_' + id);
@@ -654,20 +667,21 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         _inpFFLabel.appendChild(document.createTextNode('FF'));
 
         _inpSF.id = 'plg_sf_' + id;
-        _inpSF.name = 'plg_' + id;
+        _inpSF.name = inpsName;
         _inpSF.type = 'radio';
         _inpSF.value = 3;
+        //_inpSF.setAttribute('data-pid',id);
         _inpSFLabel.setAttribute('for', 'plg_sf_' + id);
         _inpSFLabel.appendChild(_inpSFSpan);
         _inpSFLabel.appendChild(document.createTextNode('SF'));
 
-        _inpClear.id = 'plg_clear_' + id;
+/*        _inpClear.id = 'plg_clear_' + id;
         _inpClear.name = 'plg_' + id;
         _inpClear.type = 'radio';
         _inpClear.value = 'clear';
         _inpClearLabel.setAttribute('for', 'plg_clear_' + id);
         _inpClearLabel.appendChild(_inpClearSpan);
-        _inpClearLabel.appendChild(document.createTextNode('no'));
+        _inpClearLabel.appendChild(document.createTextNode('no'));*/
 
         // todo:linksTarget to linksSource, change _link.source to _link.target
         if(linksSource.length > 0){
@@ -676,11 +690,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 var _link = gantt.getLink(_item);
 
                 // 18 19 Object {id: "54", source: "18", target: "19", type: "0", deleted: null}
-                //console.log(id, lbox.task.id, _link);
+
+
                 if(_link.target == lbox.task.id && _link.source == id && linkTarget == null) linkTarget = _link;
 
                 if(_link.target == lbox.task.id) {
-
+                    lbox.predecessorLast = { dataTaskid: _link.source };
                     _isChecked = true;
                     switch (_link.type){
                         case '0': _inpFS.checked = true; break;
@@ -690,16 +705,21 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                     }
                 }
             });
-
-            //console.log('link ----- ', linkTarget);
+/*
+console.log('linksSource ----- >>>>>>>  ',  linksSource);
+console.log('linkTarget ----- >>>>>>>  ',  linkTarget);
+console.log('buffer ----- >>>>>>>  ',  id,  buffer);
+console.log('buffer ----- >>>>>>>  ',  buffer, id, lbox.task.id, linkTarget);
+*/
+            //
             if(!_isChecked) {
-                _inpClear.checked = true;
+                //_inpClear.checked = true;
             }else if (typeof linkTarget === 'object' && !isNaN(buffer) ){
                 _inpBuffer.value = App.Action.Buffer.convertSecondsToBuffer(buffer);
             }
 
         } else {
-            _inpClear.checked = true;
+            //_inpClear.checked = true;
         }
 
         fragment.appendChild(_inpBuffer);
@@ -716,59 +736,98 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         fragment.appendChild(_inpFF);
         fragment.appendChild(_inpFFLabel);
 
-        fragment.appendChild(_inpClear);
-        fragment.appendChild(_inpClearLabel);
+        //fragment.appendChild(_inpClear);
+        //fragment.appendChild(_inpClearLabel);
 
         return fragment;
     };
 
+
+    //lbox.predecessorLinkGenerate3 = function(id, buffer){
+        //var fragment = document.createDocumentFragment();
+        //var line = Util.createElement('');
+    //};
+    lbox.predecessorLast = null;
     lbox.predecessorOnClickListener = function  (popup, target){
         if(!lbox.task || !lbox.field) return;
 
+
+        $('input[type=radio]', popup).on('change', function(event){
+            //var that = this;
+            //console.log('change >>>>>>> ', that);
+        });
+
         $('input[type=radio]', popup).on('click', function(event){
-            var id = this.name.split('_')[1];
-            var type = this.value;
+
+            var that = this;
+            var id = that.parentNode.getAttribute('data-taskid');
+            var type = that.value;
             var inpBuffer = $('input[type=text][name=buffer_'+id+']');
 
-            if(type == 'clear'){
-                //lbox.deleteLinksWithTarget(id);
-                lbox.deleteLinksWithSource(id);
-                inpBuffer.val(App.Action.Buffer.convertSecondsToBuffer(0));
+
+            if(that === lbox.predecessorLast ){
+                lbox.predecessorLast = null;
+                console.log('that >>>>>>> ', that);
+
+                that.checked = false;
+
+                //lbox.deleteLinksWithSource(id);
+                lbox.deleteLink(id, lbox.task.id);
+
             }else{
-                //lbox.deleteLinksWithTarget(id);
-                lbox.deleteLinksWithSource(id);
+                if(lbox.predecessorLast){
+                    var pid = lbox.predecessorLast.dataTaskid;
+
+                    var pidInpBuffer = $('input[type=text][name=buffer_'+pid+']');
+                    pidInpBuffer.val('');
+
+                    if( id !== pid ) {
+                        lbox.deleteLink(pid, lbox.task.id);
+                    }else if( id === pid ){
+                        lbox.deleteLink(pid, lbox.task.id);
+                    }
+                }
+
+                try{
+                    var buffersObject = JSON.parse(lbox.task.buffers);
+                    buffersObject.p = id;
+                    console.log('buffersObject', buffersObject);
+                    lbox.task.buffers = JSON.stringify(buffersObject);
+                }catch(error){}
 
                 if(parseInt(inpBuffer.attr('data-buffer-value')) > 0)
                     inpBuffer.val(App.Action.Buffer.convertSecondsToBuffer(inpBuffer.attr('data-buffer-value')));
 
-                var linkId = gantt.addLink({
+
+                lbox.predecessorLast = that;
+                lbox.predecessorLast.dataTaskid = id;
+                lbox.predecessorLast.dataLink = gantt.addLink({
                     id: App.Action.Chart.linkIdIterator(),
                     source:  id,
                     target: lbox.task['id'],
                     type: type
                 });
             }
+
         });
 
         // todo: buffer fix
         $('input[type=text]', popup).on('change', function(event){
             var id = this.name.split('_')[1],
-                task = gantt.getTask(id),
+                stask = lbox.task,
                 inputElem = this;
 
-
-            if(task){
-
+            if(stask){
                 var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(this.value);
                 var bufferValue = App.Action.Buffer.convertSecondsToBuffer(bufferSeconds);
-
                 setTimeout(function(){
-                    App.Action.Buffer.set(task.id, bufferSeconds);
+                    App.Action.Buffer.set(stask.id, bufferSeconds);
                     inputElem.value = bufferValue;
-                    task['buffer'] = bufferSeconds;
-                    gantt.updateTask(task.id);
+                    stask['buffers'] = '{"p":"'+id+'","b":"'+bufferSeconds+'"}';
+                    gantt.updateTask(stask.id);
                 },300);
             }
+
         });
 
         $('input[type=text]', popup).on('click', function(event){
@@ -778,15 +837,37 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         $('input[type=text]', popup).on('keyup', function(event){});
 
     };
+
+    /**
+     *
+     * @namespace App.Action.Lightbox.deleteLink
+     * @param source
+     * @param target
+     */
+    lbox.deleteLink = function  (source, target){
+        var link = null;
+        var links = gantt.getLinks();
+        if(target && source && links.length > 0){
+            for(var i = 0; i < links.length; i ++){
+                link = links[i];
+                if (link.target == target && link.source == source){
+                    gantt.deleteLink(link.id);
+                    break
+                }
+            }
+        }
+    };
+
     /**
      * @namespace App.Action.Lightbox.deleteLinksWithTarget
      * @param target
      */
     lbox.deleteLinksWithTarget = function  (target){
-        var task = gantt.getTask(target),
-            links = task.$target;
-        if(links.length > 0){
-            links.map(function(linkId){
+        var task = gantt.getTask(target);
+
+            //links = task.$target;
+        if(task.$target && task.$target.length > 0){
+            task.$target.map(function(linkId){
                 gantt.deleteLink(linkId);
             });
         }
@@ -797,7 +878,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @param source
      */
     lbox.deleteLinksWithSource = function  (source) {
-        var task = gantt.getTask(source), links = task.$source;
+        var task = gantt.getTask(source),
+            links = task.$source;
         if(links.length > 0) {
             links.map(function(linkId){
                 gantt.deleteLink(linkId);

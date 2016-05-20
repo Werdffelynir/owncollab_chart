@@ -81,7 +81,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
-        console.log('onProjectLoaded >>> ', response);
+        //console.log('onProjectLoaded >>> ', response);
 
         if(response.errorinfo.length > 2) {
             Error.inline('Response error info [' + response.errorinfo + ']');
@@ -153,12 +153,14 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         Chart.init(node.gantt, ganttBefore, ganttReady);
     }
+
+
     function ganttBefore(){
-        console.log('ganttBefore');
+        //console.log('ganttBefore');
     }
 
     function ganttReady(){
-        console.log('ganttReady');
+        //console.log('ganttReady');
 
         // Buffer enabled
         App.Action.Buffer.init();

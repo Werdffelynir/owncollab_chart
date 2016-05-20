@@ -35,6 +35,7 @@ class Task
         'parent',
         'open',
         'buffer',
+        'buffers',
     ];
 
 
@@ -92,12 +93,12 @@ class Task
      * @return array
      */
     public function add(array $data) {
-        $SQL = "INSERT INTO $this->tableName (`id`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`, `open`, `buffer`) VALUES ";
+        $SQL = "INSERT INTO $this->tableName (`id`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`, `open`, `buffer`, `buffers`) VALUES ";
 
         $rowData = [];
         for($iRow=0; $iRow < count($data); $iRow++) {
 
-            $SQL .= (empty($rowData)?'':',') . "( :id_$iRow, :type_$iRow, :text_$iRow, :users_$iRow, :start_date_$iRow, :end_date_$iRow, :duration_$iRow, :order_$iRow, :progress_$iRow, :sortorder_$iRow, :parent_$iRow, :open_$iRow, :buffer_$iRow )";
+            $SQL .= (empty($rowData)?'':',') . "( :id_$iRow, :type_$iRow, :text_$iRow, :users_$iRow, :start_date_$iRow, :end_date_$iRow, :duration_$iRow, :order_$iRow, :progress_$iRow, :sortorder_$iRow, :parent_$iRow, :open_$iRow, :buffer_$iRow, :buffers_$iRow )";
 
             for($i = 0; $i < count($this->fields); $i++) {
                 $field = $this->fields[$i];
@@ -118,6 +119,7 @@ class Task
                     if($field == 'parent')          $value = (int) (empty($value)?1:$value);
                     if($field == 'open')            $value = (int) (empty($value)?1:$value);
                     if($field == 'buffer')          $value = (int) (empty($value)?0:$value);
+                    if($field == 'buffers')         $value = (string) (empty($value)?'':$value);
 
                     $rowData[":{$field}_{$iRow}"] = $value;
                 }else{

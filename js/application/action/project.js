@@ -36,13 +36,16 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
      * @namespace App.Action.Project.tasks
      * @returns {Array}
      */
-    proj.tasks = function (){
+    proj.tasks = function (toUTC){
         var cleanTasks = [];
         for(var key in gantt._pull){
             var cleanTask = {};
             for (var prop in gantt._pull[key]){
                 if(prop.indexOf('$') === -1 && prop != 'start_date_origin' && prop != 'end_date_origin'){
-                    cleanTask[prop] = gantt._pull[key][prop];
+                    if (toUTC === true && (prop == 'start_date') || prop != 'end_date')
+                        cleanTask[prop] = gantt._pull[key][prop];
+                    else
+                        cleanTask[prop] = gantt._pull[key][prop];
                 }
             }
             cleanTasks.push(cleanTask)

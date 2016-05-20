@@ -12,7 +12,7 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
      * @param error
      */
     api.init = function(error) {
-        Error = error;
+        Error = App.Action.Error;
     };
 
     /**
@@ -30,12 +30,15 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
     api.saveAll = function(callback) {
 
         var store = App.Module.DataStore,
+            tasks = App.Action.Project.tasks(),
 
             dataSend = {
-                tasks: JSON.stringify( App.Action.Project.tasks() ),
+                tasks: JSON.stringify( tasks ),
                 links: JSON.stringify( gantt.getLinks() ),
                 project: JSON.stringify( store.get('project') )
             };
+
+        //console.log(tasks);
 
         if(api.saveAllReady){
             api.saveAllReady = false;
@@ -56,7 +59,7 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
      * @param args
      */
     api.request = function(key, callback, args) {
-        console.log('dataSend-request', args);
+        //console.log('dataSend-request', args);
         $.ajax({
             url: App.url + '/api',
             data: {key: key, uid: App.uid, data: args},

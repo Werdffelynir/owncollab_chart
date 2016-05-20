@@ -67,13 +67,13 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.config.auto_scheduling = true;
 
         // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
-        gantt.config.auto_scheduling_strict = false;
+        gantt.config.auto_scheduling_strict = true;
 
         // Defines whether gantt will do autoscheduling on data loading
-        gantt.config.auto_scheduling_initial = false;
+        gantt.config.auto_scheduling_initial = true;
 
         // allows or forbids creation of links from parent tasks (projects) to their children
-        gantt.config.auto_scheduling_descendant_links = false;
+        gantt.config.auto_scheduling_descendant_links = true;
 
         // Making the Gantt chart to display the critical path
         if(conf.dataProject['critical_path'] == 1) {
@@ -298,8 +298,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                     gantt.detachEvent(event);
                 });
                 gantt.config.step = 1;
-                gantt.config.duration_unit = "hour";
-                gantt.config.duration_step = 1;
+                gantt.config.duration_unit = "minute";
+                gantt.config.duration_step = 30;
                 gantt.config.subscales = [
                     {unit:"month", step:1, date:"%F %Y" },
                     {unit:"day", step:1, date:"%l, %j" }
@@ -310,8 +310,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 gantt.templates.date_scale = null;
                 gantt.config.date_scale = "%j";
                 gantt.config.step = 1;
-                gantt.config.duration_unit = "day";
-                gantt.config.duration_step = 1;
+                gantt.config.duration_unit = "minute";
+                gantt.config.duration_step = 30;
                 gantt.config.subscales = [
                     {unit:"year", step:1, date:"%Y" },
                     {unit:"month", step:1, date:"%F" }
@@ -324,8 +324,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                     conf.option.ganttIsInit = true;
                     conf.option.weekCount = 0;
                     gantt.config.step = 1;
-                    gantt.config.duration_unit = "week";
-                    gantt.config.duration_step = 1;
+                    gantt.config.duration_unit = "minute";
+                    gantt.config.duration_step = 30;
                     gantt.templates.date_scale = function(date) {
                         if(!conf.option.weekRecount) {
                             conf.option.weekRecount = DateTime.dateToStr(date);

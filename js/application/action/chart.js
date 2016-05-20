@@ -80,8 +80,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             // Buffer update date position to time with buffer
             task.is_buffered = false;
             //console.log('START INIT --------->>>>>>',task.start_date,DateTime.strToDate(task.start_date) );
-            task.start_date_origin = DateTime.strToDate(task.start_date);
-            task.end_date_origin = DateTime.strToDate(task.end_date);
+            //task.start_date_origin = DateTime.strToDate(task.start_date);
+            //task.end_date_origin = DateTime.strToDate(task.end_date);
 
             return task;
         });
@@ -126,10 +126,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //gantt.config.work_time = true;
         //gantt.config.correct_work_time = true;
 
-
-
         gantt.config.initial_scroll = true;
         gantt.config.server_utc = true;
+
         //gantt.config.keep_grid_width = true;
         //gantt.config.drag_resize = false;
         //gantt.config.autofit = false;
@@ -335,9 +334,28 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         /**
          * Removed other links
          */
+
         var sourceTask = gantt.getTask(link.source);
-        if(sourceTask)
-            App.Action.Lightbox.deleteLinksWithSource(sourceTask.id);
+        var targetTask = gantt.getTask(link.target);
+        var predecessor = App.Action.Buffer.getTaskPredecessor(link.target);
+        if(predecessor){
+            try{
+                var buffersObject = JSON.parse(targetTask.buffers);
+                buffersObject.p = sourceTask.id;
+
+                //console.log("buffersObject", targetTask, buffersObject);
+
+                targetTask.buffers = JSON.stringify(buffersObject);
+            }catch(error){}
+
+            App.Action.Lightbox.deleteLink(predecessor.id, link.target);
+            //console.log('targetTask', targetTask);
+            //gantt.updateTask(targetTask.id);
+            gantt.render();
+        }
+
+        //console.log('sourceTask >>>>>> ', sourceTask, predecessor);
+        //if(sourceTask) App.Action.Lightbox.deleteLinksWithSource(sourceTask.id);
     };
     chart.onAfterLinkAdd = function  (id, item){
         gantt.changeLinkId(id, chart.linkIdIterator());
@@ -367,32 +385,29 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         chart.readySave = true;
 
-        task.start_date_origin = Util.objClone(task.start_date);
-        task.end_date_origin = Util.objClone(task.end_date);
+        //task.start_date_origin = Util.objClone(task.start_date);
+        //task.end_date_origin = Util.objClone(task.end_date);
 
-        //gantt.autoSchedule(id);
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
-        if(predecessor && predecessor.buffer != 0 && !task.is_buffered){
-            //chart.readySave = false;
-            //console.log('onAfterTaskUpdate>>>predecessor');
+
+        //console.log('task predecessor', task, predecessor);
+
+        if(predecessor){
             App.Action.Buffer.accept(predecessor, task);
         }
-        var successor = App.Action.Buffer.getTaskSuccessor(id);
-        if(successor && task.buffer != 0 && !task.is_buffered){
-            //console.log('onAfterTaskUpdate>>>successor', task.buffer);
+
+        var successors = App.Action.Buffer.getTaskSuccessors(id);
+        if(successors){
             chart.readySave = false;
-            gantt.updateTask(successor.id);
+            successors.map(function(successor_item){
+                App.Action.Buffer.accept(task, successor_item);
+                gantt.updateTask(successor_item.id);
+            });
             gantt.render();
         }
 
-        // todo сделать проверку на идентичность ID
-        if(task.is_new == 1){
-            //gantt.changeTaskId(id, chart.lasttaskid);
-            //App.Action.Chart.taskIdIterator(id);
-        }
-
         // change types task and project by nesting
-        if(task.id != 1){
+        if(task.id != 1) {
             var parent = gantt.getTask(task.parent);
             if(parent.type != 'project'){
                 parent.type = 'project';
@@ -575,11 +590,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             chart.readySave = false;
             chart.readyRequest = false;
 
-            console.log('SAVE REQUEST START');
-
+            //console.log('SAVE REQUEST START');
             //Timer.after(1000, function(){ });
             setTimeout(function(){
-
                 App.Action.Api.saveAll(function(response){
                     console.log('SAVE REQUEST END');
                     chart.readyRequest = true;
