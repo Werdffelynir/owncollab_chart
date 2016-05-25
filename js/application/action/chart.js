@@ -41,6 +41,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         chart.links = DataStore.get('links');
 
         chart.ganttInit(callbackGanttReady, callbackGanttLoaded);
+
+
     };
 
 

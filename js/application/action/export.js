@@ -129,11 +129,13 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
 
+        exp.toPDF.config['config'] = null;
         exp.toPDF.config['name'] = exp.projectTask.text;
         exp.toPDF.config['header'] = styleLink + style.getString() + headerString;
         exp.toPDF.config['footer'] = footerString;
 
         console.log(exp.toPDF.config);
+
         gantt.exportToPDF(exp.toPDF.config);
 
         gantt.config.autofit = tmpConfig.autofit;
