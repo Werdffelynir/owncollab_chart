@@ -297,14 +297,14 @@ class ApiController extends Controller {
 
             $this->connect->db->beginTransaction();
 
-            if(is_array($tasks)){
+            if(is_array($tasks) and count($tasks) > 0){
 
                 $this->connect->task()->clear();
                 $params['SQL_tasks'] = $this->connect->task()->add($tasks);
                 $params['SQL_tasks_Error'] = $this->connect->db->errorInfo();
             }
 
-            if(is_array($links)){
+            if(is_array($links) and count($links) > 0){
 
                 $this->connect->link()->clear();
                 $params['SQL_links'] = $this->connect->link()->add($links);
