@@ -95,14 +95,26 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
         $('input[name=share_email_submit]').click(function(event){
             event.preventDefault();
             var emailsList = [];
-            /*
-            $('.share_email', app.dom.sidebar).each(function(index, item){
-                var id = item.getAttribute('data-id');
-                var type = item.getAttribute('data-type');
-                var email = item.getAttribute('data-email');
-                emailsList.push(type+ ':' +id);
+
+            $('.share_email', App.node('sidebar')).each(function(index, item){
+                emailsList.push({
+                    id: item.getAttribute('data-id'),
+                    type: item.getAttribute('data-type'),
+                    email: item.getAttribute('data-email')
+                });
             });
 
+            App.Action.Api.request('mailer', function(response){
+
+                console.log(response);
+
+            },{
+                list: emailsList,
+                resources: App.Action.Project.resources()
+            });
+
+
+            /*
             app.action.event.sendShareEmails(
                 app.u.uniqueArr(emailsList),
                 app.action.chart.getProjectResources(true)

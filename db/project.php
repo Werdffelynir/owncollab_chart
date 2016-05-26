@@ -177,6 +177,17 @@ class Project
         return $this->connect->query($sql, [':uid'=>$uid]);
     }
 
+    public function getUsersEmails($uidsString) {
+        if(is_string($uidsString)){
+            $sql = "SELECT p.configvalue as email, u.uid, u.displayname as name
+                    FROM oc_preferences p
+                    LEFT JOIN oc_users u ON (u.uid = p.userid)
+                    WHERE p.configkey = 'email' AND p.appid = 'settings' AND p.userid IN ($uidsString);";
+            $result = $this->connect->queryAll($sql);
+            return $result;
+        }
+    }
+
 
 
 }

@@ -213,6 +213,25 @@ class Helper
     }
 
 
+    static public function validEmailAddress($to){
+        return filter_var($to, FILTER_VALIDATE_EMAIL);
+    }
+    static public function getRequest(){
+        return \OC::$server->getRequest();
+    }
+    static public function getProtocol(){
+        return \OC::$server->getRequest()->getServerProtocol();
+    }
+    static public function getHost(){
+        return \OC::$server->getRequest()->getServerHost();
+    }
+    static public function getUri(){
+        return \OC::$server->getRequest()->getRequestUri();
+    }
+    static public function getFullUrl(){
+        return \OC::$server->getRequest()->getServerProtocol() ."://". \OC::$server->getRequest()->getServerHost();
+    }
+
 
 
 

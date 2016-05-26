@@ -4,6 +4,11 @@ window.App = new NamespaceApplication({
     debug: true,
     name: 'owncollab_chart',
     url: OC.generateUrl('/apps/owncollab_chart'),
+    urlBase: OC.getProtocol() + '://' + OC.getHost(),
+    getUrl: function(link){
+        link = link ? '/' + link : '';
+        return OC.getProtocol() + '://' + OC.getHost() + OC.generateUrl('/apps/owncollab_chart') + link;
+    },
     urlScript: '/apps/owncollab_chart/js/',
     urlGantt: '/apps/owncollab_chart/js/commercial/',
     host: OC.getHost(),
