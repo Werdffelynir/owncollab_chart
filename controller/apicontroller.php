@@ -375,7 +375,7 @@ class ApiController extends Controller
             return false;
         }
 
-        $from = 'no-replay@' . '13-59.skconsulting.cc.colocall.com'; //Helper::getHost();
+        $from = 'no-replay@' . Helper::getHost();
         $nameFrom = 'OwnCollab Chart';
         $subject = 'OwnCollab Chart Invite';
         $link = Helper::getProtocol() .'://'. Helper::getHost() .'/index.php/s/'. $project['share_link'];

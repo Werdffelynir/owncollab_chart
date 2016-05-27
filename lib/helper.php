@@ -219,7 +219,7 @@ class Helper
         return \OC::$server->getRequest();
     }
     static public function getPort(){
-        return false;
+        return $_SERVER['SERVER_PORT'];
     }
     static public function getProtocol(){
         return \OC::$server->getRequest()->getServerProtocol();
@@ -233,7 +233,13 @@ class Helper
     static public function getFullUrl(){
         return \OC::$server->getRequest()->getServerProtocol() ."://". \OC::$server->getRequest()->getServerHost();
     }
-
+    static private $providerData = [];
+    static public function provider($key, $value = 'DEFAULTVALUE'){
+        if($value === 'DEFAULTVALUE')
+            return isset(self::$providerData[$key])?self::$providerData[$key]:null;
+        else
+            return self::$providerData[$key] = $value;
+    }
 
 
 

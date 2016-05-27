@@ -19,18 +19,6 @@ use OCP\Util;
 $appName = 'owncollab_chart';
 $app = new App($appName);
 $container = $app->getContainer();
-//$app->getContainer()->query('Aliaser')->register();
-//$container->query('OCA\Owncollab_Chart\AppInfo\Aliaser')->register();
-//$container->registerService('Aliaser', function($c) {
-//    return new Aliaser(
-//        $c->query('ServerContainer')->getUserManager()
-//    );
-//});
-
-//var_dump($container);
-//die;
-
-//$l = \OC::$server->getL10N('owncollab_chart', 'de_DE');
 
 /**
  * Navigation menu settings
@@ -52,7 +40,7 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 $shred = new Sharedchart();
 $shred->match();
 
-$aliaser = new Aliaser();
+new Aliaser();
 
 /**
  * Loading translations
@@ -76,6 +64,10 @@ if(Helper::isAppPage($appName)) {
 
 	// dhtmlxGantt v.4.0.0 Standard
     Util::addStyle($appName, 'dhtmlxgantt');
+
+	Helper::provider('config',[
+		'domain' => ''
+	]);
 }
 
 /**
