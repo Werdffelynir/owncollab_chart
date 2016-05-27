@@ -218,6 +218,9 @@ class Helper
     static public function getRequest(){
         return \OC::$server->getRequest();
     }
+    static public function getPort(){
+        return false;
+    }
     static public function getProtocol(){
         return \OC::$server->getRequest()->getServerProtocol();
     }

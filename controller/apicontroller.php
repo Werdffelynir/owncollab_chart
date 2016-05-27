@@ -337,10 +337,6 @@ class ApiController extends Controller
         if ($this->isAdmin && isset($data['list']) && isset($data['resources'])) {
             $list = is_array($data['list']) && count($data['list']) > 0 ? $data['list'] : [];
 
-//            $resources = is_array($data['resources']) && count($data['resources']) > 0 ? $data['resources'] : false;
-//            $params['$resources'] = $resources;
-//            $params['$list'] = $list;
-
             // подготовка данных к запросу
             $sqlIn = "";
             foreach($list as $item){
@@ -349,13 +345,9 @@ class ApiController extends Controller
                     : "'" . $item['id'] . "'";
             }
             $list = $this->connect->project()->getUsersEmails($sqlIn);
-
             $params['$list'] = $list;
 
-
-
             $sendResult = $this->sendInviteMail($list);
-
             /*if($sendResult !== true){
                 $params['error'] = true;
                 $params['errorinfo'] = $sendResult;
@@ -383,7 +375,7 @@ class ApiController extends Controller
             return false;
         }
 
-        $from = 'no-replay@' . Helper::getHost();
+        $from = 'no-replay@' . '13-59.skconsulting.cc.colocall.com'; //Helper::getHost();
         $nameFrom = 'OwnCollab Chart';
         $subject = 'OwnCollab Chart Invite';
         $link = Helper::getProtocol() .'://'. Helper::getHost() .'/index.php/s/'. $project['share_link'];
