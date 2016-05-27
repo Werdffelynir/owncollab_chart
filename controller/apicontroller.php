@@ -333,7 +333,6 @@ class ApiController extends Controller
             'lastlinkid'    => null
         ];
 
-
         if ($this->isAdmin && isset($data['list']) && isset($data['resources'])) {
             $list = is_array($data['list']) && count($data['list']) > 0 ? $data['list'] : [];
 
@@ -345,17 +344,9 @@ class ApiController extends Controller
                     : "'" . $item['id'] . "'";
             }
             $list = $this->connect->project()->getUsersEmails($sqlIn);
-            $params['$list'] = $list;
-
             $sendResult = $this->sendInviteMail($list);
-            /*if($sendResult !== true){
-                $params['error'] = true;
-                $params['errorinfo'] = $sendResult;
-            }*/
-            $params['$sendResult'] = $sendResult;
-
+            $params['send_result'] = $sendResult;
         }
-
 
         return new DataResponse($params);
     }
@@ -402,9 +393,9 @@ class ApiController extends Controller
                 $mail->isHTML();
 
                 if (!$mail->send())
-                    $sendResult[] = $mail->ErrorInfo;
+                    $sendResult[$item['uid']] = $mail->ErrorInfo;
                 else
-                    $sendResult[] = true;
+                    $sendResult[$item['uid']] = true;
             }
         }
 

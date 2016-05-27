@@ -105,20 +105,13 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             });
 
             App.Action.Api.request('mailer', function(response){
-
-                console.log(response);
-
+                console.log(response['send_result']);
+                $('.share_email_butn').css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
             },{
                 list: emailsList,
                 resources: App.Action.Project.resources()
             });
 
-
-            /*
-            app.action.event.sendShareEmails(
-                app.u.uniqueArr(emailsList),
-                app.action.chart.getProjectResources(true)
-            );*/
         });
     };
 
