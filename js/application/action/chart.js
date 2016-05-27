@@ -644,6 +644,22 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
     /**
+     * @namespace App.Action.Chart.colorByUid
+     * @param node
+     * @param uid
+     */
+    chart.colorByUid = function (uid, node) {
+        var colorStyle,
+            hash = md5(uid),
+            maxRange = parseInt('ffffffffffffffffffffffffffffffff', 16),
+            hue = parseInt(hash, 16) / maxRange * 256;
+        colorStyle = 'hsl(' + hue + ', 90%, 65%)';
+        if(typeof node === 'object' && node.nodeType === Node.ELEMENT_NODE)
+            node.style.backgroundColor = colorStyle;
+        return colorStyle;
+    };
+
+    /**
      * Disabled drag-and-drop operation for task with predecessor
      * @param id
      * @param mode

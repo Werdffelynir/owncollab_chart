@@ -95,7 +95,32 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
      * @namespace App.Action.GanttExt.showUserColor
      * @param show
      */
-    ganttExt.showUserColor = function (show){};
+    ganttExt.showUserColor = function (show){
+        if(show) {
+
+            App.Action.Project.dataProject['show_user_color'] = 1;
+
+            var project = App.Action.Project.dataProject;
+            var tasks = App.Action.Project.tasks(true);
+
+
+            Timer.after(500, function(t){
+                //console.log(gantt.getTaskNode(18));
+                tasks.forEach(function(t){
+                    if(typeof t !== 'object') return;
+
+                    var firstUser = t.users.split(',')[0].trim();
+                    if(firstUser.length > 2)
+                        App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));
+                });
+            }, [tasks]);
+
+
+
+
+
+        }
+    };
 
     /**
      * Show critical path

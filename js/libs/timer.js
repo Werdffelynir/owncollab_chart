@@ -81,7 +81,7 @@
 
 
     timer.after = function(ms, callback, args, proto){
-        args = args || [];
+        args = Array.isArray(args) ? args : [args];
         proto = proto || callback.prototype;
         setTimeout(function(){callback.apply(proto, args)}, ms);
     };

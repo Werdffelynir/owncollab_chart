@@ -101,11 +101,27 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
         //Visibly task text
         gantt.templates.task_text = function(start, end, task){
+            //$('div.avatardiv', $tr).avatar(user.name, 32);
+
+            if(typeof App.Action.Project.dataProject === 'object' &&
+                App.Action.Project.dataProject['show_user_color'] != 0) {
+
+                Timer.after(500, function(t){
+                    if(typeof t !== 'object') return;
+                    var firstUser = t.users.split(',')[0].trim();
+                    if(firstUser.length > 2)
+                        App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));
+                }, [task]);
+
+            }
+
+
             if(task.type == 'project') return "";
             else {
                 if(conf.dataProject['show_task_name'] == 1) return task.text;
                 else return "";
             }
+
         };
 
         // Defines the style of task bars
