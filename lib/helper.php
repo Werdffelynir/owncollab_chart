@@ -212,7 +212,6 @@ class Helper
         }
     }
 
-
     static public function validEmailAddress($to){
         return filter_var($to, FILTER_VALIDATE_EMAIL);
     }

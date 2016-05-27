@@ -350,12 +350,17 @@ class ApiController extends Controller
             }
             $list = $this->connect->project()->getUsersEmails($sqlIn);
 
+            $params['$list'] = $list;
+
+
+
             $sendResult = $this->sendInviteMail($list);
 
-            if($sendResult !== true){
+            /*if($sendResult !== true){
                 $params['error'] = true;
                 $params['errorinfo'] = $sendResult;
-            }
+            }*/
+            $params['$sendResult'] = $sendResult;
 
         }
 
@@ -364,40 +369,54 @@ class ApiController extends Controller
     }
 
 
-
-
-
-    private function sendInviteMail($list){
+    /**
+     *
+     * @param array $list
+     * @return array|bool
+     * @throws \OCA\Owncollab_Chart\PHPMailer\phpmailerException
+     */
+    private function sendInviteMail(array $list){
 
         $project = $this->connect->project()->get();
+
         if($project['is_share'] != 1 || empty($project['share_link'])) {
             return false;
         }
 
-        $mail = new PHPMailer();
         $from = 'no-replay@' . Helper::getHost();
         $nameFrom = 'OwnCollab Chart';
         $subject = 'OwnCollab Chart Invite';
         $link = Helper::getProtocol() .'://'. Helper::getHost() .'/index.php/s/'. $project['share_link'];
-        $body = 'Chart to open access for viewing the link, <a href="'.$link.'" target="_blank">'.$link.'</a>';
+        $sendResult = [];
 
-        $mail->setFrom($from, $nameFrom);
-
-        foreach($list as $item){
+        foreach($list as $item) {
             $to = $item['email'];
             $nameTo = !empty($item['name']) ? $item['name'] : $item['uid'];
-            if(Helper::validEmailAddress($to))
+
+            if(Helper::validEmailAddress($to)) {
+
+                $mail = new PHPMailer();
+                $mail->setFrom($from, $nameFrom);
                 $mail->addAddress($to, $nameTo);
+
+                $mail->Subject = $subject;
+                $mail->Body    = Helper::renderPartial($this->appName, 'mailinvite', [
+                    'p_name' => $project['name'],
+                    'u_name' => $nameTo,
+                    's_link' => $link,
+                    'protocol' => Helper::getProtocol(),
+                    'domain' => Helper::getHost()
+                ]);
+                $mail->isHTML();
+
+                if (!$mail->send())
+                    $sendResult[] = $mail->ErrorInfo;
+                else
+                    $sendResult[] = true;
+            }
         }
 
-        $mail->Subject = $subject;
-        $mail->Body    = $body;
-        $mail->isHTML();
-
-        if (!$mail->send())
-            return $mail->ErrorInfo;
-        else
-            return true;
+        return $sendResult;
     }
 
 
