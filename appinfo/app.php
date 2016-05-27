@@ -16,6 +16,8 @@ use OCA\Owncollab_Chart\AppInfo\Aliaser;
 use OCP\AppFramework\App;
 use OCP\Util;
 
+$aliaser = new Aliaser();
+
 $appName = 'owncollab_chart';
 $app = new App($appName);
 $container = $app->getContainer();
@@ -40,7 +42,6 @@ $container->query('OCP\INavigationManager')->add(function () use ($container, $a
 $shred = new Sharedchart();
 $shred->match();
 
-new Aliaser();
 
 /**
  * Loading translations
