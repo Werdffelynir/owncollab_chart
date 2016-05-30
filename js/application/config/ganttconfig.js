@@ -104,7 +104,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             //$('div.avatardiv', $tr).avatar(user.name, 32);
 
             if(typeof App.Action.Project.dataProject === 'object' &&
-                App.Action.Project.dataProject['show_user_color'] != 0) {
+                App.Action.Project.dataProject['show_user_color'] == 1 ) {
 
                 Timer.after(500, function(t){
                     if(typeof t !== 'object') return;

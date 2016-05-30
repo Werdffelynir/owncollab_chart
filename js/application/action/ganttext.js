@@ -95,6 +95,7 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
      * @namespace App.Action.GanttExt.showUserColor
      * @param show
      */
+
     ganttExt.showUserColor = function (show){
         if(show) {
 
@@ -103,9 +104,7 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
             var project = App.Action.Project.dataProject;
             var tasks = App.Action.Project.tasks(true);
 
-
             Timer.after(500, function(t){
-                //console.log(gantt.getTaskNode(18));
                 tasks.forEach(function(t){
                     if(typeof t !== 'object') return;
 
@@ -115,11 +114,8 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
                 });
             }, [tasks]);
 
-
-
-
-
-        }
+        }else
+            App.Action.Project.dataProject['show_user_color'] = 0;
     };
 
     /**
