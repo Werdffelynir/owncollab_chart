@@ -16,7 +16,7 @@ b, strong { font-weight: 600 !important }
 .valign_top{vertical-align: top}
 .valign_middle{vertical-align: middle}
 .valign_bottom{vertical-align: bottom}
-
+#ui-datepicker-div{z-index: 10002 !important;}
 #app-content {
     background-color: #EEEEEE;
     height:100%;

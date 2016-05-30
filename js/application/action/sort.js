@@ -239,11 +239,20 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         inputGroup.addEventListener('keyup', onFilterClickTask);
 
-        var clearFields = Util.createElement( 'div', {'class':'ico_clear'});
+        var clearBtn, clearFields = Util.createElement( 'div', {'class':'ico_clear'});
 
         wrap.appendChild(inputName);
         wrap.appendChild(inputGroup);
         wrap.appendChild(clearFields);
+
+        if(clearBtn = wrap.querySelector('.clear_filter')) {
+            clearBtn.addEventListener('click',function(event){
+                inputName.value = inputGroup.value = '';
+                sort.clearFilter = true;
+                sort.startFilteringReady = true;
+                gantt.render();
+            });
+        }
 
         return wrap;
     }
@@ -251,20 +260,41 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
     function filterGroupView(){
         var dataGroupsusers = sort.dataGroupsusers;
-        var inner = Util.createElement('p', {}, '<p><b>' +App.t('Filter by task groups or resource')+ '</b><span class="ico_clear clear_filter"></span></p>');
+        var clearBtn, inner = Util.createElement('p', {}, '<p><b>' +App.t('Filter by task groups or resource')+ '</b><span class="ico_clear clear_filter"></span></p>');
         for(var groupName in dataGroupsusers){
             var fragment = createUsersGroup(groupName, dataGroupsusers[groupName]);
             inner.appendChild(fragment);
         }
+
+        if(clearBtn = inner.querySelector('.clear_filter')) {
+            clearBtn.addEventListener('click',function(event){
+
+                /*var i, inputs = inner.querySelectorAll('input[type=checkbox]');
+                if(typeof inputs === 'object' && inputs.length > 0) {
+                    for( i = 0; i < inputs.length; i++ ){
+                        if(inputs[i].checked === true) inputs[i].checked = false;
+                    }
+                }
+
+                */
+                sort.inputCheckedAll(inner, false);
+                sort.clearFilter = true;
+                sort.startFilteringReady = true;
+                gantt.render();
+            });
+        }
+
         return inner
     }
 
     function createUsersGroup(group, users){
-        var oneElement = document.createDocumentFragment();
+        var usersElements = document.createElement('div'),
+            oneElement = document.createDocumentFragment();
         oneElement.appendChild(createInputWrapper(false, group));
-        for(var i = 0; i < users.length; i ++){
-            oneElement.appendChild(createInputWrapper(users[i]['uid'], group))
+        for(var i = 0; i < users.length; i ++) {
+            usersElements.appendChild(createInputWrapper(users[i]['uid'], group))
         }
+        oneElement.appendChild(usersElements);
         return oneElement
     }
 
@@ -296,6 +326,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         wrap.appendChild(input);
         wrap.appendChild(label);
+
         return wrap;
     }
 
@@ -320,11 +351,13 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         } else {
 
+            sort.inputCheckedAll(this.parentNode.nextSibling, checked);
+
             if(checked && sort.dynamic.resGroup.indexOf(name) === -1) {
                 sort.dynamic.resGroup.push(name);
                 sort.dynamic.resUsers = Util.arrMerge(sort.dynamic.resUsers, uids);
-
-            }else if(!checked && sort.dynamic.resGroup.indexOf(name) !== -1) {
+            }
+            else if(!checked && sort.dynamic.resGroup.indexOf(name) !== -1) {
                 sort.dynamic.resGroup = Util.rmItArr(name, sort.dynamic.resGroup);
                 sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, uids);
             }
@@ -378,6 +411,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         popup.style.width = '500px';
         popup.style.left = '480px';
         App.node('topbar').appendChild(popup);
+
         //console.log(event);
     };
 
@@ -462,6 +496,26 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
     };
 
+    /**
+     * @namespace App.Action.Sort.inputCheckedAll
+     * @param nodeWhere
+     * @param checked
+     */
+    sort.inputCheckedAll = function(nodeWhere, checked){
+
+        var i, inputs = nodeWhere.querySelectorAll('input[type=checkbox]');
+
+        if(typeof inputs === 'object' && inputs.length > 0) {
+            for( i = 0; i < inputs.length; i++ ){
+                inputs[i].checked = !!checked;
+                /*if(!!checked)
+                    if(inputs[i].checked !== true) inputs[i].checked = true;
+                else
+                    if(inputs[i].checked === true) inputs[i].checked = false;*/
+            }
+        }
+
+    };
 
 
 

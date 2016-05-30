@@ -12,9 +12,9 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
     share.init = function (){
 
         // enabled jquery plugin datetimepicker for all elements with class name 'datetimepic'
-        $('.datetimepic').datetimepicker({
+         $('.datetimepic').datetimepicker({
             minDate: new Date(),
-            controlType: 'select',
+            controlType: 'slider',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
@@ -84,7 +84,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
                     return false;
                 }
             }).data("ui-autocomplete")._renderItem = function( ul, item ) {
-                var emailLabel = (item.type == 'user') ? item.email : "<strong>"  +item.email+ "</strong>";
+                var emailLabel = (item.type == 'user') ? item.value : "<strong>"  +item.value+ "</strong>";
                 return $('<li>')
                     .append('<a>' +  emailLabel + '</a>' )
                     .appendTo( ul );

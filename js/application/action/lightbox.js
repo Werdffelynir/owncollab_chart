@@ -133,7 +133,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             minDate: DateTime.addDays(-30, startDate),
             maxDate: DateTime.addDays(365, startDate),
             timezone: '0000',
-            controlType: 'select',
+            controlType: 'slider',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
@@ -148,7 +148,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             })(),
             maxDate: DateTime.addDays(365, startDate),
             timezone: '0000',
-            controlType: 'select',
+            controlType: 'slider',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
@@ -574,17 +574,11 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
             if(item.id == lbox.task.id || item.id == 1) return;
 
-
-
-            //if(item.type == 'project') return;
-            //console.log('buffer before ---- >>>>> ',item.id, buffer);
-
             var _line = document.createElement('div'),
                 _name = document.createElement('div'),
                 _link = document.createElement('div'),
                 _linkElems = lbox.predecessorLinkGenerate2(item.id, buffer);
                 //_linkElems = lbox.predecessorLinkGenerate2(item.id, item.buffer);
-
 
             _line.className = 'tbl predecessor_line';
             _name.className = _link.className = 'tbl_cell';
@@ -705,12 +699,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                     }
                 }
             });
-/*
-console.log('linksSource ----- >>>>>>>  ',  linksSource);
-console.log('linkTarget ----- >>>>>>>  ',  linkTarget);
-console.log('buffer ----- >>>>>>>  ',  id,  buffer);
-console.log('buffer ----- >>>>>>>  ',  buffer, id, lbox.task.id, linkTarget);
-*/
+
             //
             if(!_isChecked) {
                 //_inpClear.checked = true;
