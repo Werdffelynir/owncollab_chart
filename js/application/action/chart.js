@@ -680,6 +680,20 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
 
+    /**
+     * @namespace App.Action.Chart.shiftTask
+     * @param task_id
+     * @param direction
+     */
+    chart.shiftTask = function (task_id, direction) {
+        var task = gantt.getTask(task_id);
+        task.start_date = gantt.date.add(task.start_date, direction, "day");
+        task.end_date = gantt.calculateEndDate(task.start_date, task.duration);
+        gantt.updateTask(task.id);
+    };
+
+
+
     return chart
 
 })}

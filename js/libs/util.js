@@ -410,34 +410,24 @@
 
     /**
      * Returns the coordinates of the mouse on any element
+     * @param event
      * @param element
-     * @param event
      * @returns {{x: number, y: number}}
      */
-    util.getMouseElement = function (element, event) {
+    util.getMousePosition = function (event, element) {
+        var positions = {x: 0, y: 0};
+        element = element || document.body;
         if(element instanceof HTMLElement && event instanceof MouseEvent) {
-            var x = event.pageX - element.offsetLeft;
-            var y = event.pageY - element.offsetTop;
-            return {x: x, y: y};
-        }else
-            return false;
-    };
-
-    /**
-     * Returns the coordinates of the mouse on the canvas element
-     * @param canvas
-     * @param event
-     * @returns {{x: number, y: number}}
-     */
-    util.getMouseCanvas = function (canvas, event) {
-        if((canvas instanceof HTMLCanvasElement || canvas.getBoundingClientRect) && event instanceof MouseEvent){
-            var rect = canvas.getBoundingClientRect();
-            return {
-                x: event.clientX - rect.left,
-                y: event.clientY - rect.top
-            };
-        }else
-            return false;
+            if(element.getBoundingClientRect) {
+                var rect = element.getBoundingClientRect();
+                positions.x = event.clientX - rect.left;
+                positions.y = event.clientY - rect.top;
+            }else {
+                positions.x = event.pageX - element.offsetLeft;
+                positions.y = event.pageY - element.offsetTop;
+            }
+        }
+        return positions;
     };
 
     /**

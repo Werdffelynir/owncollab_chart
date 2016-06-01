@@ -48,6 +48,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
         //gantt.attachEvent("onLightboxCancel", lbox.onLightboxCancel);
         gantt.attachEvent("onLightboxDelete", lbox.onLightboxDelete);
+
+
     };
 
     /**
