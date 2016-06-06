@@ -118,8 +118,6 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
         var btnSubmit = $('input[name=share_email_submit]');
         var loader = document.createElement('div');
         loader.className = 'loader_min';
-        //new Image();
-        //loader.src = '/apps/owncollab_chart/img/loading.gif';
 
         // send email list to server
         btnSubmit.click(function(event){
@@ -133,10 +131,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             btnSubmit[0].parentNode.appendChild(loader);
 
             App.Action.Api.request('invite', function(response){
-
-                console.log(response);
                 btnSubmit[0].parentNode.removeChild(loader);
-
             },{
                 email_to: email,
                 id_from: App.uid
@@ -145,7 +140,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             event.preventDefault();
         });
     };
-
+/*
     share.emailsList = function(item){
         var wrap = document.createElement('div');
         var icon = document.createElement('div');
@@ -171,7 +166,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
         wrap.appendChild(butn);
         $('#share_emails_list').append(wrap);
     };
-
+*/
 
     /**
      * http://owncloud.loc/index.php/s/uN8QRLwyin0lsxit

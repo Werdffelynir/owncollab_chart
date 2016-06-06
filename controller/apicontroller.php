@@ -444,7 +444,7 @@ class ApiController extends Controller
 
         if(Helper::validEmailAddress($mail_to) && Helper::validEmailAddress($mail_from)) {
 
-            /*$mail = new PHPMailer();
+            $mail = new PHPMailer();
             $mail->setFrom($mail_from, $nameFrom);
             $mail->addAddress($mail_to, $nameTo);
 
@@ -463,7 +463,7 @@ class ApiController extends Controller
                 return true;
             else
                 return $mail->ErrorInfo;
-*/
+
         }
 
         return 'no-valid';
