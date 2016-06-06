@@ -115,25 +115,32 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
 
         });*/
 
+        var btnSubmit = $('input[name=share_email_submit]');
+        var loader = document.createElement('div');
+        loader.className = 'loader_min';
+        //new Image();
+        //loader.src = '/apps/owncollab_chart/img/loading.gif';
+
         // send email list to server
-        $('input[name=share_email_submit]').click(function(event){
+        btnSubmit.click(function(event){
+            var efield = $('#owc_email_autocomplete');
+            var email = efield.val();
 
-            var email = $('#owc_email_autocomplete').val();
-
-
-            if(email.indexOf('@') === -1)
+            if(email.indexOf('@') === -1) {
                 return;
-
-            console.log(email.indexOf('@'));
+            }
+            efield.val('');
+            btnSubmit[0].parentNode.appendChild(loader);
 
             App.Action.Api.request('invite', function(response){
 
                 console.log(response);
+                btnSubmit[0].parentNode.removeChild(loader);
 
             },{
                 email_to: email,
                 id_from: App.uid
-            });
+            }, 0);
 
             event.preventDefault();
         });

@@ -118,7 +118,7 @@ b, strong { font-weight: 600 !important }
 #ganttsave:hover {
     background-color: #E7E7E7;
 }
-#ganttsaveloading{
+#ganttsaveloading, .loader_min {
     display: inline-block;
     background: url('/apps/owncollab_chart/img/loading-small.gif')
     no-repeat center center;

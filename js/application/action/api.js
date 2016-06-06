@@ -57,14 +57,15 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
      * @param key
      * @param callback
      * @param args
+     * @param timeout_ms
      */
-    api.request = function(key, callback, args) {
+    api.request = function(key, callback, args, timeout_ms) {
         //console.log('dataSend-request', args);
         $.ajax({
             url: App.url + '/api',
             data: {key: key, uid: App.uid, data: args},
             type: 'POST',
-            timeout: 60000,
+            timeout: timeout_ms || 60000,
             headers: {requesttoken: App.requesttoken},
 
             success: function (response) {
