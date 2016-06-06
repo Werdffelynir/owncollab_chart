@@ -39,27 +39,9 @@ $domain = isset($_['domain'])?$_['domain']:'XXX';
         font-family: "Calibri", sans-serif;
     }
 </style>
-<table class="main" style="margin: 0 auto; font-size: 11.0pt;font-family: 'Calibri',sans-serif;" cellpadding="3"
-       cellspacing="0" width="620" border="0">
+<table class="main" style="margin: 0 auto; font-size: 11.0pt;font-family: 'Calibri',sans-serif;" cellpadding="3" cellspacing="0" width="620" border="0">
     <tr>
         <td>
-            <table width="615">
-                <tbody>
-                <tr>
-                    <td><strong>Betreff: </strong></td>
-                    <td style="text-align: center"> <?=$p_name?> </td>
-                </tr>
-                </tbody>
-            </table>
-        </td>
-    </tr>
-    <tr>
-        <td>
-            <p>
-                Dear <?=$u_name?>,
-            </p>
-            <p>open access to view the project chart <?=$p_name?></p>
-
             <table cellspacing="0" cellpadding="3" width="615" class="file_contains_table">
                 <tbody>
                 <tr style="background: #1D2D44; color:#FFFFFF">
@@ -71,7 +53,8 @@ $domain = isset($_['domain'])?$_['domain']:'XXX';
                 </tr>
                 <tr>
                     <td>
-                        To view chart, click on the link: <a href="<?=$s_link?>" target="_blank"><?=$s_link?></a>
+                        <p>Open access to view the project "<?=$p_name?>".</p>
+                        <p>To view chart, click on the link: <a href="<?=$s_link?>" target="_blank"><?=$s_link?></a></p>
                     </td>
                 </tr>
                 </tbody>
