@@ -87,6 +87,12 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
      * @namespace App.Config.GanttConfig.base
      */
     conf.base = function() {
+        var projTask = App.Action.Project.dataProjectTask;
+
+        //gantt.config.start_date = App.Action.Project.dataProjectTask.start_date;
+        //gantt.config.end_date = App.Action.Project.dataProjectTask.end_date;
+
+        console.log(projTask);
 
         gantt.config.preserve_scroll = true;
         gantt.config.initial_scroll = true;
@@ -143,16 +149,15 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         conf.scale(conf.dataProject['scale_type']);
 
         // Enables automatic adjusting of the grid's columns to the grid's width
-        gantt.config.autofit = false;
+        gantt.config.autofit = true;
 
         // Chart to re-render the scale each time a task doesn't fit into the existing scale interval
-        gantt.config.fit_tasks = false;
+        gantt.config.fit_tasks = true;
 
         // Apply scale fit
         //if(conf.dataProject['scale_fit']) {
             //app.action.chart.scaleFit();
         //}
-
 
         // Configures the columns of the table
         var columnWidth = {

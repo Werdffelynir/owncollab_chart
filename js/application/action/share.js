@@ -9,7 +9,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
     /**
      * @namespace App.Action.Share.init
      */
-    share.init = function (){
+    share.init = function () {
 
         // enabled jquery plugin datetimepicker for all elements with class name 'datetimepic'
          $('.datetimepic').datetimepicker({
@@ -27,6 +27,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             }
         });
 
+        /*
         // autocomplete for email sends
         var usersEmails = function(){
             var resources = App.Action.Project.resources(),
@@ -91,7 +92,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             };
         });
 
-        /** send email list to server */
+        // send email list to server
         $('input[name=share_email_submit]').click(function(event){
             event.preventDefault();
             var emailsList = [];
@@ -112,6 +113,29 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
                 resources: App.Action.Project.resources()
             });
 
+        });*/
+
+        // send email list to server
+        $('input[name=share_email_submit]').click(function(event){
+
+            var email = $('#owc_email_autocomplete').val();
+
+
+            if(email.indexOf('@') === -1)
+                return;
+
+            console.log(email.indexOf('@'));
+
+            App.Action.Api.request('invite', function(response){
+
+                console.log(response);
+
+            },{
+                email_to: email,
+                id_from: App.uid
+            });
+
+            event.preventDefault();
         });
     };
 

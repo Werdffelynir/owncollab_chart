@@ -2,6 +2,7 @@
 
 namespace OCA\Owncollab_Chart\Controller;
 
+use OC\OCS\Exception;
 use OCA\Owncollab_Chart\Helper;
 use OCA\Owncollab_Chart\Db\Connect;
 use OCA\Owncollab_Chart\PHPMailer\PHPMailer;
@@ -227,10 +228,12 @@ class ApiController extends Controller
             } else if ($field == 'share_is_expire' || $field == 'share_expire_time') {
 
                 $params[$field] = $value;
+
                 if ($field == 'share_expire_time')
                     $value = Helper::toTimeFormat($value);
 
                 $result = $this->connect->project()->updateField($field, $value);
+
                 if (!$result)
                     $params['error'] = 'Error operation share protected password an update project table';
                 else
@@ -238,26 +241,10 @@ class ApiController extends Controller
 
             }
 
-            /*
-                        // share_password:  123456789
-                        else if ($field == 'share_password'){
-
-                        }
-                        else if ($field == 'share_is_expire'){
-
-                        }*/
-
-
         } else
             $params['error'] = 'API method require - uid and request as admin';
 
         return new DataResponse($params);
-
-
-        return new DataResponse([
-            'data' => $data,
-            'post' => $_POST
-        ]);
 
     }
 
@@ -276,20 +263,25 @@ class ApiController extends Controller
             'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lastlinkid' => null
         ];
+
         $project = false;
         $tasks = false;
         $links = false;
+
         $params['tasksdecode'] = json_decode($data['tasks']);
+
         try {
             $tasks = isset($data['tasks']) ? json_decode($data['tasks'], true) : false;
         } catch (\Exception $error) {
             $params['errorinfo'] .= "tasks json_decode error";
         }
+
         try {
             $links = isset($data['links']) ? json_decode($data['links'], true) : false;
         } catch (\Exception $error) {
             $params['errorinfo'] .= "links json_decode error";
         }
+
         try {
             $project = isset($data['project']) ? json_decode($data['project'], true) : false;
         } catch (\Exception $error) {
@@ -322,7 +314,7 @@ class ApiController extends Controller
         return new DataResponse($params);
     }
 
-
+/*
     public function mailer($data) {
 
         $params = [
@@ -352,12 +344,6 @@ class ApiController extends Controller
     }
 
 
-    /**
-     *
-     * @param array $list
-     * @return array|bool
-     * @throws \OCA\Owncollab_Chart\PHPMailer\phpmailerException
-     */
     private function sendInviteMail(array $list){
 
         $project = $this->connect->project()->get();
@@ -373,7 +359,7 @@ class ApiController extends Controller
         $sendResult = [];
 
         foreach($list as $item) {
-            $to = $item['email'];
+            $to = trim($item['email']);
             $nameTo = !empty($item['name']) ? $item['name'] : $item['uid'];
 
             if(Helper::validEmailAddress($to)) {
@@ -401,9 +387,87 @@ class ApiController extends Controller
 
         return $sendResult;
     }
+*/
 
 
+    public function invite($data) {
+
+        $params = [
+            'data'     => $data,
+            'error'     => null,
+            'errorinfo'     => '',
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            'lastlinkid'    => null
+        ];
+
+        if ($this->isAdmin && isset($data['email_to'])) {
+
+            $email_to = trim($data['email_to']);
+            $email_from = 'no-replay@' . Helper::getHost();
+
+            if(Helper::validEmailAddress($email_to)) {
+
+                $result = $this->sendMail($email_to, $email_from);
+
+                if($result !== true){
+                    $params['error'] = true;
+                    $params['errorinfo'] = $result;
+                }
+                return new DataResponse($params);
+
+            }
+        }
+
+        return new DataResponse($params);
+    }
 
 
+    /**
+     * @param $mail_to
+     * @param null $mail_from
+     * @return bool|string
+     * @throws \OCA\Owncollab_Chart\PHPMailer\phpmailerException
+     */
+    private function sendMail( $mail_to, $mail_from = null) {
+
+        $project = $this->connect->project()->get();
+
+        if($project['is_share'] != 1 || empty($project['share_link'])) {
+            return false;
+        }
+
+        $mail_from = ($mail_from === null) ? 'no-replay@' . Helper::getHost() : $mail_from;
+        $nameFrom = 'OwnCollab Project';
+        $subject = 'OwnCollab Project Invite';
+        $link = Helper::getProtocol() .'://'. Helper::getHost() .'/index.php/s/'. $project['share_link'];
+        $nameTo = 'User';
+
+
+        if(Helper::validEmailAddress($mail_to) && Helper::validEmailAddress($mail_from)) {
+
+            $mail = new PHPMailer();
+            $mail->setFrom($mail_from, $nameFrom);
+            $mail->addAddress($mail_to, $nameTo);
+
+            $mail->Subject = $subject;
+            $mail->Body    = Helper::renderPartial($this->appName, 'mailinvite', [
+                'p_name' => $project['name'],
+                'u_name' => $nameTo,
+                's_link' => $link,
+                'protocol' => Helper::getProtocol(),
+                'domain' => Helper::getHost()
+            ]);
+
+            $mail->isHTML();
+
+            if ($mail->send())
+                return true;
+            else
+                return $mail->ErrorInfo;
+
+        }
+
+        return 'no-valid';
+    }
 
 }

@@ -128,7 +128,6 @@ class Task
             }
         }
         return $this->connect->db->prepare($SQL)->execute($rowData);
-        //return [$SQL, $rowData];
     }
 
 
