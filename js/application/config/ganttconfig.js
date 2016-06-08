@@ -91,8 +91,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
         //gantt.config.start_date = App.Action.Project.dataProjectTask.start_date;
         //gantt.config.end_date = App.Action.Project.dataProjectTask.end_date;
-
-        console.log(projTask);
+        //console.log(projTask);
 
         gantt.config.preserve_scroll = true;
         gantt.config.initial_scroll = true;

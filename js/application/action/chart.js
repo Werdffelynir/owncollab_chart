@@ -42,7 +42,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         chart.ganttInit(callbackGanttReady, callbackGanttLoaded);
 
-
     };
 
 

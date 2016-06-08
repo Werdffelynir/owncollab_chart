@@ -116,3 +116,10 @@ $appName = 'owncollab_chart';
 
     </form>
 </div>
+
+
+<div class="export_print">
+
+    <input type="button" value="Print">
+
+</div>

@@ -26,7 +26,8 @@ App.require('libs',
         App.urlScript + 'libs/util.js',
         App.urlScript + 'libs/timer.js',
         App.urlScript + 'libs/jquery-ui-timepicker.js',
-        App.urlScript + 'libs/jquery.custom-scrollbar.js'
+        App.urlScript + 'libs/jquery.custom-scrollbar.js',
+        App.urlScript + 'libs/event.key.manager.js'
     ],
     initLibrary, initError);
 
@@ -59,6 +60,7 @@ App.require('dependence',
         App.urlScript + 'application/action/fitmode.js',
         App.urlScript + 'application/action/share.js',
         App.urlScript + 'application/action/chart.js',
+        App.urlScript + 'application/action/keyevent.js',
 
         // Controllers
         App.urlScript + 'application/controller/page.js',

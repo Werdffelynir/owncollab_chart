@@ -161,6 +161,39 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.exportToMSProject(config);
     };
 
+
+    /**
+     * @namespace App.Action.Export.print
+     * @param source
+     */
+    exp.print = function (source){
+        var pwa = window.open("about:blank", "_new");
+        pwa.document.open();
+        pwa.document.write(exp.printSource(source));
+        pwa.document.close();
+
+    };
+
+
+    exp.printSource = function (source){
+        //return "<html><head><script>function initPrint(){\n" +
+            //"function toPrint(){ console.log('print'); window.print(); window.close(); }\n" +
+            //"setTimeout(toPrint, 100);}\n" +
+
+        //    "</scri" + "pt></head><body onload='initPrint()'>\n" +
+        //    "<img id='imgsource' src='" + source + "' /></body></html>";
+
+        var html = '<html><head></head><body>';
+
+        html += '<img id="imgsource" src="' + source + '" />';
+
+        html += '</body></scri' + 'pt>';
+
+        html += '</body></html>';
+        imgsource.onload = function(e){console.log('print');};
+    };
+
+
     return exp
 
 })}

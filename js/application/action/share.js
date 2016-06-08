@@ -247,7 +247,7 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
     share.requestUseShare = function (field, value, callback){
         App.Action.Api.request('useshare',function(response){
 
-            console.log(response);
+            //console.log(response);
             if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
                 App.requesttoken = response.requesttoken;
 
@@ -255,10 +255,9 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
                     callback.call(this, response);
             }
 
-
-
         }, {field:field, value:value});
     };
+
 
     return share
 

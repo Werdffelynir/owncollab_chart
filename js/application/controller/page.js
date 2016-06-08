@@ -140,6 +140,9 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         // display elements
         App.node('topbar').style['display'] = 'block';
+
+        // init Event Key Manager
+        App.Action.Keyevent.init();
     }
 
     function initGanttError(){
