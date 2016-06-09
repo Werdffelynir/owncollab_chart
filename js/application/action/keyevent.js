@@ -36,6 +36,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
         keyevent.bindSpace();
         keyevent.bindEnter();
+        keyevent.bindEscape();
 
     };
 
@@ -43,10 +44,26 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
     keyevent.bindSpace = function () {
         EventKeyManager.add('space',32, keyevent.tableEditableTurnOn);
     };
+    keyevent.bindEscape = function () {
+        EventKeyManager.add('esc',27, function(event){
+            keyevent.tableEditableShutOff(event);
+        });
+    };
 
     keyevent.bindEnter = function () {
-        EventKeyManager.add('enter',13, function(event){
-            event.target.textContent = event.target.textContent.replace(/\n|\r/, '');
+
+        window.addEventListener('keydown', function(event) {
+            if(event.keyCode == 13 && keyevent.tableEditableEnabled) {
+                event.preventDefault();
+                return false;
+            }
+        });
+
+        EventKeyManager.add('enter',13, function(event) {
+
+            //event.target.textContent = event.target.textContent.replace(/(\r\n|\n|\r)/gm,"");
+            event.target.textContent = event.target.textContent.trim();
+            event.target.removeAttribute('contenteditable');
 
             for(var key in keyevent.fieldsEditable) {
                 keyevent.fieldsValues[key] = keyevent.fieldsEditable[key].textContent;
@@ -55,7 +72,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             keyevent.tableEditableShutOff(event);
 
             // save change
-            console.log(keyevent.fieldsValues);
+            //console.log(keyevent.fieldsValues);
 
             var task = gantt.getTask(keyevent.editableTaskId);
             task.text = keyevent.fieldsValues['name'];
