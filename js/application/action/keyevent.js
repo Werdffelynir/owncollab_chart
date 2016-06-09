@@ -56,6 +56,15 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
             // save change
             console.log(keyevent.fieldsValues);
+
+            var task = gantt.getTask(keyevent.editableTaskId);
+            task.text = keyevent.fieldsValues['name'];
+            //task.start_date = keyevent.fieldsValues['dateStart'];
+            //task.end_date = keyevent.fieldsValues['dateEnd'];
+            //task.duration = keyevent.fieldsValues['duration'];
+            //task.users = keyevent.fieldsValues['resources'];
+            gantt.updateTask(keyevent.editableTaskId);
+
         });
         EventKeyManager.disable('enter');
     };
@@ -86,6 +95,8 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
                 field.style.fontStyle = 'italic';
                 field.style.cursor = 'text';
             }
+
+            taskFields[1].focus();
 
             //console.log(fieldsEditable);
 
