@@ -117,6 +117,20 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
         gantt.attachEvent("onBeforeTaskDrag", chart.onBeforeTaskDrag);
 
+
+        gantt.attachEvent("onTaskRowClick", function(id, row){
+
+            // disable grid table editable mode
+            if(App.Action.Keyevent.tableEditableEnabled && App.Action.Keyevent.editableTaskId != id) {
+                App.Action.Keyevent.tableEditableShutOff()
+            }
+
+            console.log('table editable mode', App.Action.Keyevent.tableEditableEnabled);
+
+        });
+
+
+
         if(App.isPublic) {
             gantt.config.readonly = true;
             Error.inline('Read-only', 'Access ')

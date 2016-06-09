@@ -49,7 +49,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         //gantt.attachEvent("onLightboxCancel", lbox.onLightboxCancel);
         gantt.attachEvent("onLightboxDelete", lbox.onLightboxDelete);
 
-
     };
 
     /**
@@ -57,6 +56,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @returns {boolean}
      */
     lbox.onBeforeLightbox = function (id){
+
+        // disable grid table editable mode
+        if(App.Action.Keyevent.tableEditableEnabled) {
+            return false;
+        }
+
         // added task ti edit
         lbox.task = gantt.getTask(id);
         lbox.task.base_template = '<div id="generate-lbox-wrapper">' + App.node('lbox').innerHTML + '</div>';
@@ -140,6 +145,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
             //showTimezone: true,
+            //altFieldTimeOnly: false,
+            //altRedirectFocus: false,
+            timeInput: true,
             onSelect: lbox.onChangeLightboxInputDate
         });
 
