@@ -99,7 +99,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         // pdf_head_center: "", pdf_head_right: "", pdf_footer_left: "", pdf_footer_center: "", pdf_footer_right: "", pdf_size: ""
 
         //var styleLink = '<link rel="stylesheet" href="'+app.protocol+"://"+app.host+app.url+'/css/dhtmlxgantt.css">';
-        var styleLink = '<link rel="stylesheet" type="text/css" href="https://owncollab.andreasseiler.com/apps/owncollab_chart/css/dhtmlxgantt.css">';
+        var cssUrl = "http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css";
+        var styleLink = '<link rel="stylesheet" href="' + cssUrl + '">';
         var style = Util.createStyle();
 
         style.add('.tbl','display:table; width:100%');
@@ -171,7 +172,6 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         pwa.document.open();
         pwa.document.write(exp.printSource(source));
         pwa.document.close();
-
     };
 
 
@@ -183,16 +183,20 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         //    "</scri" + "pt></head><body onload='initPrint()'>\n" +
         //    "<img id='imgsource' src='" + source + "' /></body></html>";
 
-        var html = '<html><head></head><body>';
-
-        html += '<img id="imgsource" src="' + source + '" />';
-
-        html += '</body></scri' + 'pt>';
-
-        html += '</body></html>';
-        imgsource.onload = function(e){console.log('print');};
+        //var html = '<html><head></head><body>';
+        //html += '<img id="imgsource" src="' + source + '" />';
+        //html += '</body></scri' + 'pt>';
+        //html += '</body></html>';
+        //imgsource.onload = function(e){console.log('print');};
     };
 
+
+    exp.backDownloadPDF = function (source){
+        var config = {};
+        App.Action.Api.request('download_pdf', function(response){
+            console.log(response);
+        }, config);
+    };
 
     return exp
 

@@ -11,7 +11,8 @@
         lastEvent:null,
         listEvents:[],
         listDisable:[],
-        listenCallback:null
+        listenCallback:null,
+        defaultEvent: 'keyup'
     };
     
     mod.listen = function(callback){
@@ -24,7 +25,7 @@
      */
     mod.init = function(){
 
-        window.addEventListener('keyup', function(event) {
+        window.addEventListener(mod.defaultEvent, function(event) {
             
             mod.lastEvent = event;
             mod.lastCharCode = event.keyCode;

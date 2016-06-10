@@ -67,13 +67,13 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.config.auto_scheduling = true;
 
         // Enables the auto scheduling mode, in which tasks will always be rescheduled to the earliest possible date
-        gantt.config.auto_scheduling_strict = true;
+        gantt.config.auto_scheduling_strict = false;
 
         // Defines whether gantt will do autoscheduling on data loading
-        gantt.config.auto_scheduling_initial = true;
+        gantt.config.auto_scheduling_initial = false;
 
         // allows or forbids creation of links from parent tasks (projects) to their children
-        gantt.config.auto_scheduling_descendant_links = true;
+        gantt.config.auto_scheduling_descendant_links = false;
 
         // Making the Gantt chart to display the critical path
         if(conf.dataProject['critical_path'] == 1) {

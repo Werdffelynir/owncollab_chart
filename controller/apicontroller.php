@@ -469,4 +469,12 @@ class ApiController extends Controller
         return 'no-valid';
     }
 
+    /**
+     * @param array $data
+     */
+    private function download_pdf( array $data ) { }
+
+
+
+
 }

@@ -65,9 +65,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             event.target.textContent = event.target.textContent.trim();
             event.target.removeAttribute('contenteditable');
 
-            for(var key in keyevent.fieldsEditable) {
-                keyevent.fieldsValues[key] = keyevent.fieldsEditable[key].textContent;
-            }
+
 
             keyevent.tableEditableShutOff(event);
 
@@ -105,6 +103,12 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
                 duration: taskFields[4],
                 resources: taskFields[5]
             };
+            for(var key in keyevent.fieldsEditable) {
+                keyevent.fieldsValues[key] = keyevent.fieldsEditable[key].textContent;
+            }
+            //console.log(keyevent.fieldsEditable.dateStart);
+
+            //keyevent.fieldsEditable.dateStart.innerHTML = '<span class="dtp_inline">'+keyevent.fieldsValues['dateStart']+'</span>'
 
             for(fieldName in keyevent.fieldsEditable) {
                 field = keyevent.fieldsEditable[fieldName];
@@ -114,6 +118,36 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             }
 
             taskFields[1].focus();
+
+
+
+            keyevent.fieldsEditable.dateStart.classList.add('dtp_inline');
+            keyevent.fieldsEditable.dateEnd.classList.add('dtp_inline');
+
+            //$('.dtp_inline').datetimepicker({
+            //    //timezone: '0000',
+            //    //controlType: 'slider',
+            //    oneLine: false,
+            //    dateFormat: 'dd.mm.yy',
+            //    timeFormat: 'HH:mm'
+            //});
+
+            /*$($(keyevent.fieldsEditable.dateStart).parent().parent()).datetimepicker({
+                altField: ".dtp_inline",
+                altFieldTimeOnly: false
+            });*/
+
+            //$(keyevent.fieldsEditable.dateStart).parent().parent()
+/*            if(!keyevent.dtpAdded) {
+                $('#app-content-wrapper').append('<form><input id="dtp_inline_base"  type="text" style="display:none"></form>');
+                keyevent.dtpAdded = true;
+            }
+
+            $('#dtp_inline_base').datetimepicker({
+                altField: ".dtp_inline",
+                altFieldTimeOnly: false
+            });*/
+
 
             //console.log(fieldsEditable);
 

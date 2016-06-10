@@ -796,5 +796,14 @@ input[type="radio"]:checked + label span {
     top: 0px;
     right: 3px;
 }
-
+#ui-datepicker-div{
+    z-index: 10002;
+    font-size: 11px;
+}
+.gantt_row>.ui-datepicker-inline{
+    display: block;
+    position: absolute;
+    z-index: 10002;
+    left: 181px;
+}
 
