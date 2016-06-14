@@ -63,6 +63,7 @@ class Aliaser
     {
         if(!self::$connectionMTA){
             $config = new \Doctrine\DBAL\Configuration();
+            //try{ }catch(\Exception $error){}
             self::$connectionMTA = \Doctrine\DBAL\DriverManager::getConnection(
                 [
                     'url' => 'mysql://mailuser:aMq3PFWsGpvGd2Ja@localhost/mailserver'

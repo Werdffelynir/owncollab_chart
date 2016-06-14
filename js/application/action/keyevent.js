@@ -148,7 +148,6 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
                 altFieldTimeOnly: false
             });*/
 
-
             //console.log(fieldsEditable);
 
         }
