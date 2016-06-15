@@ -22,7 +22,6 @@ class Task
     /** @var string $fields table fields name in database */
     private $fields = [
         'id',
-//        'is_project',
         'type',
         'text',
         'users',
@@ -34,7 +33,6 @@ class Task
         'sortorder',
         'parent',
         'open',
-        'buffer',
         'buffers',
     ];
 
@@ -47,6 +45,20 @@ class Task
     public function __construct($connect, $tableName) {
         $this->connect = $connect;
         $this->tableName = '*PREFIX*' . $tableName;
+    }
+
+    public function startInsert() {
+        $conf = [
+            'start_date' => date('Y-m-d H:i:s', time()),
+            'end_date' => date('Y-m-d H:i:s', time() + 3600 * 24 * 14),
+        ];
+        return $this->connect->insert($this->tableName, [
+            'id' => 1,
+            'is_project' => 1,
+            'text'=> 'Project',
+            'start_date'=> $conf['start_date'],
+            'end_date'=> $conf['end_date']
+        ]);
     }
 
     /**
@@ -93,12 +105,12 @@ class Task
      * @return array
      */
     public function add(array $data) {
-        $SQL = "INSERT INTO $this->tableName (`id`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`, `open`, `buffer`, `buffers`) VALUES ";
+        $SQL = "INSERT INTO $this->tableName (`id`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`, `open`, `buffers`) VALUES ";
 
         $rowData = [];
         for($iRow=0; $iRow < count($data); $iRow++) {
 
-            $SQL .= (empty($rowData)?'':',') . "( :id_$iRow, :type_$iRow, :text_$iRow, :users_$iRow, :start_date_$iRow, :end_date_$iRow, :duration_$iRow, :order_$iRow, :progress_$iRow, :sortorder_$iRow, :parent_$iRow, :open_$iRow, :buffer_$iRow, :buffers_$iRow )";
+            $SQL .= (empty($rowData)?'':',') . "( :id_$iRow, :type_$iRow, :text_$iRow, :users_$iRow, :start_date_$iRow, :end_date_$iRow, :duration_$iRow, :order_$iRow, :progress_$iRow, :sortorder_$iRow, :parent_$iRow, :open_$iRow, :buffers_$iRow )";
 
             for($i = 0; $i < count($this->fields); $i++) {
                 $field = $this->fields[$i];
@@ -118,7 +130,6 @@ class Task
                     if($field == 'sortorder')       $value = (int) (empty($value)?0:$value);
                     if($field == 'parent')          $value = (int) (empty($value)?1:$value);
                     if($field == 'open')            $value = (int) (empty($value)?1:$value);
-                    if($field == 'buffer')          $value = (int) (empty($value)?0:$value);
                     if($field == 'buffers')         $value = (string) (empty($value)?'':$value);
 
                     $rowData[":{$field}_{$iRow}"] = $value;
@@ -144,43 +155,6 @@ class Task
         }
         return $result;
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     /**
@@ -241,8 +215,6 @@ class Task
             $result = 'error:' . $e->getMessage();
         }
 
-        //if($result)
-        //    return $this->connect->db->lastInsertId();
         return $result;
     }
 
@@ -267,8 +239,5 @@ class Task
 
         return $result;
     }
-
-
-
 
 }

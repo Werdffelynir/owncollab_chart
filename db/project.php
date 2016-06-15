@@ -41,6 +41,13 @@ class Project
         $this->tableName = '*PREFIX*' . $tableName;
     }
 
+    public function startInsert($uid) {
+        return $this->connect->insert($this->tableName, [
+            'name'=>'Project',
+            'create_uid'=> $uid,
+        ]);
+    }
+
     /**
      * Retrieve all date of project settings
      *

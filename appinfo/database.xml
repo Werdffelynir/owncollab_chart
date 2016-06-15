@@ -1,10 +1,133 @@
 <database>
     <name>*dbname*</name>
     <create>true</create>
-    <overwrite>false</overwrite>
+    <overwrite>true</overwrite>
     <charset>utf8</charset>
+
     <table>
-        <name>*dbprefix*xxx_collab_links</name>
+        <name>*dbprefix*collab_project</name>
+        <declaration>
+            <field>
+                <name>name</name>
+                <type>text</type>
+                <notnull>true</notnull>
+                <length>128</length>
+                <primary>true</primary>
+            </field>
+            <field>
+                <name>create_uid</name>
+                <type>text</type>
+                <length>128</length>
+                <notnull>false</notnull>
+            </field>
+            <field>
+                <name>show_today_line</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>0</default>
+            </field>
+            <field>
+                <name>show_task_name</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>0</default>
+            </field>
+            <field>
+                <name>show_user_color</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>0</default>
+            </field>
+            <field>
+                <name>critical_path</name>
+                <type>integer</type>
+                <length>1</length>
+                <default>0</default>
+                <notnull>false</notnull>
+            </field>
+
+            <field>
+                <name>scale_type</name>
+                <type>text</type>
+                <length>16</length>
+                <notnull>false</notnull>
+                <default>day</default>
+            </field>
+            <field>
+                <name>scale_fit</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>0</default>
+            </field>
+            <field>
+                <name>is_share</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>0</default>
+            </field>
+            <field>
+                <name>share_link</name>
+                <type>text</type>
+                <length>255</length>
+                <notnull>false</notnull>
+                <default></default>
+            </field>
+            <field>
+                <name>share_is_protected</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>0</default>
+            </field>
+            <field>
+                <name>share_password</name>
+                <type>text</type>
+                <length>255</length>
+                <notnull>false</notnull>
+                <default></default>
+            </field>
+            <field>
+                <name>share_email_recipient</name>
+                <type>text</type>
+                <length>255</length>
+                <notnull>false</notnull>
+                <default></default>
+            </field>
+            <field>
+                <name>share_is_expire</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>0</default>
+            </field>
+            <field>
+                <name>share_expire_time</name>
+                <type>timestamp</type>
+                <length>11</length>
+                <notnull>false</notnull>
+            </field>
+            <field>
+                <name>open</name>
+                <type>integer</type>
+                <length>1</length>
+                <notnull>false</notnull>
+                <default>1</default>
+            </field>
+        </declaration>
+    </table>
+
+
+
+
+
+
+    <table>
+        <name>*dbprefix*collab_links</name>
         <declaration>
             <field>
                 <name>id</name>
@@ -45,127 +168,11 @@
     </table>
 
 
-    <table>
-        <name>*dbprefix*xxx_collab_project</name>
-        <declaration>
-            <field>
-                <name>name</name>
-                <type>text</type>
-                <notnull>true</notnull>
-                <length>225</length>
-                <primary>true</primary>
-            </field>
-            <field>
-                <name>create_uid</name>
-                <type>text</type>
-                <notnull>true</notnull>
-                <length>225</length>
-            </field>
-            <field>
-                <name>show_today_line</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>true</notnull>
-            </field>
-            <field>
-                <name>show_task_name</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>true</notnull>
-            </field>
-            <field>
-                <name>show_user_color</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>true</notnull>
-            </field>
-            <field>
-                <name>critical_path</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>true</notnull>
-            </field>
-
-            <field>
-                <name>scale_type</name>
-                <type>text</type>
-                <notnull>false</notnull>
-                <default>day</default>
-                <length>16</length>
-            </field>
-            <field>
-                <name>scale_fit</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>false</notnull>
-            </field>
-            <field>
-                <name>is_share</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>false</notnull>
-            </field>
-            <field>
-                <name>share_link</name>
-                <type>text</type>
-                <notnull>false</notnull>
-                <default></default>
-                <length>255</length>
-            </field>
-            <field>
-                <name>share_is_protected</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>false</notnull>
-            </field>
-            <field>
-                <name>share_password</name>
-                <type>text</type>
-                <notnull>false</notnull>
-                <default></default>
-                <length>255</length>
-            </field>
-            <field>
-                <name>share_email_recipient</name>
-                <type>text</type>
-                <notnull>false</notnull>
-                <default></default>
-                <length>255</length>
-            </field>
-            <field>
-                <name>share_is_expire</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>0</default>
-                <notnull>false</notnull>
-            </field>
-            <field>
-                <name>share_expire_time</name>
-                <type>timestamp</type>
-                <length>11</length>
-                <notnull>false</notnull>
-            </field>
-            <field>
-                <name>open</name>
-                <type>integer</type>
-                <length>1</length>
-                <default>1</default>
-                <notnull>false</notnull>
-            </field>
-        </declaration>
-    </table>
 
 
 
     <table>
-        <name>*dbprefix*xxx_collab_tasks</name>
+        <name>*dbprefix*collab_tasks</name>
         <declaration>
             <field>
                 <name>id</name>
@@ -186,15 +193,15 @@
                 <name>type</name>
                 <type>text</type>
                 <length>16</length>
+                <notnull>false</notnull>
                 <default>task</default>
-                <notnull>true</notnull>
             </field>
             <field>
                 <name>text</name>
                 <type>text</type>
                 <length>128</length>
                 <default>New task</default>
-                <notnull>true</notnull>
+                <notnull>false</notnull>
             </field>
             <field>
                 <name>users</name>
@@ -254,14 +261,14 @@
                 <type>integer</type>
                 <length>1</length>
                 <default>1</default>
-                <notnull>true</notnull>
+                <notnull>false</notnull>
             </field>
             <field>
                 <name>buffers</name>
                 <type>text</type>
                 <length>2048</length>
                 <default></default>
-                <notnull>true</notnull>
+                <notnull>false</notnull>
             </field>
         </declaration>
     </table>

@@ -74,12 +74,24 @@ class MainController extends Controller {
 	 * @NoCSRFRequired
 	 */
 	public function index() {
-		$params = [
-			'current_user' => $this->userId,
-		];
-		return new TemplateResponse($this->appName, 'main', $params);
+
+        $this->checkedPriorityData();
+
+		return new TemplateResponse($this->appName, 'main', ['current_user' => $this->userId]);
+        
 	}
 
+
+    public function checkedPriorityData() {
+        if(!$this->connect->project()->get()) {
+            $this->connect->db->beginTransaction();
+            $result = $this->connect->project()->startInsert($this->userId);
+            if(!$this->connect->task()->get()) {
+                $result = $this->connect->task()->startInsert();
+            }
+            $this->connect->db->commit();
+        }
+    }
 
 	/**
 	 *
