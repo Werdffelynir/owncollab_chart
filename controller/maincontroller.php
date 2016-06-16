@@ -78,7 +78,7 @@ class MainController extends Controller {
         $this->checkedPriorityData();
 
 		return new TemplateResponse($this->appName, 'main', ['current_user' => $this->userId]);
-        
+
 	}
 
 
@@ -92,6 +92,7 @@ class MainController extends Controller {
             $this->connect->db->commit();
         }
     }
+
 
 	/**
 	 *

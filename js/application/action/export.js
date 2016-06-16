@@ -12,6 +12,27 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
     /** @type {App.Extension.DateTime} */
     var DateTime = null;
 
+    function defaults(obj, std){
+        for (var key in std)
+            if (!obj[key])
+                obj[key] = std[key];
+        return obj;
+    }
+    function mark_columns(base){
+        var columns = base.config.columns;
+        if (columns)
+            for (var i = 0; i < columns.length; i++) {
+                if (columns[i].template)
+                    columns[i].$template = true;
+            }
+    }
+    function fix_columns(gantt, columns){
+        for (var i = 0; i < columns.length; i++) {
+            columns[i].label = columns[i].label || gantt.locale.labels["column_"+columns[i].name];
+            if (typeof columns[i].width == "string") columns[i].width = columns[i].width*1;
+        }
+    }
+
     /**
      * Init event click on export buttons
      * @namespace App.Action.Export.init
@@ -81,7 +102,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
     exp.toPDF.config = {};
 
-    exp.onChangeExportToPDFInputDate = function(date){
+    exp.onChangeExportToPDFInputDate = function(date) {
 
         if(this.name == "pdf_start_date")
             exp.toPDF.config['start'] = DateTime.strToDate(date);
@@ -91,56 +112,40 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
     };
 
     exp.onSubmitExportToPDF = function (event){
+
+        $('.export_loader').show();
         event.preventDefault();
 
-        var fd = Util.formData(exp.formExportToPDF, true);
+        var config = defaults((config || {}), {
+            name:"gantt.png",
+            data:gantt._serialize_all(),
+            config:gantt.config,
+            version:gantt.version,
+            header:'<link rel="stylesheet" href="http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css">'
+        });
+        if (exp.toPDF.config['start']) config['start'] = exp.toPDF.config['start'];
+        if (exp.toPDF.config['end']) config['end'] = exp.toPDF.config['end'];
 
-        // pdf_start_date: "", pdf_end_date: "", pdf_paper_size: "1", pdf_paper_orientation: "1", pdf_head_left: "",
-        // pdf_head_center: "", pdf_head_right: "", pdf_footer_left: "", pdf_footer_center: "", pdf_footer_right: "", pdf_size: ""
+        fix_columns(gantt, config.config.columns);
 
-        //var styleLink = '<link rel="stylesheet" href="'+app.protocol+"://"+app.host+app.url+'/css/dhtmlxgantt.css">';
-        var cssUrl = "http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css";
-        var styleLink = '<link rel="stylesheet" href="' + cssUrl + '">';
-        var style = Util.createStyle();
-
-        style.add('.tbl','display:table; width:100%');
-        style.add('.tbl_cell','display:table-cell');
-        style.add('.third','width:32%');
-        style.add('.center','text-align:center');
-        style.add('.right','text-align:right');
-
-        var headerString = '<div class="tbl header">' +
-            '<div class="tbl_cell third">' +fd['pdf_head_left']+ '</div>' +
-            '<div class="tbl_cell third center">' +fd['pdf_head_center']+ '</div>' +
-            '<div class="tbl_cell third right">' +fd['pdf_head_right']+ '</div>' +
-            '</div>';
-
-        var footerString = '<div class="tbl footer">' +
-            '<div class="tbl_cell third">' +fd['pdf_footer_left']+ '</div>' +
-            '<div class="tbl_cell third center">' +fd['pdf_footer_center']+ '</div>' +
-            '<div class="tbl_cell third right">' +fd['pdf_footer_right']+ '</div>' +
-            '</div>';
-
-        //console.log(styleLink);
-        var tmpConfig = {
+        var _tmpConfig = {
             autofit: gantt.config.autofit,
             fit_tasks: gantt.config.fit_tasks
         };
-
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
 
-        exp.toPDF.config['config'] = null;
-        exp.toPDF.config['name'] = exp.projectTask.text;
-        exp.toPDF.config['header'] = styleLink + style.getString() + headerString;
-        exp.toPDF.config['footer'] = footerString;
+        App.Action.Api.request('getsourcepdf', function(response) {
+            console.log('getsourcepdf response >>>', response);
+            $('.export_loader').hide();
+            if(typeof  response === 'object' && response.download) {
+                var file_uri = response.download.substr(response.download.indexOf('/apps/'));
+                window.open(file_uri, '_blank');
+            }
+        }, {data:JSON.stringify(config)});
 
-        console.log(exp.toPDF.config);
-
-        gantt.exportToPDF(exp.toPDF.config);
-
-        gantt.config.autofit = tmpConfig.autofit;
-        gantt.config.fit_tasks = tmpConfig.fit_tasks;
+        gantt.config.autofit = _tmpConfig.autofit;
+        gantt.config.fit_tasks = _tmpConfig.fit_tasks;
     };
 
 
@@ -170,33 +175,11 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
     exp.print = function (source){
         var pwa = window.open("about:blank", "_new");
         pwa.document.open();
-        pwa.document.write(exp.printSource(source));
+        pwa.document.write(source);
         pwa.document.close();
     };
 
 
-    exp.printSource = function (source){
-        //return "<html><head><script>function initPrint(){\n" +
-            //"function toPrint(){ console.log('print'); window.print(); window.close(); }\n" +
-            //"setTimeout(toPrint, 100);}\n" +
-
-        //    "</scri" + "pt></head><body onload='initPrint()'>\n" +
-        //    "<img id='imgsource' src='" + source + "' /></body></html>";
-
-        //var html = '<html><head></head><body>';
-        //html += '<img id="imgsource" src="' + source + '" />';
-        //html += '</body></scri' + 'pt>';
-        //html += '</body></html>';
-        //imgsource.onload = function(e){console.log('print');};
-    };
-
-
-    exp.backDownloadPDF = function (source){
-        var config = {};
-        App.Action.Api.request('download_pdf', function(response){
-            console.log(response);
-        }, config);
-    };
 
     return exp
 

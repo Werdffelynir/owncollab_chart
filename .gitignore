@@ -23,5 +23,6 @@ index
 
 # use
 tmp
-js.old/dhtmlxganttpro
 js/commercial
+lib/mpdf
+*.pdf

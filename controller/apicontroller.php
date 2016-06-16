@@ -469,9 +469,142 @@ class ApiController extends Controller
         return 'no-valid';
     }
 
+
+    private function getsourcepdf( array $data ) {
+
+        ini_set('memory_limit', '1024M');
+
+        $params = [
+            'data'     => $data,
+            'error'     => null,
+            'errorinfo'     => '',
+            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+        ];
+        $tmpFileName = 'gantt_export_' . Helper::randomString() . '.pdf';
+        $tmpFilePath = '/var/www/owncloud.loc/apps/owncollab_chart/tmp/' . $tmpFileName;
+        $encodeData = 'data='.urlencode($data['data']).'&type=pdf';
+
+        ob_start();
+        system('curl --request POST "https://export.dhtmlx.com/gantt" --data "'.$encodeData.'"');
+        $result = ob_get_clean();
+
+        if($is_save = file_put_contents($tmpFilePath, $result)) {
+            $downloadPath = $this->explodePDF($tmpFilePath);
+
+
+            /*$f = fopen($tmpFilePath, 'r');
+            header("HTTP/1.1 200 OK");
+            header("Connection: close");
+            header("Content-Type: application/octet-stream");
+            header("Accept-Ranges: bytes");
+            header("Content-Disposition: Attachment; filename=".substr($tmpFilePath, strrpos($tmpFilePath,'/')));
+            header("Content-Length: ".filesize($tmpFilePath));
+            while (!feof($f)) {
+                if (connection_aborted()) {
+                    fclose($f);
+                    break;
+                }
+                echo fread($f, 10000);
+                sleep(1);
+            }
+            fclose($f);*/
+
+            if($downloadPath)
+                return new DataResponse(['download'=>$downloadPath]);
+        }
+
+        die;
+
+        /*$url = "https://export.dhtmlx.com/gantt";
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL,$url);
+        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $encodeData);
+        $result = curl_exec($ch);
+        curl_close($ch);*/
+
+        //return new DataResponse($params);
+    }
+
     /**
-     * @param array $data
+     * @param $path
+     * @return bool
      */
+    public function explodePDF($path){
+
+        if(!is_file($path)) return false;
+
+        ini_set('memory_limit', '1024M');
+        $isPortrait = false;
+        $paperSize = 'A4';
+
+        $pdfInfo = $this->pdfInfo($path);
+
+        if(!$pdfInfo) return false;
+
+        $pdfSize = array_map(function($item){return trim((int)$item);},explode('x', $pdfInfo['Page size']));
+        $pdfSize['w'] = $pdfSize[0] * 0.75;
+        $pdfSize['h'] = $pdfSize[1] * 0.75;
+        $paperSizes = [
+            'A2' => ['w' => 420, 'h' => 594], 'A3' => ['w' => 297, 'h' => 420],
+            'A4' => ['w' => 210, 'h' => 297], 'A5' => ['w' => 148, 'h' => 210],
+        ];
+
+        include(dirname(__DIR__)."/lib/mpdf/mpdf.php");
+
+        $mpdf = new \mPDF('', $paperSize . ($isPortrait ? '-P':'-L' ));
+        $mpdf->SetImportUse();
+        $mpdf->SetDisplayMode('fullpage');
+        $mpdf->SetCompression(false);
+        $mpdf->SetAutoPageBreak(true);
+
+        $source = $mpdf->SetSourceFile($path);
+        $page_w = ($isPortrait) ? $paperSizes[$paperSize]['w'] : $paperSizes[$paperSize]['h'] ;
+        $page_h = ($isPortrait) ? $paperSizes[$paperSize]['h'] : $paperSizes[$paperSize]['w'] ;
+        $iter_w = ceil(($pdfSize['w']/$page_w) / 2);
+        $iter_h = ceil(($pdfSize['h']/$page_h) / 2);
+        $crop_x = 0;
+        $crop_y = 0;
+
+        for($i = 0; $i < $iter_w; $i++){
+            if($i > 0)
+                $mpdf->AddPage();
+
+            $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w, $page_h );
+            $mpdf->UseTemplate($tpl);
+
+            if($iter_h > 2) {
+                $mpdf->AddPage();
+                $tpl = $mpdf->ImportPage( $source, $crop_x, $page_h, $page_w, $page_h );
+                $mpdf->UseTemplate($tpl);
+            }
+
+            $crop_x += $page_w;
+        }
+
+        $mpdf->Output($path.'gen.pdf', 'F');
+        return $path.'gen.pdf';
+    }
+
+    private function pdfInfo($path){
+        ob_start();
+        system('pdfinfo ' . $path);
+        $infoParts = explode("\n", ob_get_clean());
+        $info = [];
+        foreach($infoParts as $part){
+            if(strpos($part,':') !== false) {
+                $parts = explode(":", $part);
+                if(count($parts) == 2)
+                    $info[trim($parts[0])] = trim($parts[1]);
+            }
+        }
+        return $info;
+    }
+
     private function download_pdf( array $data ) { }
 
 

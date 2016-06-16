@@ -111,15 +111,8 @@ $appName = 'owncollab_chart';
         </div>
 
         <div>
-            <input type="submit" value="Export">
+            <input type="submit" value="Export"> <div class="export_loader loader_min" style="display: none"></div>
         </div>
 
     </form>
-</div>
-
-
-<div class="export_print">
-
-    <input type="button" value="Print">
-
 </div>

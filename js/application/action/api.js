@@ -65,7 +65,7 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
             url: App.url + '/api',
             data: {key: key, uid: App.uid, data: args},
             type: 'POST',
-            timeout: timeout_ms || 60000,
+            timeout: timeout_ms || 36000,
             headers: {requesttoken: App.requesttoken},
 
             success: function (response) {
@@ -75,12 +75,12 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
             },
 
             error: function (error) {
-                Error.page("API request error to the key: [" + key + "] Error message");
+                console.error("API request error to the key: [" + key + "] Error message: ", error);
             },
 
             complete: function (jqXHR, status) {
                 if (status == 'timeout') {
-                    Error.page("You have exceeded the request time. possible problems with the Internet, or an error on the server");
+                    console.error("You have exceeded the request time. possible problems with the Internet, or an error on the server");
                 }
             }
         });
