@@ -488,46 +488,17 @@ class ApiController extends Controller
         system('curl --request POST "https://export.dhtmlx.com/gantt" --data "'.$encodeData.'"');
         $result = ob_get_clean();
 
-        if($is_save = file_put_contents($tmpFilePath, $result)) {
+        if($result && $is_save = file_put_contents($tmpFilePath, $result)) {
             $downloadPath = $this->explodePDF($tmpFilePath);
-
-
-            /*$f = fopen($tmpFilePath, 'r');
-            header("HTTP/1.1 200 OK");
-            header("Connection: close");
-            header("Content-Type: application/octet-stream");
-            header("Accept-Ranges: bytes");
-            header("Content-Disposition: Attachment; filename=".substr($tmpFilePath, strrpos($tmpFilePath,'/')));
-            header("Content-Length: ".filesize($tmpFilePath));
-            while (!feof($f)) {
-                if (connection_aborted()) {
-                    fclose($f);
-                    break;
-                }
-                echo fread($f, 10000);
-                sleep(1);
-            }
-            fclose($f);*/
-
             if($downloadPath)
-                return new DataResponse(['download'=>$downloadPath]);
+                $params['download'] = $downloadPath;
+            else
+                $params['errorinfo'] = 'Error: download path exist';
         }
+        else
+            $params['errorinfo'] = 'Error: result pdf export request on export.dhtmlx.com is failed';
 
-        die;
-
-        /*$url = "https://export.dhtmlx.com/gantt";
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL,$url);
-        curl_setopt($ch, CURLOPT_FAILONERROR, 1);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $encodeData);
-        $result = curl_exec($ch);
-        curl_close($ch);*/
-
-        //return new DataResponse($params);
+        return new DataResponse($params);
     }
 
     /**
@@ -538,7 +509,6 @@ class ApiController extends Controller
 
         if(!is_file($path)) return false;
 
-        ini_set('memory_limit', '1024M');
         $isPortrait = false;
         $paperSize = 'A4';
 

@@ -13,6 +13,10 @@ The application is dependent for part of OwnCollab
 
 Destination of application is displaying charts on the basis of the plugin dhtmlxgantt
 
+## Dependency
+
+For PDF generate: http://www.foolabs.com/xpdf/download.html
+
 ## Publish to App Store
 
 First get an account for the [App Store](http://apps.owncloud.com/) then run:
