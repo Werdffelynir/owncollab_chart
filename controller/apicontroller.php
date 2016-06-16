@@ -481,7 +481,7 @@ class ApiController extends Controller
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
         $tmpFileName = 'gantt_export_' . Helper::randomString() . '.pdf';
-        $tmpFilePath = '/var/www/owncloud.loc/apps/owncollab_chart/tmp/' . $tmpFileName;
+        $tmpFilePath = dirname(__DIR__).'/tmp/' . $tmpFileName;
         $encodeData = 'data='.urlencode($data['data']).'&type=pdf';
 
         ob_start();
@@ -500,7 +500,6 @@ class ApiController extends Controller
         }
         else {
             $params['errorinfo'] = 'Error: result pdf export request on export.dhtmlx.com is failed';
-            $params['errorinfodata'] = substr($result, 0, 255);
         }
 
         if(is_array($params))
