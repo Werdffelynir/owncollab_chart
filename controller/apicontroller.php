@@ -495,8 +495,11 @@ class ApiController extends Controller
             else
                 $params['errorinfo'] = 'Error: download path exist';
         }
-        else
+        else {
             $params['errorinfo'] = 'Error: result pdf export request on export.dhtmlx.com is failed';
+            $params['errorinfodata'] = $result;
+        }
+
 
         return new DataResponse($params);
     }
