@@ -393,7 +393,7 @@ class ApiController extends Controller
     public function invite($data) {
 
         $params = [
-            'data'     => $data,
+            //'data'     => $data,
             'error'     => null,
             'errorinfo'     => '',
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
@@ -475,7 +475,7 @@ class ApiController extends Controller
         ini_set('memory_limit', '1024M');
 
         $params = [
-            'data'     => $data,
+            //'data'     => $data,
             'error'     => null,
             'errorinfo'     => '',
             'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
@@ -488,8 +488,11 @@ class ApiController extends Controller
         system('curl --request POST "https://export.dhtmlx.com/gantt" --data "'.$encodeData.'"');
         $result = ob_get_clean();
 
+        $print_portrait = isset($data['printconf']['orientation']) && $data['printconf']['orientation'] == 'P';
+        $print_paper_size = isset($data['printconf']['paper_size']) ? $data['printconf']['paper_size'] : 'A4';
+
         if($result && $is_save = file_put_contents($tmpFilePath, $result)) {
-            $downloadPath = $this->explodePDF($tmpFilePath);
+            $downloadPath = $this->explodePDF($tmpFilePath, $print_portrait, $print_paper_size);
             if($downloadPath)
                 $params['download'] = $downloadPath;
             else
@@ -497,23 +500,28 @@ class ApiController extends Controller
         }
         else {
             $params['errorinfo'] = 'Error: result pdf export request on export.dhtmlx.com is failed';
-            $params['errorinfodata'] = $result;
+            $params['errorinfodata'] = substr($result, 0, 255);
         }
 
-
-        return new DataResponse($params);
+        if(is_array($params))
+            return new DataResponse($params);
     }
+
 
     /**
      * @param $path
-     * @return bool
+     * @param $print_portrait
+     * @param $print_paper_size
+     * @return bool|string
      */
-    public function explodePDF($path){
+    public function explodePDF($path, $print_portrait, $print_paper_size){
+
+        ini_set('memory_limit', '1024M');
 
         if(!is_file($path)) return false;
 
-        $isPortrait = false;
-        $paperSize = 'A4';
+        $isPortrait =  $print_portrait;
+        $paperSize = in_array($print_paper_size,['A2','A3','A4','A5']) ? $print_paper_size : 'A4';
 
         $pdfInfo = $this->pdfInfo($path);
 

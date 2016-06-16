@@ -115,7 +115,11 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         $('.export_loader').show();
         event.preventDefault();
-
+        var printconf = {
+            orientation: $('select[name=pdf_paper_orientation]').val(),
+            paper_size: $('select[name=pdf_paper_size]').val(),
+            scale: 1
+        };
         var config = defaults((config || {}), {
             name:"gantt.png",
             data:gantt._serialize_all(),
@@ -142,7 +146,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
                 var file_uri = response.download.substr(response.download.indexOf('/apps/'));
                 window.open(file_uri, '_blank');
             }
-        }, {data:JSON.stringify(config)});
+        }, {data:JSON.stringify(config), printconf:printconf});
 
         gantt.config.autofit = _tmpConfig.autofit;
         gantt.config.fit_tasks = _tmpConfig.fit_tasks;
