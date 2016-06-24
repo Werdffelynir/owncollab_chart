@@ -73,46 +73,46 @@ $appName = 'owncollab_chart';
             </div>
         </div>
 
+
+            <p>Define Header</p>
+
+            <div class="tbl">
+                <div class="tbl_cell width20">Left</div>
+                <div class="tbl_cell"><input name="pdf_head_left" type="text"></div>
+            </div>
+
+            <div class="tbl">
+                <div class="tbl_cell width20">Center</div>
+                <div class="tbl_cell"><input name="pdf_head_center"  type="text"></div>
+            </div>
+
+            <div class="tbl">
+                <div class="tbl_cell width20">Right</div>
+                <div class="tbl_cell"><input name="pdf_head_right"  type="text"></div>
+            </div>
+
+            <p>Define Footer</p>
+
+            <div class="tbl">
+                <div class="tbl_cell width20">Left</div>
+                <div class="tbl_cell"><input name="pdf_footer_left" type="text"></div>
+            </div>
+
+            <div class="tbl">
+                <div class="tbl_cell width20">Center</div>
+                <div class="tbl_cell"><input name="pdf_footer_center" type="text"></div>
+            </div>
+
+            <div class="tbl">
+                <div class="tbl_cell width20">Right</div>
+                <div class="tbl_cell"><input name="pdf_footer_right" type="text"></div>
+            </div>
         <!--
-                <p>Define Header</p>
-
-                <div class="tbl">
-                    <div class="tbl_cell width20">Left</div>
-                    <div class="tbl_cell"><input name="pdf_head_left" type="text"></div>
-                </div>
-
-                <div class="tbl">
-                    <div class="tbl_cell width20">Center</div>
-                    <div class="tbl_cell"><input name="pdf_head_center"  type="text"></div>
-                </div>
-
-                <div class="tbl">
-                    <div class="tbl_cell width20">Right</div>
-                    <div class="tbl_cell"><input name="pdf_head_right"  type="text"></div>
-                </div>
-
-                <p>Define Footer</p>
-
-                <div class="tbl">
-                    <div class="tbl_cell width20">Left</div>
-                    <div class="tbl_cell"><input name="pdf_footer_left" type="text"></div>
-                </div>
-
-                <div class="tbl">
-                    <div class="tbl_cell width20">Center</div>
-                    <div class="tbl_cell"><input name="pdf_footer_center" type="text"></div>
-                </div>
-
-                <div class="tbl">
-                    <div class="tbl_cell width20">Right</div>
-                    <div class="tbl_cell"><input name="pdf_footer_right" type="text"></div>
-                </div>
-
-                <div class="tbl">
-                    <div class="tbl_cell width20">Size</div>
-                    <div class="tbl_cell"><input name="pdf_size" type="text"></div>
-                </div>
-                -->
+                   <div class="tbl">
+                       <div class="tbl_cell width20">Size</div>
+                       <div class="tbl_cell"><input name="pdf_size" type="text"></div>
+                   </div>
+               -->
         <div>
             <input type="submit" value="Export"> <div class="export_loader loader_min" style="display: none"></div>
         </div>

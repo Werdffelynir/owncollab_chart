@@ -115,6 +115,14 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         $('.export_loader').show();
         event.preventDefault();
+        var pagenotes = {
+            'head_left': $('input[name=pdf_head_left]').val(),
+            'head_center': $('input[name=pdf_head_center]').val(),
+            'head_right': $('input[name=pdf_head_right]').val(),
+            'footer_left': $('input[name=pdf_footer_left]').val(),
+            'footer_center': $('input[name=pdf_footer_center]').val(),
+            'footer_right': $('input[name=pdf_footer_right]').val(),
+        };
         var printconf = {
             orientation: $('select[name=pdf_paper_orientation]').val(),
             paper_size: $('select[name=pdf_paper_size]').val(),
@@ -139,7 +147,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
 
-        console.log(config);
+        //console.log(config);
 
         App.Action.Api.request('getsourcepdf', function(response) {
             console.log('getsourcepdf response >>>', response);
@@ -148,7 +156,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
                 var file_uri = response.download.substr(response.download.indexOf('/apps/'));
                 window.open(file_uri, '_blank');
             }
-        }, {data:JSON.stringify(config), printconf:printconf});
+        }, {data:JSON.stringify(config), printconf:printconf, pagenotes:pagenotes});
 
         gantt.config.autofit = _tmpConfig.autofit;
         gantt.config.fit_tasks = _tmpConfig.fit_tasks;

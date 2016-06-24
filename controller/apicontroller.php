@@ -474,6 +474,10 @@ class ApiController extends Controller
 
         ini_set('memory_limit', '1024M');
 
+        if(!is_dir(dirname(__DIR__).'/tmp'))
+            mkdir(dirname(__DIR__).'/tmp');
+        chmod(dirname(__DIR__).'/tmp',0777);
+
         $params = [
             //'data'     => $data,
             'error'     => null,
@@ -483,8 +487,6 @@ class ApiController extends Controller
         $tmpFileName = 'gantt_export_' . Helper::randomString() . '.pdf';
         $tmpFilePath = dirname(__DIR__).'/tmp/' . $tmpFileName;
         $encodeData = 'data='.urlencode($data['data']).'&type=pdf';
-
-        $params['encodeData strlen'] = strlen($encodeData);
 
         ob_start();
         system('curl --request POST "https://export.dhtmlx.com/gantt" --data "'.$encodeData.'"');
@@ -497,8 +499,10 @@ class ApiController extends Controller
         $print_portrait = isset($data['printconf']['orientation']) && $data['printconf']['orientation'] == 'P';
         $print_paper_size = isset($data['printconf']['paper_size']) ? $data['printconf']['paper_size'] : 'A4';
 
+        $print_notes = isset($data['pagenotes']) ? $data['pagenotes'] : false;
+
         if($result && $is_save = file_put_contents($tmpFilePath, $result)) {
-            $downloadPath = $this->explodePDF($tmpFilePath, $print_portrait, $print_paper_size);
+            $downloadPath = $this->explodePDF($tmpFilePath, $print_portrait, $print_paper_size, $print_notes);
             if($downloadPath)
                 $params['download'] = $downloadPath;
             else
@@ -517,9 +521,10 @@ class ApiController extends Controller
      * @param $path
      * @param $print_portrait
      * @param $print_paper_size
+     * @param $labels
      * @return bool|string
      */
-    public function explodePDF($path, $print_portrait, $print_paper_size){
+    public function explodePDF($path, $print_portrait, $print_paper_size, $labels){
 
         ini_set('memory_limit', '1024M');
 
@@ -533,8 +538,10 @@ class ApiController extends Controller
         if(!$pdfInfo) return false;
 
         $pdfSize = array_map(function($item){return trim((int)$item);},explode('x', $pdfInfo['Page size']));
+
         $pdfSize['w'] = $pdfSize[0] * 0.75;
         $pdfSize['h'] = $pdfSize[1] * 0.75;
+
         $paperSizes = [
             'A2' => ['w' => 420, 'h' => 594], 'A3' => ['w' => 297, 'h' => 420],
             'A4' => ['w' => 210, 'h' => 297], 'A5' => ['w' => 148, 'h' => 210],
@@ -542,37 +549,80 @@ class ApiController extends Controller
 
         include(dirname(__DIR__)."/lib/mpdf/mpdf.php");
 
-        $mpdf = new \mPDF('', $paperSize . ($isPortrait ? '-P':'-L' ));
+        $mgl=10; $mgr=10; $mgt=20 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
+
+        if($isPortrait){
+            $mgl=20; $mgr=10; $mgt=5 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
+        }
+
+        $mpdf = new \mPDF('c', $paperSize . ($isPortrait ? '-P':'-L' )/*, 0, '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf*/);
         $mpdf->SetImportUse();
         $mpdf->SetDisplayMode('fullpage');
-        $mpdf->SetCompression(false);
-        $mpdf->SetAutoPageBreak(true);
+        $mpdf->SetCompression(true);
+        //$mpdf->SetAutoPageBreak(true);
+        $mpdf->mirrorMargins = true;
 
         $source = $mpdf->SetSourceFile($path);
         $page_w = ($isPortrait) ? $paperSizes[$paperSize]['w'] : $paperSizes[$paperSize]['h'] ;
         $page_h = ($isPortrait) ? $paperSizes[$paperSize]['h'] : $paperSizes[$paperSize]['w'] ;
         $iter_w = ceil(($pdfSize['w']/$page_w) / 2);
-        $iter_h = ceil(($pdfSize['h']/$page_h) / 2);
+        $iter_h = ceil(($pdfSize['h']/$page_h) / 1);
         $crop_x = 0;
         $crop_y = 0;
 
+        $head_left = isset($labels['head_left'])?$labels['head_left']:'';
+        $head_center = isset($labels['head_center'])?$labels['head_center']:'';
+        $head_right = isset($labels['head_right'])?$labels['head_right']:'';
+        $footer_left = isset($labels['footer_left'])?$labels['footer_left']:'';
+        $footer_center = isset($labels['footer_center'])?$labels['footer_center']:'';
+        $footer_right = isset($labels['footer_right'])?$labels['footer_right']:'';
+
+        $header = '
+            <table width="100%" style="vertical-align: bottom; font-size: 10pt;"><tr>
+            <td width="33%">'. $head_left .'</td>
+            <td width="33%" align="center">'.$head_center.'</td>
+            <td width="33%" style="text-align: right;">'.$head_right.'</td>
+            </tr></table>
+            ';
+
+        $footer = '
+            <table width="100%" style="vertical-align: bottom; font-size: 10pt;"><tr>
+            <td width="33%">'.$footer_left.'</td>
+            <td width="33%" align="center">'.$footer_center.'</td>
+            <td width="33%" style="text-align: right;">'.$footer_right.'</td>
+            </tr></table>
+            ';
+
+        $mpdf->SetHTMLHeader($header);
+        $mpdf->SetHTMLHeader($header,'E');
+        $mpdf->SetHTMLFooter($footer);
+        $mpdf->SetHTMLFooter($footer,'E');
+
+
         for($i = 0; $i < $iter_w; $i++){
             if($i > 0)
-                $mpdf->AddPage();
+                $mpdf->AddPage(); // '', '', '', '', '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf
 
-            $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w, $page_h );
-            $mpdf->UseTemplate($tpl);
+
+            //$mpdf->WriteHTML($HTMLHeader);
+            //$mpdf->WriteHTML($HTMLFooter);
+
+            $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w - ($mgl + $mgr), $page_h - ($mgt + $mgb) );
+            $mpdf->UseTemplate($tpl, $mgl, $mgt);
 
             if($iter_h > 2) {
                 $mpdf->AddPage();
-                $tpl = $mpdf->ImportPage( $source, $crop_x, $page_h, $page_w, $page_h );
-                $mpdf->UseTemplate($tpl);
+                //$mpdf->WriteHTML($HTMLHeader);
+                //$mpdf->WriteHTML($HTMLFooter);
+                $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w - ($mgl + $mgr), $page_h - ($mgt + $mgb) );
+                $mpdf->UseTemplate($tpl, $mgl, $mgt);
             }
 
-            $crop_x += $page_w;
+            $crop_x += $page_w - ($mgl + $mgr);
         }
 
         $mpdf->Output($path.'gen.pdf', 'F');
+
         return $path.'gen.pdf';
     }
 
