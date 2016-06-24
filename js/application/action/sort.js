@@ -287,6 +287,18 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         return inner
     }
 
+
+    /**
+     * @namespace App.Action.Sort.createInputWrapper
+     * @type {createInputWrapper}
+     */
+    sort.createInputWrapper = createInputWrapper;
+    /**
+     * @namespace App.Action.Sort.createUsersGroup
+     * @type {createUsersGroup}
+     */
+    sort.createUsersGroup = createUsersGroup;
+
     function createUsersGroup(group, users){
         var usersElements = document.createElement('div'),
             oneElement = document.createDocumentFragment();
@@ -465,8 +477,11 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     }
 
 
-
-
+    /**
+     * @namespace App.Action.Sort.getUsersIdsByGroup
+     * @param gid
+     * @returns {Array}
+     */
     sort.getUsersIdsByGroup = function(gid){
         var ids = [];
         var groupsusers = Util.isArr(sort.dataGroupsusers[gid]) ? sort.dataGroupsusers[gid] : [];

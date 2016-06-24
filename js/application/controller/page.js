@@ -81,6 +81,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             return;
         }
 
+
         //console.log('onProjectLoaded >>> ', response);
 
         if(response.errorinfo.length > 2) {
@@ -141,8 +142,12 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         // display elements
         App.node('topbar').style['display'] = 'block';
 
+
+
         // init Event Key Manager
         App.Action.Keyevent.init();
+        // Editable grit bar
+        App.Action.EditGrid.init();
     }
 
     function initGanttError(){
@@ -183,6 +188,10 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         //window.onbeforeunload = Chart.saveConfirmExit;
         //Chart.saveTimerStart(300000);
+
+        // Start mouse event for show visual focus on cells
+        App.Action.Chart.tableHover();
+
     }
 
 

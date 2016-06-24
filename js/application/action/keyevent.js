@@ -34,9 +34,12 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
         EventKeyManager.init();
 
+
+
         keyevent.bindSpace();
         keyevent.bindEnter();
         keyevent.bindEscape();
+
 
     };
 
@@ -54,6 +57,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
         window.addEventListener('keydown', function(event) {
             if(event.keyCode == 13 && keyevent.tableEditableEnabled) {
+                $(keyevent.fieldsEditable['name']).focus();
                 event.preventDefault();
                 return false;
             }
@@ -61,29 +65,34 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
         EventKeyManager.add('enter',13, function(event) {
 
-            //event.target.textContent = event.target.textContent.replace(/(\r\n|\n|\r)/gm,"");
             event.target.textContent = event.target.textContent.trim();
             event.target.removeAttribute('contenteditable');
-
-
 
             keyevent.tableEditableShutOff(event);
 
             // save change
-            //console.log(keyevent.fieldsValues);
+            //console.log('save change:', keyevent.fieldsValues);
 
             var task = gantt.getTask(keyevent.editableTaskId);
             task.text = keyevent.fieldsValues['name'];
-            //task.start_date = keyevent.fieldsValues['dateStart'];
-            //task.end_date = keyevent.fieldsValues['dateEnd'];
-            //task.duration = keyevent.fieldsValues['duration'];
-            //task.users = keyevent.fieldsValues['resources'];
+
+            if(keyevent.fieldsValues['change_start_date'] instanceof Date)
+                task.start_date = keyevent.fieldsValues['change_start_date'];
+
+            if(keyevent.fieldsValues['change_end_date'] instanceof Date)
+                task.end_date = keyevent.fieldsValues['change_end_date'];
+
+            task.users = keyevent.fieldsValues['resources'];
+
             gantt.updateTask(keyevent.editableTaskId);
 
+            event.preventDefault();
+            return false;
         });
         EventKeyManager.disable('enter');
     };
 
+    keyevent.tableEditableVisiblyPoppup = false;
     keyevent.tableEditableTurnOn = function (event) {
         if(!keyevent.tableEditableEnabled && gantt.getSelectedId()) {
             keyevent.tableEditableEnabled = true;
@@ -103,34 +112,64 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
                 duration: taskFields[4],
                 resources: taskFields[5]
             };
+
             for(var key in keyevent.fieldsEditable) {
                 keyevent.fieldsValues[key] = keyevent.fieldsEditable[key].textContent;
             }
-            //console.log(keyevent.fieldsEditable.dateStart);
 
-            //keyevent.fieldsEditable.dateStart.innerHTML = '<span class="dtp_inline">'+keyevent.fieldsValues['dateStart']+'</span>'
 
             for(fieldName in keyevent.fieldsEditable) {
                 field = keyevent.fieldsEditable[fieldName];
-                field.setAttribute('contenteditable', true);
+                if(fieldName == 'name') {
+                    field.setAttribute('contenteditable', true);
+                    field.style.cursor = 'text';
+                }else{
+                    field.style.cursor = 'pointer';
+                }
                 field.style.fontStyle = 'italic';
-                field.style.cursor = 'text';
             }
 
+            taskFields[1].parentNode.parentNode.style.backgroundColor = 'rgb(245, 245, 245)';
             taskFields[1].focus();
 
+            taskFields[2].innerHTML = '<input name="date_start" class="dipicker_grid" type="text" value="'+taskFields[2].textContent+'">';
+            taskFields[3].innerHTML = '<input name="date_end" class="dipicker_grid" type="text" value="'+taskFields[3].textContent+'">';
+
+            $('input.dipicker_grid').datetimepicker({
+                timezone: '0000',
+                controlType: 'slider',
+                oneLine: false,
+                dateFormat: 'dd.mm.yy',
+                timeFormat: 'HH:mm',
+                onSelect: function(time){
+
+                    if(this.name == 'date_start')
+                        keyevent.fieldsValues['change_start_date'] = App.Extension.DateTime.strToDate(time, '%d.%m.%Y %H:%i');
+                    if(this.name == 'date_end')
+                        keyevent.fieldsValues['change_end_date'] = App.Extension.DateTime.strToDate(time, '%d.%m.%Y %H:%i');
+
+                }
+            });
+            App.Action.EditGrid.currentFieldsValues = keyevent.fieldsValues;
+
+            taskFields[5].addEventListener('click', function onClickEditResources(event){
+
+                var popup = App.Action.EditGrid.createPopupResourcesEdit(taskFields[5]);
+
+                popup.style.position = 'absolute';
+                popup.style.top = event.clientY + 'px';
+                popup.style.left = event.clientX + 'px';
+                popup.style.xIndex= '10002';
+
+                document.body.insertBefore(popup, document.body.firstChild);
+            });
+            if(taskFields[5].textContent.trim().length == 0) {
+                taskFields[5].innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+            }
 
 
-            keyevent.fieldsEditable.dateStart.classList.add('dtp_inline');
-            keyevent.fieldsEditable.dateEnd.classList.add('dtp_inline');
 
-            //$('.dtp_inline').datetimepicker({
-            //    //timezone: '0000',
-            //    //controlType: 'slider',
-            //    oneLine: false,
-            //    dateFormat: 'dd.mm.yy',
-            //    timeFormat: 'HH:mm'
-            //});
+
 
             /*$($(keyevent.fieldsEditable.dateStart).parent().parent()).datetimepicker({
                 altField: ".dtp_inline",

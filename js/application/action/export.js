@@ -139,6 +139,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
 
+        console.log(config);
+
         App.Action.Api.request('getsourcepdf', function(response) {
             console.log('getsourcepdf response >>>', response);
             $('.export_loader').hide();

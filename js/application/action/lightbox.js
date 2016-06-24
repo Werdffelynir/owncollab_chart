@@ -81,7 +81,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         if(t.type == 'project'){
             $('#generate-lbox-wrapper .lbox_buffer_wrapp').remove();
         }else if(t.type == 'milestone'){
-            $('#generate-lbox-wrapper input[name=lbox_users]').parent().remove();
+            //$('#generate-lbox-wrapper input[name=lbox_users]').parent().remove();
             $('#generate-lbox-wrapper input[name=lbox_progress]').parent().parent().remove();
             $('#generate-lbox-wrapper input[name=lbox_end_date]').parent().parent().remove();
         }

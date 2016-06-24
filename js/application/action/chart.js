@@ -189,9 +189,27 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             links: chart.links
         });
 
+
     };
 
 
+    /**
+     * @namespace App.Action.Chart.tableHover
+     */
+    chart.tableHover = function () {
+        $('.gantt_grid_data').mouseover(function(event){
+            Util.eachTreeElement(event.target, function(elem){
+                if($(elem).hasClass('gantt_cell')) {
+                    $(elem)
+                        .addClass('select-focus')
+                        .mouseout(function(event){
+                            $(this).removeClass('select-focus');
+                        });
+                }
+            }, 4);
+
+        });
+    };
 
     /**
      * Run ZoomSlider
@@ -704,6 +722,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         task.end_date = gantt.calculateEndDate(task.start_date, task.duration);
         gantt.updateTask(task.id);
     };
+
+
 
 
 

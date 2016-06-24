@@ -61,6 +61,7 @@ App.require('dependence',
         App.urlScript + 'application/action/share.js',
         App.urlScript + 'application/action/chart.js',
         App.urlScript + 'application/action/keyevent.js',
+        App.urlScript + 'application/action/editgrid.js',
 
         // Controllers
         App.urlScript + 'application/controller/page.js',

@@ -806,4 +806,19 @@ input[type="radio"]:checked + label span {
     z-index: 10002;
     left: 181px;
 }
-
+input.dipicker_grid{
+    padding: 0;
+    margin: 0;
+    background: none;
+    font-size: 11px;
+    border: none;
+    cursor: pointer;
+}
+.gantt_cell{
+    box-shadow: inset 0 0 0px 2px rgba(0,0,0,0);
+    transition: all 0.15s;
+}
+.select-focus{
+    box-shadow: inset 0 0 0px 2px #1C2C42;
+    transition: all 0.15s;
+}

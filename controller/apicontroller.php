@@ -484,9 +484,15 @@ class ApiController extends Controller
         $tmpFilePath = dirname(__DIR__).'/tmp/' . $tmpFileName;
         $encodeData = 'data='.urlencode($data['data']).'&type=pdf';
 
+        $params['encodeData strlen'] = strlen($encodeData);
+
         ob_start();
         system('curl --request POST "https://export.dhtmlx.com/gantt" --data "'.$encodeData.'"');
         $result = ob_get_clean();
+
+        //$params['$encodeData'] = $encodeData;
+        //$params['$tmpFilePath'] = print_r($result, true);
+        //$params['result strlen'] = strlen($result);
 
         $print_portrait = isset($data['printconf']['orientation']) && $data['printconf']['orientation'] == 'P';
         $print_paper_size = isset($data['printconf']['paper_size']) ? $data['printconf']['paper_size'] : 'A4';

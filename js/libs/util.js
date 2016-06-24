@@ -882,6 +882,21 @@
         return newStack;
     };
 
+    /**
+     *
+     * @param elem
+     * @param callback
+     * @param limit
+     */
+    util.eachTreeElement = function (elem, callback, limit) {
+        var i = 0;
+        limit = limit || 99;
+        while(elem.nodeType === Node.ELEMENT_NODE && i < limit ) {
+            callback.call({}, elem);
+            elem = elem.parentNode;
+            i ++;
+        }
+    };
 
     window.Util = util;
 
