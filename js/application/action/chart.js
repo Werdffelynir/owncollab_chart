@@ -118,10 +118,15 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onBeforeTaskDrag", chart.onBeforeTaskDrag);
 
 
-        gantt.attachEvent("onTaskRowClick", function(id, row){
+        gantt.attachEvent("onTaskRowClick", function(id, row) {
 
             // disable grid table editable mode
             if(App.Action.Keyevent.tableEditableEnabled && App.Action.Keyevent.editableTaskId != id) {
+                // удалить popup если есть
+                if(App.Action.EditGrid.popupLast) {
+                    try { document.body.removeChild(App.Action.EditGrid.popupLast) } catch (error) {}
+                    App.Action.EditGrid.popupLast = null;
+                }
                 App.Action.Keyevent.tableEditableShutOff()
             }
 

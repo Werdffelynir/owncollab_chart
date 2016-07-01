@@ -1,11 +1,13 @@
 if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
 
     /**
+     * @namespace App.Action.EditGrid.popupLast
      * @namespace App.Action.EditGrid
      * @type {*}
      */
     var act = {
         popupResources: null,
+        popupLast: null,
         fieldResources: null,
         selectedResourcesIds: [],
         currentFieldsValues: []
@@ -22,7 +24,7 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
     };
 
     /**
-     * @namespace App.Action.EditGrid.editResources
+     * @namespace App.Action.EditGrid.createPopupResourcesEdit
      */
     act.createPopupResourcesEdit = function(field){
 
@@ -41,12 +43,10 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
 
     };
 
-    function onAcceptChangeResources(event){
+    function onAcceptChangeResources (event) {
         //var ids = act.selectedResourcesIds;
-
         //console.log(this);
         //console.log(  );
-
         //Util.cleanArr(Util.uniqueArr(users)).join(', ');
         // act.fieldResources
     }
@@ -143,11 +143,7 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
 
         return wrap;
     };
-/*
- <input id="group_managers" name="managers" class="" data-gid="managers" data-type="group" type="checkbox">editgrid.js:125:9
- user user1 trueeditgrid.js:124:9
- <input id="user_users_user1" name="user1" class="" data-gid="users" data-type="user" type="checkbox">
-*/
+
     act.onCheckedClickResources = function(event){
         //console.log(attr_type, user, group, act.selectedResourcesIds);
         //App.Action.Sort.getUsersIdsByGroup

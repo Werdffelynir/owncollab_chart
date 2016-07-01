@@ -93,6 +93,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
     };
 
     keyevent.tableEditableVisiblyPoppup = false;
+
     keyevent.tableEditableTurnOn = function (event) {
         if(!keyevent.tableEditableEnabled && gantt.getSelectedId()) {
             keyevent.tableEditableEnabled = true;
@@ -154,12 +155,21 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
             taskFields[5].addEventListener('click', function onClickEditResources(event){
 
+                if(App.Action.EditGrid.popupLast){
+                    try {
+                        document.body.removeChild(App.Action.EditGrid.popupLast);
+                    } catch (error) {}
+                    App.Action.EditGrid.popupLast = null;
+                }
+
                 var popup = App.Action.EditGrid.createPopupResourcesEdit(taskFields[5]);
 
                 popup.style.position = 'absolute';
                 popup.style.top = event.clientY + 'px';
                 popup.style.left = event.clientX + 'px';
                 popup.style.xIndex= '10002';
+
+                App.Action.EditGrid.popupLast = popup;
 
                 document.body.insertBefore(popup, document.body.firstChild);
             });
