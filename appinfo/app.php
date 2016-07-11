@@ -12,11 +12,8 @@
 namespace OCA\Owncollab_Chart\AppInfo;
 
 use OCA\Owncollab_Chart\Helper;
-use OCA\Owncollab_Chart\AppInfo\Aliaser;
 use OCP\AppFramework\App;
 use OCP\Util;
-
-$aliaser = new Aliaser();
 
 $appName = 'owncollab_chart';
 $app = new App($appName);
