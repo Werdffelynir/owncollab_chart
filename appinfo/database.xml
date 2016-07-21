@@ -206,7 +206,7 @@
             <field>
                 <name>users</name>
                 <type>text</type>
-                <length>255</length>
+                <length>2048</length>
                 <default></default>
                 <notnull>false</notnull>
             </field>
