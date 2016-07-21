@@ -104,7 +104,7 @@ class ApiController extends Controller
             'isadmin' => $this->isAdmin,
             'uid' => $uid,
             'lang' => is_array($lang) ? $lang['configvalue'] : 'en',
-            'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            //'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
 
         $tasks = $this->connect->task()->get();
@@ -191,7 +191,7 @@ class ApiController extends Controller
 
         $params = [
             'error' => null,
-            'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
+            //'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister()
         ];
 
         if ($this->isAdmin && isset($data['field']) && isset($data['value'])) {
@@ -260,7 +260,7 @@ class ApiController extends Controller
             //'data'     => $data,
             'error' => null,
             'errorinfo' => '',
-            'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            //'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lastlinkid' => null
         ];
 
@@ -396,7 +396,7 @@ class ApiController extends Controller
             //'data'     => $data,
             'error'     => null,
             'errorinfo'     => '',
-            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            //'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
             'lastlinkid'    => null
         ];
 
@@ -482,7 +482,7 @@ class ApiController extends Controller
             //'data'     => $data,
             'error'     => null,
             'errorinfo'     => '',
-            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
+            //'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
         $tmpFileName = 'gantt_export_' . Helper::randomString() . '.pdf';
         $tmpFilePath = dirname(__DIR__).'/tmp/' . $tmpFileName;

@@ -88,12 +88,12 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             Error.inline('Response error info [' + response.errorinfo + ']');
         }
 
-        // check truth of response
-        if(!response.requesttoken.length || response.requesttoken.length < 36){
-            App.requesttoken = response.requesttoken;
-            Error.page('Security at risk. Suspicious response from the server. Possible substitution of data.');
-            return;
-        }
+        // check truth of response (only for owncloud version 8)
+        // if(!response.requesttoken.length || response.requesttoken.length < 36){
+        //     App.requesttoken = response.requesttoken;
+        //     Error.page('Security at risk. Suspicious response from the server. Possible substitution of data.');
+        //     return;
+        // }
 
         if((!response.uid || App.uid !== response.uid) && !App.isPublic) {
             Error.page('Security at risk. Suspicious response from the server.');
