@@ -121,7 +121,7 @@ class Task
                     if($field == 'id')              $value = (int) $value;
                     if($field == 'type')            $value = (string) $value;
                     if($field == 'text')            $value = (string) $value;
-                    if($field == 'users')           $value = (string) $value;
+                    if($field == 'users')           $value = (string) $value; //try{$value = json_encode($value);}catch(\Exception $e){};
                     if($field == 'start_date')      $value = date("Y-m-d H:i:s", strtotime($value));
                     if($field == 'end_date')        $value = date("Y-m-d H:i:s", strtotime($value));
                     if($field == 'duration')        $value = (int) (empty($value)?0:$value);

@@ -13,6 +13,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
     /** @type {App.Extension.DateTime} */
     var DateTime = App.Extension.DateTime;
+
     /** @type {App.Module.DataStore} */
     var DataStore = App.Module.DataStore;
 
@@ -43,7 +44,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         // Set
         gantt.attachEvent("onLightbox", lbox.onLightbox);
-
         //gantt.attachEvent("onAfterLightbox", lbox.onAfterLightbox);
         gantt.attachEvent("onLightboxSave", lbox.onLightboxSave);
         //gantt.attachEvent("onLightboxCancel", lbox.onLightboxCancel);
@@ -106,7 +106,16 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                             break;
 
                         case 'users':
-                            fso[_name].value = lbox.task[_name];
+                            var usersObj = null;
+                            try{
+                                usersObj = JSON.parse(lbox.task[_name]);
+                            }catch (e){}
+                            if(typeof usersObj !== 'object') usersObj = {groups:[],users:[]};
+
+                            var groupsString = Util.cleanArr(usersObj.groups).join(', ');
+                            var usersString = Util.cleanArr(usersObj.users).join(', ');
+
+                            fso[_name].value =  (!Util.isEmpty(groupsString) ? groupsString + ', ' : '') + usersString;
                             fso[_name].onclick = lbox.onClickLightboxInput;
                             break;
 
@@ -284,9 +293,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 '<span class="lbox_pl_link">' + App.t('Link type') + '</span>';
 
             view.insertBefore(labels, view.firstChild);
-
             //view.insertAdjacentHTML('afterend', '<div id="predecessor_labels">two</div>');
-
             popup = lbox.showPopup(target, view);
 
             popup.style.width = '510px';
@@ -373,7 +380,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 //App.Action.Chart.taskReplace(id);
                 //setTimeout(function(){ //},300);
                 gantt.autoSchedule(predecessor.id);
-
             }
             return true;
         }
@@ -469,8 +475,37 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     };
 
     lbox.resourcesAppoint = function (popup){
+        var usersTask = [];
         var groupsusers = DataStore.get('groupsusers');
-        var usersTask = lbox.getResources();
+        var resource = App.Action.Chart.getJSONResource(lbox.task['id']);
+
+        //lbox.getResources();
+        //usersTask = Util.extend(resource['groups'],resource['users']);
+
+        console.log(resource);
+
+        if(resource['users'].length > 0){
+            var inputs = popup.querySelectorAll('input[type=checkbox][data-type=user]');
+            for(var i = 0; i<inputs.length; i++){
+                var name = inputs[i]['name'];
+                if(resource['users'].indexOf(name) !== -1){
+                    inputs[i].checked = true;
+                }
+            }
+        }
+
+        if(resource['groups'].length > 0){
+            var inputsGr = popup.querySelectorAll('input[type=checkbox][data-type=group]');
+            for(var j = 0; j<inputsGr.length; j++){
+                var nameGr = inputsGr[j]['name'];
+                if(resource['groups'].indexOf(nameGr) !== -1){
+                    inputsGr[j].checked = true;
+                }
+            }
+        }
+
+
+/*
         if(usersTask.length > 0){
             var inputs = popup.querySelectorAll('input[type=checkbox][data-type=user]'),
                 groupIn = {};
@@ -489,7 +524,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 if(groupsusers[k] && groupsusers[k].length === groupIn[k])
                     $('input[name='+k+'][data-type=group]', popup).prop('checked', true);
             }
-        }
+        }*/
     };
 
 
@@ -505,21 +540,25 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 if(type === 'user'){
                     if(checked){
                         $('input[name='+name+'][data-type=user]', popup).prop('checked', true);
-                        fieldUsers.value = lbox.addResource(name);
+                        //fieldUsers.value = lbox.addResource(name);
+                        App.Action.Chart.addJSONResource(lbox.task['id'], 'users', name);
                     }
                     else {
                         $('input[name='+name+'][data-type=user]', popup).prop('checked', false);
-                        fieldUsers.value = lbox.removeResource(name);
+                        //fieldUsers.value = lbox.removeResource(name);
+                        App.Action.Chart.removeJSONResource(lbox.task['id'], 'users', name);
                     }
                 }
                 else if(type === 'group') {
                     var _users = groupsusers[name].map(function(e){return e['uid']});
                     if(checked) {
                         $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
-                        fieldUsers.value = lbox.addResource(_users);
+                        //fieldUsers.value = lbox.addResource(_users);
+                        App.Action.Chart.addJSONResource(lbox.task['id'], 'groups', name);
                     } else {
                         $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', false);
-                        fieldUsers.value = lbox.removeResource(_users);
+                        //fieldUsers.value = lbox.removeResource(_users);
+                        App.Action.Chart.removeJSONResource(lbox.task['id'], 'groups', name);
                     }
                 }
             }

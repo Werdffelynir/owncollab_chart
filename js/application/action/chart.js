@@ -728,6 +728,71 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.updateTask(task.id);
     };
 
+    /**
+     * @namespace App.Action.Chart.addJSONResource
+     * @param task_id
+     * @param type
+     * @param value
+     */
+    chart.addJSONResource = function (task_id, type, value) {
+        var usersObj, task = gantt.getTask(task_id);
+        try {
+            usersObj = JSON.parse(task.users);
+        }catch(e){}
+        //console.log(usersObj);
+
+        if(typeof usersObj !== 'object') usersObj = {groups: [], users: []};
+        if(!(usersObj[type] instanceof Array)) usersObj[type] = [];
+        usersObj[type].push(value);
+        usersObj[type] = Util.cleanArr(Util.uniqueArr(usersObj[type]));
+        task.users = JSON.stringify(usersObj);
+        gantt.updateTask(task.id);
+    };
+
+    /**
+     * @namespace App.Action.Chart.removeJSONResource
+     * @param task_id
+     * @param type
+     * @param value
+     */
+    chart.removeJSONResource = function (task_id, type, value) {
+        var usersObj, task = gantt.getTask(task_id);
+        try {
+            usersObj = JSON.parse(task.users);
+        }catch(e){}
+
+        if(typeof usersObj === 'object' && usersObj[type] instanceof Array) {
+            usersObj[type].forEach(function (item, i, arr) {
+                if(item == value)
+                    delete usersObj[type][i];
+                usersObj[type] = Util.cleanArr(usersObj[type]);
+            });
+            task.users = JSON.stringify(usersObj);
+            gantt.updateTask(task.id);
+        }
+    };
+
+    /**
+     * @namespace App.Action.Chart.getJSONResource
+     * @param task_id
+     * @param formatJSON
+     * @returns {*}
+     */
+    chart.getJSONResource = function (task_id, formatJSON) {
+        var usersObj, task = gantt.getTask(task_id);
+        try {
+            usersObj = JSON.parse(task.users);
+        }catch(e){
+            usersObj = {groups: [], users: []};
+        }
+
+        if(!!formatJSON)
+            return JSON.stringify(usersObj);
+        else
+            return usersObj;
+    };
+
+
 
 
 
