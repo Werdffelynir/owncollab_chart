@@ -110,7 +110,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                             try{
                                 usersObj = JSON.parse(lbox.task[_name]);
                             }catch (e){}
-                            if(typeof usersObj !== 'object') usersObj = {groups:[],users:[]};
+                            if(typeof usersObj == null)
+                                usersObj = {groups:[],users:[]};
 
                             var groupsString = Util.cleanArr(usersObj.groups).join(', ');
                             var usersString = Util.cleanArr(usersObj.users).join(', ');
