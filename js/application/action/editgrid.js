@@ -9,7 +9,8 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
         popupResources: null,
         popupLast: null,
         fieldResources: null,
-        selectedResourcesIds: [],
+        //selectedResourcesIds: [],
+        realResources: {groups:[],users:[]},
         currentFieldsValues: []
     };
     var Project = null;
@@ -29,7 +30,15 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
     act.createPopupResourcesEdit = function(field){
 
         act.fieldResources = field || null;
-        act.selectedResourcesIds = field.textContent.split(',').map(function(item){return item.trim()});
+
+        act.task = gantt.getTask(field.parentNode.parentNode.getAttribute('task_id'));
+
+        try {
+            act.realResources = JSON.parse(act.task.users);
+        } catch(e) {
+            act.task.users = '{"groups":[],"users":[]}';
+            //App.Action.Error.inline("Error on createPopupResourcesEdit. Message: " + e.message.toString()) ;
+        }
 
         var dataGroupsusers = Project.dataGroupsUsers;
         var fragment = document.createDocumentFragment();
@@ -44,6 +53,7 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
     };
 
     function onAcceptChangeResources (event) {
+
         //var ids = act.selectedResourcesIds;
         //console.log(this);
         //console.log(  );
@@ -51,14 +61,26 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
         // act.fieldResources
     }
 
+    /**
+     * @namespace App.Action.EditGrid.removePopup
+     */
+    act.removePopup = function(){jQuery(act.popupResources).remove();};
 
+    /**
+     * @namespace App.Action.EditGrid.createPopup
+     * @param content
+     * @param specialClass
+     * @param on_accept
+     * @param on_cancel
+     * @returns {null|Element|*}
+     */
     act.createPopup = function(content, specialClass, on_accept, on_cancel){
 
         act.popupResources = document.createElement('div');
         var icoClose = document.createElement('i');
 
         icoClose.className = 'icon-close ocb_close_ico';
-        icoClose.onclick = function(e){ $(act.popupResources).remove() };
+        icoClose.onclick = function(e){  act.removePopup() };
 
         act.popupResources.className = 'ocb_popup' + (specialClass?' '+specialClass:'');
 
@@ -123,8 +145,14 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
             'data-type':    attr_type
         });
 
+        if(attr_type == 'user' && Util.isArr(act.realResources['users']) && act.realResources['users'].indexOf(user) !== -1){
+            input.checked = true;
+        }
+        else if(attr_type == 'group' && Util.isArr(act.realResources['groups']) && act.realResources['groups'].indexOf(group) !== -1){
+            input.checked = true;
+        }
 
-        if(Util.isArr(act.selectedResourcesIds)){
+        /*if(Util.isArr(act.selectedResourcesIds)){
 
             if(attr_type == 'user' && act.selectedResourcesIds.indexOf(user) !== -1){
                 input.checked = true;
@@ -132,7 +160,7 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
             else if(attr_type == 'group' && act.selectedResourcesIds.indexOf(group) !== -1){
                 input.checked = true;
             }
-        }
+        }*/
 
         input.addEventListener('click', act.onCheckedClickResources);
 
@@ -145,13 +173,71 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
     };
 
     act.onCheckedClickResources = function(event){
+        //console.log(checked, type, gid, id );
         //console.log(attr_type, user, group, act.selectedResourcesIds);
         //App.Action.Sort.getUsersIdsByGroup
+
         var checked = !!this.checked;
         var type = this.getAttribute('data-type');
         var gid = this.getAttribute('data-gid');
+
         var id = this.getAttribute('name');
 
+        var resObj = App.Action.Chart.getJSONResource(act.task.id, false);
+
+        /* */
+        if(type == 'user')
+        {
+            if(checked) resObj['users'].push(id);
+            else {
+                resObj['users'].forEach(function (item, i, arr) {
+                    if(item == id)
+                        delete resObj['users'][i];
+                    resObj['users'] = Util.cleanArr(resObj['users']);
+                });
+            }
+            //App.Action.Chart.addJSONResource(act.task.id, 'users', id);
+            //App.Action.Chart.removeJSONResource(act.task.id, 'users', id);
+
+        }
+        else if (type == 'group')
+        {
+            if(checked) resObj['groups'].push(id); //App.Action.Chart.addJSONResource(act.task.id, 'groups', gid);
+            else {
+                resObj['groups'].forEach(function (item, i, arr) {
+                    if(item == gid)
+                        delete resObj['groups'][i];
+                    resObj['groups'] = Util.cleanArr(resObj['groups']);
+                });
+            }
+            //App.Action.Chart.removeJSONResource(act.task.id, 'groups', gid);
+        }
+
+        //console.log(App.Action.Keyevent.fieldsEditable);
+
+        App.Action.Keyevent.fieldsValues['resources'] = act.task.users = JSON.stringify(resObj);
+
+        var usersString = resObj['users'].join(', ');
+        var groupsString = resObj['groups'].join(', ');
+        var groupsUsersString = (!Util.isEmpty(groupsString) ? '<strong>' + groupsString + '</strong>, ' : '') + usersString;
+        //act.currentFieldsValues['resources'] = groupsUsersString;
+        act.fieldResources.innerHTML = groupsUsersString;
+        act.removePopup();
+        //jQuery(App.Action.Keyevent.fieldsEditable['name']).focus();
+        //return false;
+
+
+
+
+
+
+        //var getJSONResource = App.Action.Chart.getJSONResource(act.task.id);
+        //console.log(getJSONResource);
+        //console.log(gantt.getTask(act.task.id).users);
+        /*
+         App.Action.Chart.addJSONResource(task_id, type, value)
+         App.Action.Chart.removeJSONResource(task_id, type, value)
+         App.Action.Chart.getJSONResource(task_id, formatJSON)
 
         if( type == 'user' ) {
             $('#user_'+gid+'_'+id, act.popupResources)[0].checked = checked;
@@ -159,20 +245,17 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
                 act.addResource(id);
             else
                 act.removeResource(id);
-
             //console.log(this);
-
         }else if( type == 'group' ){
             $('#group_'+gid, act.popupResources)[0].checked = checked;
             $('input[id^=user_'+gid+'_]', act.popupResources).each(function(index, item){
                 item.checked = checked;
             });
-        }
-
+        }*/
         //console.log(type, id, checked);
         //console.log(this);
-
     };
+/*
     act.addResource = function(id){
         var usersString, users = act.fieldResources.textContent.split(',').map(function(item){return item.trim()});
         users.push(id);
@@ -188,7 +271,7 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
         usersString = Util.cleanArr(Util.uniqueArr(users)).join(', ');
         act.currentFieldsValues['resources'] = usersString;
         act.fieldResources.textContent = usersString;
-    };
+    };*/
 
     return act;
 

@@ -110,6 +110,10 @@ class Connect
         return $this->db->executeQuery($sql, $bind);
     }
 
+    public function setSessionTimeZoneToZero() {
+        $this->db->executeQuery("SET @@session.time_zone = '+00:00'");
+    }
+
     /**
      * Access to tables
      * @return Project

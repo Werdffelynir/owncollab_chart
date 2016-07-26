@@ -157,7 +157,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
     sidebar.getActiveTabIndex = function(){
         var tabElem = 0;
         var sidebarTabs = App.node('sidebarTabs');
-        $('#sidebar_tabs>span').each(function(index,item){
+        $('#sidebar_tabs>span').each(function(index,item) {
             if(item.classList.contains('sidebar_tab_active'))
                 tabElem = item;
         });
@@ -169,7 +169,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
      * Blocked current active tab
      * @namespace App.Action.Sidebar.lock
      */
-    sidebar.lock = function(){
+    sidebar.lock = function() {
         if(sidebar.getActiveTabIndex() !== 0){
             $(App.node('sidebar')).prepend(sidebar.elemLocker);
             sidebar.elemLocker.style.height = $(App.node('sidebar')).outerHeight() + 'px';
@@ -310,14 +310,21 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
             type    = target.type,
             value   = target.value;
 
+
         // Project.dataProject
         //console.log(Project);
         //console.log(target, name, type, value);
+
+
 
         // Dynamic show today line in gantt chart
         if(name === 'show_today_line'){
 
             App.Action.GanttExt.showMarkers(target.checked);
+
+            //if(target.checked)
+            //    App.Action.GanttExt.showTodayLine();
+
             Util.Storage('show_today_line', target.checked);
             gantt.refreshData();
 

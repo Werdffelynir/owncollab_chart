@@ -130,12 +130,13 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             [
                 App.urlGantt + 'dhtmlxgantt.js',
                 languagePathScript,
+                App.urlGantt + 'api.js',
                 App.urlGantt + 'ext/dhtmlxgantt_undo.js',
                 App.urlGantt + 'ext/dhtmlxgantt_marker.js',
-                App.urlGantt + 'ext/dhtmlxgantt_critical_path.js',
                 App.urlGantt + 'ext/dhtmlxgantt_grouping.js',
-                App.urlGantt + 'ext/dhtmlxgantt_auto_scheduling.js',
-                App.urlGantt + 'api.js'
+                App.urlGantt + 'ext/dhtmlxgantt_critical_path.js',
+                App.urlGantt + 'ext/dhtmlxgantt_auto_scheduling.js'
+
             ],
             initGantt, initGanttError).requireStart();
 
@@ -158,7 +159,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             initGanttError();
             return;
         }
-
         Chart.init(node.gantt, ganttBefore, ganttReady);
     }
 
@@ -173,7 +173,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         // Buffer enabled
         App.Action.Buffer.init();
         Chart.enabledZoomFit(App.node('zoomSliderFit'));
-
 
         App.Action.Share.init();
 

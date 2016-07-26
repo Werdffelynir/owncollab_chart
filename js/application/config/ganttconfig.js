@@ -191,6 +191,14 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             }},
 
             {name:"start_date", label: App.t('Start'), align: "center", width: columnWidth.start, template: function(item) {
+
+                //if(item.id == 4 ) {
+                //    console.log(
+                //        item.start_date,
+                //        DateTime.dateToStr(item.start_date, "%d.%m.%Y %H:%i")
+                //    );
+                //}
+
                 return DateTime.dateToStr(item.start_date, "%d.%m.%Y %H:%i");
             }},
 

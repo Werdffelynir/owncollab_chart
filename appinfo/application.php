@@ -16,6 +16,9 @@ class Application extends App {
 
     public function __construct ( array $urlParams = [] ) {
 
+        // Default time zone
+        date_default_timezone_set('UTC');
+
         $appName = Application::appName('owncollab_chart');
 
         parent::__construct($appName, $urlParams);

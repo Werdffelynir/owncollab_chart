@@ -105,7 +105,20 @@ class Task
      * @return array
      */
     public function add(array $data) {
+
         $SQL = "INSERT INTO $this->tableName (`id`, `type`, `text`, `users`, `start_date`, `end_date`, `duration`, `order`, `progress`, `sortorder`, `parent`, `open`, `buffers`) VALUES ";
+
+        //$this->connect->setSessionTimeZoneToZero();
+        //$this->connect->db->executeQuery("SET @@session.time_zone = '00:00'");
+        //$query = \OC_DB::prepare('SET @@session.time_zone = "00:00"');
+        //$query = \OC_DB::prepare('SET GLOBAL time_zone = "00:00"');
+        $query = \OC_DB::prepare("set @@session.time_zone = '+00:00'");
+        $query->execute();
+
+
+
+
+        //$this->connect->db->executeQuery("SET time_zone = 'UTC'");
 
         $rowData = [];
         for($iRow=0; $iRow < count($data); $iRow++) {
@@ -114,23 +127,23 @@ class Task
 
             for($i = 0; $i < count($this->fields); $i++) {
                 $field = $this->fields[$i];
+                $value = $data[$iRow][$field];
 
                 if(isset($data[$iRow][$field])) {
-                    $value = $data[$iRow][$field];
 
-                    if($field == 'id')              $value = (int) $value;
-                    if($field == 'type')            $value = (string) $value;
-                    if($field == 'text')            $value = (string) $value;
-                    if($field == 'users')           $value = (string) $value; //try{$value = json_encode($value);}catch(\Exception $e){};
-                    if($field == 'start_date')      $value = date("Y-m-d H:i:s", strtotime($value));
-                    if($field == 'end_date')        $value = date("Y-m-d H:i:s", strtotime($value));
-                    if($field == 'duration')        $value = (int) (empty($value)?0:$value);
-                    if($field == 'order')           $value = (int) (empty($value)?0:$value);
-                    if($field == 'progress')        $value = (float) (empty($value)?0:$value);
-                    if($field == 'sortorder')       $value = (int) (empty($value)?0:$value);
-                    if($field == 'parent')          $value = (int) (empty($value)?1:$value);
-                    if($field == 'open')            $value = (int) (empty($value)?1:$value);
-                    if($field == 'buffers')         $value = (string) (empty($value)?'':$value);
+                    if($field == 'id')                  $value = (int) $value;
+                    elseif($field == 'type')            $value = (string) $value;
+                    elseif($field == 'text')            $value = (string) $value;
+                    elseif($field == 'users')           $value = (string) $value;                                                   //try{$value = json_encode($value);}catch(\Exception $e){};
+                    elseif($field == 'start_date')      $value = empty($value) ? date("Y-m-d H:i:s", time()) : $value;              //$value = date("Y-m-d H:i:s", strtotime($value));
+                    elseif($field == 'end_date')        $value = empty($value) ? date("Y-m-d H:i:s", time() + 3600*24*7) : $value;  //$value = date("Y-m-d H:i:s", strtotime($value));
+                    elseif($field == 'duration')        $value = (int) (empty($value)?0:$value);
+                    elseif($field == 'order')           $value = (int) (empty($value)?0:$value);
+                    elseif($field == 'progress')        $value = (float) (empty($value)?0:$value);
+                    elseif($field == 'sortorder')       $value = (int) (empty($value)?0:$value);
+                    elseif($field == 'parent')          $value = (int) (empty($value)?1:$value);
+                    elseif($field == 'open')            $value = (int) (empty($value)?1:$value);
+                    elseif($field == 'buffers')         $value = (string) (empty($value)?'':$value);
 
                     $rowData[":{$field}_{$iRow}"] = $value;
                 }else{

@@ -73,7 +73,6 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
             title:"Today: "+ date_to_str(today),
             start_date: today
         });
-
     };
 
     /**

@@ -107,7 +107,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onTaskClick", chart.onTaskClick);
 
         // tasks events
-        //gantt.attachEvent("onBeforeTaskDelete", chart.onBeforeTaskDelete);
+        gantt.attachEvent("onBeforeTaskDelete", chart.onBeforeTaskDelete);
         gantt.attachEvent("onAfterTaskAdd", chart.onAfterTaskAdd);
         gantt.attachEvent("onAfterTaskUpdate", chart.onAfterTaskUpdate);
         gantt.attachEvent("onAfterTaskDelete", chart.onAfterTaskDelete);
@@ -117,20 +117,28 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
         gantt.attachEvent("onBeforeTaskDrag", chart.onBeforeTaskDrag);
 
-
         gantt.attachEvent("onTaskRowClick", function(id, row) {
+
+            //console.log(
+            //    App.Action.Keyevent.tableEditableEnabled,
+            //    App.Action.Keyevent.editableTaskId,
+            //    id
+            //);
 
             // disable grid table editable mode
             if(App.Action.Keyevent.tableEditableEnabled && App.Action.Keyevent.editableTaskId != id) {
                 // удалить popup если есть
                 if(App.Action.EditGrid.popupLast) {
-                    try { document.body.removeChild(App.Action.EditGrid.popupLast) } catch (error) {}
+                    try {
+                        document.body.removeChild(App.Action.EditGrid.popupLast)
+                    } catch (error) {}
                     App.Action.EditGrid.popupLast = null;
                 }
+                console.log('tableEditableShutOff');
                 App.Action.Keyevent.tableEditableShutOff()
             }
 
-            console.log('table editable mode', App.Action.Keyevent.tableEditableEnabled);
+            //console.log('table editable mode', App.Action.Keyevent.tableEditableEnabled);
 
         });
 
@@ -404,6 +412,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
     chart.onBeforeTaskUpdate = function (id, item) {
+
+        //
+        chart.readySave = true;
         //var predecessor = App.Action.Buffer.getTaskPredecessor(id);
         //if(predecessor){}
         return true;
@@ -466,7 +477,23 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      * @param task
      * @returns {boolean}
      */
-    chart.onBeforeTaskDelete = function (id, task){
+    chart.onBeforeTaskDelete = function (id, task) {
+
+        //
+        //console.log('task parent>>>', task.parent);
+        var pTask = gantt.getTask(task.parent);
+        var children = gantt.getChildren(pTask.id);
+        console.log('pTask>>>', pTask);
+
+        if(children.length == 1 && id == children[0]) {
+            pTask.type = gantt.config.types.task;
+            pTask.duration = 5;
+            Timer.after(300, function(){gantt.updateTask(pTask.id);});
+        }
+
+/*        var parentTask = gantt.getTask(task.parent);
+
+        */
         //console.log(this, this);
         //console.log(task.type, task.id);
         //
@@ -479,7 +506,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         //    return true;
     };
 
-    chart.onAfterTaskDelete = function (id, task){
+    chart.onAfterTaskDelete = function (id, task) {
         chart.readySave = true;
         chart.onGanttRender();
     };
@@ -739,12 +766,13 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         try {
             usersObj = JSON.parse(task.users);
         }catch(e){}
-        //console.log(usersObj);
 
         if(typeof usersObj !== 'object') usersObj = {groups: [], users: []};
         if(!(usersObj[type] instanceof Array)) usersObj[type] = [];
+
         usersObj[type].push(value);
         usersObj[type] = Util.cleanArr(Util.uniqueArr(usersObj[type]));
+
         task.users = JSON.stringify(usersObj);
         gantt.updateTask(task.id);
     };

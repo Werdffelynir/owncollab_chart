@@ -73,6 +73,8 @@ class ApiController extends Controller
         $key = Helper::post('key');
         $data = Helper::post('data', false);
         $this->userIdAPI = Helper::post('uid');
+        // set default session time_zone for MySQL
+        $this->connect->setSessionTimeZoneToZero();
 
         if (method_exists($this, $key))
             return $this->$key($data);
@@ -204,7 +206,6 @@ class ApiController extends Controller
             else if ($value == 'false') $value = 0;
 
             if ($field == 'is_share') {
-
                 $share_link = $value ? Helper::randomString(16) : null;
                 $result = $this->connect->project()->updateShared($field, $value, $share_link);
 
@@ -213,27 +214,25 @@ class ApiController extends Controller
                 else
                     $params['share_link'] = $share_link;
 
-            } else if ($field == 'share_is_protected' || $field == 'share_password') {
 
+            } else if ($field == 'share_is_protected' || $field == 'share_password') {
                 if ($field == 'share_password') $value = md5(trim($value));
 
                 $params[$field] = $value;
-
                 $result = $this->connect->project()->updateField($field, $value);
                 if (!$result)
                     $params['error'] = 'Error operation share protected password an update project table';
                 else
                     $params['result'] = $result;
 
-            } else if ($field == 'share_is_expire' || $field == 'share_expire_time') {
 
+            } else if ($field == 'share_is_expire' || $field == 'share_expire_time') {
                 $params[$field] = $value;
 
                 if ($field == 'share_expire_time')
                     $value = Helper::toTimeFormat($value);
 
                 $result = $this->connect->project()->updateField($field, $value);
-
                 if (!$result)
                     $params['error'] = 'Error operation share protected password an update project table';
                 else
@@ -485,7 +484,7 @@ class ApiController extends Controller
             //'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
         $tmpFileName = 'gantt_export_' . Helper::randomString() . '.pdf';
-        $tmpFilePath = dirname(__DIR__).'/tmp/' . $tmpFileName;
+        $tmpFilePath = \OC::$SERVERROOT.\OC_App::getAppWebPath('owncollab_chart').'/tmp/' . $tmpFileName;
         $encodeData = 'data='.urlencode($data['data']).'&type=pdf';
 
         ob_start();
@@ -501,15 +500,19 @@ class ApiController extends Controller
 
         $print_notes = isset($data['pagenotes']) ? $data['pagenotes'] : false;
 
-        if($result && $is_save = file_put_contents($tmpFilePath, $result)) {
-            $downloadPath = $this->explodePDF($tmpFilePath, $print_portrait, $print_paper_size, $print_notes);
-            if($downloadPath)
-                $params['download'] = $downloadPath;
-            else
-                $params['errorinfo'] = 'Error: download path exist';
+        if($result) {
+
+            if($is_save = file_put_contents($tmpFilePath, $result)) {
+                $downloadPath = $this->explodePDF($tmpFilePath, $print_portrait, $print_paper_size, $print_notes);
+                if($downloadPath)
+                    $params['download'] = $downloadPath;
+                else
+                    $params['errorinfo'] = 'Error: download path exist';
+            } else
+                $params['errorinfo'] = 'Saved PDF file fail. Temp path: '.$tmpFilePath;
         }
         else {
-            $params['errorinfo'] = 'Error: result pdf export request on export.dhtmlx.com is failed';
+            $params['errorinfo'] = 'Request to export.dhtmlx.com is failed. Or response is empty';
         }
 
         if(is_array($params))
@@ -551,7 +554,7 @@ class ApiController extends Controller
 
         $mgl=10; $mgr=10; $mgt=20 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
 
-        if($isPortrait){
+        if ($isPortrait) {
             $mgl=20; $mgr=10; $mgt=5 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
         }
 

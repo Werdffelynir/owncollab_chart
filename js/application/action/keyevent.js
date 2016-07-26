@@ -31,16 +31,10 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
      */
     keyevent.init = function(error) {
         Error = App.Action.Error;
-
         EventKeyManager.init();
-
-
-
         keyevent.bindSpace();
         keyevent.bindEnter();
         keyevent.bindEscape();
-
-
     };
 
 
@@ -57,7 +51,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
         window.addEventListener('keydown', function(event) {
             if(event.keyCode == 13 && keyevent.tableEditableEnabled) {
-                $(keyevent.fieldsEditable['name']).focus();
+                jQuery(keyevent.fieldsEditable['name']).focus();
                 event.preventDefault();
                 return false;
             }
@@ -74,7 +68,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             //console.log('save change:', keyevent.fieldsValues);
 
             var task = gantt.getTask(keyevent.editableTaskId);
-            task.text = keyevent.fieldsValues['name'];
+            task.text = keyevent.fieldsEditable['name'].textContent; //keyevent.fieldsValues['name'];
 
             if(keyevent.fieldsValues['change_start_date'] instanceof Date)
                 task.start_date = keyevent.fieldsValues['change_start_date'];
@@ -84,11 +78,15 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
             task.users = keyevent.fieldsValues['resources'];
 
-            gantt.updateTask(keyevent.editableTaskId);
+            gantt.updateTask(task.id);
+
+            App.Action.Chart.readySave = true;
+            App.Action.Chart.onGanttRender();
 
             event.preventDefault();
             return false;
         });
+
         EventKeyManager.disable('enter');
     };
 
@@ -115,9 +113,11 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             };
 
             for(var key in keyevent.fieldsEditable) {
-                keyevent.fieldsValues[key] = keyevent.fieldsEditable[key].textContent;
+                if(key == 'resources')
+                    keyevent.fieldsValues[key] = App.Action.Chart.getJSONResource(taskId);
+                else
+                    keyevent.fieldsValues[key] = keyevent.fieldsEditable[key].textContent;
             }
-
 
             for(fieldName in keyevent.fieldsEditable) {
                 field = keyevent.fieldsEditable[fieldName];
@@ -151,6 +151,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
                 }
             });
+
             App.Action.EditGrid.currentFieldsValues = keyevent.fieldsValues;
 
             taskFields[5].addEventListener('click', function onClickEditResources(event){
@@ -203,6 +204,10 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
 
     };
 
+    /**
+     * @namespace App.Action.Keyevent.tableEditableShutOff
+     * @param event
+     */
     keyevent.tableEditableShutOff = function (event) {
         keyevent.tableEditableEnabled = false;
         EventKeyManager.disable('enter');

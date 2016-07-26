@@ -71,6 +71,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
     lbox.onLightbox = function (id){
 
+        App.Action.Keyevent.tableEditableShutOff();
+
         // delete predecessor button if task is first child in the project
         var t = gantt.getTask(id);
 
@@ -106,12 +108,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                             break;
 
                         case 'users':
-                            var usersObj = null;
+                            var usersObj = {groups:[],users:[]};
                             try{
                                 usersObj = JSON.parse(lbox.task[_name]);
                             }catch (e){}
-                            if(typeof usersObj == null)
-                                usersObj = {groups:[],users:[]};
+                            //if(typeof usersObj == null)
+                            //    usersObj = {groups:[],users:[]};
 
                             var groupsString = Util.cleanArr(usersObj.groups).join(', ');
                             var usersString = Util.cleanArr(usersObj.users).join(', ');
@@ -358,6 +360,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @returns {boolean}
      */
     lbox.onLightboxSave = function (id, task, is_new){
+
+
         /*
         var _id = null;
         // after entry in the database, you need to update the id
@@ -387,10 +391,10 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         //console.log('Is new save', task.is_new);
 
-        if(task.is_new){
+        //if(task.is_new){
             App.Action.Chart.readySave = true;
             App.Action.Chart.onGanttRender();
-        }
+        //}
 
         //App.Action.Chart.scrollToTask(id);
         Timer.after(500, function(){
