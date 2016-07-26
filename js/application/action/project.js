@@ -29,6 +29,16 @@ if(App.namespace) { App.namespace('Action.Project', function(App) {
         proj.dataTasks = DataStore.get('tasks');
         proj.dataLinks = DataStore.get('links');
 
+/*        console.log(proj.dataProject.show_today_line, Util.Storage('show_today_line'));
+        console.log(proj.dataProject.show_user_color, Util.Storage('show_user_color'));
+        console.log(proj.dataProject.show_task_name, Util.Storage('show_task_name'));
+        console.log(proj.dataProject.scale_type, Util.Storage('scale_type'));*/
+
+/*        App.Action.Project.dataProject['show_today_line']
+        App.Action.Project.dataProject['show_user_color']
+        App.Action.Project.dataProject['show_task_name']
+        App.Action.Project.dataProject['scale_type']
+        */
     };
 
 

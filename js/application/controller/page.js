@@ -113,11 +113,29 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
 
         //console.log(response.groupsusers);
 
+        // merge with local saved settings
+        if(response.project.show_today_line == '0' && Util.Storage('show_today_line'))
+            response.project.show_today_line = '1';
+
+        if(response.project.show_user_color == '0' && Util.Storage('show_user_color'))
+            response.project.show_user_color = '1';
+
+        if(response.project.show_task_name == '0' && Util.Storage('show_task_name'))
+            response.project.show_task_name = '1';
+
+        if(Util.Storage('scale_type'))
+            response.project.scale_type = Util.Storage('scale_type');
+
         DataStore.put('data', response);
         DataStore.put('groupsusers', response.groupsusers);
         DataStore.put('project', response.project);
         DataStore.put('tasks', response.tasks);
         DataStore.put('links', response.links);
+
+
+
+
+        console.log('response.project >>>', response.project);
 
         // Language
         var languagePathScript = null;
