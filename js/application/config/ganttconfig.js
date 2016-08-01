@@ -121,10 +121,13 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             }
 
 
-            if(task.type == 'project') return "";
+            if(task.type == 'project')
+                return "";
             else {
-                if(conf.dataProject['show_task_name'] == 1) return task.text;
-                else return "";
+                if(conf.dataProject['show_task_name'] == 1)
+                    return task.text;
+                else
+                    return "";
             }
 
         };

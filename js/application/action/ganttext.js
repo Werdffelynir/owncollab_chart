@@ -82,7 +82,7 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
      */
     ganttExt.showTaskNames = function (show){
         gantt.templates.task_text = function(start, end, task){
-            if(show)
+            if(show &&  task.type != 'project')
                 return task.text;
             else
                 return "";

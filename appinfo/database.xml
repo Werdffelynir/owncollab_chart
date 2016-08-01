@@ -25,14 +25,14 @@
                 <type>integer</type>
                 <length>1</length>
                 <notnull>false</notnull>
-                <default>0</default>
+                <default>1</default>
             </field>
             <field>
                 <name>show_task_name</name>
                 <type>integer</type>
                 <length>1</length>
                 <notnull>false</notnull>
-                <default>0</default>
+                <default>1</default>
             </field>
             <field>
                 <name>show_user_color</name>

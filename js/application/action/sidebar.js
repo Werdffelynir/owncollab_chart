@@ -322,8 +322,8 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
 
             App.Action.GanttExt.showMarkers(target.checked);
 
-            //if(target.checked)
-            //    App.Action.GanttExt.showTodayLine();
+            if(target.checked)
+                App.Action.GanttExt.showTodayLine();
 
             Util.Storage('show_today_line', target.checked);
             gantt.refreshData();

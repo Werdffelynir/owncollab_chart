@@ -22,7 +22,7 @@ CREATE TABLE `oc_collab_project` (
   `show_task_name` int(1) NOT NULL DEFAULT '1',
   `show_user_color` int(1) NOT NULL DEFAULT '0',
   `critical_path` int(1) NOT NULL DEFAULT '0',
-  `scale_type` varchar(16) NOT NULL DEFAULT 'week',
+  `scale_type` varchar(16) NOT NULL DEFAULT 'day',
   `scale_fit` int(1) DEFAULT '0',
   `is_share` int(1) DEFAULT '0',
   `share_link` varchar(255) DEFAULT NULL,
