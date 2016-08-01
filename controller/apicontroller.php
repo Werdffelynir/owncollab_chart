@@ -573,12 +573,12 @@ class ApiController extends Controller
         $crop_x = 0;
         $crop_y = 0;
 
-        $head_left = isset($labels['head_left'])?$labels['head_left']:'';
-        $head_center = isset($labels['head_center'])?$labels['head_center']:'';
-        $head_right = isset($labels['head_right'])?$labels['head_right']:'';
-        $footer_left = isset($labels['footer_left'])?$labels['footer_left']:'';
-        $footer_center = isset($labels['footer_center'])?$labels['footer_center']:'';
-        $footer_right = isset($labels['footer_right'])?$labels['footer_right']:'';
+        $head_left = isset($labels['head_left']) ? $labels['head_left'] : '';
+        $head_center = isset($labels['head_center']) ? $labels['head_center'] : '';
+        $head_right = isset($labels['head_right']) ? $labels['head_right'] : '';
+        $footer_left = isset($labels['footer_left']) ? $labels['footer_left'] : '';
+        $footer_center = isset($labels['footer_center']) ? $labels['footer_center'] : '';
+        $footer_right = isset($labels['footer_right']) ? $labels['footer_right'] : '';
 
         $header = '
             <table width="100%" style="vertical-align: bottom; font-size: 10pt;"><tr>
@@ -606,17 +606,11 @@ class ApiController extends Controller
             if($i > 0)
                 $mpdf->AddPage(); // '', '', '', '', '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf
 
-
-            //$mpdf->WriteHTML($HTMLHeader);
-            //$mpdf->WriteHTML($HTMLFooter);
-
             $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w - ($mgl + $mgr), $page_h - ($mgt + $mgb) );
             $mpdf->UseTemplate($tpl, $mgl, $mgt);
 
             if($iter_h > 2) {
                 $mpdf->AddPage();
-                //$mpdf->WriteHTML($HTMLHeader);
-                //$mpdf->WriteHTML($HTMLFooter);
                 $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w - ($mgl + $mgr), $page_h - ($mgt + $mgb) );
                 $mpdf->UseTemplate($tpl, $mgl, $mgt);
             }

@@ -164,6 +164,43 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         // ------------------ run gantt init ------------------
         gantt.init(chart.contentElement);
 
+        gantt.init(chart.contentElement);
+
+        // Run parse data
+        var filteringTasks = chart.filteringTasks();
+
+        // Project Control
+        Project.init();
+
+        // Run gantt configs
+        GanttConfig.init();
+
+        // Run Lightbox
+        Lightbox.init();
+
+        if(!App.isPublic) {
+
+            // Run Sidebar
+            Sidebar.init();
+
+            // Run Sort Functions
+            App.Action.Sort.init();
+
+            // Enable function save gantt data
+            chart.savedButtonInit();
+
+            // Enable zoom slider
+            chart.enableZoomSlider();
+
+        }
+
+        gantt.parse({
+            data: filteringTasks,
+            links: chart.links
+        });
+
+
+        /*
         // run parse data
         var filteringTasks = chart.filteringTasks();
 
@@ -200,7 +237,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.parse({
             data: filteringTasks,
             links: chart.links
-        });
+        });*/
 
 
     };

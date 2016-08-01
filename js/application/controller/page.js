@@ -132,11 +132,6 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         DataStore.put('tasks', response.tasks);
         DataStore.put('links', response.links);
 
-
-
-
-        console.log('response.project >>>', response.project);
-
         // Language
         var languagePathScript = null;
         if(App.locale.toLowerCase().indexOf('de') !== -1)

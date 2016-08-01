@@ -245,12 +245,12 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
      * @param callback
      */
     share.requestUseShare = function (field, value, callback){
-        App.Action.Api.request('useshare',function(response){
+
+        App.Action.Api.request('useshare', function(response){
 
             //console.log(response);
-            if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
-                App.requesttoken = response.requesttoken;
-
+            if(typeof response === 'object' && !response['error'] ) {
+                //App.requesttoken = response.requesttoken; && response['requesttoken']
                 if(typeof callback === 'function')
                     callback.call(this, response);
             }

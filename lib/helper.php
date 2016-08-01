@@ -110,6 +110,26 @@ class Helper
     }
 
     /**
+     * @param null $key
+     * @param bool $clear
+     * @return bool|string
+     */
+    static public function get($key = null, $clear = true)
+    {
+        if(func_num_args() === 0)
+            return $_GET;
+        else{
+            if(isset($_GET[$key])) {
+                if($clear)
+                    return trim(strip_tags($_GET[$key]));
+                else return $_GET[$key];
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * Encode string with salt
      * @param $unencoded
      * @param $salt

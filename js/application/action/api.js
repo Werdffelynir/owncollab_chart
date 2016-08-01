@@ -100,9 +100,9 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
             .css('background', 'url("/apps/owncollab_chart/img/loading-small.gif") no-repeat center center');
 
         app.api('sendshareemails', function(response) {
-            if(typeof response === 'object' && !response['error'] && response['requesttoken']) {
+            if(typeof response === 'object' && !response['error'] ) {
 
-                App.requesttoken = response.requesttoken;
+                // App.requesttoken = response.requesttoken; && response['requesttoken']
                 $('.share_email_butn')
                     .css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
 

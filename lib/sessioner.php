@@ -11,7 +11,7 @@ namespace OCA\Owncollab_Chart;
 
 use OCP\ISession;
 
-class Sessioner implements ISession
+class Sessioner
 {
 
     const SESSION_STARTED = TRUE;

@@ -21,9 +21,6 @@ use OCP\AppFramework\Controller;
 use OCP\IRequest;
 use OCP\IURLGenerator;
 
-
-\OCP\App::checkAppEnabled('owncollab_chart');
-
 class MainController extends Controller {
 
 	/** @var string $userId
@@ -32,7 +29,7 @@ class MainController extends Controller {
 	/** @var bool $isAdmin
      * true if current auth user consists into admin group */
 	private $isAdmin;
-	/** @var \OC_L10N $l10n
+	/** @var \OCP\IL10N $l10n
      * languages translations */
 	private $l10n;
     /** @var Connect $connect
@@ -48,7 +45,7 @@ class MainController extends Controller {
      * @param IRequest $request
      * @param $userId
      * @param $isAdmin
-     * @param \OC_L10N $l10n
+     * @param \OCP\IL10N $l10n
      * @param Connect $connect
      */
 	public function __construct(
@@ -56,7 +53,7 @@ class MainController extends Controller {
 		IRequest $request,
 		$userId,
 		$isAdmin,
-		\OC_L10N $l10n,
+		\OCP\IL10N $l10n,
 		Connect $connect,
         IURLGenerator $urlGenerator
     ){
@@ -114,9 +111,6 @@ class MainController extends Controller {
             'requesttoken' => false,
         ];
 
-        //return new DataResponse($params);
-        //exit;
-
         if( $project['open'] == 1  && $project['is_share'] == 1){
 
             // static requesttoken
@@ -132,6 +126,7 @@ class MainController extends Controller {
             else{
                 //
                 $session_publickey = Helper::session('publickey');
+
                 if(!empty($session_publickey) && $session_publickey == $params['requesttoken']){
 
                     $params['template'] = 'project';
@@ -139,8 +134,8 @@ class MainController extends Controller {
                 }
                 else if($project['share_is_protected'] == 1){
 
-                    $post_requesttoken = Helper::post('requesttoken');
-                    $post_password = Helper::post('password');
+                    $post_requesttoken = Helper::get('requesttoken');
+                    $post_password = Helper::get('password');
 
                     $params['protected'] = true;
                     $params['template'] = 'authenticate';
@@ -187,12 +182,10 @@ class MainController extends Controller {
                 'links' => $this->connect->link()->get()
             ];
 
-            //return new TemplateResponse($this->appName, 'public', ['json' => $jsonData]);
-            // strtotime($project['share_expire_time']) < time()
             $params = [
-                //'json' => $jsonData,
                 'current_user' => null,
             ];
+
             return new TemplateResponse($this->appName, 'main', $params);
 
         }

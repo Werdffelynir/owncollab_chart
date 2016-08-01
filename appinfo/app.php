@@ -24,14 +24,17 @@ $container = $app->getContainer();
  */
 $container->query('OCP\INavigationManager')->add(function () use ($container, $appName) {
 	$urlGenerator = $container->query('OCP\IURLGenerator');
-	//$l10n = $container->query('OCP\IL10N');
-	$l = \OC::$server->getL10N('owncollab_chart');
+
+	/**@type \OCP\IL10N $l10n	*/
+	$l10n = \OC::$server->getL10NFactory()->get('owncollab_chart');
+	//$l10n = $container->query('OCP\IL10N'); $l = \OC::$server->getL10N('owncollab_chart');
+
 	return [
 		'id' => $appName,
 		'order' => 10,
 		'href' => $urlGenerator->linkToRoute($appName.'.main.index'),
 		'icon' => $urlGenerator->imagePath($appName, 'gantt.svg'),
-		'name' => $l->t('Gantt')
+		'name' => $l10n->t('Gantt')
 	];
 });
 

@@ -5,7 +5,7 @@
 style('owncollab_chart', 'authenticate');
 
 ?>
-<form method="post">
+<form method="get">
     <fieldset>
         <?php if (!isset($_['wrongpw']) && $_['wrongpw'] == true): ?>
             <div class="warning-info"><?php p($l->t('This share is password-protected')); ?></div>
