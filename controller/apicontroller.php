@@ -308,85 +308,17 @@ class ApiController extends Controller
             }
 
             $this->connect->db->commit();
-        }
 
-        return new DataResponse($params);
-    }
-
-/*
-    public function mailer($data) {
-
-        $params = [
-            'data'     => $data,
-            'error'     => null,
-            'errorinfo'     => '',
-            'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
-            'lastlinkid'    => null
-        ];
-
-        if ($this->isAdmin && isset($data['list']) && isset($data['resources'])) {
-            $list = is_array($data['list']) && count($data['list']) > 0 ? $data['list'] : [];
-
-            // подготовка данных к запросу
-            $sqlIn = "";
-            foreach($list as $item){
-                $sqlIn .= strlen($sqlIn) && isset($item['id']) > 0
-                    ? ",'" . $item['id'] . "'"
-                    : "'" . $item['id'] . "'";
+            if((int) $this->connect->db->errorCode() == 0) {
+                $this->updateCalendar();
             }
-            $list = $this->connect->project()->getUsersEmails($sqlIn);
-            $sendResult = $this->sendInviteMail($list);
-            $params['send_result'] = $sendResult;
+
         }
 
         return new DataResponse($params);
     }
 
 
-    private function sendInviteMail(array $list){
-
-        $project = $this->connect->project()->get();
-
-        if($project['is_share'] != 1 || empty($project['share_link'])) {
-            return false;
-        }
-
-        $from = 'no-replay@' . Helper::getHost();
-        $nameFrom = 'OwnCollab Chart';
-        $subject = 'OwnCollab Chart Invite';
-        $link = Helper::getProtocol() .'://'. Helper::getHost() .'/index.php/s/'. $project['share_link'];
-        $sendResult = [];
-
-        foreach($list as $item) {
-            $to = trim($item['email']);
-            $nameTo = !empty($item['name']) ? $item['name'] : $item['uid'];
-
-            if(Helper::validEmailAddress($to)) {
-
-                $mail = new PHPMailer();
-                $mail->setFrom($from, $nameFrom);
-                $mail->addAddress($to, $nameTo);
-
-                $mail->Subject = $subject;
-                $mail->Body    = Helper::renderPartial($this->appName, 'mailinvite', [
-                    'p_name' => $project['name'],
-                    'u_name' => $nameTo,
-                    's_link' => $link,
-                    'protocol' => Helper::getProtocol(),
-                    'domain' => Helper::getHost()
-                ]);
-                $mail->isHTML();
-
-                if (!$mail->send())
-                    $sendResult[$item['uid']] = $mail->ErrorInfo;
-                else
-                    $sendResult[$item['uid']] = true;
-            }
-        }
-
-        return $sendResult;
-    }
-*/
 
 
     public function invite($data) {
@@ -640,7 +572,17 @@ class ApiController extends Controller
 
     private function download_pdf( array $data ) { }
 
+    private function updateCalendar()
+    {
 
-
+        $url = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        $result = curl_exec($ch);
+        curl_close($ch);
+    }
 
 }
