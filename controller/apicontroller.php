@@ -574,9 +574,9 @@ class ApiController extends Controller
 
     private function updateCalendar()
     {
-        $url = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
-
         try{
+
+            $url = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
 
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
