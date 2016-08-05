@@ -209,11 +209,14 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             {name:"users", label: App.t('Resources'), align: "center", width: columnWidth.resources, template: function(item) {
                 var usersObj = {groups:[],users:[]};
 
-                try {
-                    usersObj = JSON.parse(item.users);
-                } catch (e){
-                    usersObj = {groups:[],users:[]};
+                if(typeof item.users === 'string' && item.users.length > 5) {
+                    try {
+                        usersObj = JSON.parse(item.users);
+                    } catch (e){
+                        //usersObj = {groups:[],users:[]};
+                    }
                 }
+                console.log(usersObj);
 
                 var groupsString = Util.cleanArr(usersObj.groups).join(', ');
                 var usersString = Util.cleanArr(usersObj.users).join(', ');
