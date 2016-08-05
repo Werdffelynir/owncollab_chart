@@ -260,7 +260,7 @@ class ApiController extends Controller
             'error' => null,
             'errorinfo' => '',
             //'requesttoken' => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
-            'lastlinkid' => null
+            //'lastlinkid' => null
         ];
 
         $project = false;
@@ -309,9 +309,9 @@ class ApiController extends Controller
 
             $this->connect->db->commit();
 
-            if((int) $this->connect->db->errorCode() == 0) {
-                $this->updateCalendar();
-            }
+//            if((int) $this->connect->db->errorCode() == 0) {
+//                $this->updateCalendar();
+//            }
 
         }
 
