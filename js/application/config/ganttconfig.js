@@ -207,7 +207,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             }},
 
             {name:"users", label: App.t('Resources'), align: "center", width: columnWidth.resources, template: function(item) {
-                var usersObj = {};
+                var usersObj = {groups:[],users:[]};
 
                 try {
                     usersObj = JSON.parse(item.users);
