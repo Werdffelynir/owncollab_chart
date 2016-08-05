@@ -142,27 +142,27 @@
                 <name>source</name>
                 <type>integer</type>
                 <length>8</length>
-                <notnull>false</notnull>
+                <notnull>true</notnull>
             </field>
             <field>
                 <name>target</name>
                 <type>integer</type>
                 <length>8</length>
-                <notnull>false</notnull>
+                <notnull>true</notnull>
             </field>
             <field>
                 <name>type</name>
                 <type>text</type>
                 <default>task</default>
-                <notnull>true</notnull>
                 <length>64</length>
+                <notnull>true</notnull>
             </field>
             <field>
                 <name>deleted</name>
                 <type>integer</type>
                 <length>1</length>
                 <default>0</default>
-                <notnull>true</notnull>
+                <notnull>false</notnull>
             </field>
         </declaration>
     </table>
