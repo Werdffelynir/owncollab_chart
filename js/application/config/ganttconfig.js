@@ -212,11 +212,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 if(typeof item.users === 'string' && item.users.length > 5) {
                     try {
                         usersObj = JSON.parse(item.users);
-                    } catch (e){
-                        //usersObj = {groups:[],users:[]};
-                    }
+                    } catch (e) {}
                 }
-                console.log(usersObj);
 
                 var groupsString = Util.cleanArr(usersObj.groups).join(', ');
                 var usersString = Util.cleanArr(usersObj.users).join(', ');
