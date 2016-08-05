@@ -309,9 +309,9 @@ class ApiController extends Controller
 
             $this->connect->db->commit();
 
-//            if((int) $this->connect->db->errorCode() == 0) {
-//                $this->updateCalendar();
-//            }
+            if((int) $this->connect->db->errorCode() == 0) {
+                $this->updateCalendar();
+            }
 
         }
 
@@ -574,15 +574,20 @@ class ApiController extends Controller
 
     private function updateCalendar()
     {
-
         $url = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        $result = curl_exec($ch);
-        curl_close($ch);
+
+        try{
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+            $result = curl_exec($ch);
+            curl_close($ch);
+
+        } catch (\Exception $e) {}
+
     }
 
 }
