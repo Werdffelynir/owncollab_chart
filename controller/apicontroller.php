@@ -310,7 +310,7 @@ class ApiController extends Controller
             $this->connect->db->commit();
 
             if((int) $this->connect->db->errorCode() == 0) {
-                $this->updateCalendar();
+                //$this->updateCalendar();
             }
 
         }
