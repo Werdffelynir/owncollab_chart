@@ -487,8 +487,6 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         //lbox.getResources();
         //usersTask = Util.extend(resource['groups'],resource['users']);
 
-        console.log(resource);
-
         if(resource['users'].length > 0){
             var inputs = popup.querySelectorAll('input[type=checkbox][data-type=user]');
             for(var i = 0; i<inputs.length; i++){
@@ -567,6 +565,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                     }
                 }
             }
+
+            var input = document.querySelector('#generate-lbox-wrapper input[name=lbox_users]');
+            input.value = App.Action.Lightbox.usersJSONToString(lbox.task);
         });
     };
 
@@ -938,7 +939,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @param num
      * @returns {Number}
      */
-    lbox.progressToPercent = function (num){
+    lbox.progressToPercent = function (num) {
         var progress = parseFloat(num) || 0;
         progress = parseInt(progress*100);
         return progress > 100 ? 100 : progress;
@@ -951,12 +952,28 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @param num
      * @returns {Number}
      */
-    lbox.percentToProgress = function (num){
+    lbox.percentToProgress = function (num) {
         var progress = num ? (typeof num === 'string') ? num.replace(/[^\d]+/,'') : num : 0;
         progress = parseFloat(progress/100);
         return (progress > 1) ? 1 : progress;
     };
 
+    /**
+     * @namespace App.Action.Lightbox.usersJSONToString
+     * @param item
+     * @returns {string}
+     */
+    lbox.usersJSONToString = function (item) {
+        var usersObj = {groups:[],users:[]};
+        if(typeof item.users === 'string' && item.users.length > 5) {
+            try {
+                usersObj = JSON.parse(item.users);
+            } catch (e) {}
+        }
+        var groupsString = Util.cleanArr(usersObj.groups).join(', ');
+        var usersString = Util.cleanArr(usersObj.users).join(', ');
+        return (!Util.isEmpty(groupsString) ? groupsString + ', ' : '') + usersString;
+    };
 
     return lbox
 

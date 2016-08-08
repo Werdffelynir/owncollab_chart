@@ -309,7 +309,6 @@ class ApiController extends Controller
             $this->connect->db->commit();
 
             if((int) $this->connect->db->errorCode() == 0) {
-                //$this->updateCalendar();
                 $calEncodeData = 'key=jasj765Uyt87ouIIfars&app=owncollab_chart';
                 $calUrl = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
                 ob_start();
@@ -575,21 +574,5 @@ class ApiController extends Controller
     }
 
     private function download_pdf( array $data ) { }
-
-    private function updateCalendar()
-    {
-        try{
-            $url = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            $result = curl_exec($ch);
-            curl_close($ch);
-
-        } catch (\Exception $e) {}
-
-    }
 
 }
