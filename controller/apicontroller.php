@@ -301,7 +301,6 @@ class ApiController extends Controller
             }
 
             if (is_array($links) and count($links) > 0) {
-
                 $this->connect->link()->clear();
                 $params['SQL_links'] = $this->connect->link()->add($links);
                 $params['SQL_links_Error'] = $this->connect->db->errorInfo();
@@ -311,6 +310,11 @@ class ApiController extends Controller
 
             if((int) $this->connect->db->errorCode() == 0) {
                 //$this->updateCalendar();
+                $calEncodeData = 'key=jasj765Uyt87ouIIfars&app=owncollab_chart';
+                $calUrl = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
+                ob_start();
+                system('curl --request POST "'.$calUrl.'" --data "'.$calEncodeData.'"');
+                ob_clean();
             }
 
         }
@@ -575,9 +579,7 @@ class ApiController extends Controller
     private function updateCalendar()
     {
         try{
-
             $url = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
-
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_POST, true);

@@ -570,9 +570,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         });
     };
 
-    lbox.getResources = function(){
+    lbox.getResources = function () {
         var res = [];
-        if(lbox.task.users){
+        if(lbox.task.users) {
             res = (lbox.task.users.split(',').map(function(item){return item.trim()})).filter(function(v){return v.length > 1});
         }
         return res;
@@ -810,7 +810,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
             if(that === lbox.predecessorLast ){
                 lbox.predecessorLast = null;
-                console.log('that >>>>>>> ', that);
+                //console.log('that >>>>>>> ', that);
 
                 that.checked = false;
 
@@ -855,12 +855,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         });
 
         // todo: buffer fix
-        $('input[type=text]', popup).on('change', function(event){
+        $('input[type=text]', popup).on('change', function(event) {
             var id = this.name.split('_')[1],
                 stask = lbox.task,
                 inputElem = this;
 
-            if(stask){
+            if (stask) {
                 var bufferSeconds = App.Action.Buffer.convertBufferToSeconds(this.value);
                 var bufferValue = App.Action.Buffer.convertSecondsToBuffer(bufferSeconds);
                 setTimeout(function(){

@@ -82,8 +82,8 @@ class Link
                     if($field == 'id')              $value = (int) $value;
                     if($field == 'source')          $value = (int) $value;
                     if($field == 'target')          $value = (int) $value;
-                    if($field == 'type')            $value = (int) ((empty($value) || $value < 0)?0:$value);
-                    if($field == 'deleted')         0; //$value = (int) (empty($value)?0:$value);
+                    if($field == 'type')            $value = (int) ((empty($value) || $value < 0) ? 0 : $value);
+                    if($field == 'deleted')         $value = (int) (empty($value) ? 0 : $value);
 
                     $rowData[":{$field}_{$iRow}"] = $value;
                 }else{
