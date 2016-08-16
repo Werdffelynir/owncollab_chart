@@ -21,21 +21,22 @@ class Sharedchart {
 
 	public function match() {
         if(!self::$close) {
-            $uriArr = explode('/',$this->uri);
-            $link = $uriArr[count($uriArr)-1];
-            $s = $uriArr[count($uriArr)-2];
-            $appName = $uriArr[count($uriArr)-3];
-            $project = $this->connect->project()->get();
+            try{
+                $uriArr = explode('/',$this->uri);
+                $link = $uriArr[count($uriArr)-1];
+                $s = $uriArr[count($uriArr)-2];
+                $appName = $uriArr[count($uriArr)-3];
+                $project = $this->connect->project()->get();
 
-            if($s == 's' && $appName != $this->appName){
-                self::$close = true;
-                $thisAppName = $this->appName;
-                if($project['is_share'] == '1' && $link == $project['share_link']){
-                    $uriReal = '/index.php/apps/owncollab_chart/s/'.$project['share_link'];
-                    header('Location: '.$uriReal);
-                    exit;
+                if($s == 's' && $appName != $this->appName){
+                    self::$close = true;
+                    if($project['is_share'] == '1' && $link == $project['share_link']){
+                        $uriReal = '/index.php/apps/owncollab_chart/s/'.$project['share_link'];
+                        header('Location: '.$uriReal);
+                        exit;
+                    }
                 }
-            }
+            } catch (\Exception $e) {}
         }
     }
 }

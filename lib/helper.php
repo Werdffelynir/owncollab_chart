@@ -12,6 +12,29 @@ class Helper
 {
 
     /**
+     * Check current the application is running.
+     * If $name return bool if current application equivalent
+     * If $name missing return current application name
+     *
+     * @param $name
+     * @return array|null|bool
+     */
+    static public function isApp($name = null) {
+        $uri = \OC::$server->getRequest()->getRequestUri();
+        $start = strpos($uri, '/apps/') + 6;
+        $app = substr($uri, $start);
+
+        if (strpos($app, '/'))
+            $app = substr($app, 0, strpos($app, '/'));
+
+        if($name)
+            return $app == $name;
+
+        return $app;
+    }
+
+    /**
+     * todo: delete
      * Checked is app now
      * @param $appName
      * @return bool

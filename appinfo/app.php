@@ -53,7 +53,7 @@ Util::addTranslations($appName);
 /**
  * Application styles and scripts
  */
-if(Helper::isAppPage($appName)) {
+if(Helper::isApp($appName)) {
 
 	Util::addStyle($appName, 'jquery.custom-scrollbar');
 	Util::addStyle($appName, 'jquery-ui-timepicker');
@@ -66,9 +66,7 @@ if(Helper::isAppPage($appName)) {
 	// dhtmlxGantt v.4.0.0 Standard
     Util::addStyle($appName, 'dhtmlxgantt');
 
-	Helper::provider('config',[
-		'domain' => ''
-	]);
+	Helper::provider('config',['domain' => '']);
 }
 
 /**
