@@ -88,9 +88,9 @@ class Connect
      * @param null $bind
      * @return \Doctrine\DBAL\Driver\Statement
      */
-    public function delete($table, $where, $bind = null) {
+    public function delete($table, $where, $bind = []) {
         $sql = "DELETE FROM " . $table . " WHERE " . $where . ";";
-        return $this->db->executeQuery($sql, $bind);
+        return $this->db->executeQuery($sql, (array) $bind);
     }
 
     /**
@@ -101,13 +101,13 @@ class Connect
      * @param null $bind
      * @return \Doctrine\DBAL\Driver\Statement
      */
-    public function update($table, array $columnData, $where, $bind=null) {
+    public function update($table, array $columnData, $where, $bind=[]) {
         $columns = array_keys($columnData);
         $where = preg_replace('|:\w+|','?', $where);
         if(empty($bind)) $bind = array_values($columnData);
         else $bind = array_values(array_merge($columnData, (array) $bind));
         $sql = sprintf("UPDATE %s SET %s WHERE %s;", $table, implode('=?, ', $columns) . '=?', $where);
-        return $this->db->executeQuery($sql, $bind);
+        return $this->db->executeQuery($sql, (array) $bind);
     }
 
     public function setSessionTimeZoneToZero() {
