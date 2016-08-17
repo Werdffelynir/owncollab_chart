@@ -137,10 +137,10 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             taskFields[3].innerHTML = '<input name="date_end" class="dipicker_grid" type="text" value="'+taskFields[3].textContent+'">';
 
             var startDate = App.Module.DataStore.get('projectTask').start_date;
-            console.log('startDate', startDate);
+            //console.log('startDate', startDate);
 
             $('input.dipicker_grid').datetimepicker({
-                minDate: App.Extension.DateTime.addDays(-30, startDate),
+                minDate: App.Extension.DateTime.addDays(-365, startDate),
                 maxDate: App.Extension.DateTime.addDays(365, startDate),
                 timezone: '0000',
                 controlType: 'slider',

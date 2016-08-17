@@ -149,7 +149,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         var startDate = DataStore.get('projectTask').start_date;
 
         $('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
-            minDate: DateTime.addDays(-30, startDate),
+            minDate: DateTime.addDays(-365, startDate),
             maxDate: DateTime.addDays(365, startDate),
             timezone: '0000',
             controlType: 'slider',

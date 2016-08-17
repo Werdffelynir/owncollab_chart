@@ -43,6 +43,7 @@ App.require('dependence',
 
         // Config
         App.urlScript + 'application/config/ganttconfig.js',
+        App.urlScript + 'application/config/print.js',
 
         // Events
         App.urlScript + 'application/event/gantteve.js',
@@ -86,6 +87,8 @@ function initDependence(list){
     console.log('Gantt Application start!');
 
     /**
+     * Multilanguage translates
+     *
      * @namespace App.t
      */
     App.t = function(name, params) {
@@ -95,11 +98,6 @@ function initDependence(list){
 
     App.Controller.Page.construct();
 
-   // App.Controller.Public.construct();
-/*    if(App.uid){
-
-    }else{
-    }*/
 }
 
 

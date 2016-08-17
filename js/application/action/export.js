@@ -12,21 +12,25 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
     /** @type {App.Extension.DateTime} */
     var DateTime = null;
 
-    function defaults(obj, std){
+    function defaults(obj, std) {
         for (var key in std)
             if (!obj[key])
                 obj[key] = std[key];
+
         return obj;
     }
-    function mark_columns(base){
+
+    function mark_columns(base) {
         var columns = base.config.columns;
-        if (columns)
+        if (columns) {
             for (var i = 0; i < columns.length; i++) {
                 if (columns[i].template)
                     columns[i].$template = true;
             }
+        }
     }
-    function fix_columns(gantt, columns){
+
+    function fix_columns(gantt, columns) {
         for (var i = 0; i < columns.length; i++) {
             columns[i].label = columns[i].label || gantt.locale.labels["column_"+columns[i].name];
             if (typeof columns[i].width == "string") columns[i].width = columns[i].width*1;
@@ -115,19 +119,22 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         $('.export_loader').show();
         event.preventDefault();
+
         var pagenotes = {
             'head_left': $('input[name=pdf_head_left]').val(),
             'head_center': $('input[name=pdf_head_center]').val(),
             'head_right': $('input[name=pdf_head_right]').val(),
             'footer_left': $('input[name=pdf_footer_left]').val(),
             'footer_center': $('input[name=pdf_footer_center]').val(),
-            'footer_right': $('input[name=pdf_footer_right]').val(),
+            'footer_right': $('input[name=pdf_footer_right]').val()
         };
+
         var printconf = {
             orientation: $('select[name=pdf_paper_orientation]').val(),
             paper_size: $('select[name=pdf_paper_size]').val(),
             scale: 1
         };
+
         var config = defaults((config || {}), {
             name:"gantt.png",
             data:gantt._serialize_all(),
@@ -140,10 +147,12 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         fix_columns(gantt, config.config.columns);
 
+
         var _tmpConfig = {
             autofit: gantt.config.autofit,
             fit_tasks: gantt.config.fit_tasks
         };
+
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
 
