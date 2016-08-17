@@ -490,7 +490,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     chart.onBeforeTaskUpdate = function (id, item) {
 
         var oldTaskDuration = chart.getState(id);
-        if(oldTaskDuration && item.start_date > item.end_date) {
+        if(oldTaskDuration && item.start_date >= item.end_date) {
             item.end_date = gantt.calculateEndDate(item.start_date, oldTaskDuration.duration);
         }
 
