@@ -490,7 +490,7 @@ gantt._undo.updateConfigs = function(){
 			for (var j = 0; j < entry.commands.length; j++) {
 				var command = entry.commands[j];
 				if (command.entity == undo.command.entity.link) {
-					if(command.value && command.value.id == oldId){
+					if(command.value && command.value.id == oldId) {
 						command.value.id = newId;
 					}
 					if(command.oldValue && command.oldValue.id == oldId){

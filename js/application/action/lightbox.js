@@ -213,7 +213,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     //lbox._tmpCurrentMinDate = null;
 
     lbox.onChangeLightboxInputDate = function (date, picObj){
-        if(!lbox.task || !lbox.field) return;
+        /*        if(!lbox.task || !lbox.field) return;
         var name = this['name'].substr(5);
         var value_date = DateTime.strToDate(date);
 
@@ -227,7 +227,20 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         }
 
         lbox.task[name] = DateTime.strToDate(date);
+        */
 
+        if(!lbox.task || !lbox.field) return;
+        var name = this['name'].substr(5);
+        var value_date = DateTime.strToDate(date);
+        // change end date
+        if(name == 'start_date') {
+            if(lbox.task.end_date < value_date) {
+                var oldTaskDuration = App.Action.Chart.getState(id);
+                lbox.task.end_date = gantt.calculateEndDate(value_date, oldTaskDuration.duration);
+                $('input[name=lbox_end_date]').val(DateTime.dateToStr(lbox.task.end_date));
+            }
+        }
+        lbox.task[name] = DateTime.strToDate(date);
     };
 
     lbox.onClickLightboxInputMilestone = function (event) {

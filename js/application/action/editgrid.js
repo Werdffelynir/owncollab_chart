@@ -223,55 +223,7 @@ if(App.namespace) { App.namespace('Action.EditGrid', function(App) {
         //act.currentFieldsValues['resources'] = groupsUsersString;
         act.fieldResources.innerHTML = groupsUsersString;
         act.removePopup();
-        //jQuery(App.Action.Keyevent.fieldsEditable['name']).focus();
-        //return false;
-
-
-
-
-
-
-        //var getJSONResource = App.Action.Chart.getJSONResource(act.task.id);
-        //console.log(getJSONResource);
-        //console.log(gantt.getTask(act.task.id).users);
-        /*
-         App.Action.Chart.addJSONResource(task_id, type, value)
-         App.Action.Chart.removeJSONResource(task_id, type, value)
-         App.Action.Chart.getJSONResource(task_id, formatJSON)
-
-        if( type == 'user' ) {
-            $('#user_'+gid+'_'+id, act.popupResources)[0].checked = checked;
-            if(checked)
-                act.addResource(id);
-            else
-                act.removeResource(id);
-            //console.log(this);
-        }else if( type == 'group' ){
-            $('#group_'+gid, act.popupResources)[0].checked = checked;
-            $('input[id^=user_'+gid+'_]', act.popupResources).each(function(index, item){
-                item.checked = checked;
-            });
-        }*/
-        //console.log(type, id, checked);
-        //console.log(this);
     };
-/*
-    act.addResource = function(id){
-        var usersString, users = act.fieldResources.textContent.split(',').map(function(item){return item.trim()});
-        users.push(id);
-        usersString = Util.cleanArr(Util.uniqueArr(users)).join(', ');
-        act.currentFieldsValues['resources'] = usersString;
-        act.fieldResources.textContent = usersString;
-    };
-    act.removeResource = function(id){
-        var usersString, users = act.fieldResources.textContent.split(',').map(function(item){return item.trim()});
-        if(users.indexOf(id) !== -1){
-            users.splice(users.indexOf(id), 1);
-        }
-        usersString = Util.cleanArr(Util.uniqueArr(users)).join(', ');
-        act.currentFieldsValues['resources'] = usersString;
-        act.fieldResources.textContent = usersString;
-    };*/
 
     return act;
 

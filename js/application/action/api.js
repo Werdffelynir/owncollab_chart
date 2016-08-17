@@ -38,6 +38,8 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
                 project: JSON.stringify( store.get('project') )
             };
 
+        // Update states
+        App.Action.Chart.addStates(Util.objClone(tasks));
         //console.log(tasks);
 
         if(api.saveAllReady){

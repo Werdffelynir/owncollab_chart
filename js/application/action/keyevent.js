@@ -136,7 +136,12 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             taskFields[2].innerHTML = '<input name="date_start" class="dipicker_grid" type="text" value="'+taskFields[2].textContent+'">';
             taskFields[3].innerHTML = '<input name="date_end" class="dipicker_grid" type="text" value="'+taskFields[3].textContent+'">';
 
+            var startDate = App.Module.DataStore.get('projectTask').start_date;
+            console.log('startDate', startDate);
+
             $('input.dipicker_grid').datetimepicker({
+                minDate: App.Extension.DateTime.addDays(-30, startDate),
+                maxDate: App.Extension.DateTime.addDays(365, startDate),
                 timezone: '0000',
                 controlType: 'slider',
                 oneLine: false,
@@ -148,6 +153,20 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
                         keyevent.fieldsValues['change_start_date'] = App.Extension.DateTime.strToDate(time, '%d.%m.%Y %H:%i');
                     if(this.name == 'date_end')
                         keyevent.fieldsValues['change_end_date'] = App.Extension.DateTime.strToDate(time, '%d.%m.%Y %H:%i');
+
+                },
+                onClose: function(time){
+
+                    var task = gantt.getTask(keyevent.editableTaskId);
+
+                    if(this.name == 'date_start')
+                        task['start_date'] = App.Extension.DateTime.strToDate(time, '%d.%m.%Y %H:%i');
+                    if(this.name == 'date_end')
+                        task['end_date'] = App.Extension.DateTime.strToDate(time, '%d.%m.%Y %H:%i');
+
+                    gantt.updateTask(task.id);
+                    //gantt.selectTask(task.id);
+                    //keyevent.tableEditableTurnOn();
 
                 }
             });

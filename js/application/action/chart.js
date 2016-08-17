@@ -89,6 +89,43 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
 
+    chart.states = [];
+    /**
+     * @namespace App.Action.Chart.addStates
+     * @param tasks
+     */
+    chart.addStates = function (tasks) {
+        chart.states = tasks;
+    };
+    /**
+     * @namespace App.Action.Chart.addState
+     * @param task
+     */
+    chart.addState = function (task) {
+        var i, added = false;
+        for (i = 0; i < chart.states.length; i ++) {
+            if(chart.states[i].id == task.id) {
+                chart.states[i] = task;
+                added = true;
+                break;
+            }
+        }
+        if(!added && typeof task === 'object' && task.id !== undefined)
+            chart.states.push(task);
+    };
+
+    /**
+     * @namespace App.Action.Chart.getState
+     * @param id
+     */
+    chart.getState = function (id) {
+        for (i = 0; i < chart.states.length; i ++)
+            if(chart.states[i].id == id)
+                return chart.states[i];
+        return false;
+    };
+
+
     /**
      *
      * @namespace App.Action.Chart.ganttInit
@@ -134,7 +171,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                     } catch (error) {}
                     App.Action.EditGrid.popupLast = null;
                 }
-                console.log('tableEditableShutOff');
+                //console.log('tableEditableShutOff');
                 App.Action.Keyevent.tableEditableShutOff()
             }
 
@@ -198,6 +235,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             data: filteringTasks,
             links: chart.links
         });
+
+        chart.addStates(Util.objClone(filteringTasks));
 
 
         /*
@@ -450,7 +489,12 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     chart.onBeforeTaskUpdate = function (id, item) {
 
-        //
+        var oldTaskDuration = chart.getState(id);
+        if(oldTaskDuration && item.start_date > item.end_date) {
+            item.end_date = gantt.calculateEndDate(item.start_date, oldTaskDuration.duration);
+        }
+
+        // ключ для процесса сохранения
         chart.readySave = true;
         //var predecessor = App.Action.Buffer.getTaskPredecessor(id);
         //if(predecessor){}
@@ -502,6 +546,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         }
 
         task.is_buffered = false;
+
+        // Update states
+        // chart.addStates(Util.objClone(gantt._get_tasks_data()));
+
         return false;
     };
 
