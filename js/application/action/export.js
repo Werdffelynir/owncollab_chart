@@ -136,6 +136,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         };
 
         var header = '<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">';
+        // + App.urlBase +
         header += '<link rel="stylesheet" href="http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css">';
 
         var config = defaults((config || {}), {
@@ -146,19 +147,22 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             header:header
         });
 
-        if (exp.toPDF.config['start'])
-            config['start'] = exp.toPDF.config['start'];
+        if (exp.toPDF.config['start']) {
+            config['start'] = gantt.config.start_date = exp.toPDF.config['start'];
+        }
 
-        if (exp.toPDF.config['end'])
-            config['end'] = exp.toPDF.config['end'];
+
+        if (exp.toPDF.config['end']) {
+            config['end'] = gantt.config.end_date = exp.toPDF.config['end'];
+        }
+
 
         fix_columns(gantt, config.config.columns);
 
         var _tmpConfig = {
             autofit: gantt.config.autofit,
-            fit_tasks: gantt.config.fit_tasks,
-            //configDataData: Util.objClone(config.data.data),
-            //column4: Util.objClone(gantt.config.columns[4]),
+            start_date: gantt.config.fit_tasks,
+            end_date: gantt.config.fit_tasks,
             column6: Util.objClone(gantt.config.columns[6]),
             column7: Util.objClone(gantt.config.columns[7]),
             column8: Util.objClone(gantt.config.columns[8])
@@ -174,8 +178,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.duration_unit = "day";
         gantt.config.duration_step = 1;
 
-        gantt.config.start_date = config.start;
-        gantt.config.end_date = config.end;
+        //gantt.config.start_date = config.start;
+        //gantt.config.end_date = config.end;
 
         //console.log("dates>>>",config.start, config.end);
         //console.log("config>>>",config);
@@ -215,7 +219,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
     };
 
 
-    exp.toPNG = function (){
+    exp.toPNG = function () {
         var config = {};
         gantt.exportToPNG(config);
     };

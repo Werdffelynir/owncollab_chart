@@ -477,7 +477,7 @@ class ApiController extends Controller
 
         $pdfSize = array_map(function($item){return trim((int)$item);},explode('x', $pdfInfo['Page size']));
 
-        $pdfSize['w'] = $pdfSize[0] * 0.75;
+        $pdfSize['w'] = $pdfSize[0] * 0.80;
         $pdfSize['h'] = $pdfSize[1] * 0.75;
 
         $paperSizes = [
