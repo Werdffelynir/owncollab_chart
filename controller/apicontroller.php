@@ -312,7 +312,7 @@ class ApiController extends Controller
                 $calEncodeData = 'key=jasj765Uyt87ouIIfars&app=owncollab_chart';
                 $calUrl = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
                 ob_start();
-                system('curl --request POST "'.$calUrl.'" --data "'.$calEncodeData.'"');
+                system('curl -k --request POST "'.$calUrl.'" --data "'.$calEncodeData.'"');
                 ob_clean();
             }
 
