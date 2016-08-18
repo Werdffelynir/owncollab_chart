@@ -115,7 +115,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             exp.toPDF.config['end'] = DateTime.strToDate(date);
     };
 
-    exp.onSubmitExportToPDF = function (event){
+    exp.onSubmitExportToPDF = function (event) {
 
         $('.export_loader').show();
         event.preventDefault();
@@ -135,28 +135,67 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             scale: 1
         };
 
+        var header = '<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">';
+        header += '<link rel="stylesheet" href="http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css">';
+
         var config = defaults((config || {}), {
             name:"gantt.png",
             data:gantt._serialize_all(),
             config:gantt.config,
             version:gantt.version,
-            header:'<link rel="stylesheet" href="http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css">'
+            header:header
         });
-        if (exp.toPDF.config['start']) config['start'] = exp.toPDF.config['start'];
-        if (exp.toPDF.config['end']) config['end'] = exp.toPDF.config['end'];
+
+        if (exp.toPDF.config['start'])
+            config['start'] = exp.toPDF.config['start'];
+
+        if (exp.toPDF.config['end'])
+            config['end'] = exp.toPDF.config['end'];
 
         fix_columns(gantt, config.config.columns);
 
-
         var _tmpConfig = {
             autofit: gantt.config.autofit,
-            fit_tasks: gantt.config.fit_tasks
+            fit_tasks: gantt.config.fit_tasks,
+            //configDataData: Util.objClone(config.data.data),
+            //column4: Util.objClone(gantt.config.columns[4]),
+            column6: Util.objClone(gantt.config.columns[6]),
+            column7: Util.objClone(gantt.config.columns[7]),
+            column8: Util.objClone(gantt.config.columns[8])
         };
+
 
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
+        gantt.config.columns.length = 6;
 
-        //console.log(config);
+        // change visual for Dates
+        gantt.config.date_grid = gantt.config.task_date = "%d.%m.%Y %H:%i";
+        gantt.config.duration_unit = "day";
+        gantt.config.duration_step = 1;
+
+        gantt.config.start_date = config.start;
+        gantt.config.end_date = config.end;
+
+        //console.log("dates>>>",config.start, config.end);
+        //console.log("config>>>",config);
+        //console.log("config.data.data>>>",config.data.data);
+
+        config.data.data.map(function(item){
+
+            // change visual for Resources
+            var usersObj = {groups:[],users:[]};
+            if(typeof item.users === 'string' && item.users.length > 5) {
+                try {usersObj = JSON.parse(item.users);} catch (e) {} }
+            var groupsString = Util.cleanArr(usersObj.groups).join(', ');
+            var usersString = Util.cleanArr(usersObj.users).join(', ');
+            item.users = (!Util.isEmpty(groupsString) ? '<strong>' + groupsString + '</strong>, ' : '') + usersString;
+
+            // change visual for Duration
+            var task = gantt.getTask(item.id);
+            var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
+            item.duration = ((days%1==0) ? Math.round(days) : days) + ' d';
+        });
 
         App.Action.Api.request('getsourcepdf', function(response) {
             console.log('getsourcepdf response >>>', response);
@@ -167,8 +206,12 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             }
         }, {data:JSON.stringify(config), printconf:printconf, pagenotes:pagenotes});
 
+        // Возврат изминений
         gantt.config.autofit = _tmpConfig.autofit;
         gantt.config.fit_tasks = _tmpConfig.fit_tasks;
+        gantt.config.columns.push(_tmpConfig.column6);
+        gantt.config.columns.push(_tmpConfig.column7);
+        gantt.config.columns.push(_tmpConfig.column8);
     };
 
 

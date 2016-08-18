@@ -299,8 +299,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         //o.opt.currentScaleType = type = (o.opt.typesScales.indexOf(type) === -1) ? "month" : type;
 
         /* Common for all scales */
-        gantt.config.scale_unit = type; // Sets the unit of the time scale (X-Axis) can be: "minute", "hour", "day", "week", "quarter", "month", "year"
-        gantt.config.scale_height = 50; // Sets the height of the time scale and the header of the grid
+        gantt.config.scale_unit = type;     // Sets the unit of the time scale (X-Axis) can be: "minute", "hour", "day", "week", "quarter", "month", "year"
+        gantt.config.scale_height = 50;     // Sets the height of the time scale and the header of the grid
         gantt.config.min_column_width = 20; // Sets the minimum width for a column in the timeline area
 
         // Scale switch

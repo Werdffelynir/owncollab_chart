@@ -47,8 +47,10 @@ if(App.namespace) { App.namespace('Config.Print', function(App) {
      */
     _.base = function() {
 
-
     };
+
+
+
 
     return _;
 
