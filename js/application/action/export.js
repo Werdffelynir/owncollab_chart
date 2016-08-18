@@ -47,8 +47,10 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         exp.projectTask = gantt.getTask(1); //App.Module.DataStore.get('projectTask');
 
         exp.toPDF.config = {
+            //start:  exp.projectTask.end_date,
+            //end:    exp.projectTask.start_date
             start:  exp.projectTask.end_date,
-            end:    exp.projectTask.start_date
+            end:    undefined
         };
 
         $('.export_gantt').click(function(){
@@ -148,12 +150,14 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         });
 
         if (exp.toPDF.config['start']) {
-            config['start'] = gantt.config.start_date = exp.toPDF.config['start'];
+            gantt.config.start_date = config['start'] = exp.toPDF.config['start'];
+            //
         }
 
 
         if (exp.toPDF.config['end']) {
-            config['end'] = gantt.config.end_date = exp.toPDF.config['end'];
+            gantt.config.end_date = config['end'] = exp.toPDF.config['end'];
+            //
         }
 
 
@@ -161,8 +165,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         var _tmpConfig = {
             autofit: gantt.config.autofit,
-            start_date: gantt.config.fit_tasks,
-            end_date: gantt.config.fit_tasks,
+            fit_tasks: gantt.config.fit_tasks,
             column6: Util.objClone(gantt.config.columns[6]),
             column7: Util.objClone(gantt.config.columns[7]),
             column8: Util.objClone(gantt.config.columns[8])
@@ -177,13 +180,6 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.date_grid = gantt.config.task_date = "%d.%m.%Y %H:%i";
         gantt.config.duration_unit = "day";
         gantt.config.duration_step = 1;
-
-        //gantt.config.start_date = config.start;
-        //gantt.config.end_date = config.end;
-
-        //console.log("dates>>>",config.start, config.end);
-        //console.log("config>>>",config);
-        //console.log("config.data.data>>>",config.data.data);
 
         config.data.data.map(function(item){
 
@@ -216,6 +212,9 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.columns.push(_tmpConfig.column6);
         gantt.config.columns.push(_tmpConfig.column7);
         gantt.config.columns.push(_tmpConfig.column8);
+
+        gantt.config.start_date = undefined;
+        gantt.config.end_date = undefined;
     };
 
 
@@ -224,10 +223,12 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.exportToPNG(config);
     };
 
+
     exp.toICal = function (){
         var config = {};
         gantt.exportToICal(config);
     };
+
 
     exp.toMSProject = function (){
         var config = {
