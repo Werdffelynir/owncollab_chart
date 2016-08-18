@@ -8,8 +8,8 @@ This software is covered by GPL license. You also can obtain Commercial or Enter
 */
 
 *{
-    font-family: "Open Sans", Arial, sans-serif;
-    font-size: 10px !important;
+/*    font-family: "Open Sans", Arial, sans-serif;
+    font-size: 11px !important;*/
 }
 
 .gridHoverStyle, .gridSelection, .timelineSelection {

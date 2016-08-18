@@ -47,10 +47,10 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         exp.projectTask = gantt.getTask(1); //App.Module.DataStore.get('projectTask');
 
         exp.toPDF.config = {
-            //start:  exp.projectTask.end_date,
-            //end:    exp.projectTask.start_date
-            start:  exp.projectTask.end_date,
-            end:    undefined
+            //start:  exp.projectTask.start_date,
+            //end:    exp.projectTask.end_date
+            start:  exp.projectTask.start_date,
+            end:    exp.projectTask.end_date
         };
 
         $('.export_gantt').click(function(){
@@ -110,11 +110,12 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
     exp.onChangeExportToPDFInputDate = function(date) {
 
-        if(this.name == "pdf_start_date")
+        if(this.name == "pdf_start_date") {
             exp.toPDF.config['start'] = DateTime.strToDate(date);
-
-        if(this.name == "pdf_end_date")
+        }
+        if(this.name == "pdf_end_date") {
             exp.toPDF.config['end'] = DateTime.strToDate(date);
+        }
     };
 
     exp.onSubmitExportToPDF = function (event) {
@@ -150,16 +151,13 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         });
 
         if (exp.toPDF.config['start']) {
-            gantt.config.start_date = config['start'] = exp.toPDF.config['start'];
             //
+            config['start'] = gantt.config.start_date = exp.toPDF.config['start'];
         }
-
-
         if (exp.toPDF.config['end']) {
-            gantt.config.end_date = config['end'] = exp.toPDF.config['end'];
-            //
+            //config['end'] =
+            config['end'] = gantt.config.end_date = exp.toPDF.config['end'];
         }
-
 
         fix_columns(gantt, config.config.columns);
 
@@ -175,6 +173,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
         gantt.config.columns.length = 6;
+        gantt.config.columns[1].width = 100;
+        gantt.config.columns[2].width = 100;
 
         // change visual for Dates
         gantt.config.date_grid = gantt.config.task_date = "%d.%m.%Y %H:%i";
