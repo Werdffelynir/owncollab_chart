@@ -477,7 +477,7 @@ class ApiController extends Controller
 
         $pdfSize = array_map(function($item){return trim((int)$item);},explode('x', $pdfInfo['Page size']));
 
-        $pdfSize['w'] = $pdfSize[0] * 0.80;
+        $pdfSize['w'] = $pdfSize[0] * 0.75;
         $pdfSize['h'] = $pdfSize[1] * 0.75;
 
         $paperSizes = [
@@ -516,7 +516,7 @@ class ApiController extends Controller
         $footer_right = isset($labels['footer_right']) ? $labels['footer_right'] : '';
 
         $header = '
-            <table width="100%" style="vertical-align: bottom; font-size: 10pt;"><tr>
+            <table width="100%" style="vertical-align: bottom; font-size: 12pt; font-weight: bold"><tr>
             <td width="33%">'. $head_left .'</td>
             <td width="33%" align="center">'.$head_center.'</td>
             <td width="33%" style="text-align: right;">'.$head_right.'</td>
@@ -524,7 +524,7 @@ class ApiController extends Controller
             ';
 
         $footer = '
-            <table width="100%" style="vertical-align: bottom; font-size: 10pt;"><tr>
+            <table width="100%" style="vertical-align: bottom; font-size: 12pt; font-weight: bold"><tr>
             <td width="33%">'.$footer_left.'</td>
             <td width="33%" align="center">'.$footer_center.'</td>
             <td width="33%" style="text-align: right;">'.$footer_right.'</td>

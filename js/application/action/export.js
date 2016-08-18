@@ -98,8 +98,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         $('input[type=text], input[type=date]', App.node('sidebarExpPdf')).each(function(im , elem) {
             if(elem.name == 'pdf_start_date')
                 elem.value = DateTime.dateToStr(exp.projectTask.start_date);
-            else
-                if(elem.name == 'pdf_end_date')
+            else if(elem.name == 'pdf_end_date')
                 elem.value = DateTime.dateToStr(exp.projectTask.end_date);
             else
                 elem.value = '';
@@ -150,20 +149,18 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             header:header
         });
 
-        if (exp.toPDF.config['start']) {
-            //
-            config['start'] = gantt.config.start_date = exp.toPDF.config['start'];
-        }
-        if (exp.toPDF.config['end']) {
-            //config['end'] =
-            config['end'] = gantt.config.end_date = exp.toPDF.config['end'];
-        }
+        config['start'] = gantt.config.start_date   = exp.toPDF.config['start'];
+        config['end']   = gantt.config.end_date     = exp.toPDF.config['end'];
 
         fix_columns(gantt, config.config.columns);
 
         var _tmpConfig = {
             autofit: gantt.config.autofit,
             fit_tasks: gantt.config.fit_tasks,
+            duration_unit: gantt.config.duration_unit,
+            duration_step: gantt.config.duration_step,
+            column2width: gantt.config.columns[2].width,
+            column3width: gantt.config.columns[3].width,
             column6: Util.objClone(gantt.config.columns[6]),
             column7: Util.objClone(gantt.config.columns[7]),
             column8: Util.objClone(gantt.config.columns[8])
@@ -173,8 +170,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.autofit = false;
         gantt.config.fit_tasks = false;
         gantt.config.columns.length = 6;
-        gantt.config.columns[1].width = 100;
-        gantt.config.columns[2].width = 100;
+        gantt.config.columns[2].width = 120;
+        gantt.config.columns[3].width = 120;
 
         // change visual for Dates
         gantt.config.date_grid = gantt.config.task_date = "%d.%m.%Y %H:%i";
@@ -206,15 +203,24 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             }
         }, {data:JSON.stringify(config), printconf:printconf, pagenotes:pagenotes});
 
+        console.log(gantt.config.start_date);
+        console.log(gantt.config.end_date);
+
+        //gantt.exportToPDF();
+
         // Возврат изминений
-        gantt.config.autofit = _tmpConfig.autofit;
-        gantt.config.fit_tasks = _tmpConfig.fit_tasks;
+        gantt.config.autofit        = _tmpConfig.autofit;
+        gantt.config.fit_tasks      = _tmpConfig.fit_tasks;
+        gantt.config.duration_unit  = _tmpConfig.duration_unit;
+        gantt.config.duration_step  = _tmpConfig.duration_step;
+        gantt.config.columns[2].width = _tmpConfig.column2width;
+        gantt.config.columns[3].width = _tmpConfig.column3width;
         gantt.config.columns.push(_tmpConfig.column6);
         gantt.config.columns.push(_tmpConfig.column7);
         gantt.config.columns.push(_tmpConfig.column8);
+        gantt.config.start_date     = undefined;
+        gantt.config.end_date       = undefined;
 
-        gantt.config.start_date = undefined;
-        gantt.config.end_date = undefined;
     };
 
 
