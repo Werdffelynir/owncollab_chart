@@ -553,7 +553,7 @@
      * @param data      Object key=value
      * @returns {*}     query string
      */
-    util.encodeData = function(data){
+    util.encodeToURI = function(data){
         if(typeof data === 'string') return data;
         if(typeof data !== 'object') return '';
         var convertData = [];
@@ -696,7 +696,6 @@
     util.Date.time = function(date){
         "use strict";
         return date instanceof Date ? date.getTime() : (new Date).getTime();
-
     };
     /**
      * Add days to some date
@@ -711,7 +710,7 @@
     };
 
     util.Date.daysBetween = function (date1, date2) {
-        var ONE_DAY = 86400000,
+        var ONE_DAY = 864e5,
             date1_ms = date1.getTime(),
             date2_ms = date2.getTime();
         return Math.round((Math.abs(date1_ms - date2_ms))/ONE_DAY)

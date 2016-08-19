@@ -43,7 +43,6 @@ App.require('dependence',
 
         // Config
         App.urlScript + 'application/config/ganttconfig.js',
-        App.urlScript + 'application/config/print.js',
 
         // Events
         App.urlScript + 'application/event/gantteve.js',

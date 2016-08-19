@@ -164,6 +164,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
             // disable grid table editable mode
             if(App.Action.Keyevent.tableEditableEnabled && App.Action.Keyevent.editableTaskId != id) {
+                console.log('delete onTaskRowClick');
                 // удалить popup если есть
                 if(App.Action.EditGrid.popupLast) {
                     try {
@@ -171,7 +172,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                     } catch (error) {}
                     App.Action.EditGrid.popupLast = null;
                 }
-                //console.log('tableEditableShutOff');
+
                 App.Action.Keyevent.tableEditableShutOff()
             }
 

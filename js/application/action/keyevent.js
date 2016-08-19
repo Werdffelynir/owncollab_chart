@@ -197,28 +197,6 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
                 taskFields[5].innerHTML = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
             }
 
-
-
-
-
-            /*$($(keyevent.fieldsEditable.dateStart).parent().parent()).datetimepicker({
-                altField: ".dtp_inline",
-                altFieldTimeOnly: false
-            });*/
-
-            //$(keyevent.fieldsEditable.dateStart).parent().parent()
-/*            if(!keyevent.dtpAdded) {
-                $('#app-content-wrapper').append('<form><input id="dtp_inline_base"  type="text" style="display:none"></form>');
-                keyevent.dtpAdded = true;
-            }
-
-            $('#dtp_inline_base').datetimepicker({
-                altField: ".dtp_inline",
-                altFieldTimeOnly: false
-            });*/
-
-            //console.log(fieldsEditable);
-
         }
 
     };
@@ -228,8 +206,12 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
      * @param event
      */
     keyevent.tableEditableShutOff = function (event) {
+
+        console.log('keyevent.tableEditableShutOff');
+
         keyevent.tableEditableEnabled = false;
         EventKeyManager.disable('enter');
+
         gantt.unselectTask(keyevent.editableTaskId);
         gantt.selectTask(keyevent.editableTaskId);
     };
