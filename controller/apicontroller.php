@@ -51,7 +51,7 @@ class ApiController extends Controller
         IRequest $request,
         $userId,
         $isAdmin,
-        \OC_L10N $l10n,
+        $l10n,
         Connect $connect
     )
     {
