@@ -112,7 +112,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 App.Action.Project.dataProject['show_user_color'] == 1 ) {
 
                 Timer.after(500, function(t){
-                    if(typeof t !== 'object') return;
+                    if(typeof t !== 'object' || typeof t.users !== 'string') return;
                     var firstUser = t.users.split(',')[0].trim();
                     if(firstUser.length > 2)
                         App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));
