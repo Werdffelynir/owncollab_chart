@@ -25,6 +25,7 @@ App.require('libs',
     [
         App.urlScript + 'libs/util.js',
         App.urlScript + 'libs/timer.js',
+        App.urlScript + 'libs/jstz.main.js',
         App.urlScript + 'libs/jquery-ui-timepicker.js',
         App.urlScript + 'libs/jquery.custom-scrollbar.js',
         App.urlScript + 'libs/event.key.manager.js'

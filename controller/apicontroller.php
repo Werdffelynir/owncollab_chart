@@ -266,7 +266,9 @@ class ApiController extends Controller
         $project = false;
         $tasks = false;
         $links = false;
+        $timezone = json_encode($data['timezone']);
 
+        $params['timezone'] = $data['timezone'];
         $params['tasksdecode'] = json_decode($data['tasks']);
 
         try {
@@ -309,7 +311,7 @@ class ApiController extends Controller
             $this->connect->db->commit();
 
             if((int) $this->connect->db->errorCode() == 0) {
-                $calEncodeData = 'key=jasj765Uyt87ouIIfars&app=owncollab_chart';
+                $calEncodeData = 'key=jasj765Uyt87ouIIfars&app=owncollab_chart&tz='.$timezone;
                 $calUrl = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
                 ob_start();
                 system('curl -k --request POST "'.$calUrl.'" --data "'.$calEncodeData.'"');
