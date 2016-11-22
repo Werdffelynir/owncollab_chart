@@ -32,8 +32,6 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
 
         var store = App.Module.DataStore,
             tasks = App.Action.Project.tasks(),
-            visitortime = new Date(),
-            visitortimezone =  "GMT " + -visitortime.getTimezoneOffset()/60,
             dataSend = {
                 tasks: JSON.stringify( tasks ),
                 links: JSON.stringify( gantt.getLinks() ),
@@ -61,14 +59,8 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
 
     api.gezTimezone = function () {
         if (jstz && jstz.determine) {
-            var tz = jstz.determine();
-            var date = new Date();
-            var hrs = date.toString().match(/([A-Z]+[\+-][0-9]+)/)[1];
-            var tzname = date.toString().match(/\(([A-Za-z\s].*)\)/)[1];
             return {
-                hrs: hrs,
-                geo: tzname,
-                timezone: tz.name()
+                timezone: jstz.determine().name()
             }
         }
     };
