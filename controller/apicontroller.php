@@ -266,7 +266,7 @@ class ApiController extends Controller
         $project = false;
         $tasks = false;
         $links = false;
-        $timezone = json_encode($data['timezone']);
+        $timezone = base64_encode(json_encode($data['timezone']));
 
         $params['timezone'] = $data['timezone'];
         $params['tasksdecode'] = json_decode($data['tasks']);
