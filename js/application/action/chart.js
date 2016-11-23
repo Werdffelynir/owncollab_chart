@@ -153,6 +153,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.attachEvent("onBeforeGanttRender", chart.onBeforeGanttRender);
         gantt.attachEvent("onGanttRender", chart.onGanttRender);
         gantt.attachEvent("onBeforeTaskDrag", chart.onBeforeTaskDrag);
+        gantt.attachEvent("onAfterTaskDrag", chart.onAfterTaskDrag);
 
         gantt.attachEvent("onTaskRowClick", function(id, row) {
 
@@ -388,7 +389,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         ganttSaveLoadIco.style.visibility = 'hidden';
 
-        ganttSave.onclick = function(event){
+        ganttSave.onclick = function (event) {
             ganttSaveLoadIco.style.visibility = 'visible';
 
             App.Action.Api.saveAll(function(response){
@@ -431,12 +432,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      * @param task_id
      */
     chart.scrollToTask = function(task_id){
-        var pos = gantt.getTaskNode(task_id); //$(gantt.getTaskNode(task_id)).position();
-        // offsetLeft // offsetTop
-        //console.log('scrollToTask >>>', task_id, pos, pos.offsetLeft, pos.offsetTop);
+        var pos = gantt.getTaskNode(task_id);
         if(typeof pos === 'object'){
-            //console.log(task_id, pos, pos.offsetLeft, pos.offsetTop);
-            //gantt.scrollTo(pos.left, pos.top)
             gantt.scrollTo(pos.offsetLeft - 100, pos.offsetTop)
         }
     };
@@ -447,7 +444,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     chart.scrollToTaskOnlyHorizontal = function(task_id){
         var pos = gantt.getTaskNode(task_id);
-        //console.log('scrollToTaskOnlyHorizontal >>>', pos.offsetLeft, pos.offsetTop);
         gantt.scrollTo(pos.offsetLeft - 100, null)
     };
 
@@ -457,10 +453,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         /**
          * Removed other links
          */
-
         var sourceTask = gantt.getTask(link.source);
         var targetTask = gantt.getTask(link.target);
-
         var predecessor = App.Action.Buffer.getTaskPredecessor(link.target);
         if(predecessor && targetTask.id != predecessor.id) {
             App.Action.Lightbox.predecessorLast = {dataTaskid:predecessor.id};
@@ -476,15 +470,20 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         return true;
     };
-    chart.onAfterLinkAdd = function  (id, item){
+    chart.onAfterLinkAdd = function  (id, task){
         gantt.changeLinkId(id, chart.linkIdIterator());
     };
 
-    chart.onAfterLinkUpdate = function  (id, item){
+    chart.onAfterLinkUpdate = function  (id, task){
         chart.readySave = true;
     };
 
-    chart.onAfterLinkDelete = function  (id, item){
+    chart.onAfterLinkDelete = function  (id, task){
+        chart.readySave = true;
+    };
+
+    chart.onAfterTaskDrag = function  (id, task){
+        console.log('onAfterTaskDrag', id, task);
         chart.readySave = true;
     };
 
@@ -497,8 +496,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         // ключ для процесса сохранения
         chart.readySave = true;
-        //var predecessor = App.Action.Buffer.getTaskPredecessor(id);
-        //if(predecessor){}
         return true;
     };
 
@@ -509,16 +506,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     //chart.bufferReady = true;
 
     chart.onAfterTaskUpdate = function(id, task){
-
+        console.log('onAfterTaskUpdate', id, task);
         chart.readySave = true;
 
-        //task.start_date_origin = Util.objClone(task.start_date);
-        //task.end_date_origin = Util.objClone(task.end_date);
-
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
-
-        //console.log('task predecessor', task, predecessor);
-
         if(predecessor){
             App.Action.Buffer.accept(predecessor, task);
         }
@@ -547,10 +538,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         }
 
         task.is_buffered = false;
-
-        // Update states
-        // chart.addStates(Util.objClone(gantt._get_tasks_data()));
-
         return false;
     };
 
