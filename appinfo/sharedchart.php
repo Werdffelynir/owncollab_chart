@@ -12,7 +12,7 @@ class Sharedchart {
     private $urlGenerator;
 
 	public function __construct() {
-        if(!self::$close){
+        if(!self::$close) {
             $this->uri = \OC::$server->getRequest()->getRequestUri();
             $this->connect = new Connect(\OC::$server->getDatabaseConnection());
             $this->urlGenerator = \OC::$server->getURLGenerator();
@@ -21,14 +21,14 @@ class Sharedchart {
 
 	public function match() {
         if(!self::$close) {
-            try{
-                $uriArr = explode('/',$this->uri);
+            $uriArr = explode('/', $this->uri);
+            if (is_array($uriArr) && count($uriArr) > 2) {
                 $link = $uriArr[count($uriArr)-1];
                 $s = $uriArr[count($uriArr)-2];
                 $appName = $uriArr[count($uriArr)-3];
                 $project = $this->connect->project()->get();
 
-                if($s == 's' && $appName != $this->appName){
+                if($s == 's' && $appName != $this->appName) {
                     self::$close = true;
                     if($project['is_share'] == '1' && $link == $project['share_link']){
                         $uriReal = '/index.php/apps/owncollab_chart/s/'.$project['share_link'];
@@ -36,7 +36,7 @@ class Sharedchart {
                         exit;
                     }
                 }
-            } catch (\Exception $e) {}
+            }
         }
     }
 }
