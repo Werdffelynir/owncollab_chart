@@ -28,6 +28,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         isInit: false
     };
 
+    chart.states = [];
+    chart.readySave = false;
+    chart.readyRequest = true;
+
     /**
      * @namespace App.Action.Chart.init
      * @param contentElement
@@ -89,7 +93,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
 
-    chart.states = [];
     /**
      * @namespace App.Action.Chart.addStates
      * @param tasks
@@ -482,13 +485,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         chart.readySave = true;
     };
 
-    chart.onAfterTaskDrag = function  (id, task){
-        console.log('onAfterTaskDrag', id, task);
-        chart.readySave = true;
-    };
+    chart.onAfterTaskDrag = function  (id, task){};
 
     chart.onBeforeTaskUpdate = function (id, item) {
-
         var oldTaskDuration = chart.getState(id);
         if(oldTaskDuration && item.start_date >= item.end_date) {
             item.end_date = gantt.calculateEndDate(item.start_date, oldTaskDuration.duration);
@@ -505,8 +504,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     //chart.bufferReady = true;
 
-    chart.onAfterTaskUpdate = function(id, task){
-        console.log('onAfterTaskUpdate', id, task);
+    chart.onAfterTaskUpdate = function(id, task) {
+
         chart.readySave = true;
 
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
@@ -712,10 +711,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     };
 
-    chart.readySave = false;
-    chart.readyRequest = true;
     chart.onGanttRender = function () {
 
+        console.log('onGanttRender', chart.readySave, chart.readyRequest);
         // AUTO-SAVE
         var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
         if(chart.readySave === true && chart.readyRequest === true){
@@ -804,6 +802,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     chart.onBeforeTaskDrag = function (id, mode, e) {
         var predecessor = App.Action.Buffer.getTaskPredecessor(id);
+
+        chart.readyRequest = true;
+        chart.readySave = true;
 
         if(mode == 'move' && predecessor){
             return false;

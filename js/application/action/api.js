@@ -28,8 +28,6 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
      * @param callback
      */
     api.saveAll = function(callback) {
-
-
         var store = App.Module.DataStore,
             tasks = App.Action.Project.tasks(),
             dataSend = {
