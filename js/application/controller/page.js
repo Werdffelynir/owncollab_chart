@@ -104,6 +104,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             if(response.links.length == 0) return 1;
             else return Math.max.apply( Math, response.links.map(function(item){return item.id}) )
         })());
+
         Chart.taskIdIterator(Math.max.apply( Math, response.tasks.map(function(item){
             return item.id;
         })));

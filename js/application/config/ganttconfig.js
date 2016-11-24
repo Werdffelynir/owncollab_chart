@@ -60,7 +60,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
      * - Tasks Grouping
      * @namespace App.Config.GanttConfig.prov
      */
-    conf.prov = function(){
+    conf.prov = function () {
 
         // Auto scheduling makes the start date of the second task update according to the end date
         // of the first task each when it changes.
@@ -89,9 +89,40 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
     conf.base = function() {
         var projTask = App.Action.Project.dataProjectTask;
 
+        //gantt.config.server_utc = true;
+        //gantt.templates.xml_date = function(date_string){
+        //console.log();
+        //var result_date = App.Extension.DateTime.strToDate(date_string);
+        //ar result_date = gantt.date.str_to_date("%d.%m.%Y %H:%i:s", true)(date_string);
+        //console.log(date_string, result_date);
+        //return result_date
+        //};
+
+        //
+        //gantt.attachEvent("onBeforeAutoSchedule", function(id){
+        //    console.log(id);
+        //});
+
         //gantt.config.start_date = App.Action.Project.dataProjectTask.start_date;
         //gantt.config.end_date = App.Action.Project.dataProjectTask.end_date;
         //console.log(projTask);
+
+        //gantt.templates.api_date = function(date){
+        //    return gantt.date.str_to_date(gantt.config.api_date, true);
+        //};
+
+        //gantt.templates.task_date = function(date){
+        //    return gantt.date.date_to_str(gantt.config.task_date, true)(date);
+        //};
+
+        //
+
+        //gantt.attachEvent("onTaskLoading", function(task){
+            //task.planned_start = gantt.date.parseDate(task.planned_start, "xml_date");
+            //task.planned_end = gantt.date.parseDate(task.planned_end, "xml_date");
+            //console.log(task);
+            //return true;
+        //});
 
         gantt.config.server_utc = true;
         gantt.config.preserve_scroll = true;
@@ -103,6 +134,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         // add style class to milestone display object
         gantt.templates.task_class  = function(start, end, task){
             if(task.type == 'milestone'){ return "gantt_milestone_size" }
+            //console.log(start, end)
         };
 
         //Visibly task text
@@ -137,6 +169,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.templates.grid_row_class = gantt.templates.task_row_class = function(start, end, task){
             return "gc_default_row";
         };
+
 
         // Styling the gantt chart. Column tasks names size width
         gantt.config.row_height = 22;
@@ -316,15 +349,16 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 gantt.config.scale_height = 75;
                 gantt.config.subscales = [
                     {unit:"day", step:1, date : "%j %F, %l"},
-                    {unit:"minute", step:15, date : "%i"}
+                    {unit:"minute", step:30, date : "%i"}
                 ];
                 break;
 
             case 'hour':
                 event = gantt.attachEvent("onBeforeGanttRender", function(){
                     gantt.templates.date_scale = function(date) {
-                        var h = gantt.date.date_to_str("%G", true);
-                        return "<b>" + (parseInt(h(date)) + 1) + "</b>";
+                        var h = DateTime.dateToStr(date, "%G");
+                        //var h = gantt.date.date_to_str("%G", true)(date); //
+                        return "<b>" + (parseInt(h) + 1) + "</b>";
                     };
                     gantt.detachEvent(event);
                 });
@@ -338,6 +372,16 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                 break;
 
             case 'day':
+
+                /*var eventName = (conf.option.ganttIsInit == false) ? 'onGanttRender' : 'onBeforeGanttRender';
+                event = gantt.attachEvent(eventName, function(){
+                    gantt.templates.date_scale = function(date) {
+                        var h = DateTime.dateToStr(date, "%d");
+                        return "<b>" + h + "</b>";
+                    };
+                    gantt.detachEvent(event);
+                });*/
+
                 gantt.templates.date_scale = null;
                 gantt.config.date_scale = "%j";
                 gantt.config.step = 1;

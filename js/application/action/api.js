@@ -39,17 +39,13 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
 
         // Update states
         App.Action.Chart.addStates(Util.objClone(tasks));
-        //console.log(tasks);
 
         if(api.saveAllReady){
             api.saveAllReady = false;
             api.request('saveall', function(response){
-
                 api.saveAllReady = true;
                 callback.call(this, response);
-
-                console.log(response);
-
+                // console.log('saveAllReady', response);
             }, dataSend);
         }
 
@@ -57,9 +53,11 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
 
     api.gezTimezone = function () {
         if (jstz && jstz.determine) {
-            return {
-                timezone: jstz.determine().name()
-            }
+            var tz = '';
+            try {
+                tz = jstz.determine().name();
+            } catch (e) {}
+            return {timezone: tz}
         }
     };
 
