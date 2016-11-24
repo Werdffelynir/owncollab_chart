@@ -711,30 +711,22 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
     };
 
+    // AUTO-SAVE
     chart.onGanttRender = function () {
-
-        console.log('onGanttRender', chart.readySave, chart.readyRequest);
-        // AUTO-SAVE
         var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
-        if(chart.readySave === true && chart.readyRequest === true){
-
+        if(chart.readySave === true && chart.readyRequest === true) {
             ganttSaveLoadIco.style.visibility = 'visible';
             chart.readySave = false;
             chart.readyRequest = false;
 
-            //console.log('SAVE REQUEST START');
-            //Timer.after(1000, function(){ });
             setTimeout(function(){
                 App.Action.Api.saveAll(function(response){
                     console.log('SAVE REQUEST END');
                     chart.readyRequest = true;
                     ganttSaveLoadIco.style.visibility = 'hidden';
                 });
-
             }, 1000);
-
         }
-
     };
 
     /**

@@ -121,7 +121,7 @@ if(App.namespace) { App.namespace('Action.Fitmode', function(App) {
         {unit: "week", step: 1, scale_unit: "month", date_scale: "%F",
             subscales: [
                 {unit: "week", step: 1, template: function (date) {
-                    var dateToStr = gantt.date.date_to_str("%d %M");
+                    var dateToStr = gantt.date.date_to_str("%d %M", true);
                     var endDate = gantt.date.add(gantt.date.add(date, 1, "week"), -1, "day");
                     return dateToStr(date) + " - " + dateToStr(endDate);
                 }}
@@ -135,7 +135,7 @@ if(App.namespace) { App.namespace('Action.Fitmode', function(App) {
         { unit: "month", step: 3, scale_unit: "year", date_scale: "%Y",
             subscales: [
                 {unit: "month", step: 3, template: function (date) {
-                    var dateToStr = gantt.date.date_to_str("%M");
+                    var dateToStr = gantt.date.date_to_str("%M", true);
                     var endDate = gantt.date.add(gantt.date.add(date, 3, "month"), -1, "day");
                     return dateToStr(date) + " - " + dateToStr(endDate);
                 }}
@@ -144,20 +144,20 @@ if(App.namespace) { App.namespace('Action.Fitmode', function(App) {
         {unit: "year", step: 1, scale_unit: "year", date_scale: "%Y",
             subscales: [
                 {unit: "year", step: 5, template: function (date) {
-                    var dateToStr = gantt.date.date_to_str("%Y");
+                    var dateToStr = gantt.date.date_to_str("%Y", true);
                     var endDate = gantt.date.add(gantt.date.add(date, 5, "year"), -1, "day");
                     return dateToStr(date) + " - " + dateToStr(endDate);
                 }}
             ]},
         // decades
         {unit: "year", step: 10, scale_unit: "year", template: function (date) {
-            var dateToStr = gantt.date.date_to_str("%Y");
+            var dateToStr = gantt.date.date_to_str("%Y", true);
             var endDate = gantt.date.add(gantt.date.add(date, 10, "year"), -1, "day");
             return dateToStr(date) + " - " + dateToStr(endDate);
         },
             subscales: [
                 {unit: "year", step: 100, template: function (date) {
-                    var dateToStr = gantt.date.date_to_str("%Y");
+                    var dateToStr = gantt.date.date_to_str("%Y", true);
                     var endDate = gantt.date.add(gantt.date.add(date, 100, "year"), -1, "day");
                     return dateToStr(date) + " - " + dateToStr(endDate);
                 }}

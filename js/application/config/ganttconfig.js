@@ -93,6 +93,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         //gantt.config.end_date = App.Action.Project.dataProjectTask.end_date;
         //console.log(projTask);
 
+        gantt.config.server_utc = true;
         gantt.config.preserve_scroll = true;
         gantt.config.initial_scroll = true;
         gantt.config.grid_resize = true;
@@ -322,7 +323,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             case 'hour':
                 event = gantt.attachEvent("onBeforeGanttRender", function(){
                     gantt.templates.date_scale = function(date) {
-                        var h = gantt.date.date_to_str("%G");
+                        var h = gantt.date.date_to_str("%G", true);
                         return "<b>" + (parseInt(h(date)) + 1) + "</b>";
                     };
                     gantt.detachEvent(event);
