@@ -124,6 +124,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             //return true;
         //});
 
+        if (App.Controller.Page.whoIs() === 'user')
+            gantt.config.readonly = true;
+
         gantt.config.server_utc = true;
         gantt.config.preserve_scroll = true;
         gantt.config.initial_scroll = true;
@@ -267,6 +270,7 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
      */
     conf.user = function(isAdmin){
 
+
         gantt.config.columns.push({name:"added", label:"", width: 22, template: function(item) {
             return conf.createUITaskBtn('add', item.id);
         }});
@@ -276,9 +280,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
         gantt.config.columns.push({name:"edit", label:"", width: 22, template: function(item) {
             return conf.createUITaskBtn('edit', item.id);
         }});
-
         // gantt lightbox disable for usually users (not admins)
         if(!isAdmin){
+
             gantt.showLightbox = function(id){};
             gantt.hideLightbox = function(id){};
             Error.inline(App.t('You do not have the right to modify the chart'), App.t('Information') + ': ');

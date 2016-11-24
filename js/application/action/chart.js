@@ -598,12 +598,15 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         // scroll to Horizontal
         //chart.scrollToTaskOnlyHorizontal(id);
+        //console.log(App.isAdmin);
+        //console.log(App.Controller.Page.whoIs());
+        //app.action.chart.opt.isNewTask = false
 
         // control buttons
-        if(target.tagName == 'A' && target.getAttribute('data-control')){
+        if(target.tagName == 'A' && target.getAttribute('data-control') && App.Controller.Page.whoIs() == 'admin'){
             event.preventDefault();
-            //app.action.chart.opt.isNewTask = false;
             var action = target.getAttribute('data-control');
+
             switch (action) {
 
                 case "edit":
