@@ -29,7 +29,17 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
     };
 
     chart.states = [];
+
+    /**
+     * @namespace App.Action.Chart.readySave
+     * @type {boolean}
+     */
     chart.readySave = false;
+
+    /**
+     * @namespace App.Action.Chart.readyRequest
+     * @type {boolean}
+     */
     chart.readyRequest = true;
 
     /**
@@ -886,10 +896,21 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             return usersObj;
     };
 
+    /**
+     * @namespace App.Action.Chart.getTaskResources
+     * @param task_id
+     * @returns {{groups: Array, users: Array}}
+     */
+    chart.getTaskResources = function (task_id) {
+        var result = null,
+            task = gantt.getTask(task_id);
 
+        try {
+            result = JSON.parse(task.users);
+        } catch (e) {}
 
-
-
+        return (result && typeof result === 'object') ? result : {groups: [], users: []}
+    };
 
     return chart
 

@@ -120,6 +120,9 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
                 sidebar.active = false;
                 $(appContent).css('overflowX','auto');
                 OC.Apps.hideAppSidebar($(sidebar));
+
+                App.Action.Chart.readySave = false;
+                gantt.render();
             }
         });
     };

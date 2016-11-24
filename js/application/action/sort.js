@@ -463,7 +463,13 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             }
             if(!!resUsers) {
                 for(var iu=0; iu < resUsers.length; iu ++){
-                    if(task.users.indexOf(resUsers[iu]) !== -1){
+
+                    var resources = App.Action.Chart.getTaskResources(id);
+
+                    //console.log(id, task);
+                    //console.log(resources);
+
+                    if(resources.users.indexOf(resUsers[iu]) !== -1){
                         show = true;
                         break;
                     }
