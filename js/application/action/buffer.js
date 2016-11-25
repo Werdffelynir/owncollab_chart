@@ -340,7 +340,7 @@ if(App.namespace) { App.namespace('Action.Buffer', function(App) {
             task.is_buffered = true;
         }
         return false*/
-
+        //return true;
     };
 
 

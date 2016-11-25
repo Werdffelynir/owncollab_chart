@@ -491,7 +491,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         var targetTask = gantt.getTask(link.target);
         targetTask.buffers = JSON.stringify({p:sourceTask.id, b:1});
         targetTask.is_buffered = false;
-        //gantt.updateTask(sourceTask.id);
+
+        //chart.readySave = true;
+        gantt.updateTask(targetTask.id);
         gantt.autoSchedule(sourceTask.id);
     };
 
