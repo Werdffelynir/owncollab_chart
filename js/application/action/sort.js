@@ -300,10 +300,15 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     sort.createUsersGroup = createUsersGroup;
 
     function createUsersGroup(group, users){
+        var deprecatedUsers = ['collab_user'];
         var usersElements = document.createElement('div'),
             oneElement = document.createDocumentFragment();
+
         oneElement.appendChild(createInputWrapper(false, group));
         for(var i = 0; i < users.length; i ++) {
+            // hide deprecated users
+            if (deprecatedUsers.indexOf(users[i]['uid']) !== -1) continue;
+
             usersElements.appendChild(createInputWrapper(users[i]['uid'], group))
         }
         oneElement.appendChild(usersElements);

@@ -460,15 +460,15 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         gantt.scrollTo(pos.offsetLeft - 100, null)
     };
 
-
     // Gantt events
-    chart.onBeforeLinkAdd = function  (id, link){
+    chart.onBeforeLinkAdd = function  (id, link) {
         /**
          * Removed other links
          */
         var sourceTask = gantt.getTask(link.source);
         var targetTask = gantt.getTask(link.target);
         var predecessor = App.Action.Buffer.getTaskPredecessor(link.target);
+
         if(predecessor && targetTask.id != predecessor.id) {
             App.Action.Lightbox.predecessorLast = {dataTaskid:predecessor.id};
             App.Action.Lightbox.deleteLink(predecessor.id, link.target);
@@ -483,8 +483,16 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         return true;
     };
-    chart.onAfterLinkAdd = function  (id, task){
+    chart.onAfterLinkAdd = function (id, link) {
         gantt.changeLinkId(id, chart.linkIdIterator());
+
+        // buffer to zero
+        var sourceTask = gantt.getTask(link.source);
+        var targetTask = gantt.getTask(link.target);
+        targetTask.buffers = JSON.stringify({p:sourceTask.id, b:1});
+        targetTask.is_buffered = false;
+        //gantt.updateTask(sourceTask.id);
+        gantt.autoSchedule(sourceTask.id);
     };
 
     chart.onAfterLinkUpdate = function  (id, task){

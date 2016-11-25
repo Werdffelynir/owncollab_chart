@@ -206,9 +206,7 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
      * @param event
      */
     keyevent.tableEditableShutOff = function (event) {
-
-        console.log('keyevent.tableEditableShutOff');
-
+        //console.log('keyevent.tableEditableShutOff');
         keyevent.tableEditableEnabled = false;
         EventKeyManager.disable('enter');
 

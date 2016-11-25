@@ -21,7 +21,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @namespace App.Action.Lightbox.init
      */
     lbox.init = function(){
-        
+
         /**
          * Add the section to the lightbox configuration:
          *
@@ -148,10 +148,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         var startDate = DataStore.get('projectTask').start_date;
 
-        $('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+        jQuery('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+            //showButtonPanel: false,
+            //closeText: 'Close',
             minDate: DateTime.addDays(-365, startDate),
             maxDate: DateTime.addDays(365, startDate),
-            timezone: '0000',
+            //timezone: '0000',
             controlType: 'slider',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
@@ -159,25 +161,38 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             //showTimezone: true,
             //altFieldTimeOnly: false,
             //altRedirectFocus: false,
-            timeInput: true,
+            timeInput: false,
             onSelect: lbox.onChangeLightboxInputDate
         });
 
-        lbox.datetimepickerEnd = $('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+        // readonly
+        //console.log(dtp);
+
+        lbox.datetimepickerEnd = jQuery('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
+            //showButtonPanel: false,
+            //closeText: 'Close',
             minDate: (function(){
                 var fsd = $('input[name=lbox_start_date]').val();
                 return DateTime.strToDate(fsd?fsd:startDate);
             })(),
             maxDate: DateTime.addDays(365, startDate),
-            timezone: '0000',
+            //timezone: '0000',
             controlType: 'slider',
             oneLine: true,
             dateFormat: 'dd.mm.yy',
             timeFormat: 'HH:mm',
+            timeInput: false,
             onSelect: lbox.onChangeLightboxInputDate
         });
 
-        $('#generate-lbox-wrapper [name=lbox_text]').select().focus();
+        jQuery('#generate-lbox-wrapper [name=lbox_text]').select().focus();
+        //var tpickerInput = jQuery('.ui_tpicker_time_input', $.datepicker.dpDiv);
+        //tpickerInput.attr('readonly', 'readonly');
+
+
+        //var timezone = jstz.determine();
+        //timezone.name();
+        //console.log(timezone);
     };
 
 
@@ -229,7 +244,10 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         lbox.task[name] = DateTime.strToDate(date);
         */
 
+
+
         if(!lbox.task || !lbox.field) return;
+        var id = lbox.task.id;
         var name = this['name'].substr(5);
         var value_date = DateTime.strToDate(date);
         // change end date
@@ -373,7 +391,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
      * @returns {boolean}
      */
     lbox.onLightboxSave = function (id, task, is_new){
-
+        App.Action.Chart.readySave = true;
+        App.Action.Chart.readyRequest = true;
 
         /*
         var _id = null;
@@ -399,21 +418,19 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 //setTimeout(function(){ //},300);
                 gantt.autoSchedule(predecessor.id);
             }
-            return true;
+        } else {
+            Timer.after(500, function(){
+                App.Action.Chart.scrollToTaskOnlyHorizontal(id)
+            });
         }
 
         //console.log('Is new save', task.is_new);
-
-        //if(task.is_new){
-            App.Action.Chart.readySave = true;
-            App.Action.Chart.onGanttRender();
+        //if (task.is_new) {
+            //App.Action.Chart.readySave = true;
         //}
-
         //App.Action.Chart.scrollToTask(id);
-        Timer.after(500, function(){
-            App.Action.Chart.scrollToTaskOnlyHorizontal(id)
-        });
 
+        App.Action.Chart.onGanttRender();
         return true;
     };
     lbox.onLightboxCancel = function (){
@@ -431,13 +448,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         }
     };
 
-
-
     lbox.resourcesView = null;
 
     lbox.resourcesViewGenerate = function (){
         var fragment = document.createDocumentFragment();
         var groupsusers = DataStore.get('groupsusers');
+        var deprecatedUsers = ['collab_user'];
 
         for(var groupName in groupsusers){
 
@@ -463,6 +479,9 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             _inputLabel.innerHTML += ' <strong>' + Util.ucfirst(groupName) + '</strong>';
 
             for(var i=0; i<usersCount; i++){
+                // hide deprecated users
+                if (deprecatedUsers.indexOf(users[i]['uid']) !== -1) continue;
+
                 var _inlineUser = document.createElement('span'),
                     _inputUser = document.createElement('input'),
                     _inputUserLabel = document.createElement('label'),
@@ -819,13 +838,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             var that = this;
             var id = that.parentNode.getAttribute('data-taskid');
             var type = that.value;
-            var inpBuffer = $('input[type=text][name=buffer_'+id+']');
+            var inpBuffer = $('input[type=text][name=buffer_' + id + ']');
 
 
             if(that === lbox.predecessorLast ){
                 lbox.predecessorLast = null;
                 //console.log('that >>>>>>> ', that);
-
                 that.checked = false;
 
                 //lbox.deleteLinksWithSource(id);
@@ -834,13 +852,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
             }else{
                 if(lbox.predecessorLast){
                     var pid = lbox.predecessorLast.dataTaskid;
-
                     var pidInpBuffer = $('input[type=text][name=buffer_'+pid+']');
                     pidInpBuffer.val('');
 
                     if( id !== pid ) {
                         lbox.deleteLink(pid, lbox.task.id);
-                    }else if( id === pid ){
+                    } else if ( id === pid ) {
                         lbox.deleteLink(pid, lbox.task.id);
                     }
                 }

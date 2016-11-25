@@ -40,12 +40,13 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
         // Update states
         App.Action.Chart.addStates(Util.objClone(tasks));
 
+        //console.log('Before saveAll', dataSend);
         if(api.saveAllReady){
             api.saveAllReady = false;
             api.request('saveall', function(response){
                 api.saveAllReady = true;
                 callback.call(this, response);
-                // console.log('saveAllReady', response);
+                //console.log('After saveAll', response);
             }, dataSend);
         }
 
