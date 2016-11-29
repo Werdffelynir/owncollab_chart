@@ -235,12 +235,19 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             }},
 
             {name:"end_date", label: App.t('End'), align: "center", width: columnWidth.end, template: function(item) {
+                if (item.type === gantt.config.types.milestone) {
+                    return '';
+                }
                 return DateTime.dateToStr(item.end_date, "%d.%m.%Y %H:%i");
             }},
 
             {name:"duration", label: App.t('Duration'), align: "center", width: columnWidth.duration, template: function(item) {
-                var days = (Math.abs((item.start_date.getTime() - item.end_date.getTime())/(86400000)) ).toFixed(1);
-                return ((days%1==0) ? Math.round(days) : days) + ' d';
+                if (item.type === gantt.config.types.milestone) {
+                    return '';
+                } else {
+                    var days = (Math.abs((item.start_date.getTime() - item.end_date.getTime())/(86400000)) ).toFixed(1);
+                    return ((days%1==0) ? Math.round(days) : days) + ' d';
+                }
             }},
 
             {name:"users", label: App.t('Resources'), align: "center", width: columnWidth.resources, template: function(item) {
