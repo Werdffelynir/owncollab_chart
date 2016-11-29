@@ -254,8 +254,13 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         if(name == 'start_date') {
             if(lbox.task.end_date < value_date) {
                 var oldTaskDuration = App.Action.Chart.getState(id);
-                lbox.task.end_date = gantt.calculateEndDate(value_date, oldTaskDuration.duration);
-                $('input[name=lbox_end_date]').val(DateTime.dateToStr(lbox.task.end_date));
+                if (!oldTaskDuration) {
+                    lbox.task.end_date = gantt.calculateEndDate(value_date, lbox.task.duration);
+                    jQuery('input[name=lbox_end_date]').val(DateTime.dateToStr(lbox.task.end_date));
+                } else {
+                    lbox.task.end_date = gantt.calculateEndDate(value_date, oldTaskDuration.duration);
+                    jQuery('input[name=lbox_end_date]').val(DateTime.dateToStr(lbox.task.end_date));
+                }
             }
         }
         lbox.task[name] = DateTime.strToDate(date);
