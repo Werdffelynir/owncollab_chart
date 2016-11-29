@@ -78,14 +78,14 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
         // Clean view for types
         if(t.parent == 0){
-            $('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
+            jQuery('#generate-lbox-wrapper [name=lbox_predecessor]').remove();
         }
         if(t.type == 'project'){
-            $('#generate-lbox-wrapper .lbox_buffer_wrapp').remove();
+            jQuery('#generate-lbox-wrapper .lbox_buffer_wrapp').remove();
         }else if(t.type == 'milestone'){
             //$('#generate-lbox-wrapper input[name=lbox_users]').parent().remove();
-            $('#generate-lbox-wrapper input[name=lbox_progress]').parent().parent().remove();
-            $('#generate-lbox-wrapper input[name=lbox_end_date]').parent().parent().remove();
+            jQuery('#generate-lbox-wrapper input[name=lbox_progress]').parent().parent().hide();
+            jQuery('#generate-lbox-wrapper input[name=lbox_end_date]').parent().parent().hide();
         }
 
         lbox.field = (function(){
@@ -254,6 +254,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         if(name == 'start_date') {
             if(lbox.task.end_date < value_date) {
                 var oldTaskDuration = App.Action.Chart.getState(id);
+                // is new task
                 if (!oldTaskDuration) {
                     lbox.task.end_date = gantt.calculateEndDate(value_date, lbox.task.duration);
                     jQuery('input[name=lbox_end_date]').val(DateTime.dateToStr(lbox.task.end_date));
@@ -270,10 +271,17 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         if(!lbox.task || !lbox.field) return;
         var target = event.target;
 
+        //console.log(target);
+
         if(target.checked == true){
             lbox.task.type = gantt.config.types.milestone;
+            jQuery('#generate-lbox-wrapper input[name=lbox_progress]').parent().parent().hide();
+            jQuery('#generate-lbox-wrapper input[name=lbox_end_date]').parent().parent().hide();
+
         } else{
             lbox.task.type = gantt.config.types.task;
+            jQuery('#generate-lbox-wrapper input[name=lbox_progress]').parent().parent().show();
+            jQuery('#generate-lbox-wrapper input[name=lbox_end_date]').parent().parent().show();
 
             // date fix for task
             lbox.task.end_date = DateTime.addDays(7, lbox.task.start_date);
