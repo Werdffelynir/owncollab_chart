@@ -310,11 +310,11 @@ class ApiController extends Controller
 
             $this->connect->db->commit();
 
-            if((int) $this->connect->db->errorCode() == 0) {
-                $calEncodeData = 'key=jasj765Uyt87ouIIfars&app=owncollab_chart&tz='.$timezone;
+            if ((int)$this->connect->db->errorCode() == 0) {
+                $calEncodeData = 'key=jasj765Uyt87ouIIfars&app=owncollab_chart&tz=' . $timezone;
                 $calUrl = \OC::$server->getURLGenerator()->getAbsoluteURL('index.php/apps/owncollab_calendar/updates');
                 ob_start();
-                system('curl -k --request POST "'.$calUrl.'" --data "'.$calEncodeData.'"');
+                system('curl -k --request POST "' . $calUrl . '" --data "' . $calEncodeData . '"');
                 ob_clean();
             }
 
@@ -324,16 +324,15 @@ class ApiController extends Controller
     }
 
 
-
-
-    public function invite($data) {
+    public function invite($data)
+    {
 
         $params = [
             //'data'     => $data,
-            'error'     => null,
-            'errorinfo'     => '',
+            'error' => null,
+            'errorinfo' => '',
             //'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
-            'lastlinkid'    => null
+            'lastlinkid' => null
         ];
 
         if ($this->isAdmin && isset($data['email_to'])) {
@@ -341,11 +340,11 @@ class ApiController extends Controller
             $email_to = trim($data['email_to']);
             $email_from = 'no-replay@' . Helper::getHost();
 
-            if(Helper::validEmailAddress($email_to)) {
+            if (Helper::validEmailAddress($email_to)) {
 
                 $result = $this->sendMail($email_to, $email_from);
 
-                if($result !== true){
+                if ($result !== true) {
                     $params['error'] = true;
                     $params['errorinfo'] = $result;
                 }
@@ -364,28 +363,29 @@ class ApiController extends Controller
      * @return bool|string
      * @throws \OCA\Owncollab_Chart\PHPMailer\phpmailerException
      */
-    private function sendMail( $mail_to, $mail_from = null) {
+    private function sendMail($mail_to, $mail_from = null)
+    {
 
         $project = $this->connect->project()->get();
 
-        if($project['is_share'] != 1 || empty($project['share_link'])) {
+        if ($project['is_share'] != 1 || empty($project['share_link'])) {
             return false;
         }
 
         $mail_from = ($mail_from === null) ? 'no-replay@' . Helper::getHost() : $mail_from;
         $nameFrom = 'OwnCollab Project';
         $subject = 'OwnCollab Project Invite';
-        $link = Helper::getProtocol() .'://'. Helper::getHost() .'/index.php/s/'. $project['share_link'];
+        $link = Helper::getProtocol() . '://' . Helper::getHost() . '/index.php/s/' . $project['share_link'];
         $nameTo = 'User';
 
-        if(Helper::validEmailAddress($mail_to) && Helper::validEmailAddress($mail_from)) {
+        if (Helper::validEmailAddress($mail_to) && Helper::validEmailAddress($mail_from)) {
 
             $mail = new PHPMailer();
             $mail->setFrom($mail_from, $nameFrom);
             $mail->addAddress($mail_to, $nameTo);
 
             $mail->Subject = $subject;
-            $mail->Body    = Helper::renderPartial($this->appName, 'mailinvite', [
+            $mail->Body = Helper::renderPartial($this->appName, 'mailinvite', [
                 'p_name' => $project['name'],
                 'u_name' => $nameTo,
                 's_link' => $link,
@@ -406,26 +406,27 @@ class ApiController extends Controller
     }
 
 
-    private function getsourcepdf( array $data ) {
+    private function getsourcepdf(array $data)
+    {
 
         ini_set('memory_limit', '1024M');
 
-        if(!is_dir(dirname(__DIR__).'/tmp'))
-            mkdir(dirname(__DIR__).'/tmp');
-        chmod(dirname(__DIR__).'/tmp',0777);
+        if (!is_dir(dirname(__DIR__) . '/tmp'))
+            mkdir(dirname(__DIR__) . '/tmp');
+        chmod(dirname(__DIR__) . '/tmp', 0777);
 
         $params = [
             //'data'     => $data,
-            'error'     => null,
-            'errorinfo'     => '',
+            'error' => null,
+            'errorinfo' => '',
             //'requesttoken'  => (!\OC_Util::isCallRegistered()) ? '' : \OC_Util::callRegister(),
         ];
         $tmpFileName = 'gantt_export_' . Helper::randomString() . '.pdf';
-        $tmpFilePath = \OC::$SERVERROOT.\OC_App::getAppWebPath('owncollab_chart').'/tmp/' . $tmpFileName;
-        $encodeData = 'data='.urlencode($data['data']).'&type=pdf';
+        $tmpFilePath = \OC::$SERVERROOT . \OC_App::getAppWebPath('owncollab_chart') . '/tmp/' . $tmpFileName;
+        $encodeData = 'data=' . urlencode($data['data']) . '&type=pdf';
 
         ob_start();
-        system('curl --request POST "https://export.dhtmlx.com/gantt" --data "'.$encodeData.'"');
+        system('curl --request POST "https://export.dhtmlx.com/gantt" --data "' . $encodeData . '"');
         $result = ob_get_clean();
 
         //$params['$encodeData'] = $encodeData;
@@ -437,22 +438,21 @@ class ApiController extends Controller
 
         $print_notes = isset($data['pagenotes']) ? $data['pagenotes'] : false;
 
-        if($result) {
+        if ($result) {
 
-            if($is_save = file_put_contents($tmpFilePath, $result)) {
+            if ($is_save = file_put_contents($tmpFilePath, $result)) {
                 $downloadPath = $this->explodePDF($tmpFilePath, $print_portrait, $print_paper_size, $print_notes);
-                if($downloadPath)
+                if ($downloadPath)
                     $params['download'] = $downloadPath;
                 else
                     $params['errorinfo'] = 'Error: download path exist';
             } else
-                $params['errorinfo'] = 'Saved PDF file fail. Temp path: '.$tmpFilePath;
-        }
-        else {
+                $params['errorinfo'] = 'Saved PDF file fail. Temp path: ' . $tmpFilePath;
+        } else {
             $params['errorinfo'] = 'Request to export.dhtmlx.com is failed. Or response is empty';
         }
 
-        if(is_array($params))
+        if (is_array($params))
             return new DataResponse($params);
     }
 
@@ -464,20 +464,23 @@ class ApiController extends Controller
      * @param $labels
      * @return bool|string
      */
-    public function explodePDF($path, $print_portrait, $print_paper_size, $labels){
+    public function explodePDF($path, $print_portrait, $print_paper_size, $labels)
+    {
 
         ini_set('memory_limit', '1024M');
 
-        if(!is_file($path)) return false;
+        if (!is_file($path)) return false;
 
-        $isPortrait =  $print_portrait;
-        $paperSize = in_array($print_paper_size,['A2','A3','A4','A5']) ? $print_paper_size : 'A4';
+        $isPortrait = $print_portrait;
+        $paperSize = in_array($print_paper_size, ['A2', 'A3', 'A4', 'A5']) ? $print_paper_size : 'A4';
 
         $pdfInfo = $this->pdfInfo($path);
 
-        if(!$pdfInfo) return false;
+        if (!$pdfInfo) return false;
 
-        $pdfSize = array_map(function($item){return trim((int)$item);},explode('x', $pdfInfo['Page size']));
+        $pdfSize = array_map(function ($item) {
+            return trim((int)$item);
+        }, explode('x', $pdfInfo['Page size']));
 
         $pdfSize['w'] = $pdfSize[0] * 0.352778;
         $pdfSize['h'] = $pdfSize[1] * 0.352778;
@@ -487,19 +490,29 @@ class ApiController extends Controller
             'A4' => ['w' => 210, 'h' => 297], 'A5' => ['w' => 148, 'h' => 210],
         ];
 
-        include(dirname(__DIR__)."/lib/mpdf/mpdf.php");
+        include(dirname(__DIR__) . "/lib/mpdf/mpdf.php");
 
-        $mgl=10; $mgr=10; $mgt=20 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
+        $mgl = 10;
+        $mgr = 10;
+        $mgt = 20 + 10;
+        $mgb = 5 + 10;
+        $mgh = 9;
+        $mgf = 9;
         $offset['w'] = 20;
         $offset['h'] = 45;
 
         if ($isPortrait) {
-            $mgl=20; $mgr=10; $mgt=5 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
+            $mgl = 20;
+            $mgr = 10;
+            $mgt = 5 + 10;
+            $mgb = 5 + 10;
+            $mgh = 9;
+            $mgf = 9;
             $offset['w'] = 30;
             $offset['h'] = 30;
         }
 
-        $mpdf = new \mPDF('c', $paperSize . ($isPortrait ? '-P':'-L' )/*, 0, '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf*/);
+        $mpdf = new \mPDF('c', $paperSize . ($isPortrait ? '' : '-L')/*, 0, '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf*/);
         $mpdf->SetImportUse();
         $mpdf->SetDisplayMode('fullpage');
         $mpdf->SetCompression(true);
@@ -507,10 +520,10 @@ class ApiController extends Controller
         $mpdf->mirrorMargins = true;
 
         $source = $mpdf->SetSourceFile($path);
-        $page_w = ($isPortrait) ? $paperSizes[$paperSize]['w'] : $paperSizes[$paperSize]['h'] ;
-        $page_h = ($isPortrait) ? $paperSizes[$paperSize]['h'] : $paperSizes[$paperSize]['w'] ;
-        $iter_w = ceil($pdfSize['w']/($page_w - $offset['w']));
-        $iter_h = ceil($pdfSize['h']/($page_h - $offset['h']));
+        $page_w = ($isPortrait) ? $paperSizes[$paperSize]['w'] : $paperSizes[$paperSize]['h'];
+        $page_h = ($isPortrait) ? $paperSizes[$paperSize]['h'] : $paperSizes[$paperSize]['w'];
+        $iter_w = ceil($pdfSize['w'] / ($page_w - $offset['w']));
+        $iter_h = ceil($pdfSize['h'] / ($page_h - $offset['h']));
         $crop_x = 0;
         $crop_y = 0;
 
@@ -523,62 +536,63 @@ class ApiController extends Controller
 
         $header = '
             <table width="100%" style="vertical-align: bottom; font-size: 12pt; font-weight: bold"><tr>
-            <td width="33%">'. $head_left .'</td>
-            <td width="33%" align="center">'.$head_center.'</td>
-            <td width="33%" style="text-align: right;">'.$head_right.'</td>
+            <td width="33%">' . $head_left . '</td>
+            <td width="33%" align="center">' . $head_center . '</td>
+            <td width="33%" style="text-align: right;">' . $head_right . '</td>
             </tr></table>
             ';
 
         $footer = '
             <table width="100%" style="vertical-align: bottom; font-size: 12pt; font-weight: bold"><tr>
-            <td width="33%">'.$footer_left.'</td>
-            <td width="33%" align="center">'.$footer_center.'</td>
-            <td width="33%" style="text-align: right;">'.$footer_right.'</td>
+            <td width="33%">' . $footer_left . '</td>
+            <td width="33%" align="center">' . $footer_center . '</td>
+            <td width="33%" style="text-align: right;">' . $footer_right . '</td>
             </tr></table>
             ';
 
         $mpdf->SetHTMLHeader($header);
-        $mpdf->SetHTMLHeader($header,'E');
+        $mpdf->SetHTMLHeader($header, 'E');
         $mpdf->SetHTMLFooter($footer);
-        $mpdf->SetHTMLFooter($footer,'E');
+        $mpdf->SetHTMLFooter($footer, 'E');
 
+        for ($j = 0; $j < $iter_h; $j++) {
+            $crop_x = 0;
+            for ($i = 0; $i < $iter_w; $i++) {
+                if ($i > 0 || $j > 0)
+                    $mpdf->AddPage(); // '', '', '', '', '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf
 
-        for($i = 0; $i < $iter_w; $i++){
-            if($i > 0)
-                $mpdf->AddPage(); // '', '', '', '', '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf
-
-            $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w - ($mgl + $mgr), $page_h - ($mgt + $mgb) );
-            $mpdf->UseTemplate($tpl, $mgl, $mgt);
-
-            if($iter_h > 2) {
-                $mpdf->AddPage();
-                $tpl = $mpdf->ImportPage( $source, $crop_x, $crop_y, $page_w - ($mgl + $mgr), $page_h - ($mgt + $mgb) );
+                $tpl = $mpdf->ImportPage($source, $crop_x, $crop_y, $page_w - ($mgl + $mgr), $page_h - ($mgt + $mgb));
                 $mpdf->UseTemplate($tpl, $mgl, $mgt);
-            }
 
-            $crop_x += $page_w - ($mgl + $mgr);
+                $crop_x += $page_w - ($mgl + $mgr);
+//
+            }
+            $crop_y += $page_h - ($mgt + $mgb);
         }
 
-        $mpdf->Output($path.'gen.pdf', 'F');
+        $mpdf->Output($path . 'gen.pdf', 'F');
 
-        return $path.'gen.pdf';
+        return $path . 'gen.pdf';
     }
 
-    private function pdfInfo($path){
+    private function pdfInfo($path)
+    {
         ob_start();
         system('pdfinfo ' . $path);
         $infoParts = explode("\n", ob_get_clean());
         $info = [];
-        foreach($infoParts as $part){
-            if(strpos($part,':') !== false) {
+        foreach ($infoParts as $part) {
+            if (strpos($part, ':') !== false) {
                 $parts = explode(":", $part);
-                if(count($parts) == 2)
+                if (count($parts) == 2)
                     $info[trim($parts[0])] = trim($parts[1]);
             }
         }
         return $info;
     }
 
-    private function download_pdf( array $data ) { }
+    private function download_pdf(array $data)
+    {
+    }
 
 }
