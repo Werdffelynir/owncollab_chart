@@ -479,8 +479,8 @@ class ApiController extends Controller
 
         $pdfSize = array_map(function($item){return trim((int)$item);},explode('x', $pdfInfo['Page size']));
 
-        $pdfSize['w'] = $pdfSize[0] * 0.75;
-        $pdfSize['h'] = $pdfSize[1] * 0.75;
+        $pdfSize['w'] = $pdfSize[0] * 0.352778;
+        $pdfSize['h'] = $pdfSize[1] * 0.352778;
 
         $paperSizes = [
             'A2' => ['w' => 420, 'h' => 594], 'A3' => ['w' => 297, 'h' => 420],
@@ -490,9 +490,13 @@ class ApiController extends Controller
         include(dirname(__DIR__)."/lib/mpdf/mpdf.php");
 
         $mgl=10; $mgr=10; $mgt=20 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
+        $offset['w'] = 20;
+        $offset['h'] = 45;
 
         if ($isPortrait) {
             $mgl=20; $mgr=10; $mgt=5 + 10; $mgb=5 + 10; $mgh=9; $mgf=9;
+            $offset['w'] = 30;
+            $offset['h'] = 30;
         }
 
         $mpdf = new \mPDF('c', $paperSize . ($isPortrait ? '-P':'-L' )/*, 0, '', $mgl, $mgr, $mgt, $mgb, $mgh, $mgf*/);
