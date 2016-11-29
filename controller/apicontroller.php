@@ -509,8 +509,8 @@ class ApiController extends Controller
         $source = $mpdf->SetSourceFile($path);
         $page_w = ($isPortrait) ? $paperSizes[$paperSize]['w'] : $paperSizes[$paperSize]['h'] ;
         $page_h = ($isPortrait) ? $paperSizes[$paperSize]['h'] : $paperSizes[$paperSize]['w'] ;
-        $iter_w = ceil(($pdfSize['w']/$page_w) / 2);
-        $iter_h = ceil(($pdfSize['h']/$page_h) / 1);
+        $iter_w = ceil($pdfSize['w']/$page_w);
+        $iter_h = ceil($pdfSize['h']/$page_h);
         $crop_x = 0;
         $crop_y = 0;
 
