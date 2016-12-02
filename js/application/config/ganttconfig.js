@@ -145,6 +145,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
         //Visibly task text
         gantt.templates.task_text = function(start, end, task){
+            return "";
+        };
+        gantt.templates.rightside_text = function(start, end, task){
             //$('div.avatardiv', $tr).avatar(user.name, 32);
 
             if(typeof App.Action.Project.dataProject === 'object' &&
@@ -152,7 +155,6 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
                 Timer.after(500, function(t){
                     if(typeof t !== 'object' || typeof t.users !== 'string') return;
-
                     var firstUser = false;
                     try {
                         var resources = JSON.parse(t.users);
@@ -160,15 +162,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
                     } catch (e) {}
                     if (firstUser)
                         App.Action.Chart.colorByUid(firstUser, gantt.getTaskNode(t.id));
-                        //console.log(firstUser);
-                    /*var firstUser = t.users.split(',')[0].trim();
-                    if(firstUser.length > 2)
-                        App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));*/
-
                 }, [task]);
 
             }
-
 
             if(task.type == 'project')
                 return "";

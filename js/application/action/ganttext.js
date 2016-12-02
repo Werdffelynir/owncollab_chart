@@ -81,12 +81,24 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
      * @param show
      */
     ganttExt.showTaskNames = function (show){
+        //Visibly task text
         gantt.templates.task_text = function(start, end, task){
+            return "";
+        };
+        gantt.templates.rightside_text = function(start, end, task){
             if(show &&  task.type != 'project')
                 return task.text;
             else
                 return "";
         };
+
+        /*gantt.templates.task_text = function(start, end, task){
+            if(show &&  task.type != 'project')
+                return task.text;
+            else
+                return "";
+        };*/
+
     };
 
     /**
