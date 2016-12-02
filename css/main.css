@@ -362,6 +362,11 @@ b, strong { font-weight: 600 !important }
     width:100%;
     height: calc(100% - 58px);
 }
+
+.gantt-chart-public-size {
+    height: calc(100% - 80px) !important;
+}
+
 .gantt_grid_data, .gantt_ver_scroll {
     height: auto;
 }

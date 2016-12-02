@@ -4,11 +4,12 @@
  * @var array $_
  */
 $current_user = !empty($_['current_user']) ? !empty($_['current_user']) : null;
-if(!empty($_['current_user'])):
-?>
-<?php endif; ?>
+$is_admin = !empty($_['is_admin']) ? !empty($_['is_admin']) : false;
 
-    <div id="gantt-chart" data-id="<?php p($current_user)?>">
+$add_css_class = !$is_admin ? 'gantt-chart-public-size' : '';
+?>
+
+    <div id="gantt-chart" data-id="<?php p($current_user)?>" class="<?php p($add_css_class)?>">
         <div id="loading_page">loading ... </div>
     </div>
 

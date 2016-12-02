@@ -150,19 +150,18 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
                 App.urlGantt + 'ext/dhtmlxgantt_grouping.js',
                 App.urlGantt + 'ext/dhtmlxgantt_critical_path.js',
                 App.urlGantt + 'ext/dhtmlxgantt_auto_scheduling.js'
-
             ],
             initGantt, initGanttError).requireStart();
 
         // display elements
         App.node('topbar').style['display'] = 'block';
 
-
-
-        // init Event Key Manager
-        App.Action.Keyevent.init();
-        // Editable grit bar
-        App.Action.EditGrid.init();
+        if (App.isAdmin) {
+            // init Event Key Manager
+            App.Action.Keyevent.init();
+            // Editable grit bar
+            App.Action.EditGrid.init();
+        }
     }
 
     function initGanttError(){

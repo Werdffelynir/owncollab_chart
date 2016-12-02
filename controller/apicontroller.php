@@ -472,7 +472,7 @@ class ApiController extends Controller
         if (!is_file($path)) return false;
 
         $isPortrait = $print_portrait;
-        $paperSize = in_array($print_paper_size, ['A2', 'A3', 'A4', 'A5']) ? $print_paper_size : 'A4';
+        $paperSize = in_array($print_paper_size, ['A1', 'A2', 'A3', 'A4', 'A5']) ? $print_paper_size : 'A4';
 
         $pdfInfo = $this->pdfInfo($path);
 
@@ -486,8 +486,11 @@ class ApiController extends Controller
         $pdfSize['h'] = $pdfSize[1] * 0.352778;
 
         $paperSizes = [
-            'A2' => ['w' => 420, 'h' => 594], 'A3' => ['w' => 297, 'h' => 420],
-            'A4' => ['w' => 210, 'h' => 297], 'A5' => ['w' => 148, 'h' => 210],
+            'A1' => ['w' => 594, 'h' => 841],
+            'A2' => ['w' => 420, 'h' => 594],
+            'A3' => ['w' => 297, 'h' => 420],
+            'A4' => ['w' => 210, 'h' => 297],
+            'A5' => ['w' => 148, 'h' => 210],
         ];
 
         include(dirname(__DIR__) . "/lib/mpdf/mpdf.php");

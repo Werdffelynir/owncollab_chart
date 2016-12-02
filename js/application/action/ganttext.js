@@ -107,9 +107,17 @@ if(App.namespace) { App.namespace('Action.GanttExt', function(App) {
                 tasks.forEach(function(t){
                     if(typeof t !== 'object') return;
 
-                    var firstUser = t.users.split(',')[0].trim();
+                    var firstUser = false;
+                    try {
+                        var resources = JSON.parse(t.users);
+                        firstUser = resources.users[0];
+                    } catch (e) {}
+                    if (firstUser)
+                        App.Action.Chart.colorByUid(firstUser, gantt.getTaskNode(t.id));
+
+/*                    var firstUser = t.users.split(',')[0].trim();
                     if(firstUser.length > 2)
-                        App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));
+                        App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));*/
                 });
             }, [tasks]);
 

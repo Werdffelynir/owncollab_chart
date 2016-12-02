@@ -241,10 +241,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             // Enable function save gantt data
             chart.savedButtonInit();
 
-            // Enable zoom slider
-            chart.enableZoomSlider();
-
         }
+
+        // Enable zoom slider
+        chart.enableZoomSlider();
 
         gantt.parse({
             data: filteringTasks,

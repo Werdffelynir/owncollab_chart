@@ -140,6 +140,9 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
             //console.log(start, end)
         };
 
+
+
+
         //Visibly task text
         gantt.templates.task_text = function(start, end, task){
             //$('div.avatardiv', $tr).avatar(user.name, 32);
@@ -149,9 +152,19 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
                 Timer.after(500, function(t){
                     if(typeof t !== 'object' || typeof t.users !== 'string') return;
-                    var firstUser = t.users.split(',')[0].trim();
+
+                    var firstUser = false;
+                    try {
+                        var resources = JSON.parse(t.users);
+                        firstUser = resources.users[0];
+                    } catch (e) {}
+                    if (firstUser)
+                        App.Action.Chart.colorByUid(firstUser, gantt.getTaskNode(t.id));
+                        //console.log(firstUser);
+                    /*var firstUser = t.users.split(',')[0].trim();
                     if(firstUser.length > 2)
-                        App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));
+                        App.Action.Chart.colorByUid(t.users.split(',')[0].trim(), gantt.getTaskNode(t.id));*/
+
                 }, [task]);
 
             }

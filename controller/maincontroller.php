@@ -74,7 +74,10 @@ class MainController extends Controller {
 
         $this->checkedPriorityData();
 
-		return new TemplateResponse($this->appName, 'main', ['current_user' => $this->userId]);
+		return new TemplateResponse($this->appName, 'main', [
+		    'is_admin' => $this->isAdmin,
+		    'current_user' => $this->userId
+        ]);
 
 	}
 
