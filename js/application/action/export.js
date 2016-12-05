@@ -147,14 +147,18 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         // style for hide gantt.templates.task_text
         // and stylize gantt.templates.rightside_text
-        header += '<style>.gantt_task_content{color: rgba(0,0,0,0) !important;} .gantt_side_content.gantt_right {bottom: 0px !important; color: #1c2c42; font-weight: bold;}</style>';
+        header += '<style>' +
+            '.gantt_task_content{color: rgba(0,0,0,0) !important;} ' +
+            '.gantt_side_content.gantt_right {bottom: 0 !important; color: #1c2c42; background-color: rgba(255,255,255,0.5) !important;}' +
+            '</style>';
 
         var config = defaults((config || {}), {
-            name:"gantt.png",
-            data:gantt._serialize_all(),
-            config:gantt.config,
-            version:gantt.version,
-            header:header
+            name: "gantt.png",
+            locale: App.locale,
+            data: gantt._serialize_all(),
+            config: gantt.config,
+            version: gantt.version,
+            header: header
         });
 
         config['start'] = gantt.config.start_date   = exp.toPDF.config['start'];
@@ -163,6 +167,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         fix_columns(gantt, config.config.columns);
 
         var _tmpConfig = {
+            server_utc: gantt.config.server_utc,
             autofit: gantt.config.autofit,
             fit_tasks: gantt.config.fit_tasks,
             duration_unit: gantt.config.duration_unit,
@@ -175,20 +180,17 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         };
 
 
-        gantt.config.autofit = false;
-        gantt.config.fit_tasks = false;
-        gantt.config.columns.length = 6;
-        gantt.config.columns[2].width = 120;
-        gantt.config.columns[3].width = 120;
+        config.config.server_utc = false;
+        config.config.autofit = false;
+        config.config.fit_tasks = false;
+        config.config.columns.length = 6;
+        config.config.columns[2].width = 120;
+        config.config.columns[3].width = 120;
 
         // change visual for Dates
-        gantt.config.date_grid = gantt.config.task_date = "%d.%m.%Y %H:%i";
-        gantt.config.duration_unit = "day";
-        gantt.config.duration_step = 1;
-
-        //gantt.templates.task_text = gantt.templates.rightside_text = function(start, end, task){
-        //    return "";
-        //};
+        config.config.date_grid = gantt.config.task_date = "%d.%m.%Y %H:%i";
+        config.config.duration_unit = "day";
+        config.config.duration_step = 1;
 
         config.data.data.map(function (item) {
 
@@ -207,7 +209,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         });
 
         App.Action.Api.request('getsourcepdf', function(response) {
-            console.log('getsourcepdf response >>>', response);
+            //console.log('getsourcepdf response >>>', response);
             $('.export_loader').hide();
             if(typeof  response === 'object' && response.download) {
                 var file_uri = response.download.substr(response.download.indexOf('/apps/'));
@@ -220,17 +222,18 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         //gantt.exportToPDF();
 
         // Возврат изминений
-        gantt.config.autofit        = _tmpConfig.autofit;
-        gantt.config.fit_tasks      = _tmpConfig.fit_tasks;
-        gantt.config.duration_unit  = _tmpConfig.duration_unit;
-        gantt.config.duration_step  = _tmpConfig.duration_step;
-        gantt.config.columns[2].width = _tmpConfig.column2width;
-        gantt.config.columns[3].width = _tmpConfig.column3width;
+        gantt.config.server_utc         = _tmpConfig.server_utc;
+        gantt.config.autofit            = _tmpConfig.autofit;
+        gantt.config.fit_tasks          = _tmpConfig.fit_tasks;
+        gantt.config.duration_unit      = _tmpConfig.duration_unit;
+        gantt.config.duration_step      = _tmpConfig.duration_step;
+        gantt.config.columns[2].width   = _tmpConfig.column2width;
+        gantt.config.columns[3].width   = _tmpConfig.column3width;
         gantt.config.columns.push(_tmpConfig.column6);
         gantt.config.columns.push(_tmpConfig.column7);
         gantt.config.columns.push(_tmpConfig.column8);
-        gantt.config.start_date     = undefined;
-        gantt.config.end_date       = undefined;
+        gantt.config.start_date         = undefined;
+        gantt.config.end_date           = undefined;
 
     };
 

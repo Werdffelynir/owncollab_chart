@@ -384,8 +384,10 @@ b, strong { font-weight: 600 !important }
 }
 .gantt_side_content.gantt_right {
     bottom: 0px !important;
-    color: #1c2c42;
-    font-weight: bold;
+    color: #1c2c42 !important;;
+    background-color: rgba(255,255,255,0.5) !important;
+
+    /*font-weight: bold;*/
 }
 
 .gantt_modal_box{
