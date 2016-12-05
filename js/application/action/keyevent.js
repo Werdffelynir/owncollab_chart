@@ -147,6 +147,8 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             //console.log('startDate', startDate);
 
             $('input.dipicker_grid').datetimepicker({
+                currentText: App.t('Now'),
+                closeText: App.t('Done'),
                 minDate: App.Extension.DateTime.addDays(-365, startDate),
                 maxDate: App.Extension.DateTime.addDays(365, startDate),
                 timezone: '0000',

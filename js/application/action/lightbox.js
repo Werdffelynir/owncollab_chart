@@ -151,6 +151,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         jQuery('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             //showButtonPanel: false,
             //closeText: 'Close',
+            currentText: App.t('Now'),
+            closeText: App.t('Done'),
             minDate: DateTime.addDays(-365, startDate),
             maxDate: DateTime.addDays(365, startDate),
             //timezone: '0000',
@@ -171,6 +173,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         lbox.datetimepickerEnd = jQuery('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             //showButtonPanel: false,
             //closeText: 'Close',
+            currentText: App.t('Now'),
+            closeText: App.t('Done'),
             minDate: (function(){
                 var fsd = $('input[name=lbox_start_date]').val();
                 return DateTime.strToDate(fsd?fsd:startDate);

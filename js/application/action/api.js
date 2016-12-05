@@ -118,7 +118,7 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
                     .css('background', 'url("/apps/owncollab_chart/img/sent.png") no-repeat center center');
 
             } else {
-                Error.inline('Error Request on send share emails');
+                Error.inline(App.t('Error Request on send share emails'));
             }
         } , {
             emails: emails,

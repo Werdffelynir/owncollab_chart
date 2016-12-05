@@ -294,7 +294,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
         }
         catch(error){
             console.log(error);
-            Error.inline("Error assignment value fields, the project parameters. Error message: " + error.message);
+            Error.inline(App.t("Error assignment value fields, the project parameters. Error message: ") + error.message);
 
         }
 

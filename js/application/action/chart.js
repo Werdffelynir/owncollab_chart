@@ -198,7 +198,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         if(App.isPublic) {
             gantt.config.readonly = true;
-            Error.inline('Read-only', 'Access ')
+            Error.inline(App.t('Read-only'), App.t('Access '))
         }
 
 

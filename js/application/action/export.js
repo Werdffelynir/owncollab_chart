@@ -76,6 +76,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         exp.formExportToPDF.onsubmit = exp.onSubmitExportToPDF;
 
         $('input[name=pdf_start_date], input[name=pdf_end_date]', exp.formExportToPDF).datetimepicker({
+            currentText: App.t('Now'),
+            closeText: App.t('Done'),
             minDate: exp.projectTask.start_date,
             maxDate: exp.projectTask.end_date,
             controlType: 'select',

@@ -10,7 +10,8 @@ $add_css_class = !$is_admin ? 'gantt-chart-public-size' : '';
 ?>
 
     <div id="gantt-chart" data-id="<?php p($current_user)?>" class="<?php p($add_css_class)?>">
-        <div id="loading_page">loading ... </div>
+        <div id="loading_page"><?php p($l->t('loading'));?>... </div>
+
     </div>
 
     <div id="chart_gantt_zoom">

@@ -77,7 +77,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         if( typeof response !== 'object' || typeof response.project !== 'object' ||
             typeof response.tasks !== 'object' || typeof response.links !== 'object' ||
             typeof response.groupsusers !== 'object') {
-            Error.page('The necessary modules of application are not loaded!');
+            Error.page(App.t('The necessary modules of application are not loaded!'));
             return;
         }
 
@@ -85,7 +85,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         //console.log('onProjectLoaded >>> ', response);
 
         if(response.errorinfo.length > 2) {
-            Error.inline('Response error info [' + response.errorinfo + ']');
+            Error.inline(App.t('Response error info') + '[' + response.errorinfo + ']');
         }
 
         // check truth of response (only for owncloud version 8)
@@ -96,7 +96,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         // }
 
         if((!response.uid || App.uid !== response.uid) && !App.isPublic) {
-            Error.page('Security at risk. Suspicious response from the server.');
+            Error.page(App.t('Security at risk. Suspicious response from the server.'));
             return;
         }
 
@@ -165,7 +165,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
     }
 
     function initGanttError(){
-        Error.page('The necessary scripts of dhtmlxgantt are not loaded!');
+        Error.page(App.t('The necessary scripts of dhtmlxgantt are not loaded!'));
     }
     function initGantt(list){
         if(!gantt) {
