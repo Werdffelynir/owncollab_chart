@@ -53,7 +53,7 @@ class MainController extends Controller {
 		IRequest $request,
 		$userId,
 		$isAdmin,
-		\OCP\IL10N $l10n,
+		$l10n,
 		Connect $connect,
         IURLGenerator $urlGenerator
     ){

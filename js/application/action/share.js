@@ -27,6 +27,8 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
             }
         });
 
+        App.t()
+
         /*
         // autocomplete for email sends
         var usersEmails = function(){
