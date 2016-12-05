@@ -170,7 +170,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         task1 = task1.start_date;
         task2 = task2.start_date;
 
-        if (sort.icoSort.start.direction){
+        if (sort.icoSort.start.direction) {
             return task1 > task2 ? 1 : (task1 < task2 ? -1 : 0);
         } else {
             return task1 > task2 ? -1 : (task1 < task2 ? 1 : 0);
@@ -363,6 +363,9 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
             if (checked && sort.dynamic.resUsers.indexOf(name) === -1) {
                 sort.dynamic.resUsers.push(name);
+                //jQuery('input[name="'+name+'"]').checked(true);
+                jQuery('input[name="'+name+'"]').prop('checked', true);
+                //console.log();
             } else if (!checked && sort.dynamic.resUsers.indexOf(name) !== -1) {
                 sort.dynamic.resUsers = Util.rmItArr(name, sort.dynamic.resUsers);
             }
