@@ -65,6 +65,24 @@ class MainController extends Controller {
 		$this->urlGenerator = $urlGenerator;
 	}
 
+    /**
+     *
+     * @PublicPage
+     * @NoAdminRequired
+     * @NoCSRFRequired
+     *
+     * @param $share
+     * @return TemplateResponse
+     */
+    public function test($share){
+
+        var_dump($_REQUEST);
+        var_dump($_SERVER);
+
+        var_dump(getallheaders());
+
+        die;
+    }
 
 	/**
 	 * @NoAdminRequired

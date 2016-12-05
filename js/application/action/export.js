@@ -119,8 +119,10 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
     exp.onSubmitExportToPDF = function (event) {
 
-        $('.export_loader').show();
+        jQuery('.export_loader').show();
         event.preventDefault();
+
+        var utcNumber = parseInt(App.utc.slice(-2) == "00" ? App.utc.slice(0, -2) : App.utc.slice(0, -1));
 
         var pagenotes = {
             'head_left': $('input[name=pdf_head_left]').val(),
@@ -193,11 +195,15 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         config.config.duration_step = 1;
 
         config.data.data.map(function (item) {
-
             // change visual for Resources
             var usersObj = {groups:[],users:[]};
+
+            item = exp.changTaskUTC(item, utcNumber);
+
             if(typeof item.users === 'string' && item.users.length > 5) {
-                try {usersObj = JSON.parse(item.users);} catch (e) {} }
+                try {usersObj = JSON.parse(item.users);} catch (e) {}
+            }
+
             var groupsString = Util.cleanArr(usersObj.groups).join(', ');
             var usersString = Util.cleanArr(usersObj.users).join(', ');
             item.users = (!Util.isEmpty(groupsString) ? '<strong>' + groupsString + '</strong>, ' : '') + usersString;
@@ -207,6 +213,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
             item.duration = ((days%1==0) ? Math.round(days) : days) + ' d';
         });
+
+        //return ;
 
         App.Action.Api.request('getsourcepdf', function(response) {
             //console.log('getsourcepdf response >>>', response);
@@ -234,9 +242,17 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.columns.push(_tmpConfig.column8);
         gantt.config.start_date         = undefined;
         gantt.config.end_date           = undefined;
-
     };
 
+    exp.changTaskUTC = function (task, utcInt) {
+        var sd = App.Extension.DateTime.strToDate(task.start_date, "%d-%m-%Y %H:%i"),
+            ed = App.Extension.DateTime.strToDate(task.end_date, "%d-%m-%Y %H:%i");
+        sd.setTime(sd.getTime() + (utcInt*60*60*1000));
+        ed.setTime(ed.getTime() + (utcInt*60*60*1000));
+        task.start_date = App.Extension.DateTime.dateToStr(sd, "%d-%m-%Y %H:%i");
+        task.end_date = App.Extension.DateTime.dateToStr(ed, "%d-%m-%Y %H:%i");
+        return task;
+    };
 
     exp.toPNG = function () {
         var config = {};

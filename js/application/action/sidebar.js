@@ -355,6 +355,7 @@ if(App.namespace) { App.namespace('Action.Sidebar', function(App) {
         if(name === 'scale_type'){
 
             App.Config.GanttConfig.scale(value);
+
             Util.Storage('scale_type', value);
             gantt.render();
 
