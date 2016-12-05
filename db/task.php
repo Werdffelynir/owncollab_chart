@@ -130,21 +130,23 @@ class Task
                 $value = $data[$iRow][$field];
 
                 if(isset($data[$iRow][$field])) {
-
-                    if($field == 'id')                  $value = (int) $value;
-                    elseif($field == 'type')            $value = (string) $value;
-                    elseif($field == 'text')            $value = (string) $value;
-                    elseif($field == 'users')           $value = (string) $value;                                                   //try{$value = json_encode($value);}catch(\Exception $e){};
-                    elseif($field == 'start_date')      $value = empty($value) ? date("Y-m-d H:i:s", time()) : $value;              //$value = date("Y-m-d H:i:s", strtotime($value));
-                    elseif($field == 'end_date')        $value = empty($value) ? date("Y-m-d H:i:s", time() + 3600*24*7) : $value;  //$value = date("Y-m-d H:i:s", strtotime($value));
-                    elseif($field == 'duration')        $value = (int) (empty($value)?0:$value);
-                    elseif($field == 'order')           $value = (int) (empty($value)?0:$value);
-                    elseif($field == 'progress')        $value = (float) (empty($value)?0:$value);
-                    elseif($field == 'sortorder')       $value = (int) (empty($value)?0:$value);
-                    elseif($field == 'parent')          $value = (int) (empty($value)?1:$value);
-                    elseif($field == 'open')            $value = (int) (empty($value)?1:$value);
-                    elseif($field == 'buffers')         $value = (string) (empty($value)?'':$value);
-
+                    try{
+                        if($field == 'id')                  $value = (int) $value;
+                        elseif($field == 'type')            $value = (string) $value;
+                        elseif($field == 'text')            $value = (string) $value;
+                        elseif($field == 'users')           $value = (string) $value;
+                        //elseif($field == 'start_date')      $value = empty($value) ? date("Y-m-d H:i:s", time()) : $value;
+                        //elseif($field == 'end_date')        $value = empty($value) ? date("Y-m-d H:i:s", time() + 3600*24*7) : $value;
+                        elseif($field == 'start_date')      $value = empty($value) ? date("Y-m-d H:i:s", time()) : date("Y-m-d H:i:s", strtotime($value));
+                        elseif($field == 'end_date')        $value = empty($value) ? date("Y-m-d H:i:s", time() + 3600*24*7) : date("Y-m-d H:i:s", strtotime($value));
+                        elseif($field == 'duration')        $value = (int) (empty($value)?0:$value);
+                        elseif($field == 'order')           $value = (int) (empty($value)?0:$value);
+                        elseif($field == 'progress')        $value = (float) (empty($value)?0:$value);
+                        elseif($field == 'sortorder')       $value = (int) (empty($value)?0:$value);
+                        elseif($field == 'parent')          $value = (int) (empty($value)?1:$value);
+                        elseif($field == 'open')            $value = (int) (empty($value)?1:$value);
+                        elseif($field == 'buffers')         $value = (string) (empty($value)?'':$value);
+                    }catch(\Exception $e){};
                     $rowData[":{$field}_{$iRow}"] = $value;
                 }else{
                     $rowData[":{$field}_{$iRow}"] = null;

@@ -30,11 +30,14 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
      * @param error
      */
     keyevent.init = function(error) {
+
         Error = App.Action.Error;
+
         EventKeyManager.init();
         keyevent.bindSpace();
         keyevent.bindEnter();
         keyevent.bindEscape();
+
     };
 
 

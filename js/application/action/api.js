@@ -85,7 +85,8 @@ if(App.namespace) { App.namespace('Action.Api', function(App) {
             },
 
             error: function (error) {
-                console.error("API request error to the key: [" + key + "] Error message: ", error);
+                console.error("Error Request API to " + key + ". Error message: ", error.status, error.statusText);
+                console.error("Error ResponseText: ", error.responseText);
             },
 
             complete: function (jqXHR, status) {

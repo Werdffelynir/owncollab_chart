@@ -362,6 +362,11 @@ b, strong { font-weight: 600 !important }
     width:100%;
     height: calc(100% - 58px);
 }
+
+.gantt-chart-public-size {
+    height: calc(100% - 80px) !important;
+}
+
 .gantt_grid_data, .gantt_ver_scroll {
     height: auto;
 }
@@ -377,7 +382,11 @@ b, strong { font-weight: 600 !important }
 .gantt_row.task-parent {
     font-weight: bold;
 }
-
+.gantt_side_content.gantt_right {
+    bottom: 0px !important;
+    color: #1c2c42;
+    font-weight: bold;
+}
 
 .gantt_modal_box{
     border-radius: 0 !important;

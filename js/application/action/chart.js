@@ -241,10 +241,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             // Enable function save gantt data
             chart.savedButtonInit();
 
-            // Enable zoom slider
-            chart.enableZoomSlider();
-
         }
+
+        // Enable zoom slider
+        chart.enableZoomSlider();
 
         gantt.parse({
             data: filteringTasks,
@@ -771,7 +771,6 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 /*        ms = parseInt(ms) < 5000 ? 5000 : parseInt(ms);
         var ganttSaveLoadIco = App.node('ganttSaveLoadIco');
         var timer = new Timer(ms);
-
         timer.onprogress = function(){
             ganttSaveLoadIco.style.visibility = 'visible';
             App.Action.Api.saveAll(function(response){
