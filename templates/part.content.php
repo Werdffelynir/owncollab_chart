@@ -9,7 +9,7 @@ if(!empty($_['current_user'])):
 <?php endif; ?>
 
     <div id="gantt-chart" data-id="<?php p($current_user)?>">
-        <div id="loading_page">loading ... </div>
+        <div id="loading_page"><?php p($l->t('loading'));?> ... </div>
     </div>
 
     <div id="chart_gantt_zoom">

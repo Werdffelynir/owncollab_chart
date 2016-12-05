@@ -71,6 +71,10 @@ OC.L10N.register(
             "Resources": "Ressourcen",
             "Duration": "Dauer",
             "Link type": "Verknüpfungstyp",
-            "Submit": "Senden"
+            "Submit": "Senden",
+            "loading": "Laden",
+            "Portrait": "Porträt",
+            "Album": "Album",
+            "The necessary modules of application are not loaded!": "Die benötigten Module sind nicht geladen!"
     },
     "nplurals=2; plural=(n != 1);");

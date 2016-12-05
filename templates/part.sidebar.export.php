@@ -44,15 +44,15 @@ $appName = 'owncollab_chart';
     <form id="formExportToPDF">
         <div class="sidebar_line"><div class="sidebar_line_arrow"></div></div>
 
-        <p>Define period to export</p>
+        <p><?php p($l->t('Define period to export'));?></p>
 
         <div class="tbl">
-            <div class="tbl_cell"><span>Start</span> <input name="pdf_start_date" type="text" class="."></div>
-            <div class="tbl_cell txt_right"><span>End</span> <input name="pdf_end_date" type="text"></div>
+            <div class="tbl_cell"><span><?php p($l->t('Start'))?></span> <input name="pdf_start_date" type="text" class="."></div>
+            <div class="tbl_cell txt_right"><span><?php p($l->t('End'))?></span> <input name="pdf_end_date" type="text"></div>
         </div>
 <!---->
         <div class="tbl">
-            <div class="tbl_cell width20">Paper size</div>
+            <div class="tbl_cell width20"><?php p($l->t('Paper size'));?></div>
             <div class="tbl_cell">
                 <select name="pdf_paper_size">
                     <option value="A2">A2 - 59.4 x 42 cm</option>
@@ -64,47 +64,47 @@ $appName = 'owncollab_chart';
         </div>
 
         <div class="tbl">
-            <div class="tbl_cell width20">Orientation</div>
+            <div class="tbl_cell width20"><?php p($l->t('Orientation'));?></div>
             <div class="tbl_cell">
                 <select name="pdf_paper_orientation" id="">
-                    <option value="P">Portrait</option>
-                    <option value="L">Album</option>
+                    <option value="P"><?php p($l->t('Portrait'));?></option>
+                    <option value="L"><?php p($l->t('Album'));?></option>
                 </select>
             </div>
         </div>
 
 
-            <p>Define Header</p>
+            <p><?php p($l->t('Define Header'));?></p>
 
             <div class="tbl">
-                <div class="tbl_cell width20">Left</div>
+                <div class="tbl_cell width20"><?php p($l->t('Left'));?></div>
                 <div class="tbl_cell"><input name="pdf_head_left" type="text"></div>
             </div>
 
             <div class="tbl">
-                <div class="tbl_cell width20">Center</div>
+                <div class="tbl_cell width20"><?php p($l->t('Center'));?></div>
                 <div class="tbl_cell"><input name="pdf_head_center"  type="text"></div>
             </div>
 
             <div class="tbl">
-                <div class="tbl_cell width20">Right</div>
+                <div class="tbl_cell width20"><?php p($l->t('Right'));?></div>
                 <div class="tbl_cell"><input name="pdf_head_right"  type="text"></div>
             </div>
 
-            <p>Define Footer</p>
+            <p><?php p($l->t('Define Footer'));?></p>
 
             <div class="tbl">
-                <div class="tbl_cell width20">Left</div>
+                <div class="tbl_cell width20"><?php p($l->t('Left'));?></div>
                 <div class="tbl_cell"><input name="pdf_footer_left" type="text"></div>
             </div>
 
             <div class="tbl">
-                <div class="tbl_cell width20">Center</div>
+                <div class="tbl_cell width20"><?php p($l->t('Center'));?></div>
                 <div class="tbl_cell"><input name="pdf_footer_center" type="text"></div>
             </div>
 
             <div class="tbl">
-                <div class="tbl_cell width20">Right</div>
+                <div class="tbl_cell width20"><?php p($l->t('Right'));?></div>
                 <div class="tbl_cell"><input name="pdf_footer_right" type="text"></div>
             </div>
         <!--
@@ -114,7 +114,7 @@ $appName = 'owncollab_chart';
                    </div>
                -->
         <div>
-            <input type="submit" value="Export"> <div class="export_loader loader_min" style="display: none"></div>
+            <input type="submit" value="<?php p($l->t('Export'));?>"> <div class="export_loader loader_min" style="display: none"></div>
         </div>
 
     </form>
