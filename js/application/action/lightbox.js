@@ -601,12 +601,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                     var _users = groupsusers[name].map(function(e){return e['uid']});
                     if(checked) {
                         // todo: отк/вкл чик юзеров
-                        jQuery('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
+                        //jQuery('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
                         //fieldUsers.value = lbox.addResource(_users);
                         App.Action.Chart.addJSONResource(lbox.task['id'], 'groups', name);
                     } else {
                         // todo: отк/вкл чик юзеров
-                        jQuery('input[data-gid='+name+'][data-type=user]', popup).prop('checked', false);
+                        //jQuery('input[data-gid='+name+'][data-type=user]', popup).prop('checked', false);
                         //fieldUsers.value = lbox.removeResource(_users);
                         App.Action.Chart.removeJSONResource(lbox.task['id'], 'groups', name);
                     }

@@ -381,7 +381,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             }
 
             // todo: отк/вкл чик юзеров
-            sort.inputCheckedAll(this.parentNode.nextSibling, checked);
+            //sort.inputCheckedAll(this.parentNode.nextSibling, checked);
 
             /*
             if(checked && sort.dynamic.resGroup.indexOf(name) === -1) {
