@@ -364,7 +364,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             if (checked && sort.dynamic.resUsers.indexOf(name) === -1) {
                 sort.dynamic.resUsers.push(name);
                 //jQuery('input[name="'+name+'"]').checked(true);
-                jQuery('input[name="'+name+'"]').prop('checked', true);
+                jQuery('input[name="'+name+'"][data-type="user"]').prop('checked', true);
                 //console.log();
             } else if (!checked && sort.dynamic.resUsers.indexOf(name) !== -1) {
                 sort.dynamic.resUsers = Util.rmItArr(name, sort.dynamic.resUsers);
