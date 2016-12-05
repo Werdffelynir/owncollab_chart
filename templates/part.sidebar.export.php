@@ -55,6 +55,7 @@ $appName = 'owncollab_chart';
             <div class="tbl_cell width20"><?php p($l->t('Paper size'));?></div>
             <div class="tbl_cell">
                 <select name="pdf_paper_size">
+                    <option value="A1">A1 - 84.1 x 59.4 cm</option>
                     <option value="A2">A2 - 59.4 x 42 cm</option>
                     <option value="A3">A3 - 42 x 29.7 cm</option>
                     <option value="A4" selected>A4 - 29.7 x 21 cm</option>

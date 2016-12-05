@@ -53,7 +53,7 @@ class MainController extends Controller {
 		IRequest $request,
 		$userId,
 		$isAdmin,
-		\OCP\IL10N $l10n,
+		$l10n,
 		Connect $connect,
         IURLGenerator $urlGenerator
     ){
@@ -74,7 +74,10 @@ class MainController extends Controller {
 
         $this->checkedPriorityData();
 
-		return new TemplateResponse($this->appName, 'main', ['current_user' => $this->userId]);
+		return new TemplateResponse($this->appName, 'main', [
+		    'is_admin' => $this->isAdmin,
+		    'current_user' => $this->userId
+        ]);
 
 	}
 

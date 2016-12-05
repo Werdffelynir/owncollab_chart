@@ -74,7 +74,17 @@
     "loading": "loading",
     "Portrait": "Portrait",
     "Album": "Album",
-    "The necessary modules of application are not loaded!": "Die benötigten Module sind nicht geladen!"
+    "The necessary modules of application are not loaded!": "The necessary modules of application are not loaded!",
+    "Security at risk. Suspicious response from the server.": "Security at risk. Suspicious response from the server",
+    "The necessary scripts of dhtmlxgantt are not loaded!": "The necessary scripts of dhtmlxgantt are not loaded!",
+    "Error Request on send share emails": "Error Request on send share emails",
+    "Read-only": "Read-only",
+    "Access ": "Access ",
+    "Error assignment value fields, the project parameters. Error message: ": "Error assignment value fields, the project parameters. Error message: ",
+    "Response error info": "Response error info",
+    "Now": "Now",
+    "Done": "Done",
+    "Application throw error": "Application throw error"
 
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

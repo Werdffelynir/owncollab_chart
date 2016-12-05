@@ -13,6 +13,8 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
 
         // enabled jquery plugin datetimepicker for all elements with class name 'datetimepic'
          $('.datetimepic').datetimepicker({
+            currentText: App.t('Now'),
+            closeText: App.t('Done'),
             minDate: new Date(),
             controlType: 'slider',
             oneLine: true,
@@ -26,6 +28,8 @@ if(App.namespace) { App.namespace('Action.Share', function(App) {
                 }
             }
         });
+
+        //App.t()
 
         /*
         // autocomplete for email sends

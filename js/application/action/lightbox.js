@@ -151,6 +151,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         jQuery('input[name=lbox_start_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             //showButtonPanel: false,
             //closeText: 'Close',
+            currentText: App.t('Now'),
+            closeText: App.t('Done'),
             minDate: DateTime.addDays(-365, startDate),
             maxDate: DateTime.addDays(365, startDate),
             //timezone: '0000',
@@ -171,6 +173,8 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
         lbox.datetimepickerEnd = jQuery('input[name=lbox_end_date]', document.querySelector('#generate-lbox-wrapper')).datetimepicker({
             //showButtonPanel: false,
             //closeText: 'Close',
+            currentText: App.t('Now'),
+            closeText: App.t('Done'),
             minDate: (function(){
                 var fsd = $('input[name=lbox_start_date]').val();
                 return DateTime.strToDate(fsd?fsd:startDate);
@@ -587,12 +591,12 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
 
                 if(type === 'user'){
                     if(checked){
-                        $('input[name='+name+'][data-type=user]', popup).prop('checked', true);
+                        jQuery('input[name='+name+'][data-type=user]', popup).prop('checked', true);
                         //fieldUsers.value = lbox.addResource(name);
                         App.Action.Chart.addJSONResource(lbox.task['id'], 'users', name);
                     }
                     else {
-                        $('input[name='+name+'][data-type=user]', popup).prop('checked', false);
+                        jQuery('input[name='+name+'][data-type=user]', popup).prop('checked', false);
                         //fieldUsers.value = lbox.removeResource(name);
                         App.Action.Chart.removeJSONResource(lbox.task['id'], 'users', name);
                     }
@@ -600,16 +604,21 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
                 else if(type === 'group') {
                     var _users = groupsusers[name].map(function(e){return e['uid']});
                     if(checked) {
-                        $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
+                        // todo: отк/вкл чик юзеров
+                        jQuery('input[data-gid='+name+'][data-type=user]', popup).prop('checked', true);
                         //fieldUsers.value = lbox.addResource(_users);
                         App.Action.Chart.addJSONResource(lbox.task['id'], 'groups', name);
                     } else {
-                        $('input[data-gid='+name+'][data-type=user]', popup).prop('checked', false);
+                        // todo: отк/вкл чик юзеров
+                        jQuery('input[data-gid='+name+'][data-type=user]', popup).prop('checked', false);
                         //fieldUsers.value = lbox.removeResource(_users);
                         App.Action.Chart.removeJSONResource(lbox.task['id'], 'groups', name);
                     }
                 }
             }
+
+            // Запрет на авто обновления
+            App.Action.Chart.readySave = false;
 
             var input = document.querySelector('#generate-lbox-wrapper input[name=lbox_users]');
             input.value = App.Action.Lightbox.usersJSONToString(lbox.task);

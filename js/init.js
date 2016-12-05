@@ -92,8 +92,12 @@ function initDependence(list){
      * @namespace App.t
      */
     App.t = function(name, params) {
-        params = typeof params === 'object' ? params : {};
-        return t('owncollab_chart', name, params)
+        if (name) {
+            params = typeof params === 'object' ? params : {};
+            return t('owncollab_chart', name, params)
+        } else
+            console.error('translate var name is FALSE');
+        return 'Error translate';
     };
 
     App.Controller.Page.construct();

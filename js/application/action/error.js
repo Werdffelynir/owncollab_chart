@@ -49,7 +49,7 @@ if(App.namespace) { App.namespace('Action.Error', function(App) {
      */
     error.inline = function (text, title){
 
-        title = title || 'Application throw error: ';
+        title = title || App.t('Application throw error')+': ';
 
         if(text){
             $(error.lineElement)

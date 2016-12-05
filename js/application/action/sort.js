@@ -261,6 +261,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     function filterGroupView(){
         var dataGroupsusers = sort.dataGroupsusers;
         var clearBtn, inner = Util.createElement('p', {}, '<p><b>' +App.t('Filter by task groups or resource')+ '</b><span class="ico_clear clear_filter"></span></p>');
+
         for(var groupName in dataGroupsusers){
             var fragment = createUsersGroup(groupName, dataGroupsusers[groupName]);
             inner.appendChild(fragment);
@@ -274,9 +275,8 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
                     for( i = 0; i < inputs.length; i++ ){
                         if(inputs[i].checked === true) inputs[i].checked = false;
                     }
-                }
+                } */
 
-                */
                 sort.inputCheckedAll(inner, false);
                 sort.clearFilter = true;
                 sort.startFilteringReady = true;
@@ -347,7 +347,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         return wrap;
     }
 
-    function onFilterClickResource(event){
+    function onFilterClickResource (event) {
         var id = this.id.split('_')[1];
         var name = this.getAttribute('name');
         var type = this.getAttribute('data-type');
@@ -356,20 +356,34 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         var uids = sort.getUsersIdsByGroup(name);
 
         //console.log(id, name, checked, type, group, uids);
+
         sort.memory('resource-' + type + '-' + name, checked);
 
         if(type === 'user') {
 
-            if(checked && sort.dynamic.resUsers.indexOf(name) === -1) {
+            if (checked && sort.dynamic.resUsers.indexOf(name) === -1) {
                 sort.dynamic.resUsers.push(name);
-            }else if(!checked && sort.dynamic.resUsers.indexOf(name) !== -1) {
+            } else if (!checked && sort.dynamic.resUsers.indexOf(name) !== -1) {
                 sort.dynamic.resUsers = Util.rmItArr(name, sort.dynamic.resUsers);
             }
 
         } else {
+            //console.log(group);
+            //console.log(sort.dataGroupsusers);
 
+            if(checked && sort.dataGroupsusers[group]) {
+                sort.dynamic.resGroup.push(group);
+                //sort.dynamic.resUsers = Util.arrMerge(sort.dynamic.resUsers, uids);
+            }
+            else if(!checked && sort.dynamic.resGroup.indexOf(name) !== -1) {
+                sort.dynamic.resGroup = Util.rmItArr(group, sort.dynamic.resGroup);
+                //sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, uids);
+            }
+
+            // todo: отк/вкл чик юзеров
             sort.inputCheckedAll(this.parentNode.nextSibling, checked);
 
+            /*
             if(checked && sort.dynamic.resGroup.indexOf(name) === -1) {
                 sort.dynamic.resGroup.push(name);
                 sort.dynamic.resUsers = Util.arrMerge(sort.dynamic.resUsers, uids);
@@ -377,8 +391,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             else if(!checked && sort.dynamic.resGroup.indexOf(name) !== -1) {
                 sort.dynamic.resGroup = Util.rmItArr(name, sort.dynamic.resGroup);
                 sort.dynamic.resUsers = Util.arrDiff(sort.dynamic.resUsers, uids);
-            }
-
+            }*/
         }
 
         // handler for filtering
@@ -440,7 +453,11 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
 
         sort.startFilteringReady = true;
 
-        if( !!sort.dynamic.taskName[0] || !!sort.dynamic.taskGroup[0] || !Util.isEmpty(sort.dynamic.resUsers) ) {
+        if( !!sort.dynamic.taskName[0] ||
+            !!sort.dynamic.taskGroup[0] ||
+            !Util.isEmpty(sort.dynamic.resUsers) ||
+            !Util.isEmpty(sort.dynamic.resGroup)
+        ) {
             console.log('Filtering enabled');
             sort.clearFilter = false;
             gantt.refreshData();
@@ -459,6 +476,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             var resUsers = Util.uniqueArr(sort.dynamic.resUsers);
             var resGroup = sort.dynamic.resGroup;
             var show = false;
+            var resources = false;
 
             if(!!taskName && gantt.getChildren(id).length == 0 && task.text.toLowerCase().indexOf(taskName) !== -1 ) {
                 show = true;
@@ -466,15 +484,20 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             if(!!taskGroup && gantt.getChildren(id).length > 0 && task.text.toLowerCase().indexOf(taskGroup) !== -1 ) {
                 show = true;
             }
+
             if(!!resUsers) {
                 for(var iu=0; iu < resUsers.length; iu ++){
-
-                    var resources = App.Action.Chart.getTaskResources(id);
-
-                    //console.log(id, task);
-                    //console.log(resources);
-
+                    resources = App.Action.Chart.getTaskResources(id);
                     if(resources.users.indexOf(resUsers[iu]) !== -1){
+                        show = true;
+                        break;
+                    }
+                }
+            }
+            if(!!resGroup) {
+                for(var ig=0; ig < resGroup.length; ig ++){
+                    resources = App.Action.Chart.getTaskResources(id);
+                    if(resources.groups.indexOf(resGroup[ig]) !== -1){
                         show = true;
                         break;
                     }
