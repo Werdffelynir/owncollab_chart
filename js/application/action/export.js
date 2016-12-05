@@ -138,8 +138,16 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         };
 
         var header = '<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">';
-        // + App.urlBase +
-        header += '<link rel="stylesheet" href="http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css">';
+
+        // todo: for proda\re
+        if (App.debug)
+            header += '<link rel="stylesheet" href="http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css">';
+        else
+            header += '<link rel="stylesheet" href="' + App.urlBase +'/apps/owncollab_chart/css/dhtmlxgantt.css">';
+
+        // style for hide gantt.templates.task_text
+        // and stylize gantt.templates.rightside_text
+        header += '<style>.gantt_task_content{color: rgba(0,0,0,0) !important;} .gantt_side_content.gantt_right {bottom: 0px !important; color: #1c2c42; font-weight: bold;}</style>';
 
         var config = defaults((config || {}), {
             name:"gantt.png",
@@ -178,7 +186,11 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.duration_unit = "day";
         gantt.config.duration_step = 1;
 
-        config.data.data.map(function(item){
+        //gantt.templates.task_text = gantt.templates.rightside_text = function(start, end, task){
+        //    return "";
+        //};
+
+        config.data.data.map(function (item) {
 
             // change visual for Resources
             var usersObj = {groups:[],users:[]};
@@ -203,9 +215,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             }
         }, {data:JSON.stringify(config), printconf:printconf, pagenotes:pagenotes});
 
-        console.log(gantt.config.start_date);
-        console.log(gantt.config.end_date);
-
+        //console.log(gantt.config.start_date);
+        //console.log(gantt.config.end_date);
         //gantt.exportToPDF();
 
         // Возврат изминений

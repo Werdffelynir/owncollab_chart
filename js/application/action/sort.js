@@ -261,6 +261,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
     function filterGroupView(){
         var dataGroupsusers = sort.dataGroupsusers;
         var clearBtn, inner = Util.createElement('p', {}, '<p><b>' +App.t('Filter by task groups or resource')+ '</b><span class="ico_clear clear_filter"></span></p>');
+
         for(var groupName in dataGroupsusers){
             var fragment = createUsersGroup(groupName, dataGroupsusers[groupName]);
             inner.appendChild(fragment);
@@ -274,9 +275,8 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
                     for( i = 0; i < inputs.length; i++ ){
                         if(inputs[i].checked === true) inputs[i].checked = false;
                     }
-                }
+                } */
 
-                */
                 sort.inputCheckedAll(inner, false);
                 sort.clearFilter = true;
                 sort.startFilteringReady = true;
@@ -355,14 +355,14 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
         var checked = this.checked;
         var uids = sort.getUsersIdsByGroup(name);
 
-        //console.log(id, name, checked, type, group, uids);
+        console.log(id, name, checked, type, group, uids);
         sort.memory('resource-' + type + '-' + name, checked);
 
         if(type === 'user') {
 
-            if(checked && sort.dynamic.resUsers.indexOf(name) === -1) {
+            if (checked && sort.dynamic.resUsers.indexOf(name) === -1) {
                 sort.dynamic.resUsers.push(name);
-            }else if(!checked && sort.dynamic.resUsers.indexOf(name) !== -1) {
+            } else if (!checked && sort.dynamic.resUsers.indexOf(name) !== -1) {
                 sort.dynamic.resUsers = Util.rmItArr(name, sort.dynamic.resUsers);
             }
 
