@@ -321,38 +321,80 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     chart.enableZoomSlider = function () {
 
-        $(App.node('zoomSliderMin')).click(function(){
+        jQuery(App.node('zoomSliderMin')).click(function(){
             chart.zoomValue --;
             chart.changeScaleByStep();
         });
-        $(App.node('zoomSliderPlus')).click(function(){
+        jQuery(App.node('zoomSliderPlus')).click(function(){
             chart.zoomValue ++;
             chart.changeScaleByStep();
         });
-        $(App.node('zoomSliderFit')).click(GanttExt.scaleFit);
+        jQuery(App.node('zoomSliderFit')).click(GanttExt.scaleFit);
 
-        $(App.node('zoomSlider'))
-            .show()
-            .slider({
-                min: 1,
-                max: 3,
-                value: chart.zoomValue,
-                step:1,
-                change: function (event, ui) {
-                    chart.zoomValue = parseInt(ui.value);
-                    chart.changeScaleByStep();
-                }
-            });
+        jQuery(App.node('zoomSlider')).show().slider({
+            min: 1,
+            max: 3,
+            value: chart.zoomValue,
+            step:1,
+            change: function (event, ui) {
+                chart.zoomValue = parseInt(ui.value);
+                chart.changeScaleByStep();
+            }
+        });
     };
 
     /**
      *
      * @namespace App.Action.Chart.changeScaleByStep
      */
-    chart.changeScaleByStep = function(){
+    chart.changeScaleByStep = function () {
+
         var value = parseInt(chart.zoomValue);
-        if(value > 3) value = 0;
-        if(value < 0) value = 3;
+
+        /*if(value > 10) value = 0;
+        if(value < 0) value = 10;
+
+        switch (value) {
+            case 10:
+                GanttConfig.scale('hour');
+                break;
+            case 9:
+                GanttConfig.scale('hour');
+                gantt.config.step = 2;
+                break;
+            case 8:
+                GanttConfig.scale('hour');
+                gantt.config.step = 3;
+                break;
+            case 7:
+                GanttConfig.scale('hour');
+                gantt.config.step = 4;
+                break;
+            case 6:
+                GanttConfig.scale('hour');
+                gantt.config.step = 6;
+                break;
+            case 5:
+                GanttConfig.scale('hour');
+                gantt.config.step = 12;
+                break;
+            case 4:
+                GanttConfig.scale('day');
+                break;
+            case 3:
+                GanttConfig.scale('day');
+                gantt.config.step = 2;
+                break;
+            case 2:
+                GanttConfig.scale('week');
+                break;
+            case 1:
+                GanttConfig.scale('month');
+                break;
+        }*/
+
+        if (value > 3) value = 0;
+        if (value < 0) value = 3;
 
         switch (value) {
             case 3:
@@ -365,6 +407,8 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 GanttConfig.scale('week');
                 break;
         }
+
+        chart.readySave = false;
         gantt.render();
     };
 

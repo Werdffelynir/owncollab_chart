@@ -579,7 +579,7 @@ if(App.namespace) { App.namespace('Action.Lightbox', function(App) {
     lbox.resourceOnClickListener = function (popup, fieldUsers) {
         var groupsusers = DataStore.get('groupsusers');
         popup.addEventListener('click', function(event) {
-            if(event.target.tagName == 'INPUT'){
+            if (event.target.tagName == 'INPUT') {
                 var target = event.target,
                     type = target.getAttribute('data-type'),
                     name = target['name'],
