@@ -74,7 +74,7 @@ OC.L10N.register(
         "Submit": "Отправить",
         "loading": "Загрузка",
         "Portrait": "Портрет",
-        "Album": "Альбом",
+        "Landscape": "Альбом",
         "The necessary modules of application are not loaded!": "Необходимые модули приложения не загружаются!",
         "Security at risk. Suspicious response from the server.": "Безопасность под угрозой. Подозрительные ответ от сервера",
         "The necessary scripts of dhtmlxgantt are not loaded!": "Необходимые скрипты dhtmlxgantt не загружаются!",

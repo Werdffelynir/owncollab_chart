@@ -74,7 +74,7 @@ OC.L10N.register(
             "Submit": "Submit",
             "loading": "loading",
             "Portrait": "Portrait",
-            "Album": "Album",
+            "Landscape": "Landscape",
             "The necessary modules of application are not loaded!": "The necessary modules of application are not loaded!",
             "Security at risk. Suspicious response from the server.": "Security at risk. Suspicious response from the server",
             "The necessary scripts of dhtmlxgantt are not loaded!": "The necessary scripts of dhtmlxgantt are not loaded!",

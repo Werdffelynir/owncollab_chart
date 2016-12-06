@@ -71,20 +71,20 @@
     "Duration": "Dauer",
     "Link type": "Verknüpfungstyp",
     "Submit": "Senden",
-    "loading": "Laden",
-    "Portrait": "Porträt",
-    "Album": "Album",
-    "The necessary modules of application are not loaded!": "Die benötigten Module sind nicht geladen!",
-    "Security at risk. Suspicious response from the server.": "Sicherheit. Verdächtige Antwort vom Server",
-    "The necessary scripts of dhtmlxgantt are not loaded!": "Die notwendigen Skripte von dhtmlxgantt werden nicht geladen!",
-    "Error Request on send share emails": "Fehler beim Senden von E-Mails",
-    "Read-only": "Schreibgeschützt",
+    "loading": "lädt",
+    "Portrait": "Hochformat",
+    "Landscape": "Querformat",
+    "The necessary modules of application are not loaded!": "Wichtige Module konnten nicht geladen werden!",
+    "Security at risk. Suspicious response from the server.": "Die Sicherheit ist gefärdet. Der Server antwortet nicht korrekt.",
+    "The necessary scripts of dhtmlxgantt are not loaded!": "Die notwendigen Skripte von dhtmlxgantt fehlen.",
+    "Error Request on send share emails": "Während des Sendens der Email trat ein Fehler auf.",
+    "Read-only": "Nur lesender",
     "Access ": "Zugriff ",
-    "Error assignment value fields, the project parameters. Error message: ": "Fehlerzuordnungswertfelder, die Projektparameter. Fehlermeldung: ",
-    "Response error info": "Fehlerinfo",
+    "Error assignment value fields, the project parameters. Error message: ": "Fehler bei der Zuweisung von Datenbankwerten. Fehlermeldung: ",
+    "Response error info": "Fehlermeldung",
     "Now": "Jetzt",
-    "Done": "Erledigt",
-    "Application throw error": "Anwendungswurffehler"
+    "Done": "Fertig",
+    "Application throw error": "Die Anwendung meldet einen Fehler"
 
 },"pluralForm" :"nplurals=2; plural=(n != 1);"
 }

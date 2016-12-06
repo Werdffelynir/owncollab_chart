@@ -30,7 +30,7 @@ if(App.namespace) { App.namespace('Action.Error', function(App) {
      */
     error.page = function (text){
 
-        var title = 'Application throw error';
+        var title = App.t('Application throw error');
         console.log(App.t(text));
         if(text){
             $(error.contentElement).hide();
