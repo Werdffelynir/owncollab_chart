@@ -69,7 +69,7 @@ $appName = 'owncollab_chart';
             <div class="tbl_cell">
                 <select name="pdf_paper_orientation" id="">
                     <option value="P"><?php p($l->t('Portrait'));?></option>
-                    <option value="L"><?php p($l->t('Album'));?></option>
+                    <option value="L"><?php p($l->t('Landscape'));?></option>
                 </select>
             </div>
         </div>
