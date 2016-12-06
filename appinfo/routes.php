@@ -26,5 +26,6 @@ $application->registerRoutes($this, ['routes' => [
     ['name' => 'api#index', 'url' => '/api', 'verb' => 'POST'],
     ['name' => 'main#public_chart', 'url' => '/s/{share}', 'verb' => 'GET'],
     ['name' => 'main#export', 'url' => '/pdf', 'verb' => 'GET'],
+    ['name' => 'main#test', 'url' => '/test', 'verb' => 'GET'],
 
 ]]);

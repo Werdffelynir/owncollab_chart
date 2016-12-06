@@ -338,6 +338,12 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
     };
 
 
+    /**
+     * @namespace App.Config.GanttConfig.scaleLastChangeType
+     * @type {null|String}
+     */
+    conf.scaleLastChangeType = null;
+
 
     /**
      * Setting up the gantt chart scale
@@ -350,7 +356,8 @@ if(App.namespace) { App.namespace('Config.GanttConfig', function(App) {
 
         // Type of scale size
         type = type || 'month';
-        //o.opt.currentScaleType = type = (o.opt.typesScales.indexOf(type) === -1) ? "month" : type;
+
+        conf.scaleLastChangeType = type;
 
         /* Common for all scales */
         gantt.config.scale_unit = type;     // Sets the unit of the time scale (X-Axis) can be: "minute", "hour", "day", "week", "quarter", "month", "year"

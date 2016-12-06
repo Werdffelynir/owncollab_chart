@@ -121,8 +121,10 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
     exp.onSubmitExportToPDF = function (event) {
 
-        $('.export_loader').show();
+        jQuery('.export_loader').show();
         event.preventDefault();
+
+        var utcNumber = parseInt(App.utc.slice(0, -2));
 
         var pagenotes = {
             'head_left': $('input[name=pdf_head_left]').val(),
@@ -149,6 +151,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         // style for hide gantt.templates.task_text
         // and stylize gantt.templates.rightside_text
+
         header += '<style>' +
             '.gantt_task_content{color: rgba(0,0,0,0) !important;} ' +
             '.gantt_side_content.gantt_right {bottom: 0 !important; color: #1c2c42; background-color: rgba(255,255,255,0.5) !important;}' +
@@ -170,6 +173,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         var _tmpConfig = {
             server_utc: gantt.config.server_utc,
+            scaleLastChangeType: App.Config.GanttConfig.scaleLastChangeType,
             autofit: gantt.config.autofit,
             fit_tasks: gantt.config.fit_tasks,
             duration_unit: gantt.config.duration_unit,
@@ -181,6 +185,9 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             column8: Util.objClone(gantt.config.columns[8])
         };
 
+        // todo: экспортировать только в одном состоянии
+        //App.Config.GanttConfig.scaleLastChangeType
+        App.Config.GanttConfig.scale('day');
 
         config.config.server_utc = false;
         config.config.autofit = false;
@@ -195,11 +202,15 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         config.config.duration_step = 1;
 
         config.data.data.map(function (item) {
-
             // change visual for Resources
             var usersObj = {groups:[],users:[]};
+
+            item = exp.changTaskUTC(item, utcNumber);
+
             if(typeof item.users === 'string' && item.users.length > 5) {
-                try {usersObj = JSON.parse(item.users);} catch (e) {} }
+                try {usersObj = JSON.parse(item.users);} catch (e) {}
+            }
+
             var groupsString = Util.cleanArr(usersObj.groups).join(', ');
             var usersString = Util.cleanArr(usersObj.users).join(', ');
             item.users = (!Util.isEmpty(groupsString) ? '<strong>' + groupsString + '</strong>, ' : '') + usersString;
@@ -209,6 +220,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             var days = (Math.abs((task.start_date.getTime() - task.end_date.getTime())/(86400000)) ).toFixed(1);
             item.duration = ((days%1==0) ? Math.round(days) : days) + ' d';
         });
+
+        //return ;
 
         App.Action.Api.request('getsourcepdf', function(response) {
             //console.log('getsourcepdf response >>>', response);
@@ -237,8 +250,18 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.start_date         = undefined;
         gantt.config.end_date           = undefined;
 
+        App.Config.GanttConfig.scale(_tmpConfig.scaleLastChangeType);
     };
 
+    exp.changTaskUTC = function (task, utcInt) {
+        var sd = App.Extension.DateTime.strToDate(task.start_date, "%d-%m-%Y %H:%i"),
+            ed = App.Extension.DateTime.strToDate(task.end_date, "%d-%m-%Y %H:%i");
+        sd.setTime(sd.getTime() + (utcInt*60*60*1000));
+        ed.setTime(ed.getTime() + (utcInt*60*60*1000));
+        task.start_date = App.Extension.DateTime.dateToStr(sd, "%d-%m-%Y %H:%i");
+        task.end_date = App.Extension.DateTime.dateToStr(ed, "%d-%m-%Y %H:%i");
+        return task;
+    };
 
     exp.toPNG = function () {
         var config = {};

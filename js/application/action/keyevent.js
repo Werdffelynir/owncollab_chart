@@ -71,13 +71,17 @@ if(App.namespace) { App.namespace('Action.Keyevent', function(App) {
             //console.log('save change:', keyevent.fieldsValues);
 
             var task = gantt.getTask(keyevent.editableTaskId);
-            task.text = keyevent.fieldsEditable['name'].textContent; //keyevent.fieldsValues['name'];
+            task.text = keyevent.fieldsEditable['name'].textContent;
 
+            //keyevent.fieldsValues['name'];
+
+            /*
             if(keyevent.fieldsValues['change_start_date'] instanceof Date)
                 task.start_date = keyevent.fieldsValues['change_start_date'];
 
             if(keyevent.fieldsValues['change_end_date'] instanceof Date)
                 task.end_date = keyevent.fieldsValues['change_end_date'];
+            */
 
             task.users = keyevent.fieldsValues['resources'];
 

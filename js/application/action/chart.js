@@ -25,6 +25,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
         tasks:null,
         links:null,
         zoomValue: 2,
+        zoomSliderValue: 4,
         isInit: false
     };
 
@@ -333,6 +334,18 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
 
         jQuery(App.node('zoomSlider')).show().slider({
             min: 1,
+            max: 10,
+            value: chart.zoomSliderValue,
+            step:1,
+            change: function (event, ui) {
+                chart.zoomSliderValue = parseInt(ui.value);
+                chart.changeScaleByStep();
+            }
+        });
+
+/*
+        jQuery(App.node('zoomSlider')).show().slider({
+            min: 1,
             max: 3,
             value: chart.zoomValue,
             step:1,
@@ -340,7 +353,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
                 chart.zoomValue = parseInt(ui.value);
                 chart.changeScaleByStep();
             }
-        });
+        });*/
     };
 
     /**
@@ -349,9 +362,9 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
      */
     chart.changeScaleByStep = function () {
 
-        var value = parseInt(chart.zoomValue);
+        var value = parseInt(chart.zoomSliderValue);
 
-        /*if(value > 10) value = 0;
+        if(value > 10) value = 0;
         if(value < 0) value = 10;
 
         switch (value) {
@@ -391,7 +404,10 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             case 1:
                 GanttConfig.scale('month');
                 break;
-        }*/
+        }
+
+        /*
+        var value = parseInt(chart.zoomValue);
 
         if (value > 3) value = 0;
         if (value < 0) value = 3;
@@ -406,7 +422,7 @@ if(App.namespace) { App.namespace('Action.Chart', function(App) {
             case 1:
                 GanttConfig.scale('week');
                 break;
-        }
+        }*/
 
         chart.readySave = false;
         gantt.render();

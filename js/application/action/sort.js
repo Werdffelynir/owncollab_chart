@@ -491,7 +491,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             if(!!resUsers) {
                 for(var iu=0; iu < resUsers.length; iu ++){
                     resources = App.Action.Chart.getTaskResources(id);
-                    if(resources.users.indexOf(resUsers[iu]) !== -1){
+                    if(resources.users.indexOf(resUsers[iu]) !== -1) {
                         show = true;
                         break;
                     }
@@ -500,7 +500,7 @@ if(App.namespace) { App.namespace('Action.Sort', function(App) {
             if(!!resGroup) {
                 for(var ig=0; ig < resGroup.length; ig ++){
                     resources = App.Action.Chart.getTaskResources(id);
-                    if(resources.groups.indexOf(resGroup[ig]) !== -1){
+                    if(resources.groups.indexOf(resGroup[ig]) !== -1) {
                         show = true;
                         break;
                     }
