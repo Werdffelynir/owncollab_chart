@@ -124,7 +124,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         jQuery('.export_loader').show();
         event.preventDefault();
 
-        var utcNumber = parseInt(App.utc.slice(-2) == "00" ? App.utc.slice(0, -2) : App.utc.slice(0, -1));
+        var utcNumber = parseInt(App.utc.slice(0, -2));
 
         var pagenotes = {
             'head_left': $('input[name=pdf_head_left]').val(),
@@ -151,6 +151,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         // style for hide gantt.templates.task_text
         // and stylize gantt.templates.rightside_text
+
         header += '<style>' +
             '.gantt_task_content{color: rgba(0,0,0,0) !important;} ' +
             '.gantt_side_content.gantt_right {bottom: 0 !important; color: #1c2c42; background-color: rgba(255,255,255,0.5) !important;}' +
@@ -172,6 +173,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         var _tmpConfig = {
             server_utc: gantt.config.server_utc,
+            scaleLastChangeType: App.Config.GanttConfig.scaleLastChangeType,
             autofit: gantt.config.autofit,
             fit_tasks: gantt.config.fit_tasks,
             duration_unit: gantt.config.duration_unit,
@@ -183,6 +185,9 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             column8: Util.objClone(gantt.config.columns[8])
         };
 
+        // todo: экспортировать только в одном состоянии
+        //App.Config.GanttConfig.scaleLastChangeType
+        App.Config.GanttConfig.scale('day');
 
         config.config.server_utc = false;
         config.config.autofit = false;
@@ -244,6 +249,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         gantt.config.columns.push(_tmpConfig.column8);
         gantt.config.start_date         = undefined;
         gantt.config.end_date           = undefined;
+
+        App.Config.GanttConfig.scale(_tmpConfig.scaleLastChangeType);
     };
 
     exp.changTaskUTC = function (task, utcInt) {
