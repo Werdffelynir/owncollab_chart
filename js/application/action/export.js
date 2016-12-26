@@ -168,6 +168,8 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         config['start'] = gantt.config.start_date   = exp.toPDF.config['start'];
         config['end']   = gantt.config.end_date     = exp.toPDF.config['end'];
+        //todo: рендерит темплейтов. серв неприм парам.
+        //config['raw']   = true;
 
         fix_columns(gantt, config.config.columns);
 
@@ -265,6 +267,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
     exp.toPNG = function () {
         var config = {};
+        config['raw'] = true;
         gantt.exportToPNG(config);
     };
 

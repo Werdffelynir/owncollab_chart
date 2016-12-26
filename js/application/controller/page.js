@@ -144,7 +144,7 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
             [
                 App.urlGantt + 'dhtmlxgantt.js',
                 languagePathScript,
-                App.urlGantt + 'api.js',
+                App.urlGantt + 'api.js', // 'https://export.dhtmlx.com/gantt/api.js'
                 App.urlGantt + 'ext/dhtmlxgantt_undo.js',
                 App.urlGantt + 'ext/dhtmlxgantt_marker.js',
                 App.urlGantt + 'ext/dhtmlxgantt_grouping.js',
