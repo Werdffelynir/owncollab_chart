@@ -11,7 +11,7 @@ window.App = new NamespaceApplication({
     },
     urlScript: '/apps/owncollab_chart/js/',
     urlGantt: '/apps/owncollab_chart/js/commercial/',
-    utc: new Date().toString().match(/\+|-(\d+)/ig)[0],
+    utc: new Date().toString().match(/\+(\d+)|\-(\d+)/ig)[0],
     host: OC.getHost(),
     locale: OC.getLocale(),
     protocol: OC.getProtocol(),

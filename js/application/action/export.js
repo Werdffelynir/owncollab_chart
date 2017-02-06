@@ -158,7 +158,7 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             '</style>';
 
         var config = defaults((config || {}), {
-            name: "gantt.png",
+            name: "gantt.pdf",
             locale: App.locale,
             data: gantt._serialize_all(),
             config: gantt.config,
@@ -168,8 +168,6 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
 
         config['start'] = gantt.config.start_date   = exp.toPDF.config['start'];
         config['end']   = gantt.config.end_date     = exp.toPDF.config['end'];
-        //todo: рендерит темплейтов. серв неприм парам.
-        //config['raw']   = true;
 
         fix_columns(gantt, config.config.columns);
 
@@ -207,7 +205,10 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
             // change visual for Resources
             var usersObj = {groups:[],users:[]};
 
-            item = exp.changTaskUTC(item, utcNumber);
+            if (utcNumber)
+                item = exp.changTaskUTC(item, utcNumber);
+            else
+                console.error('utcNumber', utcNumber);
 
             if(typeof item.users === 'string' && item.users.length > 5) {
                 try {usersObj = JSON.parse(item.users);} catch (e) {}
@@ -224,6 +225,9 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
         });
 
         //return ;
+
+        //todo: рендерит темплейтов. серв неприм парам.
+        //config['raw'] = true;
 
         App.Action.Api.request('getsourcepdf', function(response) {
             //console.log('getsourcepdf response >>>', response);
@@ -256,18 +260,38 @@ if(App.namespace) { App.namespace('Action.Export', function(App) {
     };
 
     exp.changTaskUTC = function (task, utcInt) {
-        var sd = App.Extension.DateTime.strToDate(task.start_date, "%d-%m-%Y %H:%i"),
-            ed = App.Extension.DateTime.strToDate(task.end_date, "%d-%m-%Y %H:%i");
+        var tf = '%d.%m.%Y %H:%i', //"%d-%m-%Y %H:%i",
+            sd = App.Extension.DateTime.strToDate(task.start_date, tf),
+            ed = App.Extension.DateTime.strToDate(task.end_date, tf);
         sd.setTime(sd.getTime() + (utcInt*60*60*1000));
         ed.setTime(ed.getTime() + (utcInt*60*60*1000));
-        task.start_date = App.Extension.DateTime.dateToStr(sd, "%d-%m-%Y %H:%i");
-        task.end_date = App.Extension.DateTime.dateToStr(ed, "%d-%m-%Y %H:%i");
+        task.start_date = App.Extension.DateTime.dateToStr(sd, tf);
+        task.end_date = App.Extension.DateTime.dateToStr(ed, tf);
         return task;
     };
 
     exp.toPNG = function () {
-        var config = {};
-        config['raw'] = true;
+        var header = '<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">';
+        if (App.debug)
+            header += '<link rel="stylesheet" href="http://62.149.13.59/apps/owncollab_chart/css/dhtmlxgantt.css">';
+        else
+            header += '<link rel="stylesheet" href="' + App.urlBase +'/apps/owncollab_chart/css/dhtmlxgantt.css">';
+
+        header += '<style>' +
+            '.gantt_task_content{color: rgba(0,0,0,0) !important;} ' +
+            '.gantt_side_content.gantt_right {bottom: 0 !important; color: #1c2c42; background-color: rgba(255,255,255,0.5) !important;}' +
+            '</style>';
+
+        var config = defaults((config || {}), {
+            name: "gantt.png",
+            locale: App.locale,
+            data: gantt._serialize_all(),
+            config: gantt.config,
+            version: gantt.version,
+            header: header
+            //raw: true
+        });
+
         gantt.exportToPNG(config);
     };
 

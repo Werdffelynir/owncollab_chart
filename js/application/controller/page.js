@@ -140,11 +140,14 @@ if(App.namespace){App.namespace('Controller.Page', function(App){
         else if(App.locale=='ru')
             languagePathScript = App.urlGantt + 'locale/locale_ru.js';
 
+        // live api source url
+        //App.script('https://export.dhtmlx.com/gantt/api.js');
+
         App.require('gantt',
             [
                 App.urlGantt + 'dhtmlxgantt.js',
                 languagePathScript,
-                App.urlGantt + 'api.js', // 'https://export.dhtmlx.com/gantt/api.js'
+                App.urlGantt + 'api.js',
                 App.urlGantt + 'ext/dhtmlxgantt_undo.js',
                 App.urlGantt + 'ext/dhtmlxgantt_marker.js',
                 App.urlGantt + 'ext/dhtmlxgantt_grouping.js',
